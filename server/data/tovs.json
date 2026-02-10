@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "coordinates": { "x": 100, "y": 200 },
+    "imageUrl": "https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/monumenta-tov/tov-1.jpg"
+  },
+  {
+    "id": 2,
+    "coordinates": { "x": 150, "y": 300 },
+    "imageUrl": "https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/monumenta-tov/tov-2.jpg"
+  }
+]
