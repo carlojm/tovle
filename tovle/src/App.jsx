@@ -28,22 +28,27 @@ const App = () => {
   });
 
   // Instantiate a CloudinaryImage object for the image with the public ID, 'docs/models'.
-  const id = 171;
+  const id = Math.floor(Math.random() * 14) + 1;
   const myImage = cld.image(`tov/${id}`);
 
   // Resize to 250 x 250 pixels using the 'fill' crop mode.
-  myImage.resize(fill().width(250));
+  myImage.resize(fill().width(500));
 
   // Render the image in a React component.
   return (
     <div>
-      <h1>Tovle</h1>
-      <Dateline />
-      <Notification message={errorMessage} />
-
-      <AdvancedImage cldImg={myImage} />
-
-      <Map />
+      <div style={{ 
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        minHeight: '100vh'  // full viewport height
+      }}>
+        <h1>Tovle</h1>
+        <Dateline />
+        <Notification message={errorMessage} />
+        <AdvancedImage cldImg={myImage} />
+        <Map />
+      </div>
 
       <Footer />
     </div>

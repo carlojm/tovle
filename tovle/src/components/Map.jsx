@@ -42,7 +42,8 @@ export default function Map() {
       alignItems: 'center',
       // minHeight: '100vh'  // full viewport height
     }}>
-      <h1>Map Picker</h1>
+      <h3>Map Picker</h3>
+      <p>Pinpoint the cache's location on the map below.</p>
       
       <div style={{ 
         position: 'relative', 

@@ -1,10 +1,6 @@
-h1 {
+h1, h3 {
     color: #7070d4ff;
     margin-bottom: 0;
-}
-
-h3 {
-  fontStyle: italic;
 }
 
 .note {
