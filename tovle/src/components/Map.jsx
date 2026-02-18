@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react';
 import mapImage from '../assets/map.png';
 
-export default function Map() {
-  const [selectedCoords, setSelectedCoords] = useState(null);
+export default function Map({selectedCoords, setSelectedCoords}) {
   const imageRef = useRef(null)
 
   const handleMapClick = (event) => {
