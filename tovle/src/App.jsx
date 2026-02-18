@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Footer from './components/Footer'
 import Notification from './components/Notification'
 import Dateline from './components/Dateline'
+import Map from './components/Map'
 
 import {Cloudinary} from "@cloudinary/url-gen";
 import {AdvancedImage} from '@cloudinary/react';
@@ -27,7 +28,8 @@ const App = () => {
   });
 
   // Instantiate a CloudinaryImage object for the image with the public ID, 'docs/models'.
-  const myImage = cld.image('my_test'); 
+  const id = 171;
+  const myImage = cld.image(`tov/${id}`);
 
   // Resize to 250 x 250 pixels using the 'fill' crop mode.
   myImage.resize(fill().width(250));
@@ -40,6 +42,8 @@ const App = () => {
       <Notification message={errorMessage} />
 
       <AdvancedImage cldImg={myImage} />
+
+      <Map />
 
       <Footer />
     </div>
