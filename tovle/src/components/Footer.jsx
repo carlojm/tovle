@@ -8,7 +8,7 @@ const Footer = () => {
     <div style={footerStyle}>
       <br />
       <p>
-        Daily Tovle by Carlo, last updated Feb 2026
+        Daily Tovle, last updated Feb 2026
       </p>
     </div>
   )

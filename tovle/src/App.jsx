@@ -32,7 +32,7 @@ const App = () => {
   const myImage = cld.image(`tov/${id}`);
 
   // Resize to 250 x 250 pixels using the 'fill' crop mode.
-  myImage.resize(fill().width(500));
+  myImage.resize(fill().width(1000));
 
   // Render the image in a React component.
   return (
@@ -43,10 +43,15 @@ const App = () => {
         alignItems: 'center',
         minHeight: '100vh'  // full viewport height
       }}>
-        <h1>Tovle</h1>
+        <h1>Tovle!</h1>
         <Dateline />
         <Notification message={errorMessage} />
-        <AdvancedImage cldImg={myImage} />
+        <AdvancedImage cldImg={myImage} style={{
+          // maxHeight: '70vh',
+          width: 'min(90vw, 1000px)',
+          height: 'auto',
+          objectFit: 'contain'
+        }} />
         <Map />
       </div>
 

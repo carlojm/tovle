@@ -59,9 +59,8 @@ export default function Map() {
           style={{ 
             cursor: 'crosshair', 
             display: 'block',
-            maxWidth: '100%',
             // maxHeight: '70vh',
-            // width: 'auto',
+            width: 'min(90vw, 1000px)',
             // height: 'auto',
             objectFit: 'contain'
           }}
