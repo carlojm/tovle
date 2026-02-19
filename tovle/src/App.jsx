@@ -3,6 +3,7 @@ import Footer from './components/Footer'
 import Notification from './components/Notification'
 import Dateline from './components/Dateline'
 import Map from './components/Map'
+import './App.css'
 
 import {Cloudinary} from "@cloudinary/url-gen";
 import {AdvancedImage} from '@cloudinary/react';
@@ -40,13 +41,6 @@ const App = () => {
     }
   }, [])
 
-  const getDistance = (x0, z0, x1, z1) => {
-    if ([x0, z0, x1, z1].some(v => typeof v !== 'number' || Number.isNaN(v))) {
-      throw new TypeError('getDistance requires four numeric arguments: x0, z0, x1, z1');
-    }
-    return Math.hypot(x1 - x0, z1 - z0);
-  }
-
   const handleSubmitGuess = () => {
     const distance = Math.hypot(
       selectedCoords.minecraftX - correctCoords.x,
@@ -55,48 +49,34 @@ const App = () => {
 
     console.log("distance", distance)
 
-    setErrorMessage(`distance is ${distance}}`)
-    setTimeout(() => setErrorMessage(null), 3000)
+    setErrorMessage(`the cache is ${Math.round(distance)} blocks away`)
+    setTimeout(() => setErrorMessage(null), 5000)
   }
 
   return (
     <div>
-      <div style={{ 
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        minHeight: '100vh'  // full viewport height
-      }}>
-        <h1>Tovle!</h1>
+      <div className="app-container">
+        <h1 className="app-title">Tovle!</h1>
         <Dateline />
-        <Notification message={errorMessage} />
 
         {cacheImage &&
-          <AdvancedImage cldImg={cacheImage} style={{
-            // maxHeight: '70vh',
-            width: 'min(90vw, 1000px)',
-            height: 'auto',
-            objectFit: 'contain'
-          }} />
+          <AdvancedImage cldImg={cacheImage} className="cache-image"/>
         }
 
+        <p>Pinpoint the cache's location on the map below.</p>
         <Map selectedCoords={selectedCoords} setSelectedCoords={setSelectedCoords} />
 
         {selectedCoords && (
-          <button
-            onClick={handleSubmitGuess}
-            style = {{
-              padding: '12px 24px',
-              fontSize: '16px',
-              backgroundColor: '#7070d4ff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              // fontWeight: 'bold'
-            }}
-          >Search Area</button>
+          <div className="coords-display">
+            <p><strong>Selected:</strong> X {selectedCoords.minecraftX}, Z {selectedCoords.minecraftZ}</p>
+          </div>
         )}
+        
+        {selectedCoords && (
+          <button onClick={handleSubmitGuess} className="submit-button">Search Area</button>
+        )}
+
+        <Notification message={errorMessage} />
       </div>
 
       <Footer />
