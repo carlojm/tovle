@@ -1,4 +1,7 @@
 .map-container {
+  overscroll-behavior: contain;  /* Prevents page scroll */
+  touch-action: none;  /* Prevents touch gestures from scrolling */
+
   position: relative;
   display: inline-block;
   margin: 20px 0;
@@ -39,4 +42,48 @@
 
 .map-pin svg {
   filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
+}
+
+
+.zoom-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px;
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.zoom-controls button {
+  min-width: 32px;
+  padding: 0 12px;
+  height: 32px;
+  border: none;
+  background: #7070d4;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.zoom-controls .reset-button {
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.zoom-controls button:hover {
+  background: #8080e4;
+}
+
+.zoom-controls span {
+  color: white;
+  font-size: 14px;
+  min-width: 50px;
+  text-align: center;
 }
