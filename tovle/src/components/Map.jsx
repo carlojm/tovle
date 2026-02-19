@@ -2,6 +2,19 @@ import React, { useState, useEffect, useRef } from 'react';
 import mapImage from '../assets/map.png';
 import './Map.css'
 
+const MAX_ZOOM = 15
+const MIN_ZOOM = 1
+const ZOOM_STEP = 0.5
+const CLICK_THRESHOLD = 5
+const TOUCH_CLICK_THRESHOLD = 10
+
+const MAP_MIN_X = -2223
+const MAP_MAX_X = 862
+const MAP_WIDTH = 3085
+const MAP_MIN_Y = -655
+const MAP_MAX_Y = 1902
+const MAP_HEIGHT = 2557
+
 export default function Map({selectedCoords, setSelectedCoords}) {
   const imageRef = useRef(null)
   const containerRef = useRef(null)
@@ -36,7 +49,7 @@ export default function Map({selectedCoords, setSelectedCoords}) {
     if (!containerRef.current) return
 
     const delta = event.deltaY * -0.001 //make it negative so scroll down = zoom out
-    const newZoom = Math.min(Math.max(zoom + delta, 1), 5) //clamped between 1x and 5x zoom
+    const newZoom = Math.min(Math.max(zoom + delta, MIN_ZOOM), MAX_ZOOM) //clamped between 1x and 5x zoom
 
     //get mouse pos relative to container
     const rect = containerRef.current.getBoundingClientRect()
@@ -109,7 +122,6 @@ export default function Map({selectedCoords, setSelectedCoords}) {
     )
 
     //if moved less than 5 pixels, treat as a click
-    const CLICK_THRESHOLD = 5
     if (moveDistance < CLICK_THRESHOLD) {
       handleMapClick(event, {x:event.clientX, y:event.clientY})
     }
@@ -174,7 +186,7 @@ export default function Map({selectedCoords, setSelectedCoords}) {
       const distance = getTouchDistance(event.touches[0], event.touches[1])
       if(lastTouchDistance) {
         const scale = distance / lastTouchDistance
-        const newZoom = Math.min(Math.max(zoom * scale, 1), 5)
+        const newZoom = Math.min(Math.max(zoom * scale, MIN_ZOOM), MAX_ZOOM)
         
         //get center of pinch
         const center = getTouchCenter(event.touches[0], event.touches[1])
@@ -211,8 +223,7 @@ export default function Map({selectedCoords, setSelectedCoords}) {
           mouseDownPos.y - touchStart.y
         )
         
-        const CLICK_THRESHOLD = 10
-        if (moveDistance < CLICK_THRESHOLD) {
+        if (moveDistance < TOUCH_CLICK_THRESHOLD) {
           handleMapClick(event, touchStart)
         }
       }
@@ -265,8 +276,8 @@ export default function Map({selectedCoords, setSelectedCoords}) {
       percentY: yPercent,
       pixelX: Math.round(imageX),
       pixelY: Math.round(imageY),
-      minecraftX: Math.round(-2223 + (xPercent * 3085)), //-2223 to 862
-      minecraftZ: Math.round(-655 + (yPercent * 2557))  //-655 to 1902
+      minecraftX: Math.round(MAP_MIN_X + (xPercent * MAP_WIDTH)), //-2223 to 862 = 3085
+      minecraftZ: Math.round(MAP_MIN_Y + (yPercent * MAP_HEIGHT))  //-655 to 1902 = 2557
     })
 
   }
@@ -291,9 +302,9 @@ export default function Map({selectedCoords, setSelectedCoords}) {
       }}
     >
       <div className="zoom-controls">
-        <button onClick={() => setZoom(Math.min(zoom + 0.5, 5))}>+</button>
+        <button onClick={() => setZoom(Math.min(zoom + ZOOM_STEP, MAX_ZOOM))}>+</button>
         <span>{Math.round(zoom*100)}%</span>
-        <button onClick={() => setZoom(Math.max(zoom - 0.5, 1))}>-</button>
+        <button onClick={() => setZoom(Math.max(zoom - ZOOM_STEP, MIN_ZOOM))}>-</button>
         <button className="reset-button" onClick={() => {setZoom(1); setPan({x:0, y:0}) }}>Reset</button>
 
       </div>
