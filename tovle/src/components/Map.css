@@ -2,6 +2,16 @@
   overscroll-behavior: contain;  /* Prevents page scroll */
   touch-action: none;  /* Prevents touch gestures from scrolling */
 
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
+  /* Prevent long-press actions on mobile */
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+
   position: relative;
   display: inline-block;
   margin: 20px 0;
@@ -40,9 +50,9 @@
   }
 }
 
-.map-pin svg {
+/* .map-pin svg {
   filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
-}
+} */
 
 
 .zoom-controls {

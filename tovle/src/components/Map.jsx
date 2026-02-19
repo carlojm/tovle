@@ -211,7 +211,7 @@ export default function Map({selectedCoords, setSelectedCoords}) {
           mouseDownPos.y - touchStart.y
         )
         
-        const CLICK_THRESHOLD = 5 //pixels
+        const CLICK_THRESHOLD = 10
         if (moveDistance < CLICK_THRESHOLD) {
           handleMapClick(event, touchStart)
         }

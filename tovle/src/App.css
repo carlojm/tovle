@@ -10,6 +10,18 @@ body {
   background: #1a1a2e;
 }
 
+.full-container {
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
+  /* Prevent long-press actions on mobile */
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
+
 .app-container {
   display: flex;
   flex-direction: column;
@@ -18,6 +30,7 @@ body {
   background: #1a1a30;
   color: #eee;
   /* padding: 20px; */
+
 }
 
 .app-title {

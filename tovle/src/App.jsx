@@ -54,7 +54,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className = "full-container">
       <div className="app-container">
         <h1 className="app-title">Tovle!</h1>
         <Dateline />
