@@ -12,6 +12,10 @@ export default function Map({selectedCoords, setSelectedCoords}) {
   const [dragStart, setDragStart] = useState({x:0, y:0})
   const [mouseDownPos, setMouseDownPos] = useState({x:0, y:0})
 
+  //touch
+  const [touchStart, setTouchStart] = useState(null)
+  const [lastTouchDistance, setLastTouchDistance] = useState(null)
+
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -107,7 +111,7 @@ export default function Map({selectedCoords, setSelectedCoords}) {
     //if moved less than 5 pixels, treat as a click
     const CLICK_THRESHOLD = 5
     if (moveDistance < CLICK_THRESHOLD) {
-      handleMapClick(event)
+      handleMapClick(event, {x:event.clientX, y:event.clientY})
     }
 
     setIsDragging(false)
@@ -119,7 +123,111 @@ export default function Map({selectedCoords, setSelectedCoords}) {
     event.preventDefault()
   }
 
-  const handleMapClick = (event) => {
+  const getTouchDistance = (touch1, touch2) => {
+    return Math.hypot(
+      touch1.clientX - touch2.clientX,
+      touch1.clientY - touch2.clientY
+    )
+  }
+
+  const getTouchCenter = (touch1, touch2) => {
+    return {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2
+    }
+  }
+
+  const handleTouchStart = (event) => {
+    if (event.touches.length === 1) {
+      //single touch - a pan or a tap, handle like left click
+      const touch = event.touches[0]
+      setIsDragging(true)
+      setDragStart({
+        x: touch.clientX - pan.x,
+        y: touch.clientY - pan.y
+      })
+      setMouseDownPos({
+        x: touch.clientX,
+        y: touch.clientY
+      })
+      setTouchStart({x:touch.clientX, y:touch.clientY})
+    } else if (event.touches.length === 2) {
+      //double touch - zoom
+      event.preventDefault()
+      const distance = getTouchDistance(event.touches[0], event.touches[1])
+      setLastTouchDistance(distance)
+      setIsDragging(false) //dont pan while pinching
+    }
+  }
+
+  const handleTouchMove = (event) => {
+    if (event.touches.length === 1 && isDragging) {
+      //single finger panning, handle like left click panning
+      const touch = event.touches[0]
+      setPan({
+        x: touch.clientX - dragStart.x,
+        y: touch.clientY - dragStart.y
+      })
+    } else if (event.touches.length === 2) {
+      //pinch zoom
+      event.preventDefault()
+      const distance = getTouchDistance(event.touches[0], event.touches[1])
+      if(lastTouchDistance) {
+        const scale = distance / lastTouchDistance
+        const newZoom = Math.min(Math.max(zoom * scale, 1), 5)
+        
+        //get center of pinch
+        const center = getTouchCenter(event.touches[0], event.touches[1])
+        const rect = containerRef.current.getBoundingClientRect()
+        const centerX = center.x - rect.left
+        const centerY = center.y - rect.top
+
+        //zoom toward center of pinch
+        const pointX = (centerX - pan.x) / zoom
+        const pointY = (centerY - pan.y) / zoom
+        const newPointX = pointX * newZoom
+        const newPointY = pointY * newZoom
+
+        const newPan = {
+          x: centerX - newPointX,
+          y: centerY - newPointY
+        }
+
+        setZoom(newZoom)
+        setPan(newPan)
+      }
+
+      setLastTouchDistance(distance)
+    }
+  }
+
+  const handleTouchEnd = (event) => {
+    if (event.touches.length === 0) {
+      //all touches lifted
+      if (isDragging && touchStart) {
+        //check if tap happened, or if it was a pan
+        const moveDistance = Math.hypot(
+          mouseDownPos.x - touchStart.x,
+          mouseDownPos.y - touchStart.y
+        )
+        
+        const CLICK_THRESHOLD = 5 //pixels
+        if (moveDistance < CLICK_THRESHOLD) {
+          handleMapClick(event, touchStart)
+        }
+      }
+
+      setIsDragging(false)
+      setMouseDownPos({x: 0, y: 0})
+      setTouchStart(null)
+      setLastTouchDistance(null)
+    } else if (event.touches.length === 1) {
+      //one finger lifted, but another finger still on screen; reset distance
+      setLastTouchDistance(null)
+    }
+  }
+
+  const handleMapClick = (event, pos) => {
     //only place pin on left click TODO mobile?
     if (event.button !== 0) return
 
@@ -129,8 +237,8 @@ export default function Map({selectedCoords, setSelectedCoords}) {
     const containerRect = containerRef.current.getBoundingClientRect()
 
     //calculate where on the image was clicked, relative to container
-    const clickX = event.clientX - containerRect.left
-    const clickY = event.clientY - containerRect.top
+    const clickX = pos.x - containerRect.left
+    const clickY = pos.y - containerRect.top
 
     //convert to position on original image
     const imageX = (clickX - pan.x) / zoom
@@ -173,6 +281,9 @@ export default function Map({selectedCoords, setSelectedCoords}) {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp} //if mouse leaves, stop dragging
       onContextMenu={handleContextMenu}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       style={{
         cursor: isDragging ? 'grabbing' : (zoom > 1 ? 'grab' : 'default'),
         overflow: 'hidden',
@@ -190,7 +301,7 @@ export default function Map({selectedCoords, setSelectedCoords}) {
         style={{
           transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
           transformOrigin: '0 0', //scale from top left
-          transition: isDragging ? 'none' : 'transform 0.1s ease-out'
+          // transition: isDragging ? 'none' : 'transform 0.1s ease-out'
         }}
       >
         <img 
