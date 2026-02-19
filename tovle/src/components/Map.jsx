@@ -10,6 +10,7 @@ export default function Map({selectedCoords, setSelectedCoords}) {
   const [pan, setPan] = useState({x:0, y:0}) //pan offset in pixels
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({x:0, y:0})
+  const [mouseDownPos, setMouseDownPos] = useState({x:0, y:0})
 
   useEffect(() => {
     const container = containerRef.current
@@ -66,6 +67,19 @@ export default function Map({selectedCoords, setSelectedCoords}) {
         y: event.clientY - pan.y
       })
     }
+    //left click
+    if (event.button === 0) {
+      event.preventDefault()
+      setIsDragging(true)
+      setDragStart({
+        x: event.clientX - pan.x,
+        y: event.clientY - pan.y
+      })
+      setMouseDownPos({
+        x: event.clientX,
+        y: event.clientY
+      })
+    }
   }
 
   const handleMouseMove = (event) => {
@@ -76,8 +90,28 @@ export default function Map({selectedCoords, setSelectedCoords}) {
     })
   }
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (event) => {
+    if (!isDragging) return
+    if (mouseDownPos.x === 0 && mouseDownPos.y === 0) {
+      //right click and middle click
+      setIsDragging(false)
+      return
+    }
+
+    //calculate how far mouse moved
+    const moveDistance = Math.hypot(
+      event.clientX - mouseDownPos.x,
+      event.clientY - mouseDownPos.y
+    )
+
+    //if moved less than 5 pixels, treat as a click
+    const CLICK_THRESHOLD = 5
+    if (moveDistance < CLICK_THRESHOLD) {
+      handleMapClick(event)
+    }
+
     setIsDragging(false)
+    setMouseDownPos({x:0, y:0})
   }
 
   const handleContextMenu = (event) => {
@@ -86,8 +120,6 @@ export default function Map({selectedCoords, setSelectedCoords}) {
   }
 
   const handleMapClick = (event) => {
-    //if dragging, don't place a pin
-    if (isDragging) return
     //only place pin on left click TODO mobile?
     if (event.button !== 0) return
 
@@ -165,7 +197,6 @@ export default function Map({selectedCoords, setSelectedCoords}) {
           ref={imageRef}
           src={mapImage} 
           alt="Isles Map"
-          onClick={handleMapClick}
           className="map-image"
         />
         {selectedCoords && (
