@@ -36,9 +36,20 @@
   height: 24px;
   /* transform: translate(-50%, -100%); */
   pointer-events: none;
-  animation: pinDrop 0.1s ease-out;
   --zoom-factor: 1;
   transform-origin: bottom center;
+}
+
+/*
+For some reason the pin animation is janky on mobile
+and makes the map image blurry so let's just disable it on mobile.
+This media query targets non-touch devices,
+hover: hover is true for devices with a real pointer/mouse and false for touchscreens
+*/
+@media (hover: hover) {
+  .map-pin {
+    animation: pinDrop 0.1s ease-out
+  }
 }
 
 @keyframes pinDrop {
