@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import mapImage from '../assets/map.png';
 import './Map.css'
 
-const MAX_ZOOM = 15
+const MAX_ZOOM = 10
 const MIN_ZOOM = 1
 const ZOOM_STEP = 0.5
 const CLICK_THRESHOLD = 5
@@ -296,7 +296,7 @@ export default function Map({selectedCoords, setSelectedCoords}) {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       style={{
-        cursor: isDragging ? 'grabbing' : (zoom > 1 ? 'grab' : 'default'),
+        cursor: isDragging ? 'grabbing' : 'default',
         overflow: 'hidden',
         // touchAction: 'none'
       }}
@@ -328,6 +328,9 @@ export default function Map({selectedCoords, setSelectedCoords}) {
             style={{
               left: `${selectedCoords.percentX * 100}%`,
               top: `${selectedCoords.percentY * 100}%`,
+              transform: `translate(-50%, -100%) scale(${1/zoom})`,
+              '--zoom-factor': 1 / zoom,
+              transformOrigin: 'bottom center'
             }}
           >
             <svg viewBox="0 0 24 24" fill="red">

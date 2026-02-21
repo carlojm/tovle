@@ -32,20 +32,22 @@
 
 .map-pin {
   position: absolute;
-  width: 16px;
-  height: 16px;
-  transform: translate(-50%, -100%);
+  width: 24px;
+  height: 24px;
+  /* transform: translate(-50%, -100%); */
   pointer-events: none;
   animation: pinDrop 0.1s ease-out;
+  --zoom-factor: 1;
+  transform-origin: bottom center;
 }
 
 @keyframes pinDrop {
   0% {
-    transform: translate(-50%, -110%) scale(.8);
+    transform: translate(-50%, -110%) scale(calc(.8 * var(--zoom-factor)));
     opacity: 0.5;
   }
   100% {
-    transform: translate(-50%, -100%) scale(1);
+    transform: translate(-50%, -100%) scale(var(--zoom-factor));
     opacity: 1;
   }
 }
