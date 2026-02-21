@@ -4,7 +4,7 @@ import './Map.css'
 
 const MAX_ZOOM = 10
 const MIN_ZOOM = 1
-const ZOOM_STEP = 0.5
+const ZOOM_STEP = 1
 const CLICK_THRESHOLD = 5
 const TOUCH_CLICK_THRESHOLD = 10
 
@@ -321,7 +321,7 @@ export default function Map({selectedCoords, setSelectedCoords}) {
         // touchAction: 'none'
       }}
     >
-      <div className="zoom-controls">
+      <div className="zoom-controls" onMouseDown={(e) => e.stopPropagation()}>
         <button onClick={() => zoomCentered(zoom + ZOOM_STEP)}>+</button>
         <span>{Math.round(zoom*100)}%</span>
         <button onClick={() => zoomCentered(zoom - ZOOM_STEP)}>-</button>
