@@ -282,6 +282,26 @@ export default function Map({selectedCoords, setSelectedCoords}) {
 
   }
 
+  const zoomCentered = (newZoom) => {
+    if (!containerRef.current) return
+    newZoom = Math.min(Math.max(newZoom, MIN_ZOOM), MAX_ZOOM)
+
+    const rect = containerRef.current.getBoundingClientRect()
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+
+    //same as handlewheel, find point at the center of the current view
+    //and adjust pan to stay there after zoom
+    const pointX = (centerX - pan.x) / zoom
+    const pointY = (centerY - pan.y) / zoom
+
+    setPan({
+      x: centerX - pointX * newZoom,
+      y: centerY - pointY * newZoom
+    })
+    setZoom(newZoom)
+  }
+
   return (
     <div 
       className="map-container"
@@ -302,9 +322,9 @@ export default function Map({selectedCoords, setSelectedCoords}) {
       }}
     >
       <div className="zoom-controls">
-        <button onClick={() => setZoom(Math.min(zoom + ZOOM_STEP, MAX_ZOOM))}>+</button>
+        <button onClick={() => zoomCentered(zoom + ZOOM_STEP)}>+</button>
         <span>{Math.round(zoom*100)}%</span>
-        <button onClick={() => setZoom(Math.max(zoom - ZOOM_STEP, MIN_ZOOM))}>-</button>
+        <button onClick={() => zoomCentered(zoom - ZOOM_STEP)}>-</button>
         <button className="reset-button" onClick={() => {setZoom(1); setPan({x:0, y:0}) }}>Reset</button>
 
       </div>
