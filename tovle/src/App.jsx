@@ -3,6 +3,8 @@ import Footer from './components/Footer'
 import Notification from './components/Notification'
 import Dateline from './components/Dateline'
 import Map from './components/Map'
+import Navbar from './components/Navbar'
+import Water from './components/Water'
 import './App.css'
 
 import {Cloudinary} from "@cloudinary/url-gen";
@@ -50,13 +52,15 @@ const App = () => {
     console.log("distance", distance)
 
     setErrorMessage(`the cache is ${Math.round(distance)} blocks away`)
-    setTimeout(() => setErrorMessage(null), 5000)
+    // setTimeout(() => setErrorMessage(null), 5000)
   }
 
   return (
     <div className = "full-container">
       <div className="app-container">
-        <h1 className="app-title">Tovle!</h1>
+        {/* <h1 className="app-title">Tovle!</h1> */}
+        <Navbar />
+        <Water />
         <Dateline />
 
         {cacheImage &&
