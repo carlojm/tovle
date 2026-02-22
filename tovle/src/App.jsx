@@ -60,7 +60,7 @@ const App = () => {
       <div className="app-container">
         {/* <h1 className="app-title">Tovle!</h1> */}
         <Navbar />
-        <Water />
+        {/* <Water /> */}
         <Dateline />
 
         {cacheImage &&

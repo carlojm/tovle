@@ -1,20 +1,51 @@
-h1, h3 {
-    color: #7070d4ff;
-    margin-bottom: 0;
-}
+:root {
+  /* a bunch of colors */
+  --darker-teal: #13505bff;
+  --dark-teal: #0b6a65ff;
+  --lighter-teal: #0b7a75ff;
+  --lighterer-teal: #1b8a85ff;
+  
+  --deep-ocean: #093038;
+  --deeper-ocean: #06252b;
+  --deepest-ocean: #051d22;
 
-.note {
-  color: grey;
-  padding-top: 5px;
-  font-size: 15px;
-}
+  --pale-oak: #d7c9aaff;
+  --dark-wine: #7b2d26ff;
+  --platinum: #f0f3f5ff;
 
-.error {
-  color: red;
-  background: lightgrey;
-  font-size: 20px;
-  border-style: solid;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
+  --jet-black: #093038ff;
+  --white-smoke: #eff1edff;
+  --dusty-olive: #717744ff;
+  --dry-sage: #bcbd8bff;
+  --ash-brown: #766153ff;
+
+  --fern: #50723Cff;
+
+  /* CSS HEX */
+  --dark-cyan: #119da4ff;
+  --cerulean: #0c7489ff;
+  
+  --black: #040404ff;
+  --dust-grey: #d7d9ceff;
+
+  --tea-green: #d0f1bfff;
+  --celadon: #b6d7b9ff;
+  --muted-teal: #9abd97ff;
+
+
+
+  --color-navbar-background: var(--deep-ocean);
+  --color-navbar-dropdown: var(--deeper-ocean);
+
+  --color-background: var(--deepest-ocean);
+
+  --color-button: var(--lighter-teal);
+  --color-button-hover: var(--lighterer-teal);
+
+  --color-coords-text: var(--lighterer-teal);
+  --color-coords-border: var(--lighterer-teal);
+
+  --color-text: var(--white-smoke);
+
+
 }

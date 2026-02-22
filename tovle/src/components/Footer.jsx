@@ -1,11 +1,8 @@
 const Footer = () => {
-  const footerStyle = {
-    color: '#7070d4ff',
-    fontStyle: 'italic'
-  }
+  //TODO
 
   return (
-    <div style={footerStyle}>
+    <div className="footer">
       <br />
       <p>
         Daily Tovle, last updated Feb 2026

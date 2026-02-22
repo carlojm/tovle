@@ -1,0 +1,113 @@
+.navbar {
+
+  /* removes element from normal document flow, pins to the viewport */
+  /* also see sticky TODO */
+  position: fixed;
+  /* pins to top edge of viewport */
+  top: 0;
+  /* pins to left edge of viewport */
+  left: 0;
+
+  /* stretches all the way to right edge, like width 100% but like, better i guess */
+  right: 0;
+  
+  /* explicit height */
+  height: 56px;
+
+  background-color: var(--color-navbar-background);
+
+  display: flex;
+  align-items: center; /* vertical alignment*/
+  justify-content: space-between; /* maximize space between elements */
+  padding: 0 16px; /* add a little side padding around elements */
+  z-index: 1000; /* do i need this? TODO */
+
+  overflow: visible;
+
+}
+
+.navbar-title {
+  font-size: 1.4rem; /* rem because relative to root font size */
+  font-weight: bold;
+  color: var(--color-text);
+  /* TODO get a nice font */
+}
+
+/* use flexbox to arrange the three span elements to make the menu icon */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 24px;
+  height: 24px;
+  background: var(--color-navbar-background);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* who needs an icon when you can just draw three lines */
+.hamburger span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background-color: var(--color-text);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* animates hamburger lines into an X when open */
+.hamburger--open span:nth-child(1) {
+  transform: translateY(8px) rotate(-45deg);
+}
+
+.hamburger--open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger--open span:nth-child(3) {
+  transform: translateY(-8px) rotate(45deg);
+}
+
+.navbar-menu {
+  /* position dropdown relative to the navbar */
+  position: fixed;
+  top: 56px;
+  right: 0px; /* align to right edge */
+  left: 0px;
+  padding: 8px 0px; /* space around the dropdown elements */
+  
+  background-color: var(--color-navbar-dropdown);
+  display: flex;
+  flex-direction: column; /* display links in column instead of a row */
+  min-width: 160px;
+
+
+  animation: dropdown 0.2s ease-out
+}
+
+@keyframes dropdown {
+  0% {
+    opacity: .8;
+    transform: translateY(-24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+.navbar-menu a {
+  color: var(--color-text);
+  text-decoration: none;
+  padding: 10px 16px;
+  margin: 0px 8px;
+}
+
+.navbar-menu a:hover {
+  background-color: var(--color-navbar-background);
+}
+
+.navbar-menu a:active {
+  background-color: var(--color-navbar-dropdown);
+}
