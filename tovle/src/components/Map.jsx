@@ -78,10 +78,29 @@ const Map = forwardRef(function Map({selectedCoords, setSelectedCoords, correctC
         y: containerRect.height / 2 - midY * newZoom
       }
 
-      setZoom(newZoom)
-      setPan(newPan)
+      //now do animation!
+      const startZoom = zoom
+      const startPan = {...pan}
+      const duration = 600
+      const startTime = performance.now()
+
+      const frame = (now) => {
+        const elapsed = now - startTime
+        const progress = Math.min(elapsed/duration, 1)
+        const eased = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2
+
+        setZoom(startZoom + (newZoom - startZoom) * eased)
+        setPan({
+          x: startPan.x + (newPan.x - startPan.x) * eased,
+          y: startPan.y + (newPan.y - startPan.y) * eased,
+        })
+
+        if (progress < 1) requestAnimationFrame(frame)
+      }
+
+      requestAnimationFrame(frame)
     }
-  }))
+  }), [zoom, pan])
 
   const handleWheel = (event) => {
     event.preventDefault()
