@@ -15,7 +15,7 @@ const MAP_MIN_Y = -655
 const MAP_MAX_Y = 1902
 const MAP_HEIGHT = 2557
 
-export default function Map({selectedCoords, setSelectedCoords}) {
+export default function Map({selectedCoords, setSelectedCoords, correctCoords}) {
   const imageRef = useRef(null)
   const containerRef = useRef(null)
 
@@ -341,6 +341,7 @@ export default function Map({selectedCoords, setSelectedCoords}) {
           alt="Isles Map"
           className="map-image"
         />
+
         {selectedCoords && (
           <div
             key={`${selectedCoords.percentX}-${selectedCoords.percentY}`} //update key for css animation to run
@@ -354,6 +355,23 @@ export default function Map({selectedCoords, setSelectedCoords}) {
             }}
           >
             <svg viewBox="0 0 24 24" fill="red">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+          </div>
+        )}
+
+        {correctCoords && (
+          <div
+            className="map-pin map-pin--correct"
+            style={{
+              left: `${((correctCoords.x - MAP_MIN_X) / MAP_WIDTH) * 100}%`,
+              top: `${((correctCoords.z - MAP_MIN_Y) / MAP_HEIGHT) * 100}%`,
+              transform: `translate(-50%, -100%) scale(${1/zoom})`,
+              '--zoom-factor': 1 / zoom,
+              transformOrigin: 'bottom center'
+            }}
+          >
+            <svg viewBox="0 0 24 24" fill="gold">
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
             </svg>
           </div>

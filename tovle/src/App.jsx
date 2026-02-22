@@ -19,6 +19,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [cacheImage, setCacheImage] = useState(null)
   const [imageId, setImageId] = useState(null)
+  const [hasSubmitted, setHasSubmitted] = useState(false)
 
   useEffect(() => {
     // create a cloudinary instance
@@ -51,23 +52,25 @@ const App = () => {
 
     console.log("distance", distance)
 
-    const msg = distance < 100 ? (
-      distance < 50 ? (
-        distance < 10 ? "PERFECT!" : "cache found!"
-      ) : "getting close..."
-    ) : "darnit."
+    // const msg = distance < 100 ? (
+    //   distance < 50 ? (
+    //     distance < 10 ? "PERFECT!" : "cache found!"
+    //   ) : "getting close..."
+    // ) : "darnit."
 
-    // let msg = ""
+    let msg = ""
 
-    // if (distance > 100) {
-    //   msg = "Time to search somewhere else."
-    // } else if (distance > 50) {
-    //   msg = "Getting closer... just keep swimming..."
-    // } else if (distance > 10) {
-    //   msg = "After some swimming, you find the cache!"
-    // } else if (distance <= 10) {
-    //   msg = "You dive in the water and find the cache immediately! Perfect!"
-    // }
+    if (distance > 100) {
+      msg = "Time to search somewhere else."
+    } else if (distance > 50) {
+      msg = "Getting closer... just keep swimming..."
+    } else if (distance > 10) {
+      msg = "After some swimming, you find the cache!"
+      setHasSubmitted(true)
+    } else if (distance <= 10) {
+      msg = "You dive in the water and find the cache immediately! Perfect!"
+      setHasSubmitted(true)
+    }
 
     setErrorMessage(`the cache is ${Math.round(distance)} blocks away. ${msg}`)
     // setTimeout(() => setErrorMessage(null), 5000)
@@ -88,7 +91,11 @@ const App = () => {
         <p>Pinpoint the cache's location on the map below.</p>
         <p>Guess within 50 blocks to find the cache.</p>
 
-        <Map selectedCoords={selectedCoords} setSelectedCoords={setSelectedCoords} />
+        <Map 
+          selectedCoords={selectedCoords}
+          setSelectedCoords={setSelectedCoords}
+          correctCoords={hasSubmitted ? correctCoords : null}
+        />
 
         {selectedCoords && (
           <div className="coords-display">
