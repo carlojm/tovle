@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef} from 'react'
 import Footer from './components/Footer'
 import Notification from './components/Notification'
 import Dateline from './components/Dateline'
@@ -20,6 +20,10 @@ const App = () => {
   const [cacheImage, setCacheImage] = useState(null)
   const [imageId, setImageId] = useState(null)
   const [hasSubmitted, setHasSubmitted] = useState(false)
+
+  //this ref used in submitguess
+  //to tell map to zoom in on the cache after it is found
+  const mapRef = useRef(null)
 
   useEffect(() => {
     // create a cloudinary instance
@@ -67,9 +71,12 @@ const App = () => {
     } else if (distance > 10) {
       msg = "After some swimming, you find the cache!"
       setHasSubmitted(true)
+      mapRef.current?.panToSubmittedGuess(correctCoords, selectedCoords)
+
     } else if (distance <= 10) {
       msg = "You dive in the water and find the cache immediately! Perfect!"
       setHasSubmitted(true)
+      mapRef.current?.panToSubmittedGuess(correctCoords, selectedCoords)
     }
 
     setErrorMessage(`the cache is ${Math.round(distance)} blocks away. ${msg}`)
@@ -92,6 +99,7 @@ const App = () => {
         <p>Guess within 50 blocks to find the cache.</p>
 
         <Map 
+          ref={mapRef}
           selectedCoords={selectedCoords}
           setSelectedCoords={setSelectedCoords}
           correctCoords={hasSubmitted ? correctCoords : null}

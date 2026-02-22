@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import mapImage from '../assets/map.png';
 import './Map.css'
 
@@ -15,7 +15,7 @@ const MAP_MIN_Y = -655
 const MAP_MAX_Y = 1902
 const MAP_HEIGHT = 2557
 
-export default function Map({selectedCoords, setSelectedCoords, correctCoords}) {
+const Map = forwardRef(function Map({selectedCoords, setSelectedCoords, correctCoords}, ref) {
   const imageRef = useRef(null)
   const containerRef = useRef(null)
 
@@ -43,6 +43,45 @@ export default function Map({selectedCoords, setSelectedCoords, correctCoords}) 
       container.removeEventListener('wheel', preventScroll)
     }
   }, [])
+
+  //we're doing some funky stuff here to move the map after the cache has been found
+  //it's a little ugly but it's better than lifting all of the pan zoom logic and 
+  //everything up into the App component so i'll go with it for now
+  useImperativeHandle(ref, () => ({
+    panToSubmittedGuess(coordA, coordB) {
+      if (!containerRef.current || !imageRef.current) return
+
+      const imageRect = imageRef.current.getBoundingClientRect()
+      const originalWidth = imageRect.width / zoom
+      const originalHeight = imageRect.height / zoom
+      const containerRect = containerRef.current.getBoundingClientRect()
+
+      // convert both pins to image pixel space
+      const ax = ((coordA.x - MAP_MIN_X) / MAP_WIDTH) * originalWidth
+      const ay = ((coordA.z - MAP_MIN_Y) / MAP_HEIGHT) * originalHeight
+      const bx = ((coordB.minecraftX - MAP_MIN_X) / MAP_WIDTH) * originalWidth
+      const by = ((coordB.minecraftZ - MAP_MIN_Y) / MAP_HEIGHT) * originalHeight
+
+      const midX = (ax + bx) / 2
+      const midY = (ay + by) / 2
+
+      const spanX = Math.abs(ax - bx) * 2.5
+      const spanY = Math.abs(ay - by) * 2.5
+
+      // zoom level that fits both pins
+      const zoomToFitX = containerRect.width / spanX
+      const zoomToFitY = containerRect.height / spanY
+      const newZoom = Math.min(Math.max(Math.min(zoomToFitX, zoomToFitY), MIN_ZOOM), MAX_ZOOM)
+
+      const newPan = {
+        x: containerRect.width / 2 - midX * newZoom,
+        y: containerRect.height / 2 - midY * newZoom
+      }
+
+      setZoom(newZoom)
+      setPan(newPan)
+    }
+  }))
 
   const handleWheel = (event) => {
     event.preventDefault()
@@ -379,4 +418,6 @@ export default function Map({selectedCoords, setSelectedCoords, correctCoords}) 
       </div>
     </div>
   );
-}
+})
+
+export default Map
