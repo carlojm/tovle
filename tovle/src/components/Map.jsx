@@ -322,9 +322,9 @@ export default function Map({selectedCoords, setSelectedCoords}) {
       }}
     >
       <div className="zoom-controls" onMouseDown={(e) => e.stopPropagation()}>
-        <button onClick={() => zoomCentered(zoom + ZOOM_STEP)}>+</button>
-        <span>{Math.round(zoom*100)}%</span>
         <button onClick={() => zoomCentered(zoom - ZOOM_STEP)}>-</button>
+        <span>{Math.round(zoom*100)}%</span>
+        <button onClick={() => zoomCentered(zoom + ZOOM_STEP)}>+</button>
         <button className="reset-button" onClick={() => {setZoom(1); setPan({x:0, y:0}) }}>Reset</button>
 
       </div>
