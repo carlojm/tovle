@@ -16,7 +16,8 @@ export default function Navbar() {
       {menuOpen && createPortal(
         <div className="navbar-menu">
           <a href="#">How to play</a>
-          <a href="#">About</a>
+          <a href="#">Inventory</a>
+          <a href="#">Log in</a>
         </div>,
         document.body
       )}

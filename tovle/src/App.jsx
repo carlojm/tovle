@@ -68,14 +68,14 @@ const App = () => {
     if (distance > 100) {
       msg = "Keep searching!"
     } else if (distance > 50) {
-      msg = "Getting closer... just keep swimming..."
-    } else if (distance > 10) {
-      msg = "After some swimming, you find the cache!"
+      msg = "Getting closer..."
+    } else if (distance >= 11) {
+      msg = "You found the cache!"
       setHasSubmitted(true)
       mapRef.current?.panToSubmittedGuess(correctCoords, selectedCoords)
 
-    } else if (distance <= 10) {
-      msg = "You dive in the water and find the cache immediately! Perfect!"
+    } else if (distance < 11) {
+      msg = "Perfect guess! You found the cache!"
       setHasSubmitted(true)
       mapRef.current?.panToSubmittedGuess(correctCoords, selectedCoords)
     }
