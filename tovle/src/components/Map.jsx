@@ -106,7 +106,7 @@ const Map = forwardRef(function Map({selectedCoords, setSelectedCoords, correctC
     event.preventDefault()
     if (!containerRef.current) return
 
-    const delta = event.deltaY * -0.001 //make it negative so scroll down = zoom out
+    const delta = event.deltaY * -0.001 * zoom //make it negative so scroll down = zoom out
     const newZoom = Math.min(Math.max(zoom + delta, MIN_ZOOM), MAX_ZOOM) //clamped between 1x and 5x zoom
 
     //get mouse pos relative to container
