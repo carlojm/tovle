@@ -16,11 +16,13 @@ import tovData from './tovs.json'
 
 const App = () => {
   const [selectedCoords, setSelectedCoords] = useState(null)
+  const [lastSelectedCoords, setLastSelectedCoords] = useState(null)
   const [correctCoords, setCorrectCoords] = useState(null)
   const [answerMessage, setAnswerMessage] = useState(null)
   const [cacheImage, setCacheImage] = useState(null)
   const [imageId, setImageId] = useState(null)
-  const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [hasWon, setHasWon] = useState(false)
+  const [numGuesses, setNumGuesses] = useState(0)
 
   //this ref used in submitguess
   //to tell map to zoom in on the cache after it is found
@@ -50,6 +52,13 @@ const App = () => {
   }, [])
 
   const handleSubmitGuess = () => {
+    if (lastSelectedCoords && (lastSelectedCoords === selectedCoords)) {
+      return;
+    }
+
+    setLastSelectedCoords(selectedCoords)
+    setNumGuesses(numGuesses + 1)
+
     const distance = Math.hypot(
       selectedCoords.minecraftX - correctCoords.x,
       selectedCoords.minecraftZ - correctCoords.z
@@ -71,12 +80,12 @@ const App = () => {
       msg = "Getting closer..."
     } else if (distance >= 11) {
       msg = "You found the cache!"
-      setHasSubmitted(true)
+      setHasWon(true)
       mapRef.current?.panToSubmittedGuess(correctCoords, selectedCoords)
 
     } else if (distance < 11) {
       msg = "Perfect guess! You found the cache!"
-      setHasSubmitted(true)
+      setHasWon(true)
       mapRef.current?.panToSubmittedGuess(correctCoords, selectedCoords)
     }
 
@@ -102,10 +111,16 @@ const App = () => {
           ref={mapRef}
           selectedCoords={selectedCoords}
           setSelectedCoords={setSelectedCoords}
-          correctCoords={hasSubmitted ? correctCoords : null}
+          correctCoords={hasWon ? correctCoords : null}
         />
 
-        <Submit selectedCoords={selectedCoords} handleSubmitGuess={handleSubmitGuess} message={answerMessage}/>
+        <Submit
+          selectedCoords={selectedCoords}
+          handleSubmitGuess={handleSubmitGuess}
+          message={answerMessage}
+          numGuesses={numGuesses}
+          hasWon={hasWon}
+        />
         {/* <Notification message={errorMessage} /> */}
       </div>
 

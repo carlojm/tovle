@@ -22,8 +22,8 @@
 
 .submit-button {
   grid-area: 'submit-button';
-  padding: 14px 32px;
-  font-size: 18px;
+  padding: 14px 24px;
+  font-size: 16px;
   background: var(--color-button);
   color: var(--color-text);
   border: none;
@@ -56,7 +56,7 @@
 .coords-display {
   grid-area: 'coords-display';
   /* margin-bottom: 16px; */
-  padding: 10px 25px;
+  padding: 4px 25px;
   background: #0a0a2459;
   /* border: 2px solid #7070d4; */
   border: 2px solid var(--color-coords-border);
@@ -64,13 +64,15 @@
 
   /* center the text inside the display */
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .coords-display p {
   margin: 5px 0;
-  font-size: 16px;
+  font-size: clamp(10px, 3vw, 16px);
+  text-align: center;
 }
 
 .coords-display strong {
