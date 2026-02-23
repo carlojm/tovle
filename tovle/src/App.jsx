@@ -17,7 +17,7 @@ import tovData from './tovs.json'
 const App = () => {
   const [selectedCoords, setSelectedCoords] = useState(null)
   const [correctCoords, setCorrectCoords] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [answerMessage, setAnswerMessage] = useState(null)
   const [cacheImage, setCacheImage] = useState(null)
   const [imageId, setImageId] = useState(null)
   const [hasSubmitted, setHasSubmitted] = useState(false)
@@ -45,7 +45,7 @@ const App = () => {
     if (idData) {
       setCorrectCoords(idData.coordinates)
     } else {
-      setErrorMessage(`No data found for ID ${id}`)
+      console.error(`No data found for cache ID ${id}`);
     }
   }, [])
 
@@ -66,7 +66,7 @@ const App = () => {
     let msg = ""
 
     if (distance > 100) {
-      msg = "Time to search somewhere else."
+      msg = "Keep searching!"
     } else if (distance > 50) {
       msg = "Getting closer... just keep swimming..."
     } else if (distance > 10) {
@@ -80,8 +80,7 @@ const App = () => {
       mapRef.current?.panToSubmittedGuess(correctCoords, selectedCoords)
     }
 
-    setErrorMessage(`the cache is ${Math.round(distance)} blocks away. ${msg}`)
-    // setTimeout(() => setErrorMessage(null), 5000)
+    setAnswerMessage(`The cache is ${Math.round(distance)} blocks away. ${msg}`)
   }
 
   return (
@@ -106,8 +105,8 @@ const App = () => {
           correctCoords={hasSubmitted ? correctCoords : null}
         />
 
-        <Submit selectedCoords={selectedCoords} handleSubmitGuess={handleSubmitGuess}/>
-        <Notification message={errorMessage} />
+        <Submit selectedCoords={selectedCoords} handleSubmitGuess={handleSubmitGuess} message={answerMessage}/>
+        {/* <Notification message={errorMessage} /> */}
       </div>
 
       <Footer />

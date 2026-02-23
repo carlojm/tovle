@@ -1,0 +1,80 @@
+
+.coords-wrapper {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    'coords-display submit-button'
+    'answer-message answer-message';
+  padding: 24px;
+  width: min(90vw, 1000px);
+}
+
+.answer-message {
+  grid-area: answer-message;
+
+  /* centering */
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.submit-button {
+  grid-area: 'submit-button';
+  padding: 14px 32px;
+  font-size: 18px;
+  background: var(--color-button);
+  color: var(--color-text);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-left: 16px;
+}
+
+.submit-button:hover {
+  /* transform: translateY(-2px); */
+  background: var(--color-button-hover);
+}
+
+.submit-button:active {
+  transform: translateY(4px);
+  background: var(--color-button-hover);
+}
+
+.disable-button {
+  background: var(--color-button-disabled);
+}
+
+.disable-button:hover {
+  transform: none;
+  background: var(--color-button-disabled);
+}
+
+.coords-display {
+  grid-area: 'coords-display';
+  /* margin-bottom: 16px; */
+  padding: 10px 25px;
+  background: #0a0a2459;
+  /* border: 2px solid #7070d4; */
+  border: 2px solid var(--color-coords-border);
+  border-radius: 10px;
+
+  /* center the text inside the display */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.coords-display p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.coords-display strong {
+  /* color: #7070d4; */
+  color: var(--color-coords-text)
+}
+
