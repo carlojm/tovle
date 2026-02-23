@@ -5,6 +5,7 @@ import Dateline from './components/Dateline'
 import Map from './components/Map'
 import Navbar from './components/Navbar'
 import Water from './components/Water'
+import Submit from './components/Submit'
 import './App.css'
 
 import {Cloudinary} from "@cloudinary/url-gen";
@@ -86,7 +87,6 @@ const App = () => {
   return (
     <div className = "full-container">
       <div className="app-container">
-        {/* <h1 className="app-title">Tovle!</h1> */}
         <Navbar />
         {/* <Water /> */}
         <Dateline />
@@ -106,23 +106,8 @@ const App = () => {
           correctCoords={hasSubmitted ? correctCoords : null}
         />
 
-        <div className="coords-wrapper">
-          {selectedCoords && (
-            <button onClick={handleSubmitGuess} className="submit-button">Search Area</button>
-          )}
-
-          {selectedCoords && (
-            <div className="coords-display">
-              <p><strong>Selected:</strong> X {selectedCoords.minecraftX}, Z {selectedCoords.minecraftZ}</p>
-            </div>
-          )}
-        </div>
-
+        <Submit selectedCoords={selectedCoords} handleSubmitGuess={handleSubmitGuess}/>
         <Notification message={errorMessage} />
-
-        
-
-        
       </div>
 
       <Footer />
