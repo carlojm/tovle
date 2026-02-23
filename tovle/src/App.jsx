@@ -96,7 +96,8 @@ const App = () => {
         }
 
         <p>Pinpoint the cache's location on the map below.</p>
-        <p>Guess within 50 blocks to find the cache.</p>
+        <p style = {{marginBottom:'16px'}}>Guess within 50 blocks to find the cache.</p>
+
 
         <Map 
           ref={mapRef}
@@ -105,17 +106,23 @@ const App = () => {
           correctCoords={hasSubmitted ? correctCoords : null}
         />
 
-        {selectedCoords && (
-          <div className="coords-display">
-            <p><strong>Selected:</strong> X {selectedCoords.minecraftX}, Z {selectedCoords.minecraftZ}</p>
-          </div>
-        )}
-        
-        {selectedCoords && (
-          <button onClick={handleSubmitGuess} className="submit-button">Search Area</button>
-        )}
+        <div className="coords-wrapper">
+          {selectedCoords && (
+            <button onClick={handleSubmitGuess} className="submit-button">Search Area</button>
+          )}
+
+          {selectedCoords && (
+            <div className="coords-display">
+              <p><strong>Selected:</strong> X {selectedCoords.minecraftX}, Z {selectedCoords.minecraftZ}</p>
+            </div>
+          )}
+        </div>
 
         <Notification message={errorMessage} />
+
+        
+
+        
       </div>
 
       <Footer />
