@@ -297,10 +297,16 @@ const Map = forwardRef(function Map({selectedCoords, setSelectedCoords, correctC
   }
 
   const handleMapClick = (event, pos) => {
-    //only place pin on left click TODO mobile?
+    /*
+    this method handles both mouse clicks and taps
+    to place down a pin on the map
+    */
     if (event.button !== 0) return
 
     if (!imageRef.current || !containerRef.current) return
+
+    //if already won, don't place a new pin
+    if (correctCoords !== null) return
 
     //get image position and size on screen
     const containerRect = containerRef.current.getBoundingClientRect()
