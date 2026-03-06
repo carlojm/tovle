@@ -11,6 +11,10 @@ import './App.css'
 import {Cloudinary} from "@cloudinary/url-gen";
 import {AdvancedImage} from '@cloudinary/react';
 import {fill} from "@cloudinary/url-gen/actions/resize";
+import { auto } from "@cloudinary/url-gen/qualifiers/quality";
+import { auto as autoFormat } from "@cloudinary/url-gen/qualifiers/format";
+import { quality } from "@cloudinary/url-gen/actions/delivery";
+import { format } from "@cloudinary/url-gen/actions/delivery";
 
 import tovData from './tovs.json'
 
@@ -21,6 +25,7 @@ const App = () => {
   const [answerMessage, setAnswerMessage] = useState(null)
   const [cacheImage, setCacheImage] = useState(null)
   const [imageId, setImageId] = useState(null)
+  const [imageLoaded, setImageLoaded] = useState(null)
   const [hasWon, setHasWon] = useState(false)
   const [numGuesses, setNumGuesses] = useState(0)
 
@@ -29,6 +34,8 @@ const App = () => {
   const mapRef = useRef(null)
 
   useEffect(() => {
+    setImageLoaded(false)
+
     // create a cloudinary instance
     const cld = new Cloudinary({
       cloud: { cloudName: 'carlojm' }
@@ -39,7 +46,10 @@ const App = () => {
     setImageId(id)
 
     const image = cld.image(`tov/${id}`);
-    image.resize(fill().width(1000));
+    image
+      .resize(fill().width(900))
+      .delivery(quality(auto()))
+      .delivery(format(autoFormat()));
     setCacheImage(image)
 
     //grab the correct coords
@@ -99,9 +109,16 @@ const App = () => {
         {/* <Water /> */}
         <Dateline />
 
-        {cacheImage &&
-          <AdvancedImage cldImg={cacheImage} className="cache-image"/>
-        }
+        <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
+          {cacheImage &&
+            <AdvancedImage 
+              cldImg={cacheImage}
+              className="cache-image"
+              onLoad={()=>setImageLoaded(true)}
+            />
+          }
+        </div>
+        
 
         <p>Pinpoint the cache's location on the map below.</p>
         <p style = {{marginBottom:'16px'}}>Guess within 50 blocks to find the cache.</p>

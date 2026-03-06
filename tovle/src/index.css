@@ -21,7 +21,6 @@
 
   --fern: #50723Cff;
 
-  /* CSS HEX */
   --dark-cyan: #119da4ff;
   --cerulean: #0c7489ff;
   
@@ -32,6 +31,8 @@
   --celadon: #b6d7b9ff;
   --muted-teal: #9abd97ff;
 
+  --dark-purple: #0a0a2459;
+
 
 
   --color-navbar-background: var(--deep-ocean);
@@ -41,7 +42,7 @@
 
   --color-button: var(--lighter-teal);
   --color-button-hover: var(--lighterer-teal);
-  --color-button-disabled: #0a0a2459;
+  --color-button-disabled: var(--dark-purple);
 
   --color-coords-text: var(--lighterer-teal);
   --color-coords-border: var(--lighterer-teal);

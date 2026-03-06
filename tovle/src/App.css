@@ -32,12 +32,40 @@ body {
 
 }
 
-.cache-image {
+.cache-image-wrapper {
   width: min(90vw, 1000px);
-  height: auto;
-  object-fit: contain;
-  border-radius: 12px;
+  aspect-ratio: 16/9;
   margin: 20px 0;
+  border-radius: 12px;
+  overflow: hidden; /*stop animation from overflowing*/
+  background: var(--dark-purple);
+  position: relative;
+}
+
+.cache-image-wrapper.loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #ffffff18 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.cache-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  /* margin: 20px 0; */
 }
 
 .notification {
