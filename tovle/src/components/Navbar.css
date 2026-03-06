@@ -29,7 +29,7 @@
 .navbar-title {
   font-size: 1.4rem; /* rem because relative to root font size */
   font-weight: bold;
-  color: var(--color-text);
+  color: var(--color-text-button);
   /* TODO get a nice font */
 }
 
@@ -75,7 +75,7 @@
   display: block;
   height: 2px;
   width: 100%;
-  background-color: var(--color-text);
+  background-color: var(--color-text-button);
   border-radius: 2px;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }

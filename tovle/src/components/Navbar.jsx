@@ -11,7 +11,7 @@ export default function Navbar({theme, onToggleTheme}) {
       <span className="navbar-title">Tovle</span>
       <div className="navbar-buttons">
         <button className="theme-toggle" onClick={onToggleTheme}>
-          {theme === 'dark' ? <Sun size={20} color="var(--color-text" /> : <Moon size={20} color="var(--color-text" />}
+          {theme === 'dark' ? <Sun size={20} color="var(--color-text-button" /> : <Moon size={20} color="var(--color-text-button" />}
         </button>
         <button className={`hamburger ${menuOpen ? 'hamburger--open' : ''}`} onClick={() => setMenuOpen(!menuOpen)}>
           <span></span>

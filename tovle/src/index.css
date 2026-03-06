@@ -23,6 +23,7 @@
 
   --dark-cyan: #119da4ff;
   --cerulean: #0c7489ff;
+  --light-blue: rgba(176, 242, 255, 0.322);
   
   --black: #040404ff;
   --dust-grey: #d7d9ceff;
@@ -33,12 +34,15 @@
 
   --dark-purple: #0a0a2459;
 
+  --off-white: #f4f3f2;
+
 
 
   --color-navbar-background: var(--deep-ocean);
   --color-navbar-dropdown: var(--deeper-ocean);
 
   --color-background: var(--deepest-ocean);
+  --color-background-map: var(--deepest-ocean);
 
   --color-button: var(--lighter-teal);
   --color-button-hover: var(--lighterer-teal);
@@ -48,6 +52,12 @@
   --color-coords-border: var(--lighterer-teal);
 
   --color-text: var(--white-smoke);
+  --color-text-button: var(--white-smoke);
+
+  --color-background-toggle: rgba(255, 255, 255, 0.08);
+  --color-background-coords-display: rgba(255, 255, 255, 0.08);
+
+
 
 
 }
@@ -55,11 +65,19 @@
 :root.light {
   --color-navbar-background: var(--darker-teal);
   --color-navbar-dropdown: var(--deep-ocean);
-  --color-background: var(--platinum);
-  --color-button: var(--dark-teal);
-  --color-button-hover: var(--darker-teal);
-  --color-button-disabled: var(--dust-grey);
+  --color-background: var(--off-white);
+  --color-background-map: var(--light-blue);
+
+  /* --color-button: var(--dark-teal); */
+  /* --color-button-hover: var(--darker-teal); */
+  /* --color-button-disabled: var(--dust-grey); */
+
   --color-coords-text: var(--darker-teal);
-  --color-coords-border: var(--dark-teal);
+  --color-coords-border: var(--darker-teal);
+
   --color-text: var(--deepest-ocean);
+
+  --color-background-toggle: rgba(0, 0, 0, 0.08);
+  --color-background-coords-display: rgba(0, 0, 0, 0.02);
+
 }

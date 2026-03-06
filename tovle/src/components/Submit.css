@@ -25,7 +25,7 @@
   padding: 14px 24px;
   font-size: 16px;
   background: var(--color-button);
-  color: var(--color-text);
+  color: var(--color-text-button);
   border: none;
   border-radius: 12px;
   cursor: pointer;
@@ -57,7 +57,7 @@
   grid-area: 'coords-display';
   /* margin-bottom: 16px; */
   padding: 4px 25px;
-  background: #0a0a2459;
+  background: var(--color-background-coords-display);
   /* border: 2px solid #7070d4; */
   border: 2px solid var(--color-coords-border);
   border-radius: 10px;
