@@ -129,27 +129,30 @@ const App = () => {
         </div>
         
         <Toggle tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
-        {activeTab === 'play' && <> The map and game and stuff... </>}
+        {activeTab === 'play' && <> 
+          <p>Pinpoint the cache's location on the map below.</p>
+          <p style = {{marginBottom:'16px'}}>Guess within 50 blocks to find the cache.</p>
+          <Map 
+            ref={mapRef}
+            selectedCoords={selectedCoords}
+            setSelectedCoords={setSelectedCoords}
+            correctCoords={hasWon ? correctCoords : null}
+          />
+
+          <Submit
+            selectedCoords={selectedCoords}
+            handleSubmitGuess={handleSubmitGuess}
+            message={answerMessage}
+            numGuesses={numGuesses}
+            hasWon={hasWon}
+          />
+        </>}
         {activeTab === 'caches' && <p>Caches coming soon</p>}
         {activeTab === 'info'   && <p>Info coming soon</p>}
-        <p>Pinpoint the cache's location on the map below.</p>
-        <p style = {{marginBottom:'16px'}}>Guess within 50 blocks to find the cache.</p>
+        
 
 
-        <Map 
-          ref={mapRef}
-          selectedCoords={selectedCoords}
-          setSelectedCoords={setSelectedCoords}
-          correctCoords={hasWon ? correctCoords : null}
-        />
-
-        <Submit
-          selectedCoords={selectedCoords}
-          handleSubmitGuess={handleSubmitGuess}
-          message={answerMessage}
-          numGuesses={numGuesses}
-          hasWon={hasWon}
-        />
+        
         {/* <Notification message={errorMessage} /> */}
       </div>
 
