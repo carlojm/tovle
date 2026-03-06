@@ -19,6 +19,12 @@ import { format } from "@cloudinary/url-gen/actions/delivery";
 
 import tovData from './tovs.json'
 
+const TABS = [
+    { id: 'play',   label: 'Play' },
+    { id: 'caches', label: 'Caches' },
+    { id: 'info',   label: 'Info' },
+  ]
+
 const App = () => {
   const [selectedCoords, setSelectedCoords] = useState(null)
   const [lastSelectedCoords, setLastSelectedCoords] = useState(null)
@@ -29,13 +35,7 @@ const App = () => {
   const [imageLoaded, setImageLoaded] = useState(null)
   const [hasWon, setHasWon] = useState(false)
   const [numGuesses, setNumGuesses] = useState(0)
-
-  const TABS = [
-    { id: 'play',   label: 'Play' },
-    { id: 'caches', label: 'Caches' },
-    { id: 'info',   label: 'Info' },
-  ]
-
+  const [theme, setTheme] = useState('light')
   const [activeTab, setActiveTab] = useState('play')
 
   //this ref used in submitguess
@@ -69,6 +69,13 @@ const App = () => {
       console.error(`No data found for cache ID ${id}`);
     }
   }, [])
+
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    document.documentElement.classList.toggle('light')
+  }
 
   const handleSubmitGuess = () => {
     if (lastSelectedCoords && (lastSelectedCoords === selectedCoords)) {
@@ -114,7 +121,7 @@ const App = () => {
   return (
     <div className = "full-container">
       <div className="app-container">
-        <Navbar />
+        <Navbar theme={theme} onToggleTheme={toggleTheme} />
         {/* <Water /> */}
         <Dateline />
 

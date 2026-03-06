@@ -51,3 +51,15 @@
 
 
 }
+
+:root.light {
+  --color-navbar-background: var(--darker-teal);
+  --color-navbar-dropdown: var(--deep-ocean);
+  --color-background: var(--platinum);
+  --color-button: var(--dark-teal);
+  --color-button-hover: var(--darker-teal);
+  --color-button-disabled: var(--dust-grey);
+  --color-coords-text: var(--darker-teal);
+  --color-coords-border: var(--dark-teal);
+  --color-text: var(--deepest-ocean);
+}

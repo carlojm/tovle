@@ -33,6 +33,30 @@
   /* TODO get a nice font */
 }
 
+.navbar-buttons {
+  /* this captures the hamburger menu and the theme toggle button */
+  display:flex;
+  /* justify-content: space-between; */
+  /* width: 64px; */
+  gap: 12px;
+  align-items: center;
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 8px 8px;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+  line-height: 1;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 /* use flexbox to arrange the three span elements to make the menu icon */
 .hamburger {
   display: flex;
