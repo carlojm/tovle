@@ -1,0 +1,46 @@
+.toggle-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 0;
+  width: min(90vw, 400px);
+  margin: 16px 0;
+}
+
+/* the sliding bubble */
+.toggle-indicator {
+  position: absolute;
+  top: 4px;
+  left: 0px;
+  height: calc(100% - 8px);
+  background: var(--color-button, #2a2a6e);
+  border-radius: 999px;
+  transition: transform 0.2s ease, width 0.2s ease;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); */
+  pointer-events: none;
+}
+
+.toggle-tab {
+  position: relative;
+  /* z-index: 1; */
+  flex: 1;
+  background: none;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 0px;
+  font-size: clamp(12px, 3vw, 15px);
+  font-weight: 600;
+  color: var(--color-text, #fff);
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.toggle-tab.active {
+  opacity: 1;
+  cursor: default;
+}

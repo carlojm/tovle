@@ -7,6 +7,7 @@ import Navbar from './components/Navbar'
 import Water from './components/Water'
 import Submit from './components/Submit'
 import './App.css'
+import Toggle from './components/Toggle'
 
 import {Cloudinary} from "@cloudinary/url-gen";
 import {AdvancedImage} from '@cloudinary/react';
@@ -28,6 +29,14 @@ const App = () => {
   const [imageLoaded, setImageLoaded] = useState(null)
   const [hasWon, setHasWon] = useState(false)
   const [numGuesses, setNumGuesses] = useState(0)
+
+  const TABS = [
+    { id: 'play',   label: 'Play' },
+    { id: 'caches', label: 'Caches' },
+    { id: 'info',   label: 'Info' },
+  ]
+
+  const [activeTab, setActiveTab] = useState('play')
 
   //this ref used in submitguess
   //to tell map to zoom in on the cache after it is found
@@ -119,7 +128,10 @@ const App = () => {
           }
         </div>
         
-
+        <Toggle tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
+        {activeTab === 'play' && <> The map and game and stuff... </>}
+        {activeTab === 'caches' && <p>Caches coming soon</p>}
+        {activeTab === 'info'   && <p>Info coming soon</p>}
         <p>Pinpoint the cache's location on the map below.</p>
         <p style = {{marginBottom:'16px'}}>Guess within 50 blocks to find the cache.</p>
 
