@@ -32,10 +32,11 @@
   font-weight: 600;
   transition: all 0.3s ease;
   margin-left: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .submit-button:hover {
-  /* transform: translateY(-2px); */
+  transform: translateY(-2px);
   background: var(--color-button-hover);
 }
 
@@ -46,6 +47,7 @@
 
 .disable-button {
   background: var(--color-button-disabled);
+  cursor:default;
 }
 
 .disable-button:hover {

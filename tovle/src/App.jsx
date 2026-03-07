@@ -163,7 +163,7 @@ const App = () => {
         {/* <Notification message={errorMessage} /> */}
       </div>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   )
 }

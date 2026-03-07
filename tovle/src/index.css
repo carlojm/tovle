@@ -21,7 +21,9 @@
 
   --fern: #50723Cff;
 
-  --dark-cyan: #119da4ff;
+  --darker-cyan: rgb(30, 96, 122);
+  --dark-cyan: rgb(43, 125, 158);
+  --light-cyan: rgba(51, 150, 189, 1);
   --cerulean: #0c7489ff;
   --light-blue: rgba(176, 242, 255, 0.322);
   
@@ -39,14 +41,16 @@
 
 
   --color-navbar-background: var(--deep-ocean);
+  /* --color-navbar-background: var(--dark-cyan); */
   --color-navbar-dropdown: var(--deeper-ocean);
 
   --color-background: var(--deepest-ocean);
+  --color-background-gradient: var(--dark-cyan);
   --color-background-map: var(--deepest-ocean);
 
   --color-button: var(--lighter-teal);
   --color-button-hover: var(--lighterer-teal);
-  --color-button-disabled: var(--dark-purple);
+  --color-button-disabled: var(--deeper-ocean);
 
   --color-coords-text: var(--lighterer-teal);
   --color-coords-border: var(--lighterer-teal);
@@ -63,21 +67,28 @@
 }
 
 :root.light {
-  --color-navbar-background: var(--darker-teal);
+  /* --color-navbar-background: var(--darker-teal); */
+  --color-navbar-background: var(--dark-cyan);
+
+
   --color-navbar-dropdown: var(--deep-ocean);
   --color-background: var(--off-white);
+  --color-background-gradient: var(--light-cyan);
   --color-background-map: var(--light-blue);
 
+  --color-button: var(--dark-cyan);
+  --color-button-hover: var(--light-cyan);
+  --color-button-disabled: var(--darker-cyan);
   /* --color-button: var(--dark-teal); */
   /* --color-button-hover: var(--darker-teal); */
   /* --color-button-disabled: var(--dust-grey); */
 
-  --color-coords-text: var(--darker-teal);
-  --color-coords-border: var(--darker-teal);
+  --color-coords-text: var(--deepest-ocean);
+  --color-coords-border: var(--darker-cyan);
 
   --color-text: var(--deepest-ocean);
 
   --color-background-toggle: rgba(0, 0, 0, 0.08);
-  --color-background-coords-display: rgba(0, 0, 0, 0.02);
+  --color-background-coords-display: rgba(148, 207, 255, 0.226);
 
 }
