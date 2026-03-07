@@ -7,7 +7,7 @@
     'coords-display submit-button'
     'answer-message answer-message';
   padding: 24px;
-  width: min(90vw, 1000px);
+  width: min(90vw, 800);
 }
 
 .answer-message {
