@@ -37,8 +37,9 @@
   color: var(--color-text);
   cursor: pointer;
   opacity: 0.45;
-  transition: opacity 0.2s ease;
+  /* transition: opacity 0.2s ease; */
   white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .toggle-tab.active {
