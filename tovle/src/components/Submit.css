@@ -13,7 +13,7 @@
 .answer-message {
   grid-area: answer-message;
 
-  margin-top: 8px;
+  margin-top: 24px;
 }
 
 .answer-log {
