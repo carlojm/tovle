@@ -72,6 +72,9 @@ body {
 
   padding-top: 72px; /*add padding for navbar*/
 
+
+  font-size: clamp(14px, 3vw, 16px); /*idk what these values should be*/
+
 }
 
 .cache-image-wrapper {

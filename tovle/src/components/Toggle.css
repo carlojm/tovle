@@ -32,7 +32,7 @@
   border: none;
   border-radius: 999px;
   padding: 12px 0px;
-  font-size: clamp(12px, 3vw, 15px);
+  font-size: clamp(12px, 4vw, 18px);
   font-weight: 600;
   color: var(--color-text);
   cursor: pointer;
