@@ -40,7 +40,7 @@
 
 body {
   background: var(--color-background); 
-  height: 170vh;
+  min-height: 100vh; /* TODO this might be janky idk but it's fine for now*/
   background-attachment: fixed;
 }
 
@@ -74,6 +74,8 @@ body {
 
 
   font-size: clamp(14px, 3vw, 16px); /*idk what these values should be*/
+
+  padding-bottom: 30vh; /*some breathing room at the bottom*/
 
 }
 

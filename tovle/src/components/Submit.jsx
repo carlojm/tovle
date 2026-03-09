@@ -25,7 +25,7 @@ const Submit = ({selectedCoords, handleSubmitGuess, guessHistory, numGuesses, ha
       <div className="answer-message">
         {!hasGuesses && <p className="answer-log">{placeholder_message}</p>}
         <div className="answer-log">
-          {[...guessHistory].reverse().map((guess) => (
+          {[...guessHistory].slice(-10).reverse().map((guess) => (
             <>
               <p key={`num-${guess.guessNumber}`}>   <strong>#{guess.guessNumber}</strong></p>
               <p key={`dist-${guess.guessNumber}`}>  {guess.distance} blocks away.</p>
@@ -34,7 +34,6 @@ const Submit = ({selectedCoords, handleSubmitGuess, guessHistory, numGuesses, ha
             </>
           ))}
         </div>
-        
       </div>
     </div>
   )
