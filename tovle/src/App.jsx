@@ -154,8 +154,14 @@ const App = () => {
             hasWon={hasWon}
           />
         </>}
-        {activeTab === 'caches' && <p>Caches coming soon</p>}
-        {activeTab === 'info'   && <p>Info coming soon</p>}
+        {activeTab === 'caches' && <p>Cache opening coming soon</p>}
+        {activeTab === 'info'   && <>
+          <p>WIP</p>
+          <p>I am building Tovle as a way to learn React and CSS!</p>
+          <p>For feedback or suggestions message me @carlojm on Discord.</p>
+
+
+        </>}
         
 
 
