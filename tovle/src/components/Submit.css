@@ -2,22 +2,33 @@
 .coords-wrapper {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  /* grid-template-rows: 1fr; */
   grid-template-areas:
     'coords-display submit-button'
     'answer-message answer-message';
   padding: 24px;
-  width: min(90vw, 800);
+  width: min(90vw, 800px);
 }
 
 .answer-message {
   grid-area: answer-message;
 
-  /* centering */
-  display:flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  margin-top: 8px;
+}
+
+.answer-log {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  column-gap: 20px;
+  row-gap: 8px;
+  width: fit-content;
+  max-width: min(90vw, 800px);
+  margin: 0 auto;
+  text-align: left;
+}
+
+.answer-log p:nth-child(3n) {
+  text-align: right;
 }
 
 .submit-button {

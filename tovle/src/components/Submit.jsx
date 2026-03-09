@@ -2,39 +2,37 @@ import './Submit.css'
 
 const placeholder_message = "The cache is ... blocks away."
 
-const Submit = ({selectedCoords, handleSubmitGuess, message, numGuesses, hasWon}) => {
-  if (!selectedCoords) {
-    return (
-      <div className="coords-wrapper">
-        <div className="coords-display">
-          <p><strong>Selected:</strong> X ..., Z ...</p>
-          <p><strong>Attempts:</strong> {numGuesses}</p>
-        </div>
-        <button className="submit-button disable-button">Search Area</button>
-        <div className="answer-message">
-          <p>{placeholder_message}</p>
-        </div>
-      </div>
-    )
-  }
+const Submit = ({selectedCoords, handleSubmitGuess, guessHistory, numGuesses, hasWon}) => {
+  const hasGuesses = guessHistory.length > 0
 
   return (
     <div className="coords-wrapper">
       <div className="coords-display">
-        <p><strong>Selected:</strong> X {selectedCoords.minecraftX}, Z {selectedCoords.minecraftZ}</p>
+        <p>
+          <strong>Selected:</strong>{' '}
+          {selectedCoords ? `X ${selectedCoords.minecraftX}, Z ${selectedCoords.minecraftZ}` : 'X ..., Z ...'}
+        </p>
         <p><strong>Attempts:</strong> {numGuesses}</p>
       </div>
+
       <button
-        onClick={hasWon ? null : handleSubmitGuess}
-        className={`submit-button ${hasWon ? 'disable-button' : ''}`}
-      >Search Area</button>
+        onClick={!selectedCoords || hasWon ? null : handleSubmitGuess}
+        className={`submit-button ${!selectedCoords || hasWon ? 'disable-button' : ''}`}
+      >
+        Search Area
+      </button>
+
       <div className="answer-message">
-        {message && (
-          <p>{message}</p>
-        )}
-        {message === null && (
-          <p>{placeholder_message}</p>
-        )}
+        {!hasGuesses && <p className="answer-log">{placeholder_message}</p>}
+        <div className="answer-log">
+          {[...guessHistory].reverse().map((guess) => (
+            <>
+              <p key={`num-${guess.guessNumber}`}>   <strong>#{guess.guessNumber}</strong></p>
+              <p key={`dist-${guess.guessNumber}`}>  {guess.distance} blocks away.</p>
+              <p key={`msg-${guess.guessNumber}`}>   {guess.message}</p>
+            </>
+          ))}
+        </div>
         
       </div>
     </div>

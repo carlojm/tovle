@@ -29,7 +29,8 @@ const App = () => {
   const [selectedCoords, setSelectedCoords] = useState(null)
   const [lastSelectedCoords, setLastSelectedCoords] = useState(null)
   const [correctCoords, setCorrectCoords] = useState(null)
-  const [answerMessage, setAnswerMessage] = useState(null)
+  // const [answerMessage, setAnswerMessage] = useState(null)
+  const [guessHistory, setGuessHistory] = useState([])
   const [cacheImage, setCacheImage] = useState(null)
   const [imageId, setImageId] = useState(null)
   const [imageLoaded, setImageLoaded] = useState(null)
@@ -115,7 +116,12 @@ const App = () => {
       mapRef.current?.panToSubmittedGuess(correctCoords, selectedCoords)
     }
 
-    setAnswerMessage(`The cache is ${Math.round(distance)} blocks away. ${msg}`)
+    // setAnswerMessage(`The cache is ${Math.round(distance)} blocks away. ${msg}`)
+    setGuessHistory(prev => [...prev, {
+      guessNumber: numGuesses + 1,
+      distance: Math.round(distance),
+      message: msg,
+    }])
   }
 
   return (
@@ -149,7 +155,7 @@ const App = () => {
           <Submit
             selectedCoords={selectedCoords}
             handleSubmitGuess={handleSubmitGuess}
-            message={answerMessage}
+            guessHistory={guessHistory}
             numGuesses={numGuesses}
             hasWon={hasWon}
           />
@@ -159,8 +165,6 @@ const App = () => {
           <p>WIP</p>
           <p>I am building Tovle as a way to learn React and CSS!</p>
           <p>For feedback or suggestions message me @carlojm on Discord.</p>
-
-
         </>}
         
 
