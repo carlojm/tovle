@@ -18,7 +18,7 @@
 
 .answer-log {
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: auto auto auto auto;
   column-gap: 20px;
   row-gap: 8px;
   width: fit-content;
@@ -27,9 +27,6 @@
   text-align: left;
 }
 
-.answer-log p:nth-child(3n) {
-  text-align: right;
-}
 
 .submit-button {
   grid-area: 'submit-button';

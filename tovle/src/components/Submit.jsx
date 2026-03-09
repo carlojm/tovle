@@ -30,6 +30,7 @@ const Submit = ({selectedCoords, handleSubmitGuess, guessHistory, numGuesses, ha
               <p key={`num-${guess.guessNumber}`}>   <strong>#{guess.guessNumber}</strong></p>
               <p key={`dist-${guess.guessNumber}`}>  {guess.distance} blocks away.</p>
               <p key={`msg-${guess.guessNumber}`}>   {guess.message}</p>
+              <p key={`arrow-${guess.guessNumber}`}> {guess.arrow}</p>
             </>
           ))}
         </div>

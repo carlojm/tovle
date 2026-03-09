@@ -78,6 +78,19 @@ const App = () => {
     document.documentElement.classList.toggle('light')
   }
 
+  const getDirectionArrow = (guessCoords, correctCoords) => {
+    const dx = correctCoords.x - guessCoords.minecraftX
+    const dz = correctCoords.z - guessCoords.minecraftZ
+
+    const angle = Math.atan2(dz, dx) * (180 / Math.PI)
+    const normalized = (angle + 360) % 360
+
+    const arrows = ['→', '↘', '↓', '↙', '←', '↖', '↑', '↗']
+    const index = Math.round(normalized / 45) % 8
+
+    return arrows[index]
+  }
+
   const handleSubmitGuess = () => {
     if (lastSelectedCoords && (lastSelectedCoords === selectedCoords)) {
       return;
@@ -121,6 +134,7 @@ const App = () => {
       guessNumber: numGuesses + 1,
       distance: Math.round(distance),
       message: msg,
+      arrow: getDirectionArrow(selectedCoords, correctCoords)
     }])
   }
 
