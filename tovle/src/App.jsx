@@ -9,16 +9,9 @@ import Submit from './components/Submit'
 import './App.css'
 import Toggle from './components/Toggle'
 
-import {Cloudinary} from "@cloudinary/url-gen";
-import {AdvancedImage} from '@cloudinary/react';
-import {fill} from "@cloudinary/url-gen/actions/resize";
-import { auto } from "@cloudinary/url-gen/qualifiers/quality";
-import { auto as autoFormat } from "@cloudinary/url-gen/qualifiers/format";
-import { quality } from "@cloudinary/url-gen/actions/delivery";
-import { format } from "@cloudinary/url-gen/actions/delivery";
-
 import tovData from './tovs.json'
 
+const IMAGE_BASE_URL = 'https://images.tovle.net/standard'
 const TABS = [
     { id: 'play',   label: 'Play' },
     { id: 'caches', label: 'Caches' },
@@ -29,10 +22,8 @@ const App = () => {
   const [selectedCoords, setSelectedCoords] = useState(null)
   const [lastSelectedCoords, setLastSelectedCoords] = useState(null)
   const [correctCoords, setCorrectCoords] = useState(null)
-  // const [answerMessage, setAnswerMessage] = useState(null)
   const [guessHistory, setGuessHistory] = useState([])
   const [cacheImage, setCacheImage] = useState(null)
-  const [imageId, setImageId] = useState(null)
   const [imageLoaded, setImageLoaded] = useState(null)
   const [hasWon, setHasWon] = useState(false)
   const [numGuesses, setNumGuesses] = useState(0)
@@ -50,21 +41,9 @@ const App = () => {
   useEffect(() => {
     setImageLoaded(false)
 
-    // create a cloudinary instance
-    const cld = new Cloudinary({
-      cloud: { cloudName: 'carlojm' }
-    });
-
     // random id
     const id = Math.floor(Math.random() * 14) + 1;
-    setImageId(id)
-
-    const image = cld.image(`tov/${id}`);
-    image
-      .resize(fill().width(900))
-      .delivery(quality(auto()))
-      .delivery(format(autoFormat()));
-    setCacheImage(image)
+    setCacheImage(`${IMAGE_BASE_URL}/${String(id).padStart(3, '0')}.webp`)
 
     //grab the correct coords
     const idData = tovData.find(item => item.id === id)
@@ -160,8 +139,8 @@ const App = () => {
 
         <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
           {cacheImage &&
-            <AdvancedImage 
-              cldImg={cacheImage}
+            <img 
+              src={cacheImage}
               className="cache-image"
               onLoad={()=>setImageLoaded(true)}
             />
