@@ -22,10 +22,15 @@ const getDailyFallback = (dateString, availableIds) => {
   return seed % 14 + 1
 }
 
+const getRandom = () => {
+  return Math.floor(Math.random() * 14) + 1;
+}
+
 const getScheduledId = (dateString) => {
   const entry = schedule.find(item => item.date === dateString)
   if (!entry) return null
-  if (entry.id === 'random') return null
+  if (entry.id === 'random') return getRandom()
+  if (entry.id === 'fallback') return null
   return entry.id
 }
 
