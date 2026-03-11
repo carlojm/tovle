@@ -36,7 +36,11 @@ const App = () => {
   const [imageLoaded, setImageLoaded] = useState(null)
   const [hasWon, setHasWon] = useState(false)
   const [numGuesses, setNumGuesses] = useState(0)
-  const [theme, setTheme] = useState('light')
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem('theme')
+    if (saved) return saved
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  })
   const [activeTab, setActiveTab] = useState('play')
 
   //this ref used in submitguess
@@ -71,11 +75,20 @@ const App = () => {
     }
   }, [])
 
+  useEffect(() => {
+    if (theme === 'light') {
+      document.documentElement.classList.add('light')
+    } else {
+      document.documentElement.classList.remove('light')
+    }
+  }, [theme])
+
 
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark'
     setTheme(next)
-    document.documentElement.classList.toggle('light')
+    localStorage.setItem('theme', next)
+    // document.documentElement.classList.toggle('light')
   }
 
   const getDirectionArrow = (guessCoords, correctCoords) => {
