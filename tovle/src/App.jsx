@@ -17,14 +17,17 @@ const TABS = [
   ]
 
 const App = () => {
+  const [dailyCaches, setDailyCaches] = useState([])
+  const [cacheImage, setCacheImage] = useState(null)
+  const [correctCoords, setCorrectCoords] = useState(null)
+
   const [selectedCoords, setSelectedCoords] = useState(null)
   const [lastSelectedCoords, setLastSelectedCoords] = useState(null)
-  const [correctCoords, setCorrectCoords] = useState(null)
   const [guessHistory, setGuessHistory] = useState([])
-  const [cacheImage, setCacheImage] = useState(null)
-  const [imageLoaded, setImageLoaded] = useState(null)
-  const [hasWon, setHasWon] = useState(false)
   const [numGuesses, setNumGuesses] = useState(0)
+  const [hasWon, setHasWon] = useState(false)
+  
+  const [imageLoaded, setImageLoaded] = useState(null)
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('theme')
     if (saved) return saved
@@ -39,22 +42,13 @@ const App = () => {
   useEffect(() => {
     setImageLoaded(false)
 
-    // // random id
-    // const id = Math.floor(Math.random() * 14) + 1;
-    // setCacheImage(`${IMAGE_BASE_URL}/${String(id).padStart(3, '0')}.webp`)
-
-    // //grab the correct coords
-    // const idData = tovData.find(item => item.id === id)
-    // if (idData) {
-    //   setCorrectCoords(idData.coordinates)
-    // } else {
-    //   console.error(`No data found for cache ID ${id}`);
-    // }
-
-    fetch('/api/daily').then(res => res.json()).then(cache => {
-      setCacheImage(`${IMAGE_BASE_URL}/${String(cache.id).padStart(3, '0')}.webp`)
-      setCorrectCoords(cache.coordinates)
-    }).catch(err => console.error('Failed to fetch cache:', err))
+    fetch('/api/daily').then(res => res.json()).then(data => {
+      setDailyCaches(data.caches)
+      const first = data.caches[0]
+      if (!first) return
+      setCacheImage(`${IMAGE_BASE_URL}/${String(first.id).padStart(3, '0')}.webp`)
+      setCorrectCoords(first.coordinates)
+    }).catch(err => console.error('Failed to fetch daily caches:', err))
 
   }, [])
 
@@ -138,20 +132,19 @@ const App = () => {
       <div className="app-container">
         <Navbar theme={theme} onToggleTheme={toggleTheme} />
         {/* <Water /> */}
-        <Dateline />
 
-        <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
-          {cacheImage &&
-            <img 
-              src={cacheImage}
-              className="cache-image"
-              onLoad={()=>setImageLoaded(true)}
-            />
-          }
-        </div>
-        
         <Toggle tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
         {activeTab === 'play' && <> 
+          <Dateline />
+          <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
+            {cacheImage &&
+              <img 
+                src={cacheImage}
+                className="cache-image"
+                onLoad={()=>setImageLoaded(true)}
+              />
+            }
+          </div>
           <p>Pinpoint the cache's location on the map below.</p>
           <p style = {{marginBottom:'16px'}}>Guess within 50 blocks to find the cache.</p>
           <Map 
@@ -160,7 +153,6 @@ const App = () => {
             setSelectedCoords={setSelectedCoords}
             correctCoords={hasWon ? correctCoords : null}
           />
-
           <Submit
             selectedCoords={selectedCoords}
             handleSubmitGuess={handleSubmitGuess}
