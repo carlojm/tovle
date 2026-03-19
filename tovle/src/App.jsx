@@ -48,6 +48,7 @@ const App = () => {
       if (!first) return
       setCacheImage(`${IMAGE_BASE_URL}/${String(first.id).padStart(3, '0')}.webp`)
       setCorrectCoords(first.coordinates)
+      setImageLoaded(true)
     }).catch(err => console.error('Failed to fetch daily caches:', err))
 
   }, [])
@@ -135,7 +136,7 @@ const App = () => {
 
         <Toggle tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
         {activeTab === 'play' && <> 
-          <Dateline />
+          <Dateline dailyCaches={dailyCaches} />
           <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
             {cacheImage &&
               <img 
