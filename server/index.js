@@ -4,6 +4,7 @@ const cors = require('cors')
 const app = express()
 
 const schedule = require('./data/schedule.json')
+const tovs = require('./data/tovs.json')
 
 app.use(cors())
 app.use(express.json())
@@ -18,12 +19,11 @@ const getEasternDateString = () => {
 const getDailyFallback = (dateString, availableIds) => {
   // turn the date string into a number
   const seed = dateString.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-  // return availableIds[seed % availableIds.length]
-  return seed % 14 + 1
+  return availableIds[seed % availableIds.length]
 }
 
 const getRandom = () => {
-  return Math.floor(Math.random() * 14) + 1;
+  return Math.floor(Math.random() * 69) + 1;
 }
 
 const getScheduledId = (dateString) => {
@@ -35,15 +35,17 @@ const getScheduledId = (dateString) => {
 }
 
 app.get('/api/daily', (request, response) => {
-  const today = getEasternDateString() // ex. "2026-03-01"
-  const availableIds = schedule.map(t => t.id)
+  const today = getEasternDateString()
+  const availableIds = tovs.map(t => t.id).slice(0, 69)
 
   const id = getScheduledId(today) ?? getDailyFallback(today, availableIds)
+  const cache = tovs.find(t => t.id === id)
 
-  if (!id) {
-    return response.status(404).json({error: `No cache found for id ${id}`})
+  if (!cache) {
+    return response.status(404).json({ error: `No cache found for id ${id}` })
   }
-  response.json(id)
+
+  response.json({ ...cache, date: today })
 })
 
 

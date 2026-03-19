@@ -9,8 +9,6 @@ import Submit from './components/Submit'
 import './App.css'
 import Toggle from './components/Toggle'
 
-import tovData from './tovs.json'
-
 const IMAGE_BASE_URL = 'https://images.tovle.net/standard'
 const TABS = [
     { id: 'play',   label: 'Play' },
@@ -41,17 +39,23 @@ const App = () => {
   useEffect(() => {
     setImageLoaded(false)
 
-    // random id
-    const id = Math.floor(Math.random() * 14) + 1;
-    setCacheImage(`${IMAGE_BASE_URL}/${String(id).padStart(3, '0')}.webp`)
+    // // random id
+    // const id = Math.floor(Math.random() * 14) + 1;
+    // setCacheImage(`${IMAGE_BASE_URL}/${String(id).padStart(3, '0')}.webp`)
 
-    //grab the correct coords
-    const idData = tovData.find(item => item.id === id)
-    if (idData) {
-      setCorrectCoords(idData.coordinates)
-    } else {
-      console.error(`No data found for cache ID ${id}`);
-    }
+    // //grab the correct coords
+    // const idData = tovData.find(item => item.id === id)
+    // if (idData) {
+    //   setCorrectCoords(idData.coordinates)
+    // } else {
+    //   console.error(`No data found for cache ID ${id}`);
+    // }
+
+    fetch('/api/daily').then(res => res.json()).then(cache => {
+      setCacheImage(`${IMAGE_BASE_URL}/${String(cache.id).padStart(3, '0')}.webp`)
+      setCorrectCoords(cache.coordinates)
+    }).catch(err => console.error('Failed to fetch cache:', err))
+
   }, [])
 
   useEffect(() => {
@@ -109,12 +113,11 @@ const App = () => {
     if (distance > 100) {
       msg = "Keep searching!"
     } else if (distance > 50) {
-      msg = "Getting closer..."
+      msg = "Getting close..."
     } else if (distance >= 11) {
       msg = "You found the cache!"
       setHasWon(true)
       mapRef.current?.panToSubmittedGuess(correctCoords, selectedCoords)
-
     } else if (distance < 11) {
       msg = "Perfect guess! You found the cache!"
       setHasWon(true)
