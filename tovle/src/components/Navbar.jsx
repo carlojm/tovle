@@ -2,13 +2,15 @@ import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import './Navbar.css'
 import {Sun, Moon} from 'lucide-react'
+import Logo from './Logo'
 
 export default function Navbar({theme, onToggleTheme}) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <nav className="navbar">
-      <span className="navbar-title">Tovle</span>
+      <Logo />
+      {/* <span className="navbar-title">Tovle</span> */}
       <div className="navbar-buttons">
         <button className="theme-toggle" onClick={onToggleTheme}>
           {theme === 'dark' ? <Sun size={20} color="var(--color-text-button" /> : <Moon size={20} color="var(--color-text-button" />}

@@ -1,0 +1,13 @@
+/*this file written by claude because i didn't wanna*/
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+ 
+.logo svg {
+  /* Controls the rendered height — width scales automatically via the viewBox aspect ratio */
+  height: 36px;
+  width: auto;
+}
+ 
