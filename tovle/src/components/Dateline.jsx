@@ -7,12 +7,20 @@ const Dateline = ({dailyCaches}) => {
 	const formattedDate = `${month}/${date}/${year}`;
 
 	return (
-		<div>
-		{/* <p style={{fontStyle: 'italic'}}>Today's caches: {formattedDate}</p> */}
-		<p>{formattedDate}</p>
-		{dailyCaches.map((cache) => (
-			<p key={cache.id}> <strong>#{cache.id}</strong> {cache.coordinates.x}, {cache.coordinates.z}</p>
-		))}
+		<div style={{
+			display:'flex',
+			flexDirection: 'column',
+			alignItems: 'center'
+		}}>
+			<p><strong>Welcome to Tovle! WIP</strong></p>
+			{/* <p style={{fontStyle: 'italic'}}>Today's caches: {formattedDate}</p> */}
+			<p>{formattedDate}</p>
+			<p>
+				(DEBUG INFO) Today's caches:
+				{dailyCaches.map((cache) => (
+					<> <strong>#{cache.id}</strong></>
+				))}
+			</p>
 		</div>
 	);
 }
