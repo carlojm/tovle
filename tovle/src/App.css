@@ -115,6 +115,68 @@ body {
   /* margin: 20px 0; */
 }
 
+.completion-summary {
+  width: min(90vw, 800px);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.completion-summary > p {
+  font-size: clamp(14px, 3vw, 18px);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: min(60vw, 320px);
+  padding: 10px 16px;
+  background: var(--color-background-coords-display);
+  border: 2px solid var(--color-coords-border);
+  border-radius: 10px;
+  font-size: clamp(12px, 3vw, 15px);
+}
+
+.summary-row span:first-child {
+  font-weight: 600;
+  color: var(--color-coords-text);
+}
+
+.completion-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.completion-buttons button {
+  padding: 14px 24px;
+  font-size: 16px;
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-weight: 600;
+  background: var(--color-button);
+  color: var(--color-text-button);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.completion-buttons button:hover {
+  transform: translateY(-2px);
+  background: var(--color-button-hover);
+}
+
+.completion-buttons button:active {
+  transform: translateY(4px);
+  background: var(--color-button-hover);
+}
+
 .notification {
   margin-bottom: 16px;
   align-self: center;
