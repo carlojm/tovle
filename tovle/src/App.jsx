@@ -242,6 +242,21 @@ const App = () => {
     })
   }
 
+  const handleShare = () => {
+    const todayStr = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' })
+    
+    const lines = cacheResults.map((result, i) => {
+      const dots = '🌊'.repeat(Math.min(result.guessCount, 10))
+      return `Cache ${i + 1}: ${dots} (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'})`
+    })
+
+    const text = `Tovle ${todayStr}\n\n${lines.join('\n')}\n\nPlay at tovle.net`
+
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Copied to clipboard!')
+    })
+  }
+
   if (!ready) return null
 
   return (
@@ -290,7 +305,7 @@ const App = () => {
               {cacheResults.map((result, i) => (
                 <div key={result.cacheId} className="summary-row">
                   <span>Cache {i+1}:</span>
-                  <span>{result.guessCount} {result.guessCount === 1 ? 'guess' : 'guesses'}</span>
+                  <span>{result.guessCount} {result.guessCount === 1 ? 'guess!' : 'guesses'}</span>
                   <span className="summary-distances">
                     {result.guesses.length > 5
                       ? [
@@ -305,7 +320,7 @@ const App = () => {
               ))}
             </div>
             <div className="completion-buttons">
-              <button>Share</button> 
+              <button onClick={handleShare}>Share</button> 
               <button onClick={() => setActiveTab('caches')}>Open Caches</button>
             </div>
           </>}
