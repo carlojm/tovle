@@ -291,6 +291,16 @@ const App = () => {
                 <div key={result.cacheId} className="summary-row">
                   <span>Cache {i+1}:</span>
                   <span>{result.guessCount} {result.guessCount === 1 ? 'guess' : 'guesses'}</span>
+                  <span className="summary-distances">
+                    {result.guesses.length > 5
+                      ? [
+                          ...result.guesses.slice(0, 2).map(g => g.distance),
+                          '...',
+                          ...result.guesses.slice(-2).map(g => g.distance)
+                        ].join(' > ')
+                      : result.guesses.map(g => g.distance).join(' > ')
+                    } away
+                  </span>
                 </div>
               ))}
             </div>
