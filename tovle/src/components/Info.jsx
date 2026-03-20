@@ -1,5 +1,5 @@
 import './Info.css'
-import {Ship, DraftingCompass, Gift} from 'lucide-react'
+import {Ship, DraftingCompass, Gift, NotebookPen, UserLock} from 'lucide-react'
 
 
 const Info = () => {
@@ -52,15 +52,26 @@ const Info = () => {
         </div>
 
         <h1>Login</h1>
-        <p>
-          Erasing your browser cache will erase your player data. To prevent losing data,
-          consider linking a Google account to your uid.
+        <div className="info-row">
+          <NotebookPen size={20} color="var(--color-text)" />
+          <p>
+            Tovle stores anonymous gameplay data: game stats, guess history, and inventory.
+            This data is tied to a randomly generated uid and contains no personal info.
+            Erasing your browser cache will erase your player data. To prevent losing data,
+            consider linking a Google account to your uid.
+          </p>
+        </div>
 
-        </p>
-        <p>
-          Important: This will link the associated email address to your uid in the app's Firestore database.
-          Consider using an email address that does not reveal personal info so I'm not up in your business like that.
-        </p>
+        <div className="info-row">
+          <UserLock size={20} color="var(--color-text)" />
+          <p>
+            Important: Linking a Google account ties your email address to your uid in the app's Firestore database.
+            Consider using an email address that does not reveal personal info so I'm not up in your business like that.
+            Your data is never shared, sold, or used for any purpose outside of saving game data.
+            You can play without linking an account at any time.
+          </p>
+        </div>
+
         <p style={{textAlign:"center"}}>(Login button here)</p>
 
 		</div>

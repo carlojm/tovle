@@ -13,12 +13,16 @@
 }
 
 .info-box p {
-  margin: 16px;
+  margin-top: 0px;
+  margin-bottom: 16px;
+  margin-left: 16px;
+  margin-right: 16px;
   opacity: 87%
 }
 
 .info-box h1 {
-  margin: 16px;
+  margin-top: 20px;
+  margin-bottom: 12px;
   text-align: center;
 
   font-size: 1.3rem;
