@@ -1,5 +1,7 @@
 
 .info-box {
+  display:flex;
+  flex-direction: column;
   text-justify:distribute-all-lines;
 
   width: min(90vw, 500px);
@@ -29,10 +31,30 @@
 }
 
 
-
 .info-row svg {
   float: left;
   margin-left: 20px;
   margin-right: 12px;
   margin-top: 10px;
+}
+
+.info-box img {
+  align-self: center;
+}
+
+
+.info-cat {
+  image-rendering: pixelated;
+  width: 64px;
+  height: 64px;
+  /* margin-bottom: 8px; */
+  transition: opacity 0.2s;
+}
+
+.info-cat--bouncing {
+  position: fixed;
+  z-index: 9999;
+  cursor: pointer;
+  pointer-events: none;
+  margin: 0;
 }
