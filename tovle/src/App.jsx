@@ -258,7 +258,7 @@ const App = () => {
       return `Cache ${i + 1}: ${dots} (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'})`
     })
 
-    const text = `Tovle ${todayStr}\n\n${lines.join('\n')}\n\nPlay at tovle.net`
+    const text = `Tovle ${todayStr}\n\n${lines.join('\n')}\n\nPlay at https://tovle.net`
 
     navigator.clipboard.writeText(text).then(() => {
       alert('Copied to clipboard!')
