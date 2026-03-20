@@ -13,7 +13,7 @@ const Info = () => {
   const spawnCat = () => {
     setShimmying(true)
     setTimeout(() => setShimmying(false), 400)
-    
+
     const rect = catRef.current.getBoundingClientRect()
     const id = Date.now()
     const speed = 1.5 + Math.random() * 4
@@ -140,7 +140,7 @@ const Info = () => {
             <p>
               Tovle stores anonymous gameplay data: game stats, guess history, and inventory.
               This data is tied to a randomly generated uid and contains no personal info.
-              Erasing your browser cache will erase your player data. To prevent losing data,
+              Erasing your browser cache will lose your player data. To prevent losing data,
               consider linking a Google account to your uid.
             </p>
           </div>
