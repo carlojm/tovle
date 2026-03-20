@@ -31,7 +31,8 @@ const Submit = ({
   }
 
   const buttonLabel = !hasWon ? 'Search Area' : isLastCache ? 'Complete' : 'Next Cache'
-  const isDisabled = !selectedCoords || (!hasWon && !selectedCoords)
+  const isDisabled = buttonLabel !== 'Search Area' ? false
+    : !selectedCoords || (!hasWon && !selectedCoords)
 
   return (
     <div className="coords-wrapper">
