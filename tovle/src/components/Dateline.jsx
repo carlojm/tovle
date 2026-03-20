@@ -1,13 +1,11 @@
-const Dateline = ({dailyCaches, currentCacheIndex, allComplete}) => {
+const Dateline = () => {
 	const today = new Date();
 	const year = today.getFullYear();
 	const month = today.getMonth() + 1; 
 	const date = today.getDate();
 	const formattedDate = `${month}/${date}/${year}`;
 
-	const cacheProgress = allComplete
-		? `${dailyCaches.length}/${dailyCaches.length}`
-    : `${currentCacheIndex + 1}/${dailyCaches.length}`
+
 
 	return (
 		<div style={{
@@ -17,10 +15,9 @@ const Dateline = ({dailyCaches, currentCacheIndex, allComplete}) => {
 		}}>
 			<p><strong>Welcome to Tovle! WIP</strong></p>
 			{/* <p style={{fontStyle: 'italic'}}>Today's caches: {formattedDate}</p> */}
-			<p>{formattedDate}</p>
-      {dailyCaches.length > 0 && (
-        <p>Cache {cacheProgress}</p>
-      )}
+			<p style={{marginBottom: "8px"}}>{formattedDate}</p>
+      <p>Pinpoint the cache's location on the map below.</p>
+			<p>Guess within 50 blocks to find the cache.</p>
 		</div>
 	);
 }

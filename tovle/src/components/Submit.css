@@ -73,10 +73,18 @@
   border-radius: 10px;
 
   /* center the text inside the display */
-  display: flex;
+  /* display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: center; */
+
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.selected-text {
+  grid-area: 'selected';
+  grid-column: auto / span 2;
 }
 
 .coords-display p {

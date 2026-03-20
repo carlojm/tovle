@@ -11,9 +11,14 @@ const Submit = ({
   guessHistory,
   numGuesses,
   hasWon,
-  isLastCache
+  isLastCache,
+  dailyCaches, currentCacheIndex, allComplete
 }) => {
   const hasGuesses = guessHistory.length > 0
+
+  const cacheProgress = allComplete
+  ? `${dailyCaches.length}/${dailyCaches.length}`
+  : `${currentCacheIndex + 1}/${dailyCaches.length}`
 
   const handlePrimaryAction = () => {
     if (!hasWon) {
@@ -31,10 +36,15 @@ const Submit = ({
   return (
     <div className="coords-wrapper">
       <div className="coords-display">
-        <p>
+        <p className="selected-text">
           <strong>Selected:</strong>{' '}
           {selectedCoords ? `X ${selectedCoords.minecraftX}, Z ${selectedCoords.minecraftZ}` : 'X ..., Z ...'}
         </p>
+        
+        {dailyCaches.length > 0 && (
+          <p><strong>Cache:</strong> {cacheProgress}</p>
+        )}
+
         <p><strong>Attempts:</strong> {numGuesses}</p>
       </div>
 

@@ -274,7 +274,7 @@ const App = () => {
 
         <Toggle tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
         {activeTab === 'play' && <> 
-          <Dateline dailyCaches={dailyCaches} currentCacheIndex={currentCacheIndex} allComplete={allComplete} />
+          <Dateline  />
           <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
             {cacheImage &&
               <img 
@@ -286,8 +286,6 @@ const App = () => {
           </div>
 
           {!allComplete && <>
-            <p>Pinpoint the cache's location on the map below.</p>
-            <p style = {{marginBottom:'16px'}}>Guess within 50 blocks to find the cache.</p>
             <Map 
               ref={mapRef}
               selectedCoords={selectedCoords}
@@ -303,6 +301,7 @@ const App = () => {
               numGuesses={numGuesses}
               hasWon={hasWon}
               isLastCache={currentCacheIndex === dailyCaches.length - 1}
+              dailyCaches={dailyCaches} currentCacheIndex={currentCacheIndex} allComplete={allComplete}
             />
           </>}
 
@@ -334,12 +333,8 @@ const App = () => {
           
         </>}
         {activeTab === 'caches' && <p>Cache opening coming soon</p>}
-        {activeTab === 'info'   && <>
-          <Info/>
-        </>}
+        {activeTab === 'info'   && <Info/>}
         
-
-
         
         {/* <Notification message={errorMessage} /> */}
       </div>
