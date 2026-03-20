@@ -9,6 +9,7 @@ import Submit from './components/Submit'
 import './App.css'
 import Toggle from './components/Toggle'
 import Info from './components/Info'
+import Caches from './components/Caches'
 import { usePlayer } from "./context/PlayerContext"
 
 const IMAGE_BASE_URL_STANDARD = 'https://images.tovle.net/standard'
@@ -332,7 +333,7 @@ const App = () => {
           </>}
           
         </>}
-        {activeTab === 'caches' && <p>Cache opening coming soon</p>}
+        {activeTab === 'caches' && <Caches />}
         {activeTab === 'info'   && <Info/>}
         
         
