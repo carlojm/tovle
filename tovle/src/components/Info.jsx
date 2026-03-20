@@ -11,6 +11,9 @@ const Info = () => {
   const catRef = useRef(null)
 
   const spawnCat = () => {
+    setShimmying(true)
+    setTimeout(() => setShimmying(false), 400)
+    
     const rect = catRef.current.getBoundingClientRect()
     const id = Date.now()
     const speed = 1.5 + Math.random() * 4
@@ -56,6 +59,17 @@ const Info = () => {
     return () => cancelAnimationFrame(animId) //cancel loop when we switch tabs
   }, [])
 
+
+  const [shimmying, setShimmying] = useState(false)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShimmying(true)
+      setTimeout(() => setShimmying(false), 400)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
 	return (
     <div>
       
@@ -82,7 +96,7 @@ const Info = () => {
         <img
           ref={catRef}
           src="/otmcat.png"
-          className="info-cat"
+          className={`info-cat ${shimmying ? 'info-cat--shimmy' : ''}`}
           onClick={spawnCat}
           style={{ cursor: 'pointer' }}
         />
