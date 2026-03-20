@@ -8,5 +8,11 @@
         "date": "2026-03-12",
         "ids": [4],
         "note": "a day with one cache scheduled and three fallback"
+    },
+    {
+        "date": "2026-03-21",
+        "ids": ["random","random","random",1001],
+        "note": "testing a custom"
     }
+    
 ]

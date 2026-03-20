@@ -114,7 +114,7 @@ app.get('/api/daily', (request, response) => {
   const caches = ids.map(id => tovs.find(t => t.id === id)).filter(Boolean)
 
   if (caches.length !== DAILY_CACHE_COUNT) {
-    return res.status(404).json({error: `only ${caches.length} caches found for today`})
+    return response.status(404).json({error: `only ${caches.length} caches found for today`})
   }
 
   response.json({ date: today, caches })

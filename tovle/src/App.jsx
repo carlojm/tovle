@@ -10,7 +10,9 @@ import './App.css'
 import Toggle from './components/Toggle'
 import { usePlayer } from "./context/PlayerContext"
 
-const IMAGE_BASE_URL = 'https://images.tovle.net/standard'
+const IMAGE_BASE_URL_STANDARD = 'https://images.tovle.net/standard'
+const IMAGE_BASE_URL_CUSTOM = 'https://images.tovle.net/custom'
+
 const TABS = [
     { id: 'play',   label: 'Play' },
     { id: 'caches', label: 'Caches' },
@@ -46,7 +48,11 @@ const App = () => {
 
   //instead of state, these vars are now derived from dailyCaches[currentCacheIndex]
   const currentCache = dailyCaches[currentCacheIndex] ?? null
-  const cacheImage = currentCache ? `${IMAGE_BASE_URL}/${String(currentCache.id).padStart(3, '0')}.webp` : null
+  const cacheImage = currentCache
+  ? currentCache.id > 1000
+    ? `${IMAGE_BASE_URL_CUSTOM}/${currentCache.id}.webp`
+    : `${IMAGE_BASE_URL_STANDARD}/${String(currentCache.id).padStart(3, '0')}.webp`
+  : null
   const correctCoords = currentCache?.coordinates ?? null
 
   useEffect(() => {
