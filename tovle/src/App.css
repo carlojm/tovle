@@ -79,6 +79,11 @@ body {
 
 }
 
+.app-container p {
+  opacity: 85%;
+}
+
+
 .cache-image-wrapper {
   width: min(90vw, 800px);
   aspect-ratio: 16/9;
