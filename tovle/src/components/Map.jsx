@@ -99,6 +99,31 @@ const Map = forwardRef(function Map({selectedCoords, setSelectedCoords, correctC
       }
 
       requestAnimationFrame(frame)
+    },
+    
+    resetView() {
+      const duration = 400
+      const startZoom = zoom
+      const startPan = { ...pan }
+      const targetZoom = 1
+      const targetPan = { x: 0, y: 0 }
+      const startTime = performance.now()
+
+      const frame = (now) => {
+        const elapsed = now - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        const eased = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2
+
+        setZoom(startZoom + (targetZoom - startZoom) * eased)
+        setPan({
+          x: startPan.x + (targetPan.x - startPan.x) * eased,
+          y: startPan.y + (targetPan.y - startPan.y) * eased,
+        })
+
+        if (progress < 1) requestAnimationFrame(frame)
+      }
+
+      requestAnimationFrame(frame)
     }
   }), [zoom, pan])
 
