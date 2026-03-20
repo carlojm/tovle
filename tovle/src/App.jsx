@@ -8,6 +8,7 @@ import Water from './components/Water'
 import Submit from './components/Submit'
 import './App.css'
 import Toggle from './components/Toggle'
+import Info from './components/Info'
 import { usePlayer } from "./context/PlayerContext"
 
 const IMAGE_BASE_URL_STANDARD = 'https://images.tovle.net/standard'
@@ -334,9 +335,7 @@ const App = () => {
         </>}
         {activeTab === 'caches' && <p>Cache opening coming soon</p>}
         {activeTab === 'info'   && <>
-          <p>WIP</p>
-          <p>I am building Tovle as a way to learn React and CSS!</p>
-          <p>For feedback or suggestions message me @carlojm on Discord.</p>
+          <Info/>
         </>}
         
 
