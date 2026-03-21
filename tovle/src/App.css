@@ -45,7 +45,7 @@ body {
 }
 
 .light body {
-  background: linear-gradient(180deg, var(--color-background) 0%, var(--color-background-gradient) 800px);
+  background: linear-gradient(180deg, var(--color-background) 0%, var(--color-background-gradient) min(150%, 2000px));
 }
 
 
