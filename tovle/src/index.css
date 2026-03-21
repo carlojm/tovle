@@ -38,6 +38,21 @@
 
   --off-white: #f4f3f2;
 
+  --void-navy: #1a1a2e;
+  --dark-slate: #2a2a3e;
+  --slate: #3a3a5a;
+  --slate-blue: #3a3a5e;
+  --muted-slate: #4a4a6a;
+  --light-slate: #5a5a7a;
+
+  --color-background-loot-grid: var(--void-navy);
+  --color-border-loot-grid: var(--muted-slate);
+  --color-background-loot-slot: var(--dark-slate);
+  --color-border-loot-slot: var(--slate);
+  --color-border-loot-slot-filled: var(--light-slate);
+  --color-background-loot-slot-hover: var(--slate-blue);
+  --color_text-loot-display: var(--white-smoke);
+  --color_text-shadow-loot-display: var(--black);
 
 
   --color-navbar-background: var(--deep-ocean);
@@ -90,5 +105,37 @@
 
   --color-background-toggle: rgba(0, 0, 0, 0.08);
   --color-background-coords-display: rgba(148, 207, 255, 0.226);
+
+
+  /* --void-navy: #dce8f0; */
+  /* --dark-slate: #eef4f7; */
+  /* --slate: #b8cdd8; */
+  /* --slate-blue: #d4e8f2; */
+  /* --muted-slate: #9ab8c8; */
+  /* --light-slate: #7aaabb; */
+
+
+
+  /* --color-background-loot-grid: var(--celadon);
+  --color-border-loot-grid: var(--muted-teal);
+  --color-background-loot-slot: var(--muted-teal);
+  --color-border-loot-slot: var(--slate);
+  --color-border-loot-slot-filled: var(--light-slate);
+  --color-background-loot-slot-hover: var(--slate-blue);
+  --color_text-loot-display: var(--deepest-ocean);
+  --color_text-shadow-loot-display: var(--white-smoke); */
+
+  --color-background-loot-grid: rgba(148, 207, 255, 0.3);
+  --color-border-loot-grid: var(--darker-cyan);
+  --color-background-loot-slot: rgba(148, 207, 255, 0.3);
+
+  --color-border-loot-slot: var(--dark-cyan);
+  --color-border-loot-slot-filled: var(--darker-cyan);
+
+  --color-background-loot-slot-hover: var(--light-blue);
+
+  --color_text-loot-display: var(--deepest-ocean);
+  --color_text-shadow-loot-display: var(--white-smoke);
+  
 
 }

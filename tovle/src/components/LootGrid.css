@@ -3,16 +3,16 @@
   grid-template-columns: repeat(9, 1fr);
   gap: 4px;
   width: 100%;
-  background: #1a1a2e;
-  border: 3px solid #4a4a6a;
+  background: var(--color-background-loot-grid);
+  border: 2px solid var(--color-border-loot-grid);
   border-radius: 8px;
   padding: 8px;
 }
 
 .loot-slot {
   aspect-ratio: 1;
-  background: #2a2a3e;
-  border: 2px solid #3a3a5a;
+  background: var(--color-background-loot-slot);
+  border: 2px solid var(--color-border-loot-slot);
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -21,13 +21,13 @@
 }
 
 .loot-slot--filled {
-  border-color: #5a5a7a;
+  border-color: var(--color-border-loot-slot-filled);
   cursor: pointer;
 }
 
 .loot-slot--filled:hover {
   border-color: var(--color-button);
-  background: #3a3a5e;
+  background: var(--color-background-loot-slot-hover);
 }
 
 .loot-slot-icon {
@@ -42,8 +42,9 @@
   right: 3px;
   font-size: clamp(8px, 1.5vw, 11px);
   font-weight: 700;
-  color: white;
-  text-shadow: 1px 1px 0 black;
+  color: var(--color-text-loot-display);
+  opacity: 85%;
+  text-shadow: 1px 1px 0 var(--color_text-shadow-loot-display);
   line-height: 1;
 }
 
@@ -56,5 +57,5 @@
   pointer-events: none;
   z-index: 1000;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }

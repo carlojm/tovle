@@ -32,7 +32,6 @@ const LootGrid = ({ grid, isInventory = false }) => {
       <div className="loot-grid">
         {slots.map((slot, i) => {
           const itemDef = slot ? ITEM_MAP[slot.itemId] : null
-          const IconComponent = itemDef?.icon ?? null
 
           return (
             <div
