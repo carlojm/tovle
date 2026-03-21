@@ -41,12 +41,13 @@ const LootGrid = ({ grid, isInventory = false }) => {
               onMouseEnter={slot ? (e) => handleMouseEnter(e, slot) : undefined}
               onMouseLeave={slot ? handleMouseLeave : undefined}
             >
-              {slot && IconComponent && (
+              {slot && itemDef && (
                 <>
-                  <IconComponent
-                    size={ICON_SIZE}
-                    color={itemDef.color}
-                    strokeWidth={1.5}
+                  <img
+                    src={itemDef.img}
+                    alt={slot.name}
+                    className="loot-slot-icon"
+                    style={{ imageRendering: 'pixelated' }}
                   />
                   {slot.quantity > 1 && (
                     <span className="loot-slot-quantity">{slot.quantity}</span>

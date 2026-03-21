@@ -66,6 +66,12 @@ const LOOT_TABLE = [
     baseChance: 0.1667,
   },
   {
+    itemId: 'ade',
+    name: 'Amalgamated Dissonant Energy',
+    rolls: 1,
+    baseChance: 0.1667,
+  },
+  {
     itemId: 'harbinger',
     name: 'Harbinger',
     rolls: 1,
