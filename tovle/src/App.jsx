@@ -143,12 +143,24 @@ const App = () => {
 
     const updatedResults = [...cacheResults, currentResult]
     setCacheResults(updatedResults)
-    
+
     const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+
+    const newUnopenedCache = {
+      cacheId: currentCache.id,
+      date: todayStr,
+      guessCount: numGuesses,
+      score: calculateScore(numGuesses),
+    }
+    
     save({
       today: {
         date: todayStr,
         caches: updatedResults,
+      },
+      inventory: {
+        ...playerData.inventory,
+        unopenedCaches: [...(playerData.inventory?.unopenedCaches ?? []), newUnopenedCache],
       }
     })
 
@@ -177,10 +189,22 @@ const App = () => {
     setCacheResults(updatedResults)
 
     const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+
+    const newUnopenedCache = {
+      cacheId: currentCache.id,
+      date: todayStr,
+      guessCount: numGuesses,
+      score: calculateScore(numGuesses),
+    }
+
     save({
       today: {
         date: todayStr,
         caches: updatedResults,
+      },
+      inventory: {
+        ...playerData.inventory,
+        unopenedCaches: [...(playerData.inventory?.unopenedCaches ?? []), newUnopenedCache],
       }
     })
 

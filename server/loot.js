@@ -179,6 +179,18 @@ const placeInGrid = (items) => {
   return grid
 }
 
+const stackItems = (items) => {
+  const map = {}
+  for (const item of items) {
+    if (map[item.itemId]) {
+      map[item.itemId].quantity++
+    } else {
+      map[item.itemId] = { itemId: item.itemId, name: item.name, quantity: 1 }
+    }
+  }
+  return Object.values(map)
+}
+
 //=========== main functions ===============
 const rollLoot = (multipliers = DEFAULT_MULTIPLIERS) => {
   const items = []
@@ -218,10 +230,13 @@ const rollLoot = (multipliers = DEFAULT_MULTIPLIERS) => {
   const fillers = rollFillerBlocks(global)
   items.push(...fillers)
 
+  //make a version of the items list where items are in stacks
+  const stackedItems = stackItems(items)
+
   // place everything in the 27-slot grid
   const grid = placeInGrid(items)
 
-  return { items, grid }
+  return { items: stackedItems, grid }
 }
 
 //caches will get scores based on different factors (TODO)
