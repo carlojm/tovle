@@ -90,6 +90,10 @@ const Caches = ({ onOpenCaches }) => {
 
   return (
     <div className="caches-container">
+      <p>SO EXTREMELY WIP</p>
+      <p>data will likely be deleted often until release</p>
+      <p>all of this ui will change. icons are placeholders</p>
+
 
       {/* unopened caches list */}
       <section className="caches-section">
