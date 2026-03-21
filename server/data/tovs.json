@@ -1187,6 +1187,23 @@
     "coordinates": {
       "x": -1131,
       "z": 1164
-    }
+    },
+    "description": "inside a boat northeast of mistport"
+  },
+  {
+    "id": 1002,
+    "coordinates": {
+      "x": -1583,
+      "z": 76
+    },
+    "description": "inside a poi in frostwhatever, cache is the fifty shades of wool book"
+  },
+  {
+    "id": 1003,
+    "coordinates": {
+      "x": 141,
+      "z": 988
+    },
+    "description": "on a tree with oasis town poi in the background"
   }
 ]

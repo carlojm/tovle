@@ -13,6 +13,17 @@
         "date": "2026-03-21",
         "ids": ["random","random","random",1001],
         "note": "testing a custom"
+    },
+    {
+        "date": "2026-03-22",
+        "ids": ["random","random","random",1002],
+        "note": "another custom, inside a poi"
+    },
+    {
+        "date": "2026-03-23",
+        "ids": ["random","random","random",1003],
+        "note": "another custom, outside a poi"
     }
+
     
 ]
