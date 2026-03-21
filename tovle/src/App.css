@@ -45,7 +45,13 @@ body {
 }
 
 .light body {
-  background: linear-gradient(180deg, var(--color-background) 0%, var(--color-background-gradient) min(150%, 2000px));
+ /* background: linear-gradient(180deg, #c8e6ee 0%, #e8f4f7 100%); */
+ /* background: radial-gradient(ellipse at center, #eef4f7 0%, #b8d4de 100%); */
+ /* background: linear-gradient(135deg, #c2dfe8 0%, #eef4f7 100%); */
+ /* background: linear-gradient(135deg, #cce0e8 0%, #f0f6f8 40%, #d0eaf0 100%); */
+ /* background: #d8e7ee; */
+ background: linear-gradient(135deg, #d8e7ee 0%, #c7e1e9 200%);
+
 }
 
 
