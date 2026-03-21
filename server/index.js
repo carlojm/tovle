@@ -2,6 +2,9 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 
+const { rollLoot, scoreToLuckMultiplier} = require('./loot')
+const { db } = require('./firebase')
+
 //env
 const PORT = process.env.PORT || 3001
 const REQUIRED_ENV = [] //todo keys for firebase and whatev
@@ -118,6 +121,63 @@ app.get('/api/daily', (request, response) => {
   }
 
   response.json({ date: today, caches })
+})
+
+
+app.post('/api/open-cache', async(req, res) => {
+  const { uid, cacheId, date} = req.body
+
+  if (!uid || !cacheId || !date) {
+    return res.status(400).json({ error: 'Missing uid, cacheId, or date' })
+  }
+
+  try {
+    const playerRef = db.collection('players').doc(uid)
+    const playerSnap = await playerRef.get()
+
+    if (!playerSnap.exists) {
+      return res.status(404).json({error: 'Player not found'})
+    }
+
+    const playerData = playerSnap.data()
+
+    //check cache hasn't been opened already
+    const unopened = playerData.inventory?.unopenedCaches ?? []
+    const cacheEntry = unopened.find(c => c.cacheId === cacheId && c.date === date)
+
+    //TODO luck score?
+
+    if (!cacheEntry) {
+      return res.status(403).json({ error: 'Cache not in unopened inventory' })
+    }
+
+    //get player's luck multipliers TODO figure out exactly what these look like
+    const cacheScore = cacheEntry.score ?? 25
+    const multipliers = {
+      global: 1.0 + (playerData.upgrades?.luckTier ?? 0) * 0.1 * scoreToLuckMultiplier(cacheScore),
+      items: {} //item specific multipliers TODO
+    }
+
+    //roll loot
+    const {items, grid} = rollLoot(multipliers)
+
+    //build updated inventory
+    const updatedUnopenedCaches = unopened.filter(c => !(c.cacheId === cacheId && c.date === date))
+    const openedCacheRecord = { cacheId, date, items }
+    const existingOpenedCaches = playerData.inventory?.openedCaches ?? []
+    const existingItems = playerData.inventory?.items ?? []
+
+    await playerRef.update({
+      'inventory.unopenedCaches': updatedUnopenedCaches,
+      'inventory.openedCaches': [...existingOpenedCaches, openedCacheRecord],
+      'inventory.items': [...existingItems, ...items],
+    })
+
+    res.json({grid, items})
+  } catch (err) {
+    console.error('Error opening cache!:', err)
+    res.status(500).json({error: 'Internal server error'})
+  }
 })
 
 app.listen(PORT, '0.0.0.0', () => {

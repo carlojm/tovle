@@ -120,6 +120,16 @@ const App = () => {
     // document.documentElement.classList.toggle('light')
   }
 
+  //cache score based on guess count.
+  //score of 25 equates to 95% luck, 
+  const calculateScore = (guessCount) => {
+    if (guessCount === 1) return 100
+    if (guessCount === 2) return 85
+    if (guessCount === 3) return 70
+    if (guessCount === 4) return 55
+    if (guessCount === 5) return 40
+    return 25
+  }
 
   //advancing the game
   const handleNextCache = () => {
@@ -128,7 +138,7 @@ const App = () => {
       status: 'solved',
       guesses: guessHistory,
       guessCount: numGuesses,
-      score: null, //TODO calculate later
+      score: calculateScore(numGuesses),
     }
 
     const updatedResults = [...cacheResults, currentResult]
@@ -149,7 +159,7 @@ const App = () => {
     setSelectedCoords(null)
     setLastSelectedCoords(null)
     setImageLoaded(false)
-    mapRef.current?.resetView() //TODO create this
+    mapRef.current?.resetView()
   }
 
 
@@ -160,7 +170,7 @@ const App = () => {
       status: 'solved',
       guesses: guessHistory,
       guessCount: numGuesses,
-      score: null, //TODO calculate later
+      score: calculateScore(numGuesses),
     }
 
     const updatedResults = [...cacheResults, currentResult]
@@ -176,6 +186,7 @@ const App = () => {
 
     setAllComplete(true)
   }
+
 
   const getDirectionArrow = (guessCoords, correctCoords) => {
     const dx = correctCoords.x - guessCoords.minecraftX
