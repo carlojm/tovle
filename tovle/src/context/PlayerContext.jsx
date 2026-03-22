@@ -77,7 +77,9 @@ function buildFreshPlayerData() {
     },
     upgrades: {
       luckTier: 0,
-      unlocked: []
+      distancePrecision: 0,
+      directionArrows: 0,
+      unlocked: [],
     }
   }
 }

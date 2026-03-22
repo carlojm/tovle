@@ -3,6 +3,7 @@ import { usePlayer } from '../context/PlayerContext'
 import LootGrid from './LootGrid'
 import { ITEM_MAP } from '../data/itemMap'
 import './Caches.css'
+import Crafting from './Crafting'
 
 const mergeItems = (existing, incoming) => {
   const merged = {}
@@ -96,11 +97,49 @@ const Caches = ({ onOpenCaches }) => {
     setActiveGrid(null)
   }
 
+  const handleDebugAddCache = () => {
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const newUnopenedCache = {
+      cacheId: Math.round(Math.random()*999)+10000,
+      date: todayStr,
+      guessCount: 3,
+      score: 70,
+    }
+    save({
+      inventory: {
+        ...playerData.inventory,
+        unopenedCaches: [...(playerData.inventory?.unopenedCaches ?? []), newUnopenedCache],
+      }
+    })
+  }
+
+  const handleDebugResetUpgrades = () => {
+  save({
+    upgrades: {
+      ...playerData.upgrades,
+      distancePrecision: 0,
+      directionArrows: 0,
+      luckTier: 0,
+    }
+  })
+}
+
   return (
     <div className="caches-container">
       <p>SO EXTREMELY WIP</p>
       <p>data will likely be deleted often until release</p>
       <p>all of this ui will change. icons are placeholders</p>
+
+      {import.meta.env.DEV && (
+        <>
+        <button onClick={handleDebugAddCache} className="cache-entry-button">
+          [DEBUG] Add Unopened Cache
+        </button>
+        <button onClick={handleDebugResetUpgrades} className="cache-entry-button">
+          [DEBUG] Reset Upgrades
+        </button>
+        </>
+      )}
 
 
       {/* unopened caches list */}
@@ -127,7 +166,7 @@ const Caches = ({ onOpenCaches }) => {
       {error && <p className="caches-error">{error}</p>}
       {activeGrid && (
         <section className="caches-section">
-          <h2>Loot</h2>
+          {/* <h2>Loot</h2> */}
           <LootGrid grid={activeGrid} />
           <button className="submit-button" onClick={handleCollect}>
             Collect
@@ -143,6 +182,11 @@ const Caches = ({ onOpenCaches }) => {
         ) : (
           <LootGrid grid={inventoryItems} isInventory />
         )}
+      </section>
+
+      <section className="caches-section">
+        <h2>Crafting</h2>
+        <Crafting />
       </section>
 
     </div>
