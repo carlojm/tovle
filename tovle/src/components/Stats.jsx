@@ -7,7 +7,7 @@ const Stats = () => {
   const { playerData } = usePlayer()
   const stats = playerData?.stats
 
-  if (!stats || (stats.totalCachesSolved === 0 && stats.totalCachesOpened === 0)) {
+  if (!stats || (stats.totalCachesSolved === 0)) {
     return (
       <div className="stats-box">
         <h1>Stats</h1>
@@ -26,6 +26,9 @@ const Stats = () => {
       
       {/* top stat tiles */}
       <div className="stats-list">
+        <div className="stats-list-row">
+          <span>Day stats only update on day completion.</span>
+        </div>
         <div className="stats-list-row">
           <span>Current Daily Streak</span>
           <span>{stats.currentStreak ?? 0}</span>
