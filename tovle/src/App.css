@@ -164,6 +164,7 @@ body {
 .completion-summary {
   width: min(90vw, 800px);
   padding: 24px;
+  padding-bottom: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -204,6 +205,7 @@ body {
   display: flex;
   gap: 12px;
   margin-top: 8px;
+  margin-bottom: 24px;
 }
 
 .completion-buttons button {
@@ -228,6 +230,40 @@ body {
 .completion-buttons button:active {
   transform: translateY(4px);
   background: var(--color-button-hover);
+}
+
+
+.completion-stats {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  /* margin-top: 8px; */
+  /* width: min(90vw, 450px); */
+}
+
+.completion-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: var(--color-background-coords-display);
+  border: 2px solid var(--color-coords-border);
+  border-radius: 10px;
+  /* min-width: 60px; */
+}
+
+.completion-stat-value {
+  /* font-size: clamp(20px, 5vw, 28px); */
+  font-weight: 700;
+  color: var(--color-coords-text);
+}
+
+.completion-stat-label {
+  font-size: clamp(10px, 2.5vw, 12px);
+  opacity: 0.7;
+  text-align: center;
 }
 
 .notification {

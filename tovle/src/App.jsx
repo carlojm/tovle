@@ -35,6 +35,8 @@ const App = () => {
   const [guessHistory, setGuessHistory] = useState([])
   const [numGuesses, setNumGuesses] = useState(0)
   const [hasWon, setHasWon] = useState(false)
+
+  const [todayStats, setTodayStats] = useState(null)
   
   const [imageLoaded, setImageLoaded] = useState(null)
   const [theme, setTheme] = useState(() => {
@@ -218,6 +220,8 @@ const App = () => {
     setCacheResults(updatedResults)
 
     const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const updatedStats = calculateUpdatedStats(playerData?.stats, updatedResults)
+    setTodayStats(updatedStats) //save to display in results screen
 
     const newUnopenedCache = {
       cacheId: currentCache.id,
@@ -234,7 +238,8 @@ const App = () => {
       inventory: {
         ...playerData.inventory,
         unopenedCaches: [...(playerData.inventory?.unopenedCaches ?? []), newUnopenedCache],
-      }
+      },
+      stats: updatedStats,
     })
 
     setAllComplete(true)
@@ -312,6 +317,55 @@ const App = () => {
         caches: [...existingCaches, inProgressCache],
       }
     })
+  }
+
+  const calculateUpdatedStats = (currentStats, results) => {
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    const yesterdayStr = yesterday.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+
+    const lastPlayed = currentStats?.lastPlayedDate ?? null
+    const currentStreak = currentStats?.currentStreak ?? 0
+    const bestStreak = currentStats?.bestStreak ?? 0
+
+    // streak logic
+    let newStreak
+    if (lastPlayed === yesterdayStr) {
+      newStreak = currentStreak + 1
+    } else if (lastPlayed === todayStr) {
+      newStreak = currentStreak // already updated today, don't double count
+    } else {
+      newStreak = 1 // streak broken, start fresh
+    }
+
+    const newBestStreak = Math.max(bestStreak, newStreak)
+
+    // guess distribution
+    const distribution = { ...(currentStats?.guessDistribution ?? {}) }
+    let totalNewGuesses = 0
+    for (const result of results) {
+      const bucket = result.guessCount >= 6 ? '6+' : String(result.guessCount)
+      distribution[bucket] = (distribution[bucket] ?? 0) + 1
+      totalNewGuesses += result.guessCount
+    }
+
+    // average guesses
+    const prevTotalSolved = currentStats?.totalCachesSolved ?? 0
+    const prevTotalGuesses = Math.round((currentStats?.averageGuesses ?? 0) * prevTotalSolved)
+    const newTotalSolved = prevTotalSolved + results.length
+    const newAverageGuesses = newTotalSolved === 0 ? 0 :
+      Math.round(((prevTotalGuesses + totalNewGuesses) / newTotalSolved) * 10) / 10
+
+    return {
+      currentStreak: newStreak,
+      bestStreak: newBestStreak,
+      totalCachesSolved: newTotalSolved,
+      totalDaysPlayed: (currentStats?.totalDaysPlayed ?? 0) + 1,
+      lastPlayedDate: todayStr,
+      guessDistribution: distribution,
+      averageGuesses: newAverageGuesses,
+    }
   }
 
   const handleShare = () => {
@@ -422,6 +476,27 @@ const App = () => {
               <button onClick={() => setActiveTab('caches')}>Open Caches</button>
             </div>
           </>}
+
+          {todayStats && (
+            <div className="completion-stats">
+              <div className="completion-stat">
+                <span className="completion-stat-value">{todayStats.currentStreak}</span>
+                <span className="completion-stat-label">day streak</span>
+              </div>
+              <div className="completion-stat">
+                <span className="completion-stat-value">{todayStats.bestStreak}</span>
+                <span className="completion-stat-label">best streak</span>
+              </div>
+              <div className="completion-stat">
+                <span className="completion-stat-value">{todayStats.totalCachesSolved}</span>
+                <span className="completion-stat-label">caches found</span>
+              </div>
+              <div className="completion-stat">
+                <span className="completion-stat-value">{todayStats.averageGuesses}</span>
+                <span className="completion-stat-label">avg guesses</span>
+              </div>
+            </div>
+          )}
           
         </>}
         {activeTab === 'caches' && <Caches />}
