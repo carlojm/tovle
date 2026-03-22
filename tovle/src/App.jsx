@@ -339,24 +339,39 @@ const App = () => {
 
         <Toggle tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
         {activeTab === 'play' && <> 
-          <Dateline  />
-          <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
-            {cacheImage &&
-              <img 
-                src={cacheImage}
-                className="cache-image"
-                onLoad={()=>setImageLoaded(true)}
-              />
-            }
-          </div>
+          
+
+          
 
           {!allComplete && <>
-            <Map 
-              ref={mapRef}
-              selectedCoords={selectedCoords}
-              setSelectedCoords={setSelectedCoords}
-              correctCoords={hasWon ? correctCoords : null}
-            />
+            <div className="play-layout">
+              <div className="play-image-col">
+
+                <Dateline  />
+
+                <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
+                  {cacheImage &&
+                    <img 
+                      src={cacheImage}
+                      className="cache-image"
+                      onLoad={()=>setImageLoaded(true)}
+                    />
+                  }
+                </div>
+
+              </div>
+              <div className="play-map-col">
+
+                <Map 
+                  ref={mapRef}
+                  selectedCoords={selectedCoords}
+                  setSelectedCoords={setSelectedCoords}
+                  correctCoords={hasWon ? correctCoords : null}
+                />
+
+              </div>
+            </div>
+            
             <Submit
               selectedCoords={selectedCoords}
               handleSubmitGuess={handleSubmitGuess}

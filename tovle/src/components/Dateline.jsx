@@ -16,7 +16,7 @@ const Dateline = () => {
 			<p><strong>Welcome to Tovle! WIP</strong></p>
 			{/* <p style={{fontStyle: 'italic'}}>Today's caches: {formattedDate}</p> */}
 			<p style={{marginBottom: "8px"}}>{formattedDate}</p>
-      <p>Pinpoint the cache's location on the map below.</p>
+      <p>Pinpoint this cache's location on the map.</p>
 			<p>Guess within 50 blocks to find the cache.</p>
 		</div>
 	);
