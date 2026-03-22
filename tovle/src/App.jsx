@@ -386,6 +386,18 @@ const App = () => {
           </>}
 
           {allComplete && <>
+            {/* i like how the last cache image shows up at the end so im putting it in again here */}
+            {/* it is a feature now not a bug */}
+            <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
+              {cacheImage &&
+                <img 
+                  src={cacheImage}
+                  className="cache-image"
+                  onLoad={()=>setImageLoaded(true)}
+                  style={{width:"min(60vw,500px)"}}
+                />
+              }
+            </div>
             <div className="completion-summary">
               <p>You found all {dailyCaches.length} caches today!</p>
               {cacheResults.map((result, i) => (

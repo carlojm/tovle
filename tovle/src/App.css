@@ -81,7 +81,7 @@ body {
 
   font-size: clamp(14px, 3vw, 16px); /*idk what these values should be*/
 
-  padding-bottom: 30vh; /*some breathing room at the bottom*/
+  padding-bottom: 10vh; /*some breathing room at the bottom*/
 
 }
 
