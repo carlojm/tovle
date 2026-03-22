@@ -66,11 +66,19 @@ const Caches = ({ onOpenCaches }) => {
       const existingItems = playerData?.inventory?.items ?? []
       const mergedItems = mergeItems(existingItems, data.items)
 
+      //for statistics
+      const totalItems = data.items.reduce((sum, item) => sum + item.quantity, 0)
+
       save({
       inventory: {
           ...playerData.inventory,
           unopenedCaches: updatedUnopenedCaches,
           items: mergedItems,
+      },
+      stats: {
+        ...playerData.stats,
+        totalCachesOpened: (playerData.stats?.totalCachesOpened ?? 0) + 1,
+        totalItemsCollected: (playerData.stats?.totalItemsCollected ?? 0) + totalItems,
       }
       })
 

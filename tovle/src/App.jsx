@@ -184,6 +184,17 @@ const App = () => {
       score: calculateScore(numGuesses),
     }
 
+    //prevent player from refreshing and claiming a cache again
+    const existingUnopenedCaches = playerData.inventory?.unopenedCaches ?? []
+    const existingOpenedCaches = playerData.inventory?.openedCaches ?? []
+
+    const alreadyAdded = existingUnopenedCaches.some(
+      c => c.cacheId === currentCache.id && c.date === todayStr
+    )
+    const alreadyOpened = existingOpenedCaches.some(
+      c => c.cacheId === currentCache.id && c.date === todayStr
+    )
+
     save({
       today: {
         date: todayStr,
@@ -191,7 +202,9 @@ const App = () => {
       },
       inventory: {
         ...playerData.inventory,
-        unopenedCaches: [...(playerData.inventory?.unopenedCaches ?? []), newUnopenedCache],
+        unopenedCaches: (alreadyAdded || alreadyOpened)
+          ? existingUnopenedCaches
+          : [...existingUnopenedCaches, newUnopenedCache],
       }
     })
 
@@ -239,7 +252,10 @@ const App = () => {
         ...playerData.inventory,
         unopenedCaches: [...(playerData.inventory?.unopenedCaches ?? []), newUnopenedCache],
       },
-      stats: updatedStats,
+      stats: {
+        ...playerData.stats,
+        updatedStats,
+      }
     })
 
     setAllComplete(true)
@@ -345,7 +361,7 @@ const App = () => {
     const distribution = { ...(currentStats?.guessDistribution ?? {}) }
     let totalNewGuesses = 0
     for (const result of results) {
-      const bucket = result.guessCount >= 6 ? '6+' : String(result.guessCount)
+      const bucket = result.guessCount >= 10 ? '10+' : String(result.guessCount)
       distribution[bucket] = (distribution[bucket] ?? 0) + 1
       totalNewGuesses += result.guessCount
     }

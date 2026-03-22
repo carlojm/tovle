@@ -1,0 +1,101 @@
+.stats-box {
+  display: flex;
+  flex-direction: column;
+  width: min(90vw, 500px);
+  margin: 16px;
+  padding: 4px 25px 24px 25px;
+  background: var(--color-background-coords-display);
+  border: 2px solid var(--color-coords-border);
+  border-radius: 10px;
+}
+
+.stats-box h1 {
+  margin-top: 20px;
+  margin-bottom: 12px;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.stats-box h2 {
+  margin-top: 20px;
+  margin-bottom: 12px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.stats-empty {
+  text-align: center;
+  opacity: 0.6;
+  font-style: italic;
+  margin: 16px;
+}
+
+/* stat tiles */
+.stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 8px;
+  align-items: center;
+}
+
+.stats-list-row {
+  display: flex;
+  justify-content: space-between;
+  width:70%;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: clamp(12px, 3vw, 14px);
+}
+
+.stats-list-row span:last-child {
+  font-weight: 700;
+  color: var(--color-text);
+  opacity: 85%
+}
+
+/* distribution chart */
+.stats-distribution {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 8px;
+}
+
+.stats-bar-row {
+  display: grid;
+  grid-template-columns: 24px 1fr 36px;
+  align-items: center;
+  gap: 8px;
+}
+
+.stats-bar-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  opacity: 0.8;
+}
+
+.stats-bar-track {
+  height: 20px;
+  background: var(--color-coords-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.stats-bar-fill {
+  height: 100%;
+  background: var(--color-button);
+  border-radius: 4px;
+  transition: width 0.6s ease-out;
+  min-width: 4px;
+}
+
+.stats-bar-percent {
+  font-size: 12px;
+  opacity: 0.7;
+  text-align: right;
+}

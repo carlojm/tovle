@@ -60,8 +60,11 @@ function buildFreshPlayerData() {
       bestStreak: 0,
       totalCachesSolved: 0,
       totalDaysPlayed: 0,
+      totalCachesOpened: 0,
+      totalItemsCollected: 0,
+      lastPlayedDate: null,
       guessDistribution: {},
-      averageGuesses: null,
+      averageGuesses: 0,
     },
     today: {
       date: null,
