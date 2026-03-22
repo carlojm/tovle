@@ -475,7 +475,7 @@ const App = () => {
                   src={cacheImage}
                   className="cache-image"
                   onLoad={()=>setImageLoaded(true)}
-                  style={{width:"min(60vw,500px)"}}
+                  style={{width:"min(90vw,500px)"}}
                 />
               }
             </div>
