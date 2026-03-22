@@ -195,6 +195,7 @@ const App = () => {
     }
 
     //prevent player from refreshing and claiming a cache again
+    //may be unnecessary now but can't hurt to have the check i guess
     const existingUnopenedCaches = playerData.inventory?.unopenedCaches ?? []
     const existingOpenedCaches = playerData.inventory?.openedCaches ?? []
 
@@ -263,8 +264,8 @@ const App = () => {
         unopenedCaches: [...(playerData.inventory?.unopenedCaches ?? []), newUnopenedCache],
       },
       stats: {
-        ...playerData.stats,
-        updatedStats,
+        ...playerData.stats,  // preserve all existing fields including totalCachesOpened etc.
+        ...updatedStats,      // override with freshly calculated fields
       }
     })
 
