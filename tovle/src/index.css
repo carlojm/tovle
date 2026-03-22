@@ -51,8 +51,8 @@
   --color-border-loot-slot: var(--slate);
   --color-border-loot-slot-filled: var(--light-slate);
   --color-background-loot-slot-hover: var(--slate-blue);
-  --color_text-loot-display: var(--white-smoke);
-  --color_text-shadow-loot-display: var(--black);
+  --color-text-loot-display: var(--white-smoke);
+  --color-text-shadow-loot-display: var(--deepest-ocean);
 
 
   --color-navbar-background: var(--deep-ocean);
@@ -125,17 +125,17 @@
   --color_text-loot-display: var(--deepest-ocean);
   --color_text-shadow-loot-display: var(--white-smoke); */
 
-  --color-background-loot-grid: rgba(148, 207, 255, 0.3);
+  --color-background-loot-grid: rgba(148, 207, 255, 1);
   --color-border-loot-grid: var(--darker-cyan);
-  --color-background-loot-slot: rgba(148, 207, 255, 0.3);
+  --color-background-loot-slot: rgb(162, 209, 247);
 
   --color-border-loot-slot: var(--dark-cyan);
   --color-border-loot-slot-filled: var(--darker-cyan);
 
   --color-background-loot-slot-hover: var(--light-blue);
 
-  --color_text-loot-display: var(--deepest-ocean);
-  --color_text-shadow-loot-display: var(--white-smoke);
+  --color-text-loot-display: var(--deepest-ocean);
+  --color-text-shadow-loot-display: var(--white-smoke);
   
 
 }

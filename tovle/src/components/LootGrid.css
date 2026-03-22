@@ -44,7 +44,7 @@
   font-weight: 700;
   color: var(--color-text-loot-display);
   opacity: 85%;
-  text-shadow: 1px 1px 0 var(--color_text-shadow-loot-display);
+  text-shadow: 1px 1px 0 var(--color-text-shadow-loot-display);
   line-height: 1;
 }
 
