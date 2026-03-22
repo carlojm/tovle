@@ -26,6 +26,8 @@
   --light-cyan: rgba(51, 150, 189, 1);
   --cerulean: #0c7489ff;
   --light-blue: rgba(176, 242, 255, 0.322);
+  --light-bluer: rgb(203, 246, 255);
+
   
   --black: #040404ff;
   --dust-grey: #d7d9ceff;
@@ -133,6 +135,7 @@
   --color-border-loot-slot-filled: var(--darker-cyan);
 
   --color-background-loot-slot-hover: var(--light-blue);
+  --color-background-loot-slot-tooltip: var(--light-bluer);
 
   --color-text-loot-display: var(--deepest-ocean);
   --color-text-shadow-loot-display: var(--white-smoke);
