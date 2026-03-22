@@ -82,15 +82,22 @@ const App = () => {
         //the last cache the player interacted with was solved but wasn't the final cache.
         //aka if the player's last intereacted with cache is cache 1/4, and they havent
         //made any guesses on 2/4, and we're reloading game state, jump back to 1/4's result screen.
+        //ok that actually didnt work either it caused other problems
+        //the solution is to use a third state 'advanced' to track is next button was pressed.
 
         const savedCaches = savedToday.caches
 
         //check if game is truly complete:
         //-all saved caches are marked solved
         //-the number of saved caches is the same as number of daily caches (usually 4)
+
+        // const allDone = savedCaches.length === data.caches.length &&
+        //   savedCaches[savedCaches.length - 1]?.status === 'solved' &&
+        //   savedCaches.every(c => c.status === 'solved')
+
         const allDone = savedCaches.length === data.caches.length &&
           savedCaches[savedCaches.length - 1]?.status === 'solved' &&
-          savedCaches.every(c => c.status === 'solved')
+          savedCaches.slice(0, -1).every(c => c.status === 'advanced')
         
         if (allDone) {
           setCacheResults(savedCaches)
@@ -105,29 +112,32 @@ const App = () => {
 
         const lastCache = savedCaches[savedCaches.length - 1]
         const lastIsSolvedButNotAdvanced = lastCache?.status === 'solved'
+        //advanced means solved AND next cache button pressed
+        //solved means solved but still on this cache.
+        //this will fix problems with refreshing after solving a cache in the middle of the game.
 
         //completed caches = all except the last one, if last is in progress
         const completedCaches = lastIsSolvedButNotAdvanced
           ? savedCaches.slice(0, -1)  // exclude the last solved-but-not-advanced cache
-          : savedCaches.filter(c => c.status === 'solved')
+          : savedCaches.filter(c => c.status === 'advanced')
 
         //restore game state if in progress
         setCacheResults(completedCaches)
         setCurrentCacheIndex(completedCaches.length)
 
-        //restore current cache's guess state
-        setGuessHistory(lastCache?.guesses ?? [])
-        setNumGuesses(lastCache?.guesses?.length ?? 0)
-        
-        //if current cache is solved but player hasnt pressed next cache button,
-        //restore won state so the button says "next cache" and they can proceed
         if (lastIsSolvedButNotAdvanced) {
+          // player solved this cache but hasn't pressed Next Cache yet
+          // restore their guess history and won state
+          setGuessHistory(lastCache?.guesses ?? [])
+          setNumGuesses(lastCache?.guesses?.length ?? 0)
           setHasWon(true)
+        } else {
+          // player already pressed Next Cache, they're on a fresh cache
+          // don't restore any guess state
+          setGuessHistory([])
+          setNumGuesses(0)
+          setHasWon(false)
         }
-
-        //if the player ex. solves cache 1, presses next, and then reloads,
-        //they will be placed back on cache 1 and have to press next again.
-        //this could be fixed if we wanted to save more data but it's fine.
       }
 
       setImageLoaded(true)
@@ -166,7 +176,7 @@ const App = () => {
   const handleNextCache = () => {
     const currentResult = {
       cacheId: currentCache.id,
-      status: 'solved',
+      status: 'advanced', //advanced = solved AND next cache button pressed
       guesses: guessHistory,
       guessCount: numGuesses,
       score: calculateScore(numGuesses),
