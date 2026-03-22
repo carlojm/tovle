@@ -9,7 +9,8 @@ const LOOT_TABLE = [
     itemId: 'den_piece_100',
     name: '100 Den Piece',
     rolls: 1,
-    baseChance: 1.0, // guaranteed
+    baseChance: 1.0, // guaranteed,
+    unique: true //only ever drop one per cache
   },
   {
     itemId: 'eye_of_viridia',
@@ -76,6 +77,13 @@ const LOOT_TABLE = [
     name: 'Harbinger',
     rolls: 1,
     baseChance: 0.0625,
+  },
+  {
+    itemId: 'viridian_cod',
+    name: 'Viridian Cod',
+    rolls: 2,
+    baseChance: 0.4,
+    requiresUpgrade: 'fishingNet', // only rolls if player has this upgrade
   },
 ]
 
@@ -205,7 +213,7 @@ const rollLoot = (multipliers = DEFAULT_MULTIPLIERS) => {
   // roll each item in the loot table
   for (const entry of LOOT_TABLE) {
     const itemMultiplier = multipliers.items?.[entry.itemId] ?? 1.0
-    const totalMultiplier = global * itemMultiplier
+    const totalMultiplier = global * itemMultiplier * 100
 
     const effectiveRolls = Math.floor(entry.rolls * totalMultiplier)
     const remainder = (entry.rolls * totalMultiplier) % 1
@@ -216,15 +224,19 @@ const rollLoot = (multipliers = DEFAULT_MULTIPLIERS) => {
     //ex. at multiplier of 10, hxp is rolled twice at 12.5% and 18 more times at 12.5%
     //or something like that... that's the plan anyways idk if it should be + or * base rolls
 
+    let rollCount = 0 //track how many times an item is added
+
     //full rolls at base chance
     for (let i = 0; i < effectiveRolls; i++) {
       if (rollChance(entry.baseChance)) {
+        if (entry.unique && rollCount >= 1) continue //skip if unique item alrdy rolled once
         items.push({ itemId: entry.itemId, name: entry.name })
+        rollCount++
       }
     }
 
     // partial roll for the remainder
-    if (remainder > 0) {
+    if (remainder > 0 && !(entry.unique && rollCount >= 1)) {
       if (rollChance(entry.baseChance * remainder)) {
         items.push({ itemId: entry.itemId, name: entry.name })
       }

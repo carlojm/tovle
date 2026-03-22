@@ -12,8 +12,10 @@ const Submit = ({
   numGuesses,
   hasWon,
   isLastCache,
-  dailyCaches, currentCacheIndex, allComplete
+  dailyCaches, currentCacheIndex, allComplete,
+  distancePrecision
 }) => {
+
   const hasGuesses = guessHistory.length > 0
 
   const cacheProgress = allComplete
@@ -34,6 +36,24 @@ const Submit = ({
   const isDisabled = buttonLabel !== 'Search Area' ? false
     : !selectedCoords || (!hasWon && !selectedCoords)
 
+  const getDisplayDistance = (distance, precision) => {
+    if (distance <= 50) return `${distance} blocks away`
+
+    if (precision === 0) {
+      const lo = Math.max(50, Math.round((distance - 100) / 100) * 100)
+      const hi = Math.round((distance + 100) / 100) * 100
+      return `${lo}-${hi} blocks away`
+    } else if (precision === 1) {
+      const rounded = Math.round(distance / 100) * 100
+      return `~${rounded} blocks away`
+    } else if (precision === 2) {
+      const rounded = Math.round(distance / 10) * 10
+      return `~${rounded} blocks away`
+    } else {
+      return `${distance} blocks away`
+    }
+  }
+  
   return (
     <div className="coords-wrapper">
       <div className="coords-display">
@@ -62,7 +82,7 @@ const Submit = ({
           {[...guessHistory].slice(-10).reverse().map((guess) => (
             <Fragment key={guess.guessNumber}>
               <p><strong>#{guess.guessNumber}</strong></p>
-              <p>{guess.distance} blocks away.</p>
+              <p>{getDisplayDistance(guess.distance, distancePrecision)}</p>
               <p>{guess.message}</p>
               <p>{guess.arrow}</p>
             </Fragment>

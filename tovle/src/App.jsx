@@ -272,7 +272,6 @@ const App = () => {
     setAllComplete(true)
   }
 
-
   const getDirectionArrow = (guessCoords, correctCoords) => {
     const dx = correctCoords.x - guessCoords.minecraftX
     const dz = correctCoords.z - guessCoords.minecraftZ
@@ -280,10 +279,19 @@ const App = () => {
     const angle = Math.atan2(dz, dx) * (180 / Math.PI)
     const normalized = (angle + 360) % 360
 
-    const arrows = ['→', '↘', '↓', '↙', '←', '↖', '↑', '↗']
-    const index = Math.round(normalized / 45) % 8
+    const directionTier = playerData?.upgrades?.directionArrows ?? 0
 
-    return arrows[index]
+    if (directionTier === 0) {
+      // 4 cardinal directions only
+      const arrows = ['→', '→', '↓', '↓', '←', '←', '↑', '↑']
+      const index = Math.round(normalized / 45) % 8
+      return arrows[index]
+    } else {
+      // all 8 directions
+      const arrows = ['→', '↘', '↓', '↙', '←', '↖', '↑', '↗']
+      const index = Math.round(normalized / 45) % 8
+      return arrows[index]
+    }
   }
 
   const handleSubmitGuess = () => {
@@ -463,6 +471,7 @@ const App = () => {
               hasWon={hasWon}
               isLastCache={currentCacheIndex === dailyCaches.length - 1}
               dailyCaches={dailyCaches} currentCacheIndex={currentCacheIndex} allComplete={allComplete}
+              distancePrecision={playerData?.upgrades?.distancePrecision ?? 0}
             />
           </>}
 
