@@ -44,6 +44,10 @@
 .axolotl-name {
   font-weight: 700;
   font-size: clamp(13px, 3vw, 15px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: min(40vw, 350px); /* adjust to taste */
 }
 
 .axolotl-name-input {

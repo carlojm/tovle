@@ -189,7 +189,7 @@ const Axolotl = () => {
                     <input 
                       className="axolotl-name-input"
                       value={editingName}
-                      onChange={e => setEditingName(e.target.value)}
+                      onChange={e => setEditingName(e.target.value.slice(0,20))}
                       onBlur={() => handleRenameSubmit(axolotl)}
                       onKeyDown={e => e.key === 'Enter' && handleRenameSubmit(axolotl)}
                       autoFocus
