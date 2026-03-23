@@ -115,20 +115,31 @@ const Caches = ({ onOpenCaches }) => {
   }
 
   const handleDebugResetUpgrades = () => {
-  save({
-    upgrades: {
-      ...playerData.upgrades,
-      distancePrecision: 0,
-      directionArrows: 0,
-      luckTier: 0,
-    }
-  })
-}
+    save({
+      upgrades: {
+        ...playerData.upgrades,
+        distancePrecision: 0,
+        directionArrows: 0,
+        luckTier: 0,
+      }
+    })
+  }
+
+  const handleDebugResetAxolotlCollection = () => {
+    const updatedAxolotls = (playerData?.axolotls ?? []).map(a => ({
+      ...a,
+      lastCollected: null,
+      lastCollectedCount: null,
+    }))
+    save({ axolotls: updatedAxolotls })
+  }
+
 
   return (
     <div className="caches-container">
       <p>SO EXTREMELY WIP</p>
       <p>data will likely be deleted often until release</p>
+      <p>and here's a bunch of debug buttons to test stuff</p>
 
       {/* {import.meta.env.DEV && ( */}
         <>
@@ -137,6 +148,9 @@ const Caches = ({ onOpenCaches }) => {
         </button>
         <button onClick={handleDebugResetUpgrades} className="cache-entry-button">
           [DEBUG] Reset Upgrades
+        </button>
+        <button onClick={handleDebugResetAxolotlCollection} className="cache-entry-button">
+          [DEBUG] Reset Axolotl Collection Timer
         </button>
         </>
       {/* )} */}
@@ -154,9 +168,18 @@ const Caches = ({ onOpenCaches }) => {
             className={`cache-entry-button ${loading ? 'disable-button' : ''}`}
             onClick={() => !loading && !activeGrid && handleOpenCache(cache)}
           >
-            <span>Cache #{cache.cacheId}</span>
-            <span>{cache.guessCount} {cache.guessCount === 1 ? 'guess' : 'guesses'}</span>
-            <span>{cache.date}</span>
+            {cache.source === 'axolotl' ? (
+              <>
+                <span>{cache.axolotlName}'s Cache</span>
+                <span>{cache.date}</span>
+              </>
+            ) : (
+              <>
+                <span>Cache #{cache.cacheId}</span>
+                <span>{cache.guessCount} {cache.guessCount === 1 ? 'guess' : 'guesses'}</span>
+                <span>{cache.date}</span>
+              </>
+            )}
           </button>
         ))}
       </section>

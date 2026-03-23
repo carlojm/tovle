@@ -93,6 +93,8 @@ const Axolotl = () => {
       date: todayStr,
       guessCount: 0,
       score: 25, //base score
+      source: 'axolotl',
+      axolotlName: axolotl.name
     }))
 
     const existingUnopenedCaches = playerData.inventory?.unopenedCaches ?? []
