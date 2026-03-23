@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { usePlayer } from '../context/PlayerContext'
 import LootGrid from './LootGrid'
 import { ITEM_MAP } from '../data/itemMap'
@@ -41,6 +41,8 @@ const Caches = ({ onOpenCaches }) => {
 
   const [animPhase, setAnimPhase] = useState('idle') // idle | orb | reveal | done
   const [pendingItems, setPendingItems] = useState([])
+  const [openingCacheKey, setOpeningCacheKey] = useState(null)
+  const pendingSaveRef = useRef(null)
 
   const unopenedCaches = playerData?.inventory?.unopenedCaches ?? []
   const inventoryItems = playerData?.inventory?.items ?? []
@@ -50,6 +52,8 @@ const Caches = ({ onOpenCaches }) => {
     setError(null)
     setActiveGrid(null)
     setAnimPhase('orb')
+
+    setOpeningCacheKey(`${cacheEntry.cacheId}-${cacheEntry.date}`)
 
     try {
       const res = await fetch('/api/open-cache', {
@@ -83,7 +87,7 @@ const Caches = ({ onOpenCaches }) => {
 
       const existingOpenedCaches = playerData?.inventory?.openedCaches ?? []
 
-      save({
+      pendingSaveRef.current = () => save({
         inventory: {
           ...playerData.inventory,
           unopenedCaches: updatedUnopenedCaches,
@@ -178,48 +182,60 @@ const Caches = ({ onOpenCaches }) => {
         {unopenedCaches.length === 0 && !activeGrid && (
           <p className="caches-empty">No unopened caches. Play today's caches to earn more!</p>
         )}
-        {unopenedCaches.map(cache => (
-          <button
-            key={`${cache.cacheId}-${cache.date}`}
-            className={`cache-entry-button ${loading ? 'disable-button' : ''}`}
-            onClick={() => !loading && handleOpenCache(cache)}
-          >
-            {cache.source === 'axolotl' ? (
-              <>
-                <span>{cache.axolotlName}'s Cache</span>
-                <span>{cache.date}</span>
-              </>
-            ) : (
-              <>
-                <span>Cache #{cache.cacheId}</span>
-                <span>{cache.guessCount} {cache.guessCount === 1 ? 'guess' : 'guesses'}</span>
-                <span>{cache.date}</span>
-              </>
-            )}
-          </button>
-        ))}
+        {unopenedCaches.map(cache => {
+          const key = `${cache.cacheId}-${cache.date}`
+          const isOpening = openingCacheKey === key
+
+          return (
+            <button
+              key={key}
+              className={`cache-entry-button ${loading ? 'disable-button' : ''}`}
+              onClick={() => !loading && handleOpenCache(cache)}
+            >
+              {isOpening ? (
+                <span>Opening...</span>
+              ) : cache.source === 'axolotl' ? (
+                <>
+                  <span>{cache.axolotlName}'s Cache</span>
+                  <span>{cache.date}</span>
+                </>
+              ) : (
+                <>
+                  <span>Cache #{cache.cacheId}</span>
+                  <span>{cache.guessCount} {cache.guessCount === 1 ? 'guess' : 'guesses'}</span>
+                  <span>{cache.date}</span>
+                </>
+              )}
+            </button>
+          )
+        })}
       </section>
 
       {/* loot grid */}
       <div style={{ position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        {animPhase === 'orb' && (
-          <CacheAnimation
-            items={pendingItems}
-            onComplete={() => {
-              setAnimPhase('reveal')
-              setTimeout(() => setAnimPhase('done'), 27 * 30 + 400)
-            }}
-          />
+        {/* <div className="co-stage-wrapper"> */}
+          {animPhase === 'orb' && (
+            <CacheAnimation
+              items={pendingItems}
+              onComplete={() => {
+                pendingSaveRef.current?.() //save the cache items
+                pendingSaveRef.current = null
+                setOpeningCacheKey(null) //remove the cache being opened's button
+                setAnimPhase('reveal')
+                setTimeout(() => setAnimPhase('done'), 27 * 30 + 400)
+              }}
+            />
+          )}
+        {/* </div> */}
+        {activeGrid && (animPhase === 'reveal' || animPhase === 'done') && (
+          <section className="caches-section loot-reveal">
+            {/* <h2>Loot</h2> */}
+            <LootGrid grid={activeGrid} revealing={animPhase === 'reveal'}/>
+            {/* <button className="submit-button" onClick={handleCollect}>
+              Collect
+            </button> */}
+          </section>
         )}
-        {activeGrid && (
-        <section className="caches-section">
-          {/* <h2>Loot</h2> */}
-          <LootGrid grid={activeGrid} revealing={animPhase === 'reveal'}/>
-          <button className="submit-button" onClick={handleCollect}>
-            Collect
-          </button>
-        </section>
-      )}
       </div>
       
       {/* {loading && <p className="caches-loading">Opening cache...</p>} */}

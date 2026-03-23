@@ -1,12 +1,12 @@
 .co-stage {
   width: 100%;
   max-width: 540px;
-  height: 220px;
+  height: 140px;
   position: relative;
   overflow: hidden;
-  border: 2px solid var(--color-coords-border);
+  border: 2px solid var(--color-border-loot-grid);
   border-radius: 12px;
-  background: var(--color-background-coords-display);
+  background: var(--color-background-loot-grid);
   margin: 0 auto;
 }
 

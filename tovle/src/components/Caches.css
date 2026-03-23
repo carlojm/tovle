@@ -41,7 +41,8 @@
   font-family: "Open Runde", system-ui, sans-serif;
   font-size: clamp(12px, 3vw, 15px);
   cursor: pointer;
-  transition: all 0.2s ease;
+
+  transition: all 0.2s ease, opacity 0.2s ease;
 }
 
 .cache-entry-button:hover {
@@ -80,4 +81,28 @@
 
 .caches-toggle-btn:hover {
   opacity: 1;
+}
+
+
+.loot-reveal {
+  animation: fade-slide-up 0.3s ease-out;
+}
+
+@keyframes fade-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.co-stage-wrapper {
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }

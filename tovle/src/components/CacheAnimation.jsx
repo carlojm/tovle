@@ -7,8 +7,9 @@ import chestGif from '../assets/chest.gif'
 const CHEST_SIZE = 64
 const ITEM_SIZE = 28
 const TOTAL_BOUNCES = 8
-const BOUNCE_DUR = 160
-const SETTLE_DUR = 450
+const BOUNCE_DUR = 200
+const SETTLE_DUR = 500
+const FINAL_SHAKE_DUR = 1000
 
 function easeOut(t) { return 1 - Math.pow(1 - t, 3) }
 function easeInOut(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2 }
@@ -50,7 +51,8 @@ function runAnimation(stage, chest, items, onComplete, animRef) {
   let lastNow = null
 
   const spawnParticles = () => {
-    const colors = ['#1abc9c','#3498db','#9b59b6','#f39c12','#e74c3c','#DAA520','#2ecc71','#e67e22']
+    // const colors = ['#1abc9c','#3498db','#9b59b6','#f39c12','#e74c3c','#DAA520','#2ecc71','#e67e22']
+    const colors = ['#f1f2f3','#f1f2f3','#f1f2f3','#f1f2f3','#f1f2f3','#f1f2f3','#f1f2f3','#f1f2f3']
     colors.forEach((color, i) => {
       const angle = (i / colors.length) * Math.PI * 2
       const p = document.createElement('div')
@@ -172,7 +174,7 @@ function runAnimation(stage, chest, items, onComplete, animRef) {
         animRef.current = requestAnimationFrame(tick)
       } else {
         // swap to gif
-        chest.src = chestGif
+        chest.src = chestGif + '?t=' + Date.now()
         chest.style.transform = 'scale(1) rotate(0deg)'
 
         chest.animate([
@@ -182,7 +184,7 @@ function runAnimation(stage, chest, items, onComplete, animRef) {
           { transform: 'rotate(-10deg) scale(1.3)' },
           { transform: 'rotate(10deg) scale(1.3)' },
           { transform: 'rotate(0deg) scale(1.4)' },
-        ], { duration: 350, easing: 'ease-in-out' }).onfinish = () => {
+        ], { duration: FINAL_SHAKE_DUR, easing: 'ease-in-out' }).onfinish = () => {
           spawnParticles()
           chest.style.display = 'none'
           activeItems.forEach(item => {
@@ -200,21 +202,23 @@ function runAnimation(stage, chest, items, onComplete, animRef) {
   animRef.current = requestAnimationFrame(tick)
 }
 
-const CacheAnimation = ({items=[], onComplete}) => {
+const CacheAnimation = ({ items = [], onComplete }) => {
   const animRef = useRef(null)
+  const startedRef = useRef(false)
 
   const stageCallback = (stage) => {
-  if (!stage) {
-    if (animRef.current) cancelAnimationFrame(animRef.current)
-    return
-  }
-  // defer one frame so the stage has its final layout dimensions
-  requestAnimationFrame(() => {
+    console.log('stageCallback fired', stage ? 'with node' : 'with null')
+    if (!stage) {
+      if (animRef.current) cancelAnimationFrame(animRef.current)
+      startedRef.current = false
+      return
+    }
+    if (startedRef.current) return
+    startedRef.current = true
+
     const chest = stage.querySelector('.co-chest')
     runAnimation(stage, chest, items, onComplete, animRef)
-  })
-}
-
+  }
 
   return (
     <div className="co-stage" ref={stageCallback}>
