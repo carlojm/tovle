@@ -160,7 +160,9 @@ app.post('/api/open-cache', async(req, res) => {
     }
 
     //roll loot
-    const {items, grid} = rollLoot(multipliers, playerData.upgrades ?? {})
+    const isAxolotlCache = String(cacheId).startsWith('axolotl_')
+    const { items, grid } = rollLoot(multipliers, playerData.upgrades ?? {}, isAxolotlCache ? 'axolotl' : 'cache')
+    // const {items, grid} = rollLoot(multipliers, playerData.upgrades ?? {})
 
     //build updated inventory
     const updatedUnopenedCaches = unopened.filter(c => !(c.cacheId === cacheId && c.date === date))
