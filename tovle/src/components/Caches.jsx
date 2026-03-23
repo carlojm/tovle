@@ -42,12 +42,19 @@ const Caches = ({ onOpenCaches }) => {
   const [animPhase, setAnimPhase] = useState('idle') // idle | orb | reveal | done
   const [pendingItems, setPendingItems] = useState([])
   const [openingCacheKey, setOpeningCacheKey] = useState(null)
+
+  //this ref used to delay saving cache loot until animation is done
   const pendingSaveRef = useRef(null)
+
+  //used to prevent interactions while animations happen
+  const isAnimating = animPhase === 'orb' || animPhase === 'reveal'
 
   const unopenedCaches = playerData?.inventory?.unopenedCaches ?? []
   const inventoryItems = playerData?.inventory?.items ?? []
 
   const handleOpenCache = async (cacheEntry) => {
+    if (isAnimating || loading) return
+
     setLoading(true)
     setError(null)
     setActiveGrid(null)
@@ -69,6 +76,8 @@ const Caches = ({ onOpenCaches }) => {
       const data = await res.json()
       if (!res.ok) {
         setError(data.error ?? 'Something went wrong')
+        setAnimPhase('idle')
+        setOpeningCacheKey(null)
         return
       }
 
@@ -106,6 +115,7 @@ const Caches = ({ onOpenCaches }) => {
     } catch (err) {
       setError('Failed to open cache. Try again.')
       setAnimPhase('idle')
+      setOpeningCacheKey(null)
       console.error(err)
     } finally {
       setLoading(false)
@@ -189,8 +199,8 @@ const Caches = ({ onOpenCaches }) => {
           return (
             <button
               key={key}
-              className={`cache-entry-button ${loading ? 'disable-button' : ''}`}
-              onClick={() => !loading && handleOpenCache(cache)}
+              className={`cache-entry-button ${loading || isAnimating ? 'disable-button' : ''}`}
+              onClick={() => !loading && !isAnimating && handleOpenCache(cache)}
             >
               {isOpening ? (
                 <span>Opening...</span>
@@ -231,9 +241,9 @@ const Caches = ({ onOpenCaches }) => {
           <section className="caches-section loot-reveal">
             {/* <h2>Loot</h2> */}
             <LootGrid grid={activeGrid} revealing={animPhase === 'reveal'}/>
-            {/* <button className="submit-button" onClick={handleCollect}>
+            <button className="submit-button" onClick={handleCollect}>
               Collect
-            </button> */}
+            </button>
           </section>
         )}
       </div>
