@@ -129,9 +129,8 @@ const Caches = ({ onOpenCaches }) => {
     <div className="caches-container">
       <p>SO EXTREMELY WIP</p>
       <p>data will likely be deleted often until release</p>
-      <p>all of this ui will change. icons are placeholders</p>
 
-      {import.meta.env.DEV && (
+      {/* {import.meta.env.DEV && ( */}
         <>
         <button onClick={handleDebugAddCache} className="cache-entry-button">
           [DEBUG] Add Unopened Cache
@@ -140,7 +139,7 @@ const Caches = ({ onOpenCaches }) => {
           [DEBUG] Reset Upgrades
         </button>
         </>
-      )}
+      {/* )} */}
 
 
       {/* unopened caches list */}

@@ -282,7 +282,7 @@ const rollLoot = (multipliers = DEFAULT_MULTIPLIERS, playerUpgrades = {}) => {
     }
 
     const itemMultiplier = multipliers.items?.[entry.itemId] ?? 1.0
-    const totalMultiplier = global * itemMultiplier * 100
+    const totalMultiplier = global * itemMultiplier
 
     const effectiveRolls = Math.floor(entry.rolls * totalMultiplier)
     const remainder = (entry.rolls * totalMultiplier) % 1

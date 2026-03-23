@@ -75,6 +75,7 @@ const UPGRADES = [
     id: 'newHire',
     name: 'New Hire',
     description: [
+      'None',
       'An axolotl wants to live in your newly crafted habitat. Searches for caches in exchange for fish.',
       'WIP',
     ],
