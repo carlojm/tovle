@@ -99,7 +99,7 @@ const Axolotl = () => {
     //subtract the axolotl's level from hunger, not just how many caches it opened
     const updatedAxolotls = axolotls.map(a =>
       a.id === axolotl.id
-        ? {...a, hunger: Math.max(0, a.hunger - axolotl.level), lastCollected: todayStr}
+        ? {...a, hunger: Math.max(0, a.hunger - axolotl.level), lastCollected: todayStr, lastCollectedCount: count}
         : a
     )
 
@@ -275,7 +275,7 @@ const Axolotl = () => {
               onClick={() => handleCollect(axolotl)}
             >
               {alreadyCollected
-                ? 'Collected today'
+                ? `Collected ${axolotl.lastCollectedCount} cache${axolotl.lastCollectedCount > 1 ? 's' : ''} today`
                 : axolotl.hunger > 0
                   ? axolotl.level === 1
                     ? `Collect 1 cache`
