@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { usePlayer } from '../context/PlayerContext'
 import { ITEM_MAP } from '../data/itemMap'
-import { PencilLine, ChevronUp } from 'lucide-react'
+import { PencilLine, ChevronsUp } from 'lucide-react'
 import './Axolotl.css'
 import axolotlImg from '../assets/axolotl.png'
 
@@ -203,15 +203,17 @@ const Axolotl = () => {
                     <PencilLine size={14} />
                   </button>
 
+                  
+
+                  <span className="axolotl-level">Lv. {axolotl.level}</span>
+
                   <button
-                    className={`axolotl-icon-btn ${levelUpReady ? 'axolotl-levelup-ready' : ''}`}
+                    className={`axolotl-icon-btn level-btn ${levelUpReady ? 'axolotl-levelup-ready' : ''}`}
                     onClick={() => handleLevelUp(axolotl)}
                     disabled={!levelUpReady}
                   >
-                    <ChevronUp size={14} />
+                    <ChevronsUp size={14} />
                   </button>
-
-                  <span className="axolotl-level">Lv. {axolotl.level}</span>
 
                 </div>
 
@@ -231,7 +233,7 @@ const Axolotl = () => {
                 <p className="axolotl-info">
                   Finds {axolotl.level} cache{axolotl.level > 1 ? 's' : ''} per day if hunger bar isn't empty.
                 </p>
-                <p className="axolotl-info">Feed specific fish to level up.</p>
+                <p className="axolotl-info">Feed any fish to fill hunger bar. Feed specific fish to level up.</p>
               </div>
             </div>
 
@@ -259,7 +261,7 @@ const Axolotl = () => {
                         style={{imageRendering: 'pixelated'}}
                       />
                     )}
-                    <span className={`axolotl-fish-count ${needed > 0 && !satisfied ? 'axolotl-fish-needed' : ''}`}>
+                    <span className={`axolotl-fish-count ${needed > 0 ? 'axolotl-fish-needed' : ''}`}>
                       {needed > 0 ? `${eaten}/${needed}` : `${eaten}`}
                     </span>
                   </button>
