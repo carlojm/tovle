@@ -43,11 +43,13 @@ const UPGRADES = [
     description: [
       'None',
       'Something to do while you swim from cache to cache. Fish will now show up in cache loot.',
-      'WIP',
+      'Upgrade your net to catch more types of fish.',
+      'None',
     ],
-    maxTier: 1,
+    maxTier: 2,
     costs: [
       [{ itemId: 'celsian_fragment', quantity: 2 }, { itemId: 'hypercrystalline_shard', quantity: 1 }],
+      [{ itemId: 'twisted_strand', quantity: 2 }, { itemId: 'hypercrystalline_shard', quantity: 1 }],
     ]
   },
   {

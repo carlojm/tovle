@@ -1,20 +1,30 @@
-const FISH_POOL = [
+const COMMON_FISH = [
   'viridian_cod',
   'brown_carp',
-  'coffee_catfish',
-  'rosefish',
   'sandy_salmon',
   'tundra_trout',
-  'arcane_fish',
-  'tropical_fish',
 ]
+
+const ALL_FISH = [
+  'viridian_cod',
+  'brown_carp',
+  'sandy_salmon',
+  'tundra_trout',
+  'coffee_catfish',
+  'rosefish',
+  'tropical_fish',
+  'arcane_fish',
+]
+
+const RARE_FISH_UNLOCK_LEVEL = 4 //level where you start needing all fish
 
 const generateLevelRequirements = (targetLevel, quality) => {
   const fishCount = targetLevel * quality
+  const pool = targetLevel >= RARE_FISH_UNLOCK_LEVEL ? ALL_FISH : COMMON_FISH
   const picks = {}
 
   for (let i = 0; i < fishCount; i++) {
-    const fish = FISH_POOL[Math.floor(Math.random() * FISH_POOL.length)]
+    const fish = pool[Math.floor(Math.random() * pool.length)]
     picks[fish] = (picks[fish] ?? 0) + 1
   }
 

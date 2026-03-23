@@ -78,12 +78,74 @@ const LOOT_TABLE = [
     rolls: 1,
     baseChance: 0.0625,
   },
+  // tier 1 fish — requires fishingNet >= 1
   {
     itemId: 'viridian_cod',
     name: 'Viridian Cod',
     rolls: 2,
     baseChance: 0.4,
-    requiresUpgrade: 'fishingNet', // only rolls if player has this upgrade
+    requiresUpgrade: 'fishingNet',
+    requiresUpgradeLevel: 1,
+  },
+  {
+    itemId: 'brown_carp',
+    name: 'Brown Carp',
+    rolls: 2,
+    baseChance: 0.4,
+    requiresUpgrade: 'fishingNet',
+    requiresUpgradeLevel: 1,
+  },
+  {
+    itemId: 'sandy_salmon',
+    name: 'Sandy Salmon',
+    rolls: 2,
+    baseChance: 0.4,
+    requiresUpgrade: 'fishingNet',
+    requiresUpgradeLevel: 1,
+  },
+  {
+    itemId: 'tundra_trout',
+    name: 'Tundra Trout',
+    rolls: 2,
+    baseChance: 0.4,
+    requiresUpgrade: 'fishingNet',
+    requiresUpgradeLevel: 1,
+  },
+
+  // tier 2 fish — requires fishingNet >= 2
+  
+
+  {
+    itemId: 'coffee_catfish',
+    name: 'Coffee Catfish',
+    rolls: 1,
+    baseChance: 0.4,
+    requiresUpgrade: 'fishingNet',
+    requiresUpgradeLevel: 2,
+  },
+  {
+    itemId: 'rosefish',
+    name: 'Rosefish',
+    rolls: 1,
+    baseChance: 0.4,
+    requiresUpgrade: 'fishingNet',
+    requiresUpgradeLevel: 2,
+  },
+  {
+    itemId: 'arcane_fish',
+    name: 'Arcane Fish',
+    rolls: 1,
+    baseChance: 0.4,
+    requiresUpgrade: 'fishingNet',
+    requiresUpgradeLevel: 2,
+  },
+  {
+    itemId: 'tropical_fish',
+    name: 'Tropical Fish',
+    rolls: 1,
+    baseChance: 0.4,
+    requiresUpgrade: 'fishingNet',
+    requiresUpgradeLevel: 2,
   },
 ]
 
@@ -213,7 +275,11 @@ const rollLoot = (multipliers = DEFAULT_MULTIPLIERS, playerUpgrades = {}) => {
   // roll each item in the loot table
   for (const entry of LOOT_TABLE) {
     //skip item if it needs an upgrade that player doesn't have
-    if (entry.requiresUpgrade && !playerUpgrades[entry.requiresUpgrade]) continue
+    if (entry.requiresUpgrade) {
+      const playerLevel = playerUpgrades[entry.requiresUpgrade] ?? 0
+      const requiredLevel = entry.requiresUpgradeLevel ?? 1
+      if (playerLevel < requiredLevel) continue
+    }
 
     const itemMultiplier = multipliers.items?.[entry.itemId] ?? 1.0
     const totalMultiplier = global * itemMultiplier * 100
