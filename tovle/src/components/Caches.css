@@ -15,6 +15,13 @@
   gap: 12px;
 }
 
+.caches-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .caches-section h2 {
   font-size: clamp(14px, 3vw, 18px);
   font-weight: 600;
@@ -56,4 +63,21 @@
 .caches-error {
   color: red;
   font-size: 14px;
+}
+
+.caches-toggle-btn {
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: 12px;
+  padding: 4px 10px;
+  background: none;
+  border: 1px solid var(--color-coords-border);
+  border-radius: 6px;
+  color: var(--color-text);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.caches-toggle-btn:hover {
+  opacity: 1;
 }

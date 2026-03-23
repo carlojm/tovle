@@ -36,6 +36,8 @@ const Caches = ({ onOpenCaches }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
+  const [hideMaxed, setHideMaxed] = useState(false)
+
   const unopenedCaches = playerData?.inventory?.unopenedCaches ?? []
   const inventoryItems = playerData?.inventory?.items ?? []
 
@@ -214,8 +216,16 @@ const Caches = ({ onOpenCaches }) => {
       </section>
 
       <section className="caches-section">
-        <h2>Crafting</h2>
-        <Crafting />
+        <div className="caches-section-header">
+          <h2>Crafting</h2>
+          <button
+            className="caches-toggle-btn"
+            onClick={() => setHideMaxed(prev => !prev)}
+          >
+            {hideMaxed ? 'Show Maxed' : 'Hide Maxed'}
+          </button>
+        </div>
+        <Crafting hideMaxed={hideMaxed}/>
       </section>
 
       {playerData?.upgrades?.newHire >= 1 && (

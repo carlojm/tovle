@@ -87,7 +87,7 @@ const UPGRADES = [
   },
 ]
 
-const Crafting = () => {
+const Crafting = ({hideMaxed = false}) => {
   const { uid, playerData, save } = usePlayer()
   const upgrades = playerData?.upgrades ?? {}
   const items = playerData?.inventory?.items ?? []
@@ -150,9 +150,15 @@ const Crafting = () => {
     })
   }
 
-  const visibleUpgrades = UPGRADES.filter(upgrade => {
+  const visibleUpgrades = UPGRADES
+  .filter(upgrade => {
     if (!upgrade.requiresUpgrade) return true
     return (upgrades[upgrade.requiresUpgrade] ?? 0) >= 1
+  })
+  .filter(upgrade => {
+    if (!hideMaxed) return true
+    const currentTier = upgrades[upgrade.id] ?? 0
+    return currentTier < upgrade.maxTier
   })
 
   return (
