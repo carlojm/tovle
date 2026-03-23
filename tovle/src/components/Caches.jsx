@@ -121,9 +121,12 @@ const Caches = ({ onOpenCaches }) => {
     save({
       upgrades: {
         ...playerData.upgrades,
+        luckTier: 0,
         distancePrecision: 0,
         directionArrows: 0,
-        luckTier: 0,
+        fishingNet: 0,
+        buildHabitat: 0,
+        newHire: 0,
       }
     })
   }
