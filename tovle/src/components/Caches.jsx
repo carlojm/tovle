@@ -43,13 +43,13 @@ const Caches = ({ onOpenCaches }) => {
   const [pendingItems, setPendingItems] = useState([])
   const [openingCacheKey, setOpeningCacheKey] = useState(null)
 
-  //this ref used to delay saving cache loot until animation is done
-  const pendingSaveRef = useRef(null)
+  const [displayUnopenedCaches, setDisplayUnopenedCaches] = useState(null)
 
   //used to prevent interactions while animations happen
   const isAnimating = animPhase === 'orb' || animPhase === 'reveal'
 
-  const unopenedCaches = playerData?.inventory?.unopenedCaches ?? []
+  // const unopenedCaches = playerData?.inventory?.unopenedCaches ?? []
+  const unopenedCaches = displayUnopenedCaches ?? playerData?.inventory?.unopenedCaches ?? []
   const inventoryItems = playerData?.inventory?.items ?? []
 
   const handleOpenCache = async (cacheEntry) => {
@@ -96,7 +96,10 @@ const Caches = ({ onOpenCaches }) => {
 
       const existingOpenedCaches = playerData?.inventory?.openedCaches ?? []
 
-      pendingSaveRef.current = () => save({
+      // set display list to current caches before save removes the opening one
+      setDisplayUnopenedCaches(playerData?.inventory?.unopenedCaches ?? [])
+
+      save({
         inventory: {
           ...playerData.inventory,
           unopenedCaches: updatedUnopenedCaches,
@@ -228,8 +231,7 @@ const Caches = ({ onOpenCaches }) => {
             <CacheAnimation
               items={pendingItems}
               onComplete={() => {
-                pendingSaveRef.current?.() //save the cache items
-                pendingSaveRef.current = null
+                setDisplayUnopenedCaches(null) //release display lock, real data takes over display
                 setOpeningCacheKey(null) //remove the cache being opened's button
                 setAnimPhase('reveal')
                 setTimeout(() => setAnimPhase('done'), 27 * 30 + 400)
