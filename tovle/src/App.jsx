@@ -514,24 +514,27 @@ const App = () => {
           </>}
 
           {todayStats && (
-            <div className="completion-stats">
-              <div className="completion-stat">
-                <span className="completion-stat-value">{todayStats.currentStreak}</span>
-                <span className="completion-stat-label">day streak</span>
+            <>
+              <div className="completion-stats">
+                <div className="completion-stat">
+                  <span className="completion-stat-value">{todayStats.currentStreak}</span>
+                  <span className="completion-stat-label">day streak</span>
+                </div>
+                <div className="completion-stat">
+                  <span className="completion-stat-value">{todayStats.bestStreak}</span>
+                  <span className="completion-stat-label">best streak</span>
+                </div>
+                <div className="completion-stat">
+                  <span className="completion-stat-value">{todayStats.totalCachesSolved}</span>
+                  <span className="completion-stat-label">caches found</span>
+                </div>
+                <div className="completion-stat">
+                  <span className="completion-stat-value">{todayStats.averageGuesses}</span>
+                  <span className="completion-stat-label">avg guesses</span>
+                </div>
               </div>
-              <div className="completion-stat">
-                <span className="completion-stat-value">{todayStats.bestStreak}</span>
-                <span className="completion-stat-label">best streak</span>
-              </div>
-              <div className="completion-stat">
-                <span className="completion-stat-value">{todayStats.totalCachesSolved}</span>
-                <span className="completion-stat-label">caches found</span>
-              </div>
-              <div className="completion-stat">
-                <span className="completion-stat-value">{todayStats.averageGuesses}</span>
-                <span className="completion-stat-label">avg guesses</span>
-              </div>
-            </div>
+              <p style={{marginTop:"16px"}}>See full statistics on the info page.</p>
+            </>
           )}
           
         </>}
