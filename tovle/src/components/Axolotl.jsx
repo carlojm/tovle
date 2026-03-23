@@ -8,10 +8,10 @@ import axolotlImg from '../assets/axolotl.png'
 const FISH_POOL = [
   'viridian_cod',
   'brown_carp',
-  'coffee_catfish',
-  'rosefish',
   'sandy_salmon',
   'tundra_trout',
+  'coffee_catfish',
+  'rosefish',
   'tropical_fish',
   'arcane_fish',
 ]
