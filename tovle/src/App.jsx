@@ -96,13 +96,15 @@ const App = () => {
         //   savedCaches.every(c => c.status === 'solved')
 
         const allDone = savedCaches.length === data.caches.length &&
-          savedCaches[savedCaches.length - 1]?.status === 'solved' &&
-          savedCaches.slice(0, -1).every(c => c.status === 'advanced')
+          // savedCaches[savedCaches.length - 1]?.status === 'solved' &&
+          // savedCaches.slice(0, -1).every(c => c.status === 'advanced')
+          savedCaches.every(c => c.status === 'advanced')
         
         if (allDone) {
           setCacheResults(savedCaches)
           setCurrentCacheIndex(data.caches.length - 1)
           setAllComplete(true)
+          setTodayStats(playerData?.stats ?? null)
           setImageLoaded(true)
           return
         }
@@ -232,6 +234,8 @@ const App = () => {
 
   //ending the game
   const handleComplete = () => {
+    if (allComplete) return
+
     const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     // edge case fix: if the game was started on a different day, don't complete it
     const savedDate = playerData?.today?.date
@@ -243,7 +247,7 @@ const App = () => {
     
     const currentResult = {
       cacheId: currentCache.id,
-      status: 'solved',
+      status: 'advanced',
       guesses: guessHistory,
       guessCount: numGuesses,
       score: calculateScore(numGuesses),
