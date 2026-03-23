@@ -1,0 +1,19 @@
+.co-stage {
+  width: 100%;
+  max-width: 540px;
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--color-coords-border);
+  border-radius: 12px;
+  background: var(--color-background-coords-display);
+  margin: 0 auto;
+}
+
+.co-chest {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}

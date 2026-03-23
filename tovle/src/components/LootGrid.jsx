@@ -4,7 +4,7 @@ import './LootGrid.css'
 
 const ICON_SIZE = 20
 
-const LootGrid = ({ grid, isInventory = false }) => {
+const LootGrid = ({ grid, isInventory = false, revealing=false }) => {
   const [tooltip, setTooltip] = useState(null)
 
   const slots = isInventory
@@ -37,6 +37,10 @@ const LootGrid = ({ grid, isInventory = false }) => {
             <div
               key={i}
               className={`loot-slot ${slot ? 'loot-slot--filled' : ''}`}
+              style={{
+                animationDelay: revealing ? `${i * 28}ms` : '0ms',
+                animationName: revealing ? 'slot-flip' : 'none',
+              }}
               onMouseEnter={slot ? (e) => handleMouseEnter(e, slot) : undefined}
               onMouseLeave={slot ? handleMouseLeave : undefined}
             >

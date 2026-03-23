@@ -5,6 +5,7 @@ import { ITEM_MAP } from '../data/itemMap'
 import './Caches.css'
 import Crafting from './Crafting'
 import Axolotl from './Axolotl'
+import CacheAnimation from './CacheAnimation'
 
 const mergeItems = (existing, incoming) => {
   const merged = {}
@@ -38,12 +39,17 @@ const Caches = ({ onOpenCaches }) => {
 
   const [hideMaxed, setHideMaxed] = useState(false)
 
+  const [animPhase, setAnimPhase] = useState('idle') // idle | orb | reveal | done
+  const [pendingItems, setPendingItems] = useState([])
+
   const unopenedCaches = playerData?.inventory?.unopenedCaches ?? []
   const inventoryItems = playerData?.inventory?.items ?? []
 
   const handleOpenCache = async (cacheEntry) => {
     setLoading(true)
     setError(null)
+    setActiveGrid(null)
+    setAnimPhase('orb')
 
     try {
       const res = await fetch('/api/open-cache', {
@@ -57,11 +63,13 @@ const Caches = ({ onOpenCaches }) => {
       })
 
       const data = await res.json()
-
       if (!res.ok) {
         setError(data.error ?? 'Something went wrong')
         return
       }
+
+      setPendingItems(data.items)
+
 
       // update local playerData so UI reflects immediately
       const updatedUnopenedCaches = unopenedCaches.filter(
@@ -93,6 +101,7 @@ const Caches = ({ onOpenCaches }) => {
 
     } catch (err) {
       setError('Failed to open cache. Try again.')
+      setAnimPhase('idle')
       console.error(err)
     } finally {
       setLoading(false)
@@ -141,7 +150,6 @@ const Caches = ({ onOpenCaches }) => {
     }))
     save({ axolotls: updatedAxolotls })
   }
-
 
   return (
     <div className="caches-container">
@@ -193,16 +201,28 @@ const Caches = ({ onOpenCaches }) => {
       </section>
 
       {/* loot grid */}
-      {activeGrid && (
+      <div style={{ position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {animPhase === 'orb' && (
+          <CacheAnimation
+            items={pendingItems}
+            onComplete={() => {
+              setAnimPhase('reveal')
+              setTimeout(() => setAnimPhase('done'), 27 * 30 + 400)
+            }}
+          />
+        )}
+        {activeGrid && (
         <section className="caches-section">
           {/* <h2>Loot</h2> */}
-          <LootGrid grid={activeGrid} />
+          <LootGrid grid={activeGrid} revealing={animPhase === 'reveal'}/>
           <button className="submit-button" onClick={handleCollect}>
             Collect
           </button>
         </section>
       )}
-      {loading && <p className="caches-loading">Opening cache...</p>}
+      </div>
+      
+      {/* {loading && <p className="caches-loading">Opening cache...</p>} */}
       {error && <p className="caches-error">{error}</p>}
 
       {/* inventory */}
