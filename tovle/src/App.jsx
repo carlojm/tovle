@@ -88,16 +88,10 @@ const App = () => {
         const savedCaches = savedToday.caches
 
         //check if game is truly complete:
-        //-all saved caches are marked solved
+        //-all saved caches are marked advanced (not just solved, but advanced=moved to next page)
         //-the number of saved caches is the same as number of daily caches (usually 4)
 
-        // const allDone = savedCaches.length === data.caches.length &&
-        //   savedCaches[savedCaches.length - 1]?.status === 'solved' &&
-        //   savedCaches.every(c => c.status === 'solved')
-
         const allDone = savedCaches.length === data.caches.length &&
-          // savedCaches[savedCaches.length - 1]?.status === 'solved' &&
-          // savedCaches.slice(0, -1).every(c => c.status === 'advanced')
           savedCaches.every(c => c.status === 'advanced')
         
         if (allDone) {
