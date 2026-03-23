@@ -18,8 +18,10 @@ const ALL_FISH = [
 
 const RARE_FISH_UNLOCK_LEVEL = 4 //level where you start needing all fish
 
+const BASE_FISH_COUNT = 3 //level x needs 3*x fish
+
 const generateLevelRequirements = (targetLevel, quality) => {
-  const fishCount = targetLevel * quality
+  const fishCount = BASE_FISH_COUNT * targetLevel * quality
   const pool = targetLevel >= RARE_FISH_UNLOCK_LEVEL ? ALL_FISH : COMMON_FISH
   const picks = {}
 

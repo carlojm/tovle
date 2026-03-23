@@ -39,11 +39,6 @@ const Axolotl = () => {
     return axolotl.hunger > 0 && axolotl.lastCollected !== getTodayStr()
   }
 
-  const cachesAvailable = (axolotl) => {
-    if (axolotl.lastCollected === getTodayStr()) return 0
-    return Math.min(axolotl.level, axolotl.hunger)
-  }
-
   const handleRename = (axolotl) => {
     setEditingId(axolotl.id)
     setEditingName(axolotl.name)
@@ -90,7 +85,7 @@ const Axolotl = () => {
 
   const handleCollect = (axolotl) => {
     if (!canCollect(axolotl)) return
-    const count = cachesAvailable(axolotl)
+    const count = axolotl.level === 1 ? 1 : Math.floor(Math.random() * axolotl.level) + 1
     const todayStr = getTodayStr()
     
     const newCaches = Array.from({length: count}, (_, i) => ({
@@ -101,9 +96,10 @@ const Axolotl = () => {
     }))
 
     const existingUnopenedCaches = playerData.inventory?.unopenedCaches ?? []
+    //subtract the axolotl's level from hunger, not just how many caches it opened
     const updatedAxolotls = axolotls.map(a =>
       a.id === axolotl.id
-        ? {...a, hunger: Math.max(0, a.hunger - count), lastCollected: todayStr}
+        ? {...a, hunger: Math.max(0, a.hunger - axolotl.level), lastCollected: todayStr}
         : a
     )
 
@@ -174,7 +170,7 @@ const Axolotl = () => {
         const nextLevel = axolotl.level + 1
         const requirements = axolotl.levelRequirements?.[nextLevel] ?? []
         const levelUpReady = canLevelUp(axolotl)
-        const available = cachesAvailable(axolotl)
+        // const available = cachesAvailable(axolotl)
         const alreadyCollected = axolotl.lastCollected === getTodayStr()
 
         return (
@@ -231,7 +227,11 @@ const Axolotl = () => {
 
                 {/* info text */}
                 <p className="axolotl-info">
-                  Finds {axolotl.level} cache{axolotl.level > 1 ? 's' : ''} per day if hunger bar isn't empty.
+                  {axolotl.level === 1 
+                    ? `Finds 1 cache per day if hunger bar isn't empty.`
+                    : `Finds 1-${axolotl.level} cache${axolotl.level > 1 ? 's' : ''} per day if hunger bar isn't empty.`
+                  }
+                  
                 </p>
                 <p className="axolotl-info">Feed any fish to fill hunger bar. Feed specific fish to level up.</p>
               </div>
@@ -276,8 +276,10 @@ const Axolotl = () => {
             >
               {alreadyCollected
                 ? 'Collected today'
-                : available > 0
-                  ? `Collect ${available} cache${available > 1 ? 's' : ''}`
+                : axolotl.hunger > 0
+                  ? axolotl.level === 1
+                    ? `Collect 1 cache`
+                    : `Collect 1-${axolotl.level} caches`
                   : 'Too hungry...'}
             </button>
 
