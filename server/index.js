@@ -164,7 +164,7 @@ app.post('/api/open-cache', async(req, res) => {
 
     //build updated inventory
     const updatedUnopenedCaches = unopened.filter(c => !(c.cacheId === cacheId && c.date === date))
-    const openedCacheRecord = { cacheId, date, items }
+    const openedCacheRecord = { cacheId, date }
     const existingOpenedCaches = playerData.inventory?.openedCaches ?? []
     const existingItems = playerData.inventory?.items ?? []
 

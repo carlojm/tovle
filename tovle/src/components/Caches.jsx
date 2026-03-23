@@ -71,17 +71,20 @@ const Caches = ({ onOpenCaches }) => {
       //for statistics
       const totalItems = data.items.reduce((sum, item) => sum + item.quantity, 0)
 
+      const existingOpenedCaches = playerData?.inventory?.openedCaches ?? []
+
       save({
-      inventory: {
+        inventory: {
           ...playerData.inventory,
           unopenedCaches: updatedUnopenedCaches,
+          openedCaches: [...existingOpenedCaches, { cacheId: cacheEntry.cacheId, date: cacheEntry.date }],
           items: mergedItems,
-      },
-      stats: {
-        ...playerData.stats,
-        totalCachesOpened: (playerData.stats?.totalCachesOpened ?? 0) + 1,
-        totalItemsCollected: (playerData.stats?.totalItemsCollected ?? 0) + totalItems,
-      }
+        },
+        stats: {
+          ...playerData.stats,
+          totalCachesOpened: (playerData.stats?.totalCachesOpened ?? 0) + 1,
+          totalItemsCollected: (playerData.stats?.totalItemsCollected ?? 0) + totalItems,
+        }
       })
 
       setActiveGrid(data.grid)
