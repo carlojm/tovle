@@ -149,6 +149,12 @@ const LOOT_TABLE = [
   },
 ]
 
+const AXOLOTL_LOOT_TABLE = LOOT_TABLE.filter(entry => 
+  !['viridian_cod', 'brown_carp', 'coffee_catfish', 'rosefish', 
+    'sandy_salmon', 'tundra_trout', 'arcane_fish', 'tropical_fish', 
+    'den_piece_100'].includes(entry.itemId)
+)
+
 const FILLER_BLOCKS = [
   { itemId: 'prismarine_block',  name: 'Prismarine Block',  weight: 25 },
   { itemId: 'prismarine_brick',  name: 'Prismarine Brick',  weight: 25 },
@@ -268,12 +274,13 @@ const stackItems = (items) => {
 }
 
 //=========== main functions ===============
-const rollLoot = (multipliers = DEFAULT_MULTIPLIERS, playerUpgrades = {}) => {
+const rollLoot = (multipliers = DEFAULT_MULTIPLIERS, playerUpgrades = {}, source = 'cache') => {
   const items = []
   const global = multipliers.global ?? 1.0
+  const table = source === 'axolotl' ? AXOLOTL_LOOT_TABLE : LOOT_TABLE
 
   // roll each item in the loot table
-  for (const entry of LOOT_TABLE) {
+  for (const entry of table) {
     //skip item if it needs an upgrade that player doesn't have
     if (entry.requiresUpgrade) {
       const playerLevel = playerUpgrades[entry.requiresUpgrade] ?? 0
