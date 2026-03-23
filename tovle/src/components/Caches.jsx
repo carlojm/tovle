@@ -174,7 +174,7 @@ const Caches = ({ onOpenCaches }) => {
           <button
             key={`${cache.cacheId}-${cache.date}`}
             className={`cache-entry-button ${loading ? 'disable-button' : ''}`}
-            onClick={() => !loading && !activeGrid && handleOpenCache(cache)}
+            onClick={() => !loading && handleOpenCache(cache)}
           >
             {cache.source === 'axolotl' ? (
               <>
@@ -193,8 +193,6 @@ const Caches = ({ onOpenCaches }) => {
       </section>
 
       {/* loot grid */}
-      {loading && <p className="caches-loading">Opening cache...</p>}
-      {error && <p className="caches-error">{error}</p>}
       {activeGrid && (
         <section className="caches-section">
           {/* <h2>Loot</h2> */}
@@ -204,6 +202,8 @@ const Caches = ({ onOpenCaches }) => {
           </button>
         </section>
       )}
+      {loading && <p className="caches-loading">Opening cache...</p>}
+      {error && <p className="caches-error">{error}</p>}
 
       {/* inventory */}
       <section className="caches-section">
