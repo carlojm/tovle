@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 
+const {createAxolotl, generateLevelRequirements} = require('./axolotl')
 const { rollLoot, scoreToLuckMultiplier} = require('./loot')
 const { db } = require('./firebase')
 
@@ -177,6 +178,47 @@ app.post('/api/open-cache', async(req, res) => {
   } catch (err) {
     console.error('Error opening cache!:', err)
     res.status(500).json({error: 'Internal server error'})
+  }
+})
+
+app.post('/api/create-axolotl', async (req, res) => {
+  const { uid } = req.body
+  if (!uid) return res.status(400).json({ error: 'Missing uid' })
+
+  try {
+    const playerRef = db.collection('players').doc(uid)
+    const playerSnap = await playerRef.get()
+    if (!playerSnap.exists) return res.status(404).json({ error: 'Player not found' })
+
+    const axolotl = createAxolotl()
+    res.json({ axolotl })
+  } catch (err) {
+    console.error('Error creating axolotl:', err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+app.post('/api/level-axolotl', async (req, res) => {
+  const { uid, axolotlId } = req.body
+  if (!uid || !axolotlId) return res.status(400).json({ error: 'Missing uid or axolotlId' })
+
+  try {
+    const playerRef = db.collection('players').doc(uid)
+    const playerSnap = await playerRef.get()
+    if (!playerSnap.exists) return res.status(404).json({ error: 'Player not found' })
+
+    const playerData = playerSnap.data()
+    const axolotls = playerData.axolotls ?? []
+    const axolotl = axolotls.find(a => a.id === axolotlId)
+    if (!axolotl) return res.status(404).json({ error: 'Axolotl not found' })
+
+    const nextLevel = axolotl.level + 2 // generate requirements for level after next
+    const newRequirements = generateLevelRequirements(nextLevel, axolotl.quality)
+
+    res.json({ nextLevel, requirements: newRequirements })
+  } catch (err) {
+    console.error('Error leveling axolotl:', err)
+    res.status(500).json({ error: 'Internal server error' })
   }
 })
 

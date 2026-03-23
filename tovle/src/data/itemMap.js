@@ -15,7 +15,14 @@ import pulsatingEmerald from '../assets/items/pulsating_emerald.png'
 import strippedWarpStem from '../assets/items/stripped_warp_stem.png'
 import twistedStrand from '../assets/items/twisted_strand.png'
 import warpedHyphae from '../assets/items/warped_hyphae.png'
-import viridianCod from '../assets/items/viridian_cod.png'
+import viridianCod from '../assets/fish/viridian_cod.png'
+import brownCarp from '../assets/fish/brown_carp.png'
+import coffeeCatfish from '../assets/fish/coffee_catfish.png'
+import rosefish from '../assets/fish/rosefish.png'
+import sandySalmon from '../assets/fish/sandy_salmon.png'
+import tundraTrout from '../assets/fish/tundra_trout.png'
+import arcanefish from '../assets/fish/arcane_fish.png'
+import tropicalFish from '../assets/fish/tropical_fish.png'
 
 export const ITEM_MAP = {
   den_piece_100:          { img: denPiece100 },
@@ -35,5 +42,12 @@ export const ITEM_MAP = {
   prismarine_wall:        { img: prismarineWall },
   warped_stem:            { img: strippedWarpStem },
   warped_hyphae:          { img: warpedHyphae },
-  viridian_cod: {img: viridianCod},
+  viridian_cod:    {img: viridianCod},
+  brown_carp:      { img: brownCarp },
+  coffee_catfish:  { img: coffeeCatfish },
+  rosefish:        { img: rosefish },
+  sandy_salmon:    { img: sandySalmon },
+  tundra_trout:    { img: tundraTrout },
+  arcane_fish:     { img: arcanefish },
+  tropical_fish:   { img: tropicalFish },
 }

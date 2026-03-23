@@ -85,7 +85,7 @@ const UPGRADES = [
 ]
 
 const Crafting = () => {
-  const { playerData, save } = usePlayer()
+  const { uid, playerData, save } = usePlayer()
   const upgrades = playerData?.upgrades ?? {}
   const items = playerData?.inventory?.items ?? []
 
@@ -98,7 +98,7 @@ const Crafting = () => {
     return cost.every(c => getItemQuantity(c.itemId) >= c.quantity)
   }
 
-  const handleCraft = (upgrade) => {
+  const handleCraft = async (upgrade) => {
     const currentTier = upgrades[upgrade.id] ?? 0
     if (currentTier >= upgrade.maxTier) return
 
@@ -112,10 +112,33 @@ const Crafting = () => {
       return {...item, quantity: item.quantity - costEntry.quantity }
     }).filter(item => item.quantity > 0)
 
+    const newValue = currentTier + 1
+
+    // special case: New Hire creates an axolotl on the backend
+    if (upgrade.id === 'newHire') {
+      try {
+        const res = await fetch('/api/create-axolotl', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid })
+        })
+        const data = await res.json()
+        if (!res.ok) { console.error(data.error); return }
+
+        save({
+          upgrades: { ...upgrades, [upgrade.id]: newValue },
+          inventory: { ...playerData.inventory, items: updatedItems },
+          axolotls: [...(playerData.axolotls ?? []), data.axolotl],
+        })
+      } catch (err) {
+        console.error('Failed to create axolotl:', err)
+      }
+      return
+    }
+
     save({
       upgrades: {
-        ...upgrades,
-        [upgrade.id]: currentTier + 1,
+        ...upgrades, [upgrade.id]: newValue,
       },
       inventory: {
         ...playerData.inventory,

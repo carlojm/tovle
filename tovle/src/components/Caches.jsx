@@ -4,6 +4,7 @@ import LootGrid from './LootGrid'
 import { ITEM_MAP } from '../data/itemMap'
 import './Caches.css'
 import Crafting from './Crafting'
+import Axolotl from './Axolotl'
 
 const mergeItems = (existing, incoming) => {
   const merged = {}
@@ -188,6 +189,13 @@ const Caches = ({ onOpenCaches }) => {
         <h2>Crafting</h2>
         <Crafting />
       </section>
+
+      {playerData?.upgrades?.newHire >= 1 && (
+        <section className="caches-section">
+          <h2>Axolotls</h2>
+          <Axolotl />
+        </section>
+      )}
 
     </div>
   )
