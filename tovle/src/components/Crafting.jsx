@@ -37,6 +37,51 @@ const UPGRADES = [
       [{ itemId: 'iron_nugget', quantity: 10 }, { itemId: 'hyperexperience', quantity: 1 }],
     ]
   },
+  {
+    id: 'fishingNet',
+    name: 'Fishing Net',
+    description: [
+      'None',
+      'Something to do while you swim from cache to cache. Fish will now show up in cache loot.',
+      'WIP',
+    ],
+    maxTier: 1,
+    costs: [
+      [{ itemId: 'celsian_fragment', quantity: 2 }, { itemId: 'hypercrystalline_shard', quantity: 1 }],
+    ]
+  },
+  {
+    id: 'buildHabitat',
+    name: 'Build Habitat',
+    description: [
+      'None',
+      'Build an underwater habitat with all this scrap material.',
+      'WIP',
+    ],
+    maxTier: 1,
+    costs: [
+      [
+        { itemId: 'prismarine_block', quantity: 10 },
+        { itemId: 'prismarine_brick', quantity: 10 },
+        { itemId: 'prismarine_wall', quantity: 10 },
+        { itemId: 'warped_stem', quantity: 5 },
+        { itemId: 'warped_hyphae', quantity: 5 },
+      ]
+    ]
+  },
+  {
+    id: 'newHire',
+    name: 'New Hire',
+    description: [
+      'An axolotl wants to live in your newly crafted habitat. Searches for caches in exchange for fish.',
+      'WIP',
+    ],
+    maxTier: 1,
+    requiresUpgrade: 'buildHabitat', // hidden until this is owned
+    costs: [
+      [{ itemId: 'viridian_cod', quantity: 1 }],
+    ]
+  },
 ]
 
 const Crafting = () => {
@@ -79,9 +124,14 @@ const Crafting = () => {
     })
   }
 
+  const visibleUpgrades = UPGRADES.filter(upgrade => {
+    if (!upgrade.requiresUpgrade) return true
+    return (upgrades[upgrade.requiresUpgrade] ?? 0) >= 1
+  })
+
   return (
     <div className="crafting-container">
-      {UPGRADES.map(upgrade => {
+      {visibleUpgrades.map(upgrade => {
         const currentTier = upgrades[upgrade.id] ?? 0
         const isMaxed = currentTier >= upgrade.maxTier
         const cost = isMaxed ? null : upgrade.costs[currentTier]
@@ -97,7 +147,9 @@ const Crafting = () => {
             </div>
 
             <p className="crafting-description current">Current: {upgrade.description[currentTier]}</p>
-            <p className="crafting-description next">Next: {upgrade.description[currentTier+1]}</p>
+            {!isMaxed && (
+              <p className="crafting-description next">Next: {upgrade.description[currentTier + 1]}</p>
+            )}
 
             {!isMaxed && (
               <>

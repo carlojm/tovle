@@ -15,6 +15,7 @@ import pulsatingEmerald from '../assets/items/pulsating_emerald.png'
 import strippedWarpStem from '../assets/items/stripped_warp_stem.png'
 import twistedStrand from '../assets/items/twisted_strand.png'
 import warpedHyphae from '../assets/items/warped_hyphae.png'
+import viridianCod from '../assets/items/viridian_cod.png'
 
 export const ITEM_MAP = {
   den_piece_100:          { img: denPiece100 },
@@ -34,4 +35,5 @@ export const ITEM_MAP = {
   prismarine_wall:        { img: prismarineWall },
   warped_stem:            { img: strippedWarpStem },
   warped_hyphae:          { img: warpedHyphae },
+  viridian_cod: {img: viridianCod},
 }

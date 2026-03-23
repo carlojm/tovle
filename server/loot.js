@@ -206,12 +206,15 @@ const stackItems = (items) => {
 }
 
 //=========== main functions ===============
-const rollLoot = (multipliers = DEFAULT_MULTIPLIERS) => {
+const rollLoot = (multipliers = DEFAULT_MULTIPLIERS, playerUpgrades = {}) => {
   const items = []
   const global = multipliers.global ?? 1.0
 
   // roll each item in the loot table
   for (const entry of LOOT_TABLE) {
+    //skip item if it needs an upgrade that player doesn't have
+    if (entry.requiresUpgrade && !playerUpgrades[entry.requiresUpgrade]) continue
+
     const itemMultiplier = multipliers.items?.[entry.itemId] ?? 1.0
     const totalMultiplier = global * itemMultiplier * 100
 
