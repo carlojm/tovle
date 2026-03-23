@@ -232,6 +232,15 @@ const App = () => {
 
   //ending the game
   const handleComplete = () => {
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    // edge case fix: if the game was started on a different day, don't complete it
+    const savedDate = playerData?.today?.date
+    if (savedDate && savedDate !== todayStr) {
+      console.warn('Attempted to complete a game from a previous day, ignoring.')
+      setAllComplete(true) // show completion screen but don't save stats
+      return
+    }
+    
     const currentResult = {
       cacheId: currentCache.id,
       status: 'solved',
@@ -243,7 +252,6 @@ const App = () => {
     const updatedResults = [...cacheResults, currentResult]
     setCacheResults(updatedResults)
 
-    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     const updatedStats = calculateUpdatedStats(playerData?.stats, updatedResults)
     setTodayStats(updatedStats) //save to display in results screen
 
