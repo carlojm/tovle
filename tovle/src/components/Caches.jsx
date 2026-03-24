@@ -43,7 +43,12 @@ const Caches = ({ }) => {
   const [openingCacheKey, setOpeningCacheKey] = useState(null) //cache being animated
   const [isRevealing, setIsRevealing] = useState(false)
 
-  const unopenedCaches = playerData?.inventory?.unopenedCaches ?? []
+  //used to "freeze" the list of unopenedcaches while we are animating one opening
+  //we save the list before opening the cache and only go back to real list when done animating
+  //reduces the amount of elements jumping up and down and screen as they appear and disappear
+  const [displayUnopenedCaches, setDisplayUnopenedCaches] = useState(null)
+
+  const unopenedCaches = displayUnopenedCaches ?? playerData?.inventory?.unopenedCaches ?? []
   const inventoryItems = playerData?.inventory?.items ?? []
 
   const handleOpenCache = async (cacheEntry) => {
@@ -83,6 +88,10 @@ const Caches = ({ }) => {
       const totalItems = data.items.reduce((sum, item) => sum + item.quantity, 0)
       const existingOpenedCaches = playerData?.inventory?.openedCaches ?? []
 
+      //freeze the list of unopened caches to keep the opening one on screen
+      //"unfreeze" happens in handleAnimationComplete
+      setDisplayUnopenedCaches(playerData?.inventory?.unopenedCaches ?? [])
+
       save({
         inventory: {
           ...playerData.inventory,
@@ -109,6 +118,7 @@ const Caches = ({ }) => {
   }
 
   const handleAnimationComplete = () => {
+    setDisplayUnopenedCaches(null)
     setOpeningCacheKey(null)
     setPendingItems([])
     setIsRevealing(true)
