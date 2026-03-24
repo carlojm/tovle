@@ -8,6 +8,9 @@
   border-radius: 8px;
   padding: 8px;
 
+  /* fixes weird row thing that i only see happen on tablet screen size */
+  grid-auto-rows: 1fr;
+
   /* for animation */
   perspective: 800px;
 }
