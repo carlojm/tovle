@@ -6,6 +6,7 @@ import './Caches.css'
 import Crafting from './Crafting'
 import Axolotl from './Axolotl'
 import CacheAnimation from './CacheAnimation'
+import { AnimatePresence, motion } from 'framer-motion'
 
 const mergeItems = (existing, incoming) => {
   const merged = {}
@@ -228,7 +229,7 @@ const Caches = ({ }) => {
 
 
       {/* unopened caches list */}
-      <section className="caches-section">
+      <motion.section layout className="caches-section">
         <h2>Unopened Caches</h2>
         {unopenedCaches.length === 0 && !activeGrid && (
           <p className="caches-empty">No unopened caches. Play today's caches to earn more!</p>
@@ -260,42 +261,58 @@ const Caches = ({ }) => {
             </button>
           )
         })}
-      </section>
+      </motion.section>
 
       {/* loot grid */}
-      <div style={{ position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <AnimatePresence mode="popLayout">
         {openingCacheKey && pendingItems.length > 0 && (
-          <CacheAnimation
-            key={openingCacheKey}
-            items={pendingItems}
-            onComplete={handleAnimationComplete}
-          />
+          <motion.div
+            key="cache-animation"
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            exit={{opacity: 0}}
+            transition={{duration:0.2}}
+            style={{ position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+          >
+            <CacheAnimation
+              key={openingCacheKey}
+              items={pendingItems}
+              onComplete={handleAnimationComplete}
+            />
+          </motion.div>
         )}
         {activeGrid && !openingCacheKey && (
-          <section className="caches-section loot-reveal">
-            {/* <h2>Loot</h2> */}
+          <motion.section
+            key="loot-reveal"
+            className="caches-section loot-reveal"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+          >
             <LootGrid grid={activeGrid} revealing={isRevealing}/>
             <button className="submit-button" onClick={handleCollect}>
               Close
             </button>
-          </section>
+          </motion.section>
         )}
-      </div>
+      </AnimatePresence>
+        
       
       {/* {loading && <p className="caches-loading">Opening cache...</p>} */}
       {error && <p className="caches-error">{error}</p>}
 
       {/* inventory */}
-      <section className="caches-section">
+      <motion.section layout className="caches-section">
         <h2>Inventory</h2>
         {inventoryItems.length === 0 ? (
           <p className="caches-empty">Your inventory is empty.</p>
         ) : (
           <LootGrid grid={inventoryItems} isInventory />
         )}
-      </section>
+      </motion.section>
 
-      <section className="caches-section">
+      <motion.section layout className="caches-section">
         <div className="caches-section-header">
           <h2>Crafting</h2>
           <button
@@ -306,13 +323,13 @@ const Caches = ({ }) => {
           </button>
         </div>
         <Crafting hideMaxed={hideMaxed}/>
-      </section>
+      </motion.section>
 
       {playerData?.upgrades?.newHire >= 1 && (
-        <section className="caches-section">
+        <motion.section layout className="caches-section">
           <h2>Axolotls</h2>
           <Axolotl />
-        </section>
+        </motion.section>
       )}
 
     </div>
