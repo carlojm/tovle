@@ -202,7 +202,7 @@ function runAnimation(stage, chest, items, onComplete, animRef) {
   animRef.current = requestAnimationFrame(tick)
 }
 
-const CacheAnimation = ({ items = [], onComplete }) => {
+const CacheAnimation = ({ items = [], onComplete}) => {
   const animRef = useRef(null)
   const startedRef = useRef(false)
 

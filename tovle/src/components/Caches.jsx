@@ -31,7 +31,7 @@ const mergeItems = (existing, incoming) => {
   })
 }
 
-const Caches = ({ onOpenCaches }) => {
+const Caches = ({ }) => {
   const { uid, playerData, save } = usePlayer()
   const [activeGrid, setActiveGrid] = useState(null) // loot grid currently being shown
   const [loading, setLoading] = useState(false)
@@ -39,27 +39,19 @@ const Caches = ({ onOpenCaches }) => {
 
   const [hideMaxed, setHideMaxed] = useState(false)
 
-  const [animPhase, setAnimPhase] = useState('idle') // idle | orb | reveal | done
-  const [pendingItems, setPendingItems] = useState([])
-  const [openingCacheKey, setOpeningCacheKey] = useState(null)
+  const [pendingItems, setPendingItems] = useState([]) //items to use in cache animation
+  const [openingCacheKey, setOpeningCacheKey] = useState(null) //cache being animated
+  const [isRevealing, setIsRevealing] = useState(false)
 
-  const [displayUnopenedCaches, setDisplayUnopenedCaches] = useState(null)
-
-  //used to prevent interactions while animations happen
-  const isAnimating = animPhase === 'orb' || animPhase === 'reveal'
-
-  // const unopenedCaches = playerData?.inventory?.unopenedCaches ?? []
-  const unopenedCaches = displayUnopenedCaches ?? playerData?.inventory?.unopenedCaches ?? []
+  const unopenedCaches = playerData?.inventory?.unopenedCaches ?? []
   const inventoryItems = playerData?.inventory?.items ?? []
 
   const handleOpenCache = async (cacheEntry) => {
-    if (isAnimating || loading) return
+    if (openingCacheKey || loading) return
 
     setLoading(true)
     setError(null)
     setActiveGrid(null)
-    setAnimPhase('orb')
-
     setOpeningCacheKey(`${cacheEntry.cacheId}-${cacheEntry.date}`)
 
     try {
@@ -76,28 +68,20 @@ const Caches = ({ onOpenCaches }) => {
       const data = await res.json()
       if (!res.ok) {
         setError(data.error ?? 'Something went wrong')
-        setAnimPhase('idle')
         setOpeningCacheKey(null)
         return
       }
 
       setPendingItems(data.items)
 
-
       // update local playerData so UI reflects immediately
       const updatedUnopenedCaches = unopenedCaches.filter(
         c => !(c.cacheId === cacheEntry.cacheId && c.date === cacheEntry.date)
       )
-      const existingItems = playerData?.inventory?.items ?? []
-      const mergedItems = mergeItems(existingItems, data.items)
-
+      const mergedItems = mergeItems(playerData?.inventory?.items ?? [], data.items)
       //for statistics
       const totalItems = data.items.reduce((sum, item) => sum + item.quantity, 0)
-
       const existingOpenedCaches = playerData?.inventory?.openedCaches ?? []
-
-      // set display list to current caches before save removes the opening one
-      setDisplayUnopenedCaches(playerData?.inventory?.unopenedCaches ?? [])
 
       save({
         inventory: {
@@ -117,12 +101,18 @@ const Caches = ({ onOpenCaches }) => {
 
     } catch (err) {
       setError('Failed to open cache. Try again.')
-      setAnimPhase('idle')
       setOpeningCacheKey(null)
       console.error(err)
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleAnimationComplete = () => {
+    setOpeningCacheKey(null)
+    setPendingItems([])
+    setIsRevealing(true)
+    setTimeout(() => setIsRevealing(false), 27 * 30 + 400)
   }
 
   const handleCollect = () => {
@@ -168,6 +158,35 @@ const Caches = ({ onOpenCaches }) => {
     save({ axolotls: updatedAxolotls })
   }
 
+  const handleDebugDeduplicateOpenedCaches = () => {
+    const seen = new Set()
+    const dedupedOpened = (playerData?.inventory?.openedCaches ?? []).filter(c => {
+      if (seen.has(c.cacheId)) return false
+      seen.add(c.cacheId)
+      return true
+    })
+    const dedupedUnopened = (playerData?.inventory?.unopenedCaches ?? []).filter(c => {
+      if (seen.has(c.cacheId)) return false
+      seen.add(c.cacheId)
+      return true
+    })
+    save({
+      inventory: {
+        ...playerData.inventory,
+        openedCaches: dedupedOpened,
+        unopenedCaches: dedupedUnopened,
+      }
+    })
+  }
+
+  const handleDebugShowUid = () => {
+    alert(`UID: ${uid}`)
+  }
+
+  const handleDebugClearToday = () => {
+    save({ today: null })
+  }
+
   return (
     <div className="caches-container">
       <p>SO EXTREMELY WIP</p>
@@ -184,6 +203,15 @@ const Caches = ({ onOpenCaches }) => {
         </button>
         <button onClick={handleDebugResetAxolotlCollection} className="cache-entry-button">
           [DEBUG] Reset Axolotl Collection Timer
+        </button>
+        {/* <button onClick={handleDebugDeduplicateOpenedCaches} className="cache-entry-button">
+          [DEBUG] Clean inv.openedCaches on server side, remove dupes
+        </button> */}
+        <button onClick={handleDebugShowUid} className="cache-entry-button">
+          [DEBUG] Show UID
+        </button>
+        <button onClick={handleDebugClearToday} className="cache-entry-button">
+          [DEBUG] Reset Today's Game
         </button>
         </>
       {/* )} */}
@@ -202,8 +230,8 @@ const Caches = ({ onOpenCaches }) => {
           return (
             <button
               key={key}
-              className={`cache-entry-button ${loading || isAnimating ? 'disable-button' : ''}`}
-              onClick={() => !loading && !isAnimating && handleOpenCache(cache)}
+              className={`cache-entry-button ${loading || openingCacheKey ? 'disable-button' : ''}`}
+              onClick={() => !loading && !openingCacheKey && handleOpenCache(cache)}
             >
               {isOpening ? (
                 <span>Opening...</span>
@@ -226,25 +254,19 @@ const Caches = ({ onOpenCaches }) => {
 
       {/* loot grid */}
       <div style={{ position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        {/* <div className="co-stage-wrapper"> */}
-          {animPhase === 'orb' && (
-            <CacheAnimation
-              items={pendingItems}
-              onComplete={() => {
-                setDisplayUnopenedCaches(null) //release display lock, real data takes over display
-                setOpeningCacheKey(null) //remove the cache being opened's button
-                setAnimPhase('reveal')
-                setTimeout(() => setAnimPhase('done'), 27 * 30 + 400)
-              }}
-            />
-          )}
-        {/* </div> */}
-        {activeGrid && (animPhase === 'reveal' || animPhase === 'done') && (
+        {openingCacheKey && pendingItems.length > 0 && (
+          <CacheAnimation
+            key={openingCacheKey}
+            items={pendingItems}
+            onComplete={handleAnimationComplete}
+          />
+        )}
+        {activeGrid && !openingCacheKey && (
           <section className="caches-section loot-reveal">
             {/* <h2>Loot</h2> */}
-            <LootGrid grid={activeGrid} revealing={animPhase === 'reveal'}/>
+            <LootGrid grid={activeGrid} revealing={isRevealing}/>
             <button className="submit-button" onClick={handleCollect}>
-              Collect
+              Close
             </button>
           </section>
         )}
