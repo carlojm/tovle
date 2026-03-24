@@ -149,11 +149,19 @@ const LOOT_TABLE = [
   },
 ]
 
-const AXOLOTL_LOOT_TABLE = LOOT_TABLE.filter(entry => 
-  !['viridian_cod', 'brown_carp', 'coffee_catfish', 'rosefish', 
-    'sandy_salmon', 'tundra_trout', 'arcane_fish', 'tropical_fish', 
-    'den_piece_100'].includes(entry.itemId)
-)
+const AXOLOTL_LOOT_TABLE = [
+  ...LOOT_TABLE.filter(entry => 
+    !['viridian_cod', 'brown_carp', 'coffee_catfish', 'rosefish', 
+      'sandy_salmon', 'tundra_trout', 'arcane_fish', 'tropical_fish', 
+      'den_piece_100'].includes(entry.itemId)
+  ),
+  {
+    itemId: 'torn_canvas',
+    name: 'Torn Canvas',
+    rolls: 3,
+    baseChance: 0.3,
+  },
+]
 
 const FILLER_BLOCKS = [
   { itemId: 'prismarine_block',  name: 'Prismarine Block',  weight: 25 },

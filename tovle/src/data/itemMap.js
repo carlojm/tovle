@@ -15,6 +15,7 @@ import pulsatingEmerald from '../assets/items/pulsating_emerald.png'
 import strippedWarpStem from '../assets/items/stripped_warp_stem.png'
 import twistedStrand from '../assets/items/twisted_strand.png'
 import warpedHyphae from '../assets/items/warped_hyphae.png'
+
 import viridianCod from '../assets/fish/viridian_cod.png'
 import brownCarp from '../assets/fish/brown_carp.png'
 import coffeeCatfish from '../assets/fish/coffee_catfish.png'
@@ -23,6 +24,8 @@ import sandySalmon from '../assets/fish/sandy_salmon.png'
 import tundraTrout from '../assets/fish/tundra_trout.png'
 import arcanefish from '../assets/fish/arcane_fish.png'
 import tropicalFish from '../assets/fish/tropical_fish.png'
+
+import tornCanvas from '../assets/items/torn_canvas.png'
 
 export const ITEM_MAP = {
   den_piece_100:          { img: denPiece100 },
@@ -50,4 +53,6 @@ export const ITEM_MAP = {
   rosefish:        { img: rosefish },
   tropical_fish:   { img: tropicalFish },
   arcane_fish:     { img: arcanefish },
+
+  torn_canvas: { img: tornCanvas },
 }
