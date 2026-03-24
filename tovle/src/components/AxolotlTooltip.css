@@ -1,0 +1,29 @@
+.axolotl-tooltip-anchor {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+}
+
+.axolotl-tooltip-icon {
+  cursor: pointer;
+  color: var(--color-text-muted);
+  vertical-align: middle;
+
+  position: relative;
+  top: 3px;
+}
+
+.axolotl-tooltip-icon:hover {
+  color: var(--color-text);
+}
+
+.axolotl-tooltip-box {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  transform: none;
+  width: 220px;
+  white-space: normal;
+  font-weight: 400;
+}

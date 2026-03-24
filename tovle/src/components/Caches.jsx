@@ -7,6 +7,7 @@ import Crafting from './Crafting'
 import Axolotl from './Axolotl'
 import CacheAnimation from './CacheAnimation'
 import { AnimatePresence, motion } from 'framer-motion'
+import AxolotlTooltip from './AxolotlTooltip'
 
 const mergeItems = (existing, incoming) => {
   const merged = {}
@@ -327,7 +328,10 @@ const Caches = ({ }) => {
 
       {playerData?.upgrades?.newHire >= 1 && (
         <motion.section layout className="caches-section">
-          <h2>Axolotls</h2>
+          <h2>
+            Axolotls
+            <AxolotlTooltip />
+          </h2>
           <Axolotl />
         </motion.section>
       )}
