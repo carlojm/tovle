@@ -36,7 +36,7 @@ const Axolotl = () => {
     new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 
   const canCollect = (axolotl) => {
-    return axolotl.hunger > 0 && axolotl.lastCollected !== getTodayStr()
+    return axolotl.hunger >= axolotl.level && axolotl.lastCollected !== getTodayStr()
   }
 
   const handleRename = (axolotl) => {
@@ -278,7 +278,7 @@ const Axolotl = () => {
             >
               {alreadyCollected
                 ? `Collected ${axolotl.lastCollectedCount} cache${axolotl.lastCollectedCount > 1 ? 's' : ''} today`
-                : axolotl.hunger > 0
+                : axolotl.hunger >= axolotl.level
                   ? axolotl.level === 1
                     ? `Collect 1 cache`
                     : `Collect 1-${axolotl.level} caches`
