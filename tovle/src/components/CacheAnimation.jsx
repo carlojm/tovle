@@ -6,13 +6,22 @@ import chestGif from '../assets/chest.gif'
 
 const CHEST_SIZE = 64
 const ITEM_SIZE = 28
-const TOTAL_BOUNCES = 8
-const BOUNCE_DUR = 200
-const SETTLE_DUR = 500
-const FINAL_SHAKE_DUR = 1000
 
-function easeOut(t) { return 1 - Math.pow(1 - t, 3) }
-function easeInOut(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2 }
+const WAIT_DUR = 400 //ms
+const TOTAL_BOUNCES = 10
+const BOUNCE_DUR = 200
+const MIN_BOUNCE_DUR = 200 // ms, tweak this
+const MAX_BOUNCE_DUR = 400
+const BOUNCE_SPEED = 1.5 // pixels per ms
+const SETTLE_DUR = 500
+const FINAL_SHAKE_DUR = 700
+
+function easeOut(t, n = 3) { return 1 - Math.pow(1 - t, n) }
+function easeInOut(t, n = 3) {
+  return t < 0.5
+    ? Math.pow(2, n - 1) * Math.pow(t, n)
+    : 1 - Math.pow(-2 * t + 2, n) / 2
+}
 
 function runAnimation(stage, chest, items, onComplete, animRef) {
   const W = stage.clientWidth
@@ -26,6 +35,7 @@ function runAnimation(stage, chest, items, onComplete, animRef) {
   chest.src = chestPng
   chest.style.left = centerX + 'px'
   chest.style.top = centerY + 'px'
+  chest.style.opacity = '0'
   chest.style.transform = 'scale(1) rotate(0deg)'
   chest.style.display = 'block'
   stage.querySelectorAll('.co-item').forEach(e => e.remove())
@@ -33,22 +43,29 @@ function runAnimation(stage, chest, items, onComplete, animRef) {
 
   const displayItems = items.slice(0, TOTAL_BOUNCES)
 
+  // const targets = Array.from({ length: TOTAL_BOUNCES }, (_, i) => {
+  //   const edge = i % 4
+  //   if (edge === 0) return { x: 8, y: 8 + Math.random() * (maxY - 16) }
+  //   if (edge === 1) return { x: maxX - 8, y: 8 + Math.random() * (maxY - 16) }
+  //   if (edge === 2) return { x: 8 + Math.random() * (maxX - 16), y: 8 }
+  //   return { x: 8 + Math.random() * (maxX - 16), y: maxY - 8 }
+  // })
+
   const targets = Array.from({ length: TOTAL_BOUNCES }, (_, i) => {
-    const edge = i % 4
-    if (edge === 0) return { x: 8, y: 8 + Math.random() * (maxY - 16) }
-    if (edge === 1) return { x: maxX - 8, y: 8 + Math.random() * (maxY - 16) }
-    if (edge === 2) return { x: 8 + Math.random() * (maxX - 16), y: 8 }
-    return { x: 8 + Math.random() * (maxX - 16), y: maxY - 8 }
-  })
+  const x = i % 2 === 0 ? 8 : maxX - 8
+  const y = 8 + Math.random() * (maxY - 16)
+  return { x, y }
+})
 
   const activeItems = []
   let cx = centerX, cy = centerY
   let fromX = cx, fromY = cy
   let toX = targets[0].x, toY = targets[0].y
   let bouncesDone = 0
-  let phase = 'bouncing'
+  let phase = 'waiting'
   let phaseStart = null
   let lastNow = null
+  let bounceDur = Math.hypot(toX - fromX, toY - fromY) / BOUNCE_SPEED
 
   const spawnParticles = () => {
     // const colors = ['#1abc9c','#3498db','#9b59b6','#f39c12','#e74c3c','#DAA520','#2ecc71','#e67e22']
@@ -111,6 +128,28 @@ function runAnimation(stage, chest, items, onComplete, animRef) {
     })
   }
 
+  const startItemLoop = () => {
+    const itemTick = (now) => {
+      const itemMaxX = W - ITEM_SIZE
+      const itemMaxY = H - ITEM_SIZE
+      activeItems.forEach(item => {
+        item.x += item.vx
+        item.y += item.vy
+        if (item.x <= 0) { item.x = 0; item.vx = Math.abs(item.vx) * 0.85 }
+        if (item.x >= itemMaxX) { item.x = itemMaxX; item.vx = -Math.abs(item.vx) * 0.85 }
+        if (item.y <= 0) { item.y = 0; item.vy = Math.abs(item.vy) * 0.85 }
+        if (item.y >= itemMaxY) { item.y = itemMaxY; item.vy = -Math.abs(item.vy) * 0.85 }
+        item.vx *= 0.995  // ← tweak drag here
+        item.vy *= 0.995
+        item.el.style.left = item.x + 'px'
+        item.el.style.top = item.y + 'px'
+        item.el.style.transform = `rotate(${(now * item.spinSpeed) % 360}deg)`
+      })
+      animRef.current = requestAnimationFrame(itemTick)
+    }
+    animRef.current = requestAnimationFrame(itemTick)
+  }
+
   const tick = (now) => {
     const dt = lastNow ? Math.min(now - lastNow, 32) : 16
     lastNow = now
@@ -134,8 +173,22 @@ function runAnimation(stage, chest, items, onComplete, animRef) {
       item.el.style.transform = `rotate(${(now * item.spinSpeed) % 360}deg)`
     })
 
-    if (phase === 'bouncing') {
-      const t = Math.min(elapsed / BOUNCE_DUR, 1)
+    if (phase === 'waiting') {
+      const shake = Math.sin(now * 0.05) * 3
+      chest.style.left = centerX + 'px'
+      chest.style.top = centerY + 'px'
+      chest.style.transform = `rotate(${shake}deg)`
+
+      chest.style.opacity = Math.min(elapsed / WAIT_DUR, 1)
+
+      if (elapsed >= WAIT_DUR) {
+        phase = 'bouncing'
+        phaseStart = now
+      }
+      animRef.current = requestAnimationFrame(tick)
+
+    } else if (phase === 'bouncing') {
+      const t = Math.min(elapsed / bounceDur, 1)
       const et = easeOut(t)
       cx = fromX + (toX - fromX) * et
       cy = fromY + (toY - fromY) * et
@@ -151,6 +204,7 @@ function runAnimation(stage, chest, items, onComplete, animRef) {
         if (bouncesDone < TOTAL_BOUNCES) {
           fromX = cx; fromY = cy
           toX = targets[bouncesDone].x; toY = targets[bouncesDone].y
+          bounceDur = Math.min(Math.max(bounceDur, MIN_BOUNCE_DUR), MAX_BOUNCE_DUR) // ← recalculate
           phaseStart = now
         } else {
           phase = 'settling'
@@ -185,6 +239,7 @@ function runAnimation(stage, chest, items, onComplete, animRef) {
           { transform: 'rotate(10deg) scale(1.3)' },
           { transform: 'rotate(0deg) scale(1.4)' },
         ], { duration: FINAL_SHAKE_DUR, easing: 'ease-in-out' }).onfinish = () => {
+          cancelAnimationFrame(animRef.current)  // stop item loop
           spawnParticles()
           chest.style.display = 'none'
           activeItems.forEach(item => {
@@ -195,6 +250,8 @@ function runAnimation(stage, chest, items, onComplete, animRef) {
           })
           setTimeout(() => onComplete?.(), 500)
         }
+
+        startItemLoop()  // hand off to independent item loop, main tick stops here
       }
     }
   }
