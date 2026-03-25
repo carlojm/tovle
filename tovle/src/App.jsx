@@ -453,8 +453,18 @@ const App = () => {
                     />
                   }
                 </div>
-
+                {(currentCache?.subtitle || currentCache?.contributor) && (
+                  <div className="cache-subtitle">
+                    {currentCache.subtitle && (
+                      <p className="cache-subtitle-text">{currentCache.subtitle}</p>
+                    )}
+                    {currentCache.contributor && (
+                      <p className="cache-subtitle-contributor">contributed by {currentCache.contributor}</p>
+                    )}
+                  </div>
+                )}
               </div>
+
               <div className="play-map-col">
 
                 <Map 
@@ -494,6 +504,16 @@ const App = () => {
                 />
               }
             </div>
+            {(currentCache?.subtitle || currentCache?.contributor) && (
+              <div className="cache-subtitle">
+                {currentCache.subtitle && (
+                  <p className="cache-subtitle-text">{currentCache.subtitle}</p>
+                )}
+                {currentCache.contributor && (
+                  <p className="cache-subtitle-contributor">contributed by {currentCache.contributor}</p>
+                )}
+              </div>
+            )}
             <div className="completion-summary">
               <p>You found all {dailyCaches.length} caches today!</p>
               {cacheResults.map((result, i) => (

@@ -1205,5 +1205,15 @@
       "z": 988
     },
     "description": "on a tree with oasis town poi in the background"
+  },
+  {
+    "id": 1004,
+    "coordinates": {
+      "x": -280,
+      "z": 1268
+    },
+    "description": "happy birthday weekendtech @ the pineapple plantation",
+    "contributor": "carlo",
+    "subtitle": "that sign text lowkey too small but everyone say happy birthday weekendtech"
   }
 ]

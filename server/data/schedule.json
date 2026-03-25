@@ -23,6 +23,16 @@
         "date": "2026-03-23",
         "ids": ["random","random","random",1003],
         "note": "another custom, outside a poi"
+    },
+    {
+        "date": "2026-03-24",
+        "ids": [1,"random","random",1004],
+        "note": "another custom, outside a poi"
+    },
+    {
+        "date": "2026-03-25",
+        "ids": ["random","random","random",1004],
+        "note": "weekendtech birthday"
     }
 
     

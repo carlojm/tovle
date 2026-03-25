@@ -161,6 +161,27 @@ body {
   /* margin: 20px 0; */
 }
 
+.cache-subtitle {
+  width: 100%;
+  padding: 0px 4px 0 4px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.cache-subtitle-text {
+  font-size: clamp(12px, 2.5vw, 14px);
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.cache-subtitle-contributor {
+  font-size: clamp(11px, 2vw, 13px);
+  opacity: 0.6;
+  text-align: right;
+}
+
 .completion-summary {
   width: min(90vw, 800px);
   padding: 24px;
