@@ -315,13 +315,14 @@ const Caches = ({ }) => {
 
       <motion.section layout className="caches-section">
         <div className="caches-section-header">
-          <h2>Crafting</h2>
-          <button
+          <motion.h2 layout="position">Crafting</motion.h2>
+          <motion.button
+            layout="position"
             className="caches-toggle-btn"
             onClick={() => setHideMaxed(prev => !prev)}
           >
             {hideMaxed ? 'Show Maxed' : 'Hide Maxed'}
-          </button>
+          </motion.button>
         </div>
         <Crafting hideMaxed={hideMaxed}/>
       </motion.section>
