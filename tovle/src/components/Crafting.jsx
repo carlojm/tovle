@@ -38,6 +38,21 @@ const UPGRADES = [
     ]
   },
   {
+    id: 'delveMods',
+    name: 'Delve Modifiers',
+    description: [
+      'The game is way too easy and you keep one-shotting caches.',
+      'Unlock delve modifier page.',
+      'None'
+    ],
+    maxTier: 1,
+    // requiresUpgrade: 'perfectGameAchieved', // hidden until this is owned
+    costs: [
+      // tier 0→1
+      [{ itemId: 'den_piece_100', quantity: 1 }, { itemId: 'torn_canvas', quantity: 1 }],
+    ]
+  },
+  {
     id: 'fishingNet',
     name: 'Fishing Net',
     description: [
