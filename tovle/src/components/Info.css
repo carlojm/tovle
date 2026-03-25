@@ -6,15 +6,20 @@
   align-items: center;
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 800px) {
   .info-page-layout {
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: flex-start;
     justify-content: center;
   }
 }
 
-
+@media (min-width: 1600px) {
+  .info-page-layout {
+    flex-wrap: nowrap;
+  }
+}
 
 .info-box {
   display:flex;
