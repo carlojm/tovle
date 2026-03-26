@@ -10,5 +10,6 @@ and in another terminal:
 cd tovle
 npm run dev
 
-might need to add PORT=3001 to .env?
+might need to add PORT=3001 to a .env file?
+and npm install dependencies maybe?
 
