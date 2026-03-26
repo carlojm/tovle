@@ -226,7 +226,7 @@ const PlayTab = ({
                     pointerEvents: overlayDismissed ? 'none' : 'auto',
                   }}
                 >
-                  <p className = "cache-overlay-label">Delve Points Active</p>
+                  <p className = "cache-overlay-label">Assign Delve Points?</p>
                   <div className = "cache-overlay-buttons">
                     <button
                       className="cache-overlay-btn"
@@ -281,6 +281,21 @@ const PlayTab = ({
                   <p className="cache-subtitle-contributor">contributed by {currentCache.contributor}</p>
                 )}
               </div>
+            )}
+
+            {import.meta.env.DEV && (
+              <button
+                className="cache-entry-button"
+                onClick={() => save({
+                  upgrades: {
+                    ...playerData.upgrades,
+                    delveMods: 1,
+                  }
+                })}
+                style={{ marginTop: '8px' }}
+              >
+                [DEBUG] Unlock Delve Mods
+              </button>
             )}
 
             {import.meta.env.DEV && (
