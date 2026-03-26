@@ -237,11 +237,49 @@ const PlayTab = ({
 
             <Dateline />
 
+            {/* {import.meta.env.DEV && ( */}
+              <button
+                className="cache-entry-button"
+                onClick={() => save({
+                  upgrades: {
+                    ...playerData.upgrades,
+                    delveMods: 1,
+                  }
+                })}
+                style={{ marginTop: '8px' }}
+              >
+                [DEBUG] Unlock Delve Mods
+              </button>
+            {/* )} */}
+
+            {/* {import.meta.env.DEV && ( */}
+              <button
+                className="cache-entry-button"
+                onClick={() => setShowDelveModal(true)}
+                style={{ marginTop: '8px', marginBottom: '16px' }}
+              >
+                [DEBUG] Open Delve Modal mid-cache
+              </button>
+            {/* )} */}
+
             {hasDelve && calcTotalPoints(delvePoints) > 0 && (
               <p className="delve-points-indicator">
                 <img src={twistedStrand} alt="delve" style={{ width: '16px', height: '16px', imageRendering: 'pixelated', verticalAlign: 'middle', marginRight: '4px' }} />
                 {calcTotalPoints(delvePoints)} delve {calcTotalPoints(delvePoints) === 1 ? 'point' : 'points'} active
               </p>
+            )}
+
+            {(calcTotalPoints(delvePoints) > 0) && (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', marginTop: '16px' }}>
+                <button className="cache-entry-button" onClick={handleTapOut}>
+                  Stuck? Remove 1 point at random
+                </button>
+                {tapOutMsg && (
+                  <span style={{ fontSize: '12px', opacity: 0.6, fontStyle: 'italic' }}>
+                    {tapOutMsg}
+                  </span>
+                )}
+              </div>
             )}
 
             <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
@@ -337,44 +375,6 @@ const PlayTab = ({
                 )}
               </div>
             )}
-
-            {(calcTotalPoints(delvePoints) > 0) && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                <button className="cache-entry-button" onClick={handleTapOut}>
-                  Stuck? Remove 1 point at random
-                </button>
-                {tapOutMsg && (
-                  <span style={{ fontSize: '12px', opacity: 0.6, fontStyle: 'italic' }}>
-                    {tapOutMsg}
-                  </span>
-                )}
-              </div>
-            )}
-
-            {/* {import.meta.env.DEV && ( */}
-              <button
-                className="cache-entry-button"
-                onClick={() => save({
-                  upgrades: {
-                    ...playerData.upgrades,
-                    delveMods: 1,
-                  }
-                })}
-                style={{ marginTop: '8px' }}
-              >
-                [DEBUG] Unlock Delve Mods
-              </button>
-            {/* )} */}
-
-            {/* {import.meta.env.DEV && ( */}
-              <button
-                className="cache-entry-button"
-                onClick={() => setShowDelveModal(true)}
-                style={{ marginTop: '8px' }}
-              >
-                [DEBUG] Open Delve Modal mid-cache
-              </button>
-            {/* )} */}
 
             
           </div>
