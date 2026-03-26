@@ -24,6 +24,8 @@ const PlayTab = ({
   allComplete,
   cacheResults,
   todayStats,
+  delvePoints,
+  setDelvePoints,
   // handlers from App
   handleNextCache,
   handleComplete,
@@ -41,9 +43,6 @@ const PlayTab = ({
   const [lastSelectedCoords, setLastSelectedCoords] = useState(null)
 
   const [showDelveModal, setShowDelveModal] = useState(false)
-  const [delvePoints, setDelvePoints] = useState(
-    playerData?.today?.delvePoints ?? {}
-  )
   const [tapOutMsg, setTapOutMsg] = useState(null)
 
   const hasDelve = (playerData?.upgrades?.delveMods ?? 0) >= 1

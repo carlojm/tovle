@@ -25,6 +25,7 @@ const App = () => {
   const [currentCacheIndex, setCurrentCacheIndex] = useState(0) //0-3
   const [cacheResults, setCacheResults] = useState([]) //accumulates each completed cache for end summary
   const [allComplete, setAllComplete] = useState(false) //flips to true when all 4 caches done
+  const [delvePoints, setDelvePoints] = useState({})
 
   const [guessHistory, setGuessHistory] = useState([])
   const [numGuesses, setNumGuesses] = useState(0)
@@ -129,6 +130,11 @@ const App = () => {
             setNumGuesses(0)
           }
           setHasWon(false)
+        }
+
+        //restore delve points too
+        if (savedToday?.delvePoints) {
+          setDelvePoints(savedToday.delvePoints)
         }
       }
     }).catch(err => console.error('Failed to fetch daily caches:', err))
@@ -251,6 +257,7 @@ const App = () => {
       today: {
         date: todayStr,
         caches: updatedResults,
+        delvePoints: playerData?.today?.delvePoints ?? {},
       },
       inventory: {
         ...playerData.inventory,
@@ -309,6 +316,7 @@ const App = () => {
       today: {
         date: todayStr,
         caches: updatedResults,
+        delvePoints: playerData?.today?.delvePoints ?? {},
       },
       inventory: {
         ...playerData.inventory,
@@ -349,6 +357,8 @@ const App = () => {
             allComplete={allComplete}
             cacheResults={cacheResults}
             todayStats={todayStats}
+            delvePoints={delvePoints}
+            setDelvePoints={setDelvePoints}
             // handlers from App
             handleNextCache={handleNextCache}
             handleComplete={handleComplete}
