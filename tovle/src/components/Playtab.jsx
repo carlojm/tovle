@@ -1,4 +1,5 @@
 import { cache, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import Dateline from './Dateline'
 import Map from './Map'
 import Submit from './Submit'
@@ -232,8 +233,8 @@ const PlayTab = ({
   return (
     <>
       {!allComplete && <>
-        <div className="play-layout">
-          <div className="play-image-col">
+        <motion.div layout className="play-layout">
+          <motion.div layout className="play-image-col">
 
             <Dateline />
 
@@ -262,25 +263,53 @@ const PlayTab = ({
               </button>
             {/* )} */}
 
-            {hasDelve && calcTotalPoints(delvePoints) > 0 && (
-              <p className="delve-points-indicator">
-                <img src={twistedStrand} alt="delve" style={{ width: '16px', height: '16px', imageRendering: 'pixelated', verticalAlign: 'middle', marginRight: '4px' }} />
-                {calcTotalPoints(delvePoints)} delve {calcTotalPoints(delvePoints) === 1 ? 'point' : 'points'} active
-              </p>
-            )}
+            <AnimatePresence mode="popLayout">
+              {hasDelve && calcTotalPoints(delvePoints) > 0 && (
+                <motion.p
+                  key="delve-indicator"
+                  className="delve-points-indicator"
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                  layout
+                >
+                  <img src={twistedStrand} alt="delve" style={{ width: '16px', height: '16px', imageRendering: 'pixelated', verticalAlign: 'middle', marginRight: '4px' }} />
+                  {calcTotalPoints(delvePoints)} delve {calcTotalPoints(delvePoints) === 1 ? 'point' : 'points'} active
+                </motion.p>
+              )}
+            </AnimatePresence>
 
-            {(calcTotalPoints(delvePoints) > 0) && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', marginTop: '16px', marginBottom: '16px' }}>
-                <button className="cache-entry-button" onClick={handleTapOut}>
-                  Stuck? Remove 1 point at random
-                </button>
-                {tapOutMsg && (
-                  <span style={{ fontSize: '12px', opacity: 0.6, fontStyle: 'italic' }}>
-                    {tapOutMsg}
-                  </span>
-                )}
-              </div>
-            )}
+            <AnimatePresence mode="popLayout">
+              {(calcTotalPoints(delvePoints) > 0) && (
+                <motion.div
+                  key="tap-out"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 8 }}
+                  transition={{ duration: 0.2 }}
+                  layout
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', marginTop: '16px', marginBottom: '16px' }}
+                >
+                  <button className="cache-entry-button" onClick={handleTapOut}>
+                    Stuck? Remove 1 point at random
+                  </button>
+                  <AnimatePresence>
+                    {tapOutMsg && (
+                      <motion.span
+                        key="tap-out-msg"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        style={{ fontSize: '12px', opacity: 0.6, fontStyle: 'italic' }}
+                      >
+                        {tapOutMsg}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
               {delvePoints.legionary > 0 && overlayDismissed ? (
@@ -377,17 +406,17 @@ const PlayTab = ({
             )}
 
             
-          </div>
+          </motion.div>
 
-          <div className="play-map-col">
+          <motion.div layout className="play-map-col">
             <Map
               ref={mapRef}
               selectedCoords={selectedCoords}
               setSelectedCoords={setSelectedCoords}
               correctCoords={hasWon ? correctCoords : null}
             />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         <Submit
           selectedCoords={selectedCoords}
