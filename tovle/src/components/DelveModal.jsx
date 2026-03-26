@@ -16,7 +16,7 @@ const DELVE_MODS = [
     description: 'A color filter is applied to the image',
     maxLevel: 1,
     pointsPerLevel: 2,
-    levels: ['Grayscale filter applied'],
+    levels: ['Random color filter applied'],
   },
   {
     id: 'dreadful',

@@ -26,6 +26,7 @@ const PlayTab = ({
   todayStats,
   delvePoints,
   setDelvePoints,
+  delveColor,
   // handlers from App
   handleNextCache,
   handleComplete,
@@ -177,6 +178,16 @@ const PlayTab = ({
     const transforms = []
     let opacity = 1
 
+    const DELVE_COLOR_FILTERS = {
+      red:    'sepia(1) saturate(3) hue-rotate(0deg)',
+      blue:   'sepia(1) saturate(3) hue-rotate(180deg)',
+      green:  'sepia(1) saturate(3) hue-rotate(80deg)',
+      purple: 'sepia(1) saturate(3) hue-rotate(230deg)',
+      orange: 'sepia(1) saturate(3) hue-rotate(20deg)',
+      cyan:   'sepia(1) saturate(3) hue-rotate(150deg)',
+      yellow: 'sepia(1) saturate(2) hue-rotate(40deg)',
+    }
+
     // existing overlay blur when not dismissed
     if (!overlayDismissed) {
       filters.push('blur(16px) grayscale(100%)')
@@ -185,7 +196,7 @@ const PlayTab = ({
     if (overlayDismissed) {
       const spectral = delvePoints.spectral ?? 0
       if (spectral > 0) opacity = 1 - (spectral * 0.25)
-      if (delvePoints.vengeful > 0) filters.push('grayscale(100%)')
+      if (delvePoints.vengeful > 0) filters.push(DELVE_COLOR_FILTERS[delveColor])
       if (delvePoints.twisted > 0) filters.push('invert(100%)')
       if (delvePoints.astral > 0) transforms.push('scaleY(-1)')
 

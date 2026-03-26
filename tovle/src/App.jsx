@@ -27,6 +27,11 @@ const App = () => {
   const [allComplete, setAllComplete] = useState(false) //flips to true when all 4 caches done
   const [delvePoints, setDelvePoints] = useState({})
 
+  const DELVE_COLORS = ['red', 'blue', 'green', 'purple', 'orange', 'cyan', 'yellow']
+  const [delveColor, setDelveColor] = useState(() => 
+    DELVE_COLORS[Math.floor(Math.random() * DELVE_COLORS.length)]
+  )
+
   const [guessHistory, setGuessHistory] = useState([])
   const [numGuesses, setNumGuesses] = useState(0)
   const [hasWon, setHasWon] = useState(false)
@@ -272,6 +277,9 @@ const App = () => {
     setNumGuesses(0)
     setHasWon(false)
     mapRef.current?.resetView()
+
+    //get a new color for delve mods that need color
+    setDelveColor(DELVE_COLORS[Math.floor(Math.random() * DELVE_COLORS.length)])
   }
 
   //ending the game
@@ -359,6 +367,7 @@ const App = () => {
             todayStats={todayStats}
             delvePoints={delvePoints}
             setDelvePoints={setDelvePoints}
+            delveColor={delveColor}
             // handlers from App
             handleNextCache={handleNextCache}
             handleComplete={handleComplete}
