@@ -5,6 +5,7 @@ import Submit from './Submit'
 import './Playtab.css'
 
 import DelveModal, { calcTotalPoints, DELVE_MODS } from './DelveModal'
+import twistedStrand from '../assets/items/twisted_strand.png'
 
 const PlayTab = ({
   // cache data
@@ -202,7 +203,16 @@ const PlayTab = ({
       {!allComplete && <>
         <div className="play-layout">
           <div className="play-image-col">
+
             <Dateline />
+
+            {hasDelve && calcTotalPoints(delvePoints) > 0 && (
+              <p className="delve-points-indicator">
+                <img src={twistedStrand} alt="delve" style={{ width: '16px', height: '16px', imageRendering: 'pixelated', verticalAlign: 'middle', marginRight: '4px' }} />
+                {calcTotalPoints(delvePoints)} delve {calcTotalPoints(delvePoints) === 1 ? 'point' : 'points'} active
+              </p>
+            )}
+
             <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
               {delvePoints.legionary > 0 && overlayDismissed ? (
                 <div
