@@ -210,3 +210,60 @@
   font-style: italic;
   color: #7070d4ff;
 }
+
+
+.cache-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 12px;
+  z-index: 2;
+}
+
+.cache-overlay-label {
+  font-size: clamp(13px, 3vw, 15px);
+  font-weight: 600;
+  color: white;
+  opacity: 0.9;
+}
+
+.cache-overlay-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cache-overlay-btn {
+  padding: 10px 20px;
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: clamp(12px, 2.5vw, 14px);
+  font-weight: 600;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.cache-overlay-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.cache-overlay-btn--primary {
+  background: var(--color-button);
+  border-color: var(--color-button);
+  color: var(--color-text-button);
+}
+
+.cache-overlay-btn--primary:hover {
+  background: var(--color-button-hover);
+  border-color: var(--color-button-hover);
+}

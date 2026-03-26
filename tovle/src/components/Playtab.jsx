@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { cache, useState } from 'react'
 import Dateline from './Dateline'
 import Map from './Map'
 import Submit from './Submit'
@@ -36,6 +36,22 @@ const PlayTab = ({
   const [imageLoaded, setImageLoaded] = useState(false)
   const [selectedCoords, setSelectedCoords] = useState(null)
   const [lastSelectedCoords, setLastSelectedCoords] = useState(null)
+
+  const hasDelve = playerData?.upgrades?.delveMods === 1 ?? false
+
+  //whether the delve selection overlay has been dismissed or not
+  //we want to track this so we can always disable it if delves not unlocked
+  //and also to prevent refresh-scumming a bit
+  const overlayDismissed = (() => {
+    //this was originally state but we don't need that we can just derive it
+    if (!hasDelve) return true
+    if (!currentCache) return false
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const savedToday = playerData?.today
+    if (savedToday?.date !== todayStr) return false
+    const savedCache = savedToday?.caches?.find(c => c.cacheId === currentCache.id)
+    return savedCache?.overlayDismissed ?? false
+  })()
 
   const getDirectionArrow = (guessCoords, correctCoords) => {
     const dx = correctCoords.x - guessCoords.minecraftX
@@ -99,6 +115,7 @@ const PlayTab = ({
       guesses: updatedHistory,
       guessCount: numGuesses + 1,
       score: null,
+      overlayDismissed: overlayDismissed,
     }
 
     save({
@@ -133,13 +150,63 @@ const PlayTab = ({
           <div className="play-image-col">
             <Dateline />
             <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
-              {cacheImage &&
+              {cacheImage && 
                 <img
                   src={cacheImage}
                   className="cache-image"
                   onLoad={() => setImageLoaded(true)}
+                  style={{
+                    filter: overlayDismissed ? 'none' : 'blur(20px) grayscale(100%)',
+                    transition: 'filter 0.4s ease',
+                    transform: 'scale(1.05)',
+                  }}
                 />
               }
+              {!overlayDismissed && (
+                <div
+                  className="cache-overlay"
+                  style={{
+                    opacity: overlayDismissed ? 0 : 1,
+                    transition: 'opacity 0.3s ease',
+                    pointerEvents: overlayDismissed ? 'none' : 'auto',
+                  }}
+                >
+                  <p className = "cache-overlay-label">Delve Points Active</p>
+                  <div className = "cache-overlay-buttons">
+                    <button
+                      className="cache-overlay-btn"
+                      onClick={() => {/*TODO open modal*/}}
+                    >
+                      Modify (0 pts assigned)
+                    </button>
+                    <button
+                      className="cache-overlay-btn cache-overlay-btn--primary"
+                      onClick={() => {
+                        //save overlaydismissed to today so refreshing page restores correctly
+                        //we save it per cache so we gotta do this whole rigamarole
+                        const todayStr = new Date().toLocaleDateString('en-CA', {timeZone: 'America/New_York'})
+                        const existingCaches = cacheResults.filter(r => r.cacheId !== currentCache.id)
+                        const inProgressCache = {
+                          cacheId: currentCache.id,
+                          status: 'unsolved',
+                          guesses:guessHistory,
+                          guessCount: numGuesses,
+                          score: null,
+                          overlayDismissed: true,
+                        }
+                        save({
+                          today: {
+                            date: todayStr,
+                            caches: [...existingCaches, inProgressCache]
+                          }
+                        })
+                      }}
+                    >
+                      Continue
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
             {(currentCache?.subtitle || currentCache?.contributor) && (
               <div className="cache-subtitle">
