@@ -44,7 +44,7 @@ const PlayTab = ({
     playerData?.today?.delvePoints ?? {}
   )
 
-  const hasDelve = playerData?.upgrades?.delveMods === 1 ?? false
+  const hasDelve = (playerData?.upgrades?.delveMods ?? 0) >= 1
   //whether the delve selection overlay has been dismissed or not
   //we want to track this so we can always disable it if delves not unlocked
   //and also to prevent refresh-scumming a bit
