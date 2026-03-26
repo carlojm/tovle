@@ -213,12 +213,17 @@ const App = () => {
 
   //advancing the game
   const handleNextCache = () => {
+
+    const savedCacheEntry = playerData?.today?.caches?.find(c => c.cacheId === currentCache.id)
+
     const currentResult = {
       cacheId: currentCache.id,
       status: 'advanced', //advanced = solved AND next cache button pressed
       guesses: guessHistory,
       guessCount: numGuesses,
       score: calculateScore(numGuesses),
+      delvePointsTotal: savedCacheEntry?.delvePointsTotal ?? 0,
+      delvePointsSnapshot: savedCacheEntry?.delvePointsSnapshot ?? {},
     }
 
     const updatedResults = [...cacheResults, currentResult]
@@ -275,12 +280,16 @@ const App = () => {
       return
     }
 
+    const savedCacheEntry = playerData?.today?.caches?.find(c => c.cacheId === currentCache.id)
+
     const currentResult = {
       cacheId: currentCache.id,
       status: 'advanced',
       guesses: guessHistory,
       guessCount: numGuesses,
       score: calculateScore(numGuesses),
+      delvePointsTotal: savedCacheEntry?.delvePointsTotal ?? 0,
+      delvePointsSnapshot: savedCacheEntry?.delvePointsSnapshot ?? {},
     }
 
     const updatedResults = [...cacheResults, currentResult]

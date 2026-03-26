@@ -69,6 +69,7 @@ function buildFreshPlayerData() {
     today: {
       date: null,
       caches: [],
+      delvePoints: {},
     },
     inventory: {
       unopenedCaches: [],

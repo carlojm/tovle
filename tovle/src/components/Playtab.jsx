@@ -61,6 +61,18 @@ const PlayTab = ({
     return savedCache?.overlayDismissed ?? false
   })()
 
+  const updateDelvePoints = (newPoints) => {
+    setDelvePoints(newPoints)
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    save({
+      today: {
+        ...playerData.today,
+        date: todayStr,
+        delvePoints: newPoints,
+      }
+    })
+  }
+
   const handleTapOut = () => {
     //get all mods that have points assigned
     const activeMods = Object.entries(delvePoints).filter(([id, level]) => level > 0)
@@ -70,7 +82,8 @@ const PlayTab = ({
     const [id] = activeMods[Math.floor(Math.random() * activeMods.length)]
     const modDef = DELVE_MODS.find(m => m.id === id)
 
-    setDelvePoints(prev => ({ ...prev, [id]: prev[id] - 1 }))
+    const newPoints = { ...delvePoints, [id]: delvePoints[id] - 1 }
+    updateDelvePoints(newPoints)
     setTapOutMsg(`${modDef?.name ?? id} point removed`)
   }
 
@@ -128,6 +141,8 @@ const PlayTab = ({
     setGuessHistory(updatedHistory)
     setNumGuesses(prev => prev + 1)
 
+    console.log(distance < 50 ? calcTotalPoints(delvePoints) : undefined)
+
     const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     const existingCaches = cacheResults.filter(r => r.cacheId !== currentCache.id)
     const inProgressCache = {
@@ -137,6 +152,10 @@ const PlayTab = ({
       guessCount: numGuesses + 1,
       score: null,
       overlayDismissed: overlayDismissed,
+      ...(distance < 50 && {
+        delvePointsSnapshot: { ...delvePoints },
+        delvePointsTotal: calcTotalPoints(delvePoints),
+      }),
     }
 
     save({
@@ -192,7 +211,9 @@ const PlayTab = ({
     const todayStr = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' })
     const lines = cacheResults.map((result, i) => {
       const dots = '🌊'.repeat(Math.min(result.guessCount, 10))
-      return `Cache ${i + 1}: ${dots} (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'})`
+      const delveSuffix = result.delvePointsTotal > 0 ? ` ${result.delvePointsTotal}pts` : ''
+      console.log(delveSuffix)
+      return `Cache ${i + 1}: ${dots} (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'},${delveSuffix})`
     })
     const text = `Tovle ${todayStr}\n\n${lines.join('\n')}\n\nPlay at https://tovle.net`
     navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard!'))
@@ -402,6 +423,9 @@ const PlayTab = ({
           {cacheResults.map((result, i) => (
             <div key={result.cacheId} className="summary-row">
               <span>Cache {i + 1}:</span>
+              {result.delvePointsTotal > 0 && (
+                <span className="summary-delve-pts">{result.delvePointsTotal}pts</span>
+              )}
               <span>{result.guessCount} {result.guessCount === 1 ? 'guess!' : 'guesses'}</span>
               <span className="summary-distances">
                 {result.guesses.length > 5
@@ -449,7 +473,7 @@ const PlayTab = ({
       {showDelveModal && (
         <DelveModal
           delvePoints={delvePoints}
-          setDelvePoints={setDelvePoints}
+          setDelvePoints={updateDelvePoints}
           onClose={() => setShowDelveModal(false)}
           onSaveDefaults={() => {
             save({ upgrades: { ...playerData.upgrades, delveDefaults: delvePoints } })

@@ -109,7 +109,7 @@
 
 .summary-row {
   display: grid;
-  grid-template-columns: 80px 120px 1fr;
+  grid-template-columns: 80px 120px auto 1fr;
   align-items: center;
   width: min(90vw, 450px);
   padding: 10px 16px;
@@ -122,6 +122,13 @@
 .summary-row span:first-child {
   font-weight: 600;
   color: var(--color-coords-text);
+}
+
+.summary-delve-pts {
+  font-size: clamp(10px, 2.5vw, 12px);
+  color: var(--color-coords-text);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .summary-distances {
