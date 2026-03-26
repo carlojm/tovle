@@ -231,7 +231,7 @@ const Caches = ({ }) => {
 
       {/* unopened caches list */}
       <motion.section layout className="caches-section">
-        <h2>Unopened Caches</h2>
+        <motion.h2 layout="position">Unopened Caches</motion.h2>
         {unopenedCaches.length === 0 && !activeGrid && (
           <p className="caches-empty">No unopened caches. Play today's caches to earn more!</p>
         )}
