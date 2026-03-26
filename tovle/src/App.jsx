@@ -37,7 +37,7 @@ const App = () => {
     if (saved) return saved
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   })
-  
+
   const [activeTab, setActiveTab] = useState('play')
 
   //this ref used in submitguess
@@ -118,14 +118,22 @@ const App = () => {
           setNumGuesses(lastCache?.guesses?.length ?? 0)
           setHasWon(true)
         } else {
-          //player already pressed Next Cache, they're on a fresh cache
-          //don't restore any guess state
-          setGuessHistory([])
-          setNumGuesses(0)
+          // player is mid-cache with guesses, or on a fresh cache
+          if (lastCache?.guesses?.length > 0) {
+            // restore mid-cache guesses
+            setGuessHistory(lastCache.guesses)
+            setNumGuesses(lastCache.guesses.length)
+          } else {
+            // truly fresh cache
+            setGuessHistory([])
+            setNumGuesses(0)
+          }
           setHasWon(false)
         }
       }
     }).catch(err => console.error('Failed to fetch daily caches:', err))
+
+    // console.log(playerData?.today)
 
   }, [ready])
 
@@ -316,11 +324,13 @@ const App = () => {
 
         {activeTab === 'play' && (
           <PlayTab
+            // cache data
             dailyCaches={dailyCaches}
             currentCacheIndex={currentCacheIndex}
             currentCache={currentCache}
             cacheImage={cacheImage}
             correctCoords={correctCoords}
+            // game state
             guessHistory={guessHistory}
             setGuessHistory={setGuessHistory}
             numGuesses={numGuesses}
@@ -330,11 +340,14 @@ const App = () => {
             allComplete={allComplete}
             cacheResults={cacheResults}
             todayStats={todayStats}
+            // handlers from App
             handleNextCache={handleNextCache}
             handleComplete={handleComplete}
             setActiveTab={setActiveTab}
+            // upgrades
             distancePrecision={playerData?.upgrades?.distancePrecision ?? 0}
             directionArrows={playerData?.upgrades?.directionArrows ?? 0}
+            // refs and save
             mapRef={mapRef}
             save={save}
             playerData={playerData}
