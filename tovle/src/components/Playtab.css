@@ -267,3 +267,43 @@
   background: var(--color-button-hover);
   border-color: var(--color-button-hover);
 }
+
+
+
+/* delve mod css */
+.delve-vignette {
+    position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 10%,
+    rgba(0, 0, 0, calc(var(--vignette-intensity) * 1.5)) 60%,
+    rgba(0, 0, 0, calc(var(--vignette-intensity) * 2)) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+
+.delve-legionary-wrap {
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  overflow: hidden;
+}
+
+
+.delve-legionary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  height: 100%;
+}
+
+.delve-legionary-grid .cache-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}

@@ -4,6 +4,8 @@ import Map from './Map'
 import Submit from './Submit'
 import './Playtab.css'
 
+import DelveModal, { calcTotalPoints, DELVE_MODS } from './DelveModal'
+
 const PlayTab = ({
   // cache data
   dailyCaches,
@@ -37,8 +39,12 @@ const PlayTab = ({
   const [selectedCoords, setSelectedCoords] = useState(null)
   const [lastSelectedCoords, setLastSelectedCoords] = useState(null)
 
-  const hasDelve = playerData?.upgrades?.delveMods === 1 ?? false
+  const [showDelveModal, setShowDelveModal] = useState(false)
+  const [delvePoints, setDelvePoints] = useState(
+    playerData?.today?.delvePoints ?? {}
+  )
 
+  const hasDelve = playerData?.upgrades?.delveMods === 1 ?? false
   //whether the delve selection overlay has been dismissed or not
   //we want to track this so we can always disable it if delves not unlocked
   //and also to prevent refresh-scumming a bit
@@ -133,6 +139,40 @@ const PlayTab = ({
     handleNextCache()
   }
 
+  const getDelveImageStyle = () => {
+    const filters = []
+    const transforms = []
+    let opacity = 1
+
+    // existing overlay blur when not dismissed
+    if (!overlayDismissed) {
+      filters.push('blur(16px) grayscale(100%)')
+    }
+
+    if (overlayDismissed) {
+      const spectral = delvePoints.spectral ?? 0
+      if (spectral > 0) opacity = 1 - (spectral * 0.25)
+      if (delvePoints.vengeful > 0) filters.push('grayscale(100%)')
+      if (delvePoints.twisted > 0) filters.push('invert(100%)')
+      if (delvePoints.astral > 0) transforms.push('scaleY(-1)')
+
+      // only apply colossal here if legionary is not active
+      if (!delvePoints.legionary) {
+        const colossal = delvePoints.colossal ?? 0
+        if (colossal > 0) transforms.push(`scale(${1 + colossal * 0.25})`)
+      }
+    }
+
+    if (transforms.length === 0) transforms.push('scale(1.05)')
+
+    return {
+      filter: filters.length > 0 ? filters.join(' ') : 'none',
+      transform: transforms.join(' '),
+      opacity,
+      transition: 'filter 0.4s ease, opacity 0.4s ease',
+    }
+  }
+
   const handleShare = () => {
     const todayStr = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' })
     const lines = cacheResults.map((result, i) => {
@@ -150,18 +190,33 @@ const PlayTab = ({
           <div className="play-image-col">
             <Dateline />
             <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
-              {cacheImage && 
+              {delvePoints.legionary > 0 && overlayDismissed ? (
+                <div
+                  className="delve-legionary-grid"
+                  style={{
+                    transform: (delvePoints.colossal ?? 0) > 0
+                      ? `scale(${1 + delvePoints.colossal * 0.25})`
+                      : undefined
+                  }}
+                >
+                  {[0, 1, 2, 3].map(i => (
+                    <img
+                      key={i}
+                      src={cacheImage}
+                      className="cache-image"
+                      style={getDelveImageStyle()}
+                      onLoad={i === 0 ? () => setImageLoaded(true) : undefined}
+                    />
+                  ))}
+                </div>
+              ) : (
                 <img
                   src={cacheImage}
                   className="cache-image"
                   onLoad={() => setImageLoaded(true)}
-                  style={{
-                    filter: overlayDismissed ? 'none' : 'blur(20px) grayscale(100%)',
-                    transition: 'filter 0.4s ease',
-                    transform: 'scale(1.05)',
-                  }}
+                  style={getDelveImageStyle()}
                 />
-              }
+              )}
               {!overlayDismissed && (
                 <div
                   className="cache-overlay"
@@ -175,14 +230,14 @@ const PlayTab = ({
                   <div className = "cache-overlay-buttons">
                     <button
                       className="cache-overlay-btn"
-                      onClick={() => {/*TODO open modal*/}}
+                      onClick={() => {setShowDelveModal(true)}}
                     >
-                      Modify (0 pts assigned)
+                      Modify ({calcTotalPoints(delvePoints)} pts assigned)
                     </button>
                     <button
                       className="cache-overlay-btn cache-overlay-btn--primary"
                       onClick={() => {
-                        //save overlaydismissed to today so refreshing page restores correctly
+                        //save overlaydismissed and delvepoints to today so refreshing page restores correctly
                         //we save it per cache so we gotta do this whole rigamarole
                         const todayStr = new Date().toLocaleDateString('en-CA', {timeZone: 'America/New_York'})
                         const existingCaches = cacheResults.filter(r => r.cacheId !== currentCache.id)
@@ -197,7 +252,8 @@ const PlayTab = ({
                         save({
                           today: {
                             date: todayStr,
-                            caches: [...existingCaches, inProgressCache]
+                            caches: [...existingCaches, inProgressCache],
+                            delvePoints: delvePoints,
                           }
                         })
                       }}
@@ -206,6 +262,14 @@ const PlayTab = ({
                     </button>
                   </div>
                 </div>
+              )}
+              {overlayDismissed && (delvePoints.dreadful ?? 0) > 0 && (
+                <div
+                  className="delve-vignette"
+                  style={{
+                    '--vignette-intensity': `${0.6 + (delvePoints.dreadful - 1) / 2 * 0.4}`,
+                  }}
+                />
               )}
             </div>
             {(currentCache?.subtitle || currentCache?.contributor) && (
@@ -217,6 +281,16 @@ const PlayTab = ({
                   <p className="cache-subtitle-contributor">contributed by {currentCache.contributor}</p>
                 )}
               </div>
+            )}
+
+            {import.meta.env.DEV && (
+              <button
+                className="cache-entry-button"
+                onClick={() => setShowDelveModal(true)}
+                style={{ marginTop: '8px' }}
+              >
+                [DEBUG] Open Delve Modal mid-cache
+              </button>
             )}
           </div>
 
@@ -316,6 +390,18 @@ const PlayTab = ({
           </div>
           <p style={{ marginTop: '16px' }}>See full statistics on the info page.</p>
         </>
+      )}
+
+      {showDelveModal && (
+        <DelveModal
+          delvePoints={delvePoints}
+          setDelvePoints={setDelvePoints}
+          onClose={() => setShowDelveModal(false)}
+          onSaveDefaults={() => {
+            save({ upgrades: { ...playerData.upgrades, delveDefaults: delvePoints } })
+            setShowDelveModal(false)
+          }}
+        />
       )}
     </>
   )

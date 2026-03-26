@@ -1,0 +1,189 @@
+/* TODO all this is straight copilot generated based on my description */
+/* TODO take the time to actually go through it and make it nice the way i want it */
+
+.delve-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.delve-modal {
+  background: var(--color-background);
+  border: 2px solid var(--color-coords-border);
+  border-radius: 16px;
+  width: min(90vw, 520px);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.delve-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 20px 12px 20px;
+  border-bottom: 1px solid var(--color-coords-border);
+}
+
+.delve-modal-header h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.delve-total-pts {
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+.delve-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+  opacity: 0.6;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.2s;
+}
+
+.delve-close-btn:hover {
+  opacity: 1;
+}
+
+.delve-mod-list {
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px 0;
+}
+
+.delve-mod-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  transition: background 0.15s;
+}
+
+.delve-mod-row:hover {
+  background: var(--color-background);
+}
+
+.delve-mod-row--active {
+  background: var(--color-background);
+}
+
+.delve-mod-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.delve-mod-name {
+  font-weight: 600;
+  font-size: clamp(13px, 3vw, 15px);
+}
+
+.delve-mod-desc {
+  font-size: clamp(11px, 2.5vw, 12px);
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.delve-mod-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.delve-mod-pts {
+  font-size: 12px;
+  opacity: 0.5;
+  min-width: 60px;
+  text-align: right;
+}
+
+.delve-mod-row--active .delve-mod-pts {
+  opacity: 1;
+  color: var(--color-coords-text);
+  font-weight: 600;
+}
+
+.delve-level-btn {
+  background: none;
+  border: 1px solid var(--color-coords-border);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--color-text);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  padding: 0;
+}
+
+.delve-level-btn:hover:not(:disabled) {
+  border-color: var(--color-button);
+  color: var(--color-button);
+}
+
+.delve-level-btn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.delve-mod-level {
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 28px;
+  text-align: center;
+}
+
+.delve-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-coords-border);
+}
+
+.delve-footer-btn {
+  padding: 10px 18px;
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 2px solid var(--color-coords-border);
+  background: none;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.delve-footer-btn:hover {
+  border-color: var(--color-button);
+}
+
+.delve-footer-btn--primary {
+  background: var(--color-button);
+  border-color: var(--color-button);
+  color: var(--color-text-button);
+}
+
+.delve-footer-btn--primary:hover {
+  background: var(--color-button-hover);
+  border-color: var(--color-button-hover);
+}
