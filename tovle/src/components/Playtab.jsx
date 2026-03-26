@@ -43,6 +43,7 @@ const PlayTab = ({
   const [delvePoints, setDelvePoints] = useState(
     playerData?.today?.delvePoints ?? {}
   )
+  const [tapOutMsg, setTapOutMsg] = useState(null)
 
   const hasDelve = (playerData?.upgrades?.delveMods ?? 0) >= 1
   //whether the delve selection overlay has been dismissed or not
@@ -58,6 +59,19 @@ const PlayTab = ({
     const savedCache = savedToday?.caches?.find(c => c.cacheId === currentCache.id)
     return savedCache?.overlayDismissed ?? false
   })()
+
+  const handleTapOut = () => {
+    //get all mods that have points assigned
+    const activeMods = Object.entries(delvePoints).filter(([id, level]) => level > 0)
+    if (activeMods.length === 0) return
+
+    //pick a random one
+    const [id] = activeMods[Math.floor(Math.random() * activeMods.length)]
+    const modDef = DELVE_MODS.find(m => m.id === id)
+
+    setDelvePoints(prev => ({ ...prev, [id]: prev[id] - 1 }))
+    setTapOutMsg(`${modDef?.name ?? id} point removed`)
+  }
 
   const getDirectionArrow = (guessCoords, correctCoords) => {
     const dx = correctCoords.x - guessCoords.minecraftX
@@ -283,7 +297,20 @@ const PlayTab = ({
               </div>
             )}
 
-            {import.meta.env.DEV && (
+            {(calcTotalPoints(delvePoints) > 0) && (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                <button className="cache-entry-button" onClick={handleTapOut}>
+                  Stuck? Remove 1 point at random
+                </button>
+                {tapOutMsg && (
+                  <span style={{ fontSize: '12px', opacity: 0.6, fontStyle: 'italic' }}>
+                    {tapOutMsg}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* {import.meta.env.DEV && ( */}
               <button
                 className="cache-entry-button"
                 onClick={() => save({
@@ -296,9 +323,9 @@ const PlayTab = ({
               >
                 [DEBUG] Unlock Delve Mods
               </button>
-            )}
+            {/* )} */}
 
-            {import.meta.env.DEV && (
+            {/* {import.meta.env.DEV && ( */}
               <button
                 className="cache-entry-button"
                 onClick={() => setShowDelveModal(true)}
@@ -306,7 +333,9 @@ const PlayTab = ({
               >
                 [DEBUG] Open Delve Modal mid-cache
               </button>
-            )}
+            {/* )} */}
+
+            
           </div>
 
           <div className="play-map-col">
