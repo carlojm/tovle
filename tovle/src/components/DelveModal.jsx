@@ -22,9 +22,9 @@ const DELVE_MODS = [
     id: 'dreadful',
     name: 'Dreadful',
     description: 'A shadow vignette obscures the cache',
-    maxLevel: 2,
+    maxLevel: 1,
     pointsPerLevel: 1,
-    levels: ['Slight vignette', 'Heavy vignette'],
+    levels: ['Vignette obscures the cache'],
   },
   {
     id: 'astral',

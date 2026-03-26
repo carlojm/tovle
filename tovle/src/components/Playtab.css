@@ -293,9 +293,9 @@
   border-radius: 12px;
   background: radial-gradient(
     ellipse at center,
-    transparent 10%,
-    rgba(0, 0, 0, calc(var(--vignette-intensity) * 1.5)) 70%,
-    rgba(0, 0, 0, calc(var(--vignette-intensity) * 2)) 100%
+    transparent,
+    /* rgba(0, 0, 0, calc(var(--vignette-intensity) * 1.5)) 70%, */
+    rgba(0, 0, 0, calc(var(--vignette-intensity) * 1.5)) 80%
   );
   pointer-events: none;
   z-index: 1;
