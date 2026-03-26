@@ -1,21 +1,30 @@
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import './Navbar.css'
-import {Sun, Moon} from 'lucide-react'
+import { Sun, Moon } from 'lucide-react'
 import Logo from './Logo'
 
-export default function Navbar({theme, onToggleTheme}) {
+export default function Navbar({ theme, onToggleTheme, onNavigate }) {
   const [menuOpen, setMenuOpen] = useState(false)
+
+  function handleNavigate(tabId) {
+    onNavigate(tabId)
+    setMenuOpen(false)
+  }
 
   return (
     <nav className="navbar">
       <Logo />
-      {/* <span className="navbar-title">Tovle</span> */}
       <div className="navbar-buttons">
         <button className="theme-toggle" onClick={onToggleTheme}>
-          {theme === 'dark' ? <Sun size={20} color="var(--color-text-button" /> : <Moon size={20} color="var(--color-text-button" />}
+          {theme === 'dark'
+            ? <Sun size={20} color="var(--color-text-button" />
+            : <Moon size={20} color="var(--color-text-button" />}
         </button>
-        <button className={`hamburger ${menuOpen ? 'hamburger--open' : ''}`} onClick={() => setMenuOpen(!menuOpen)}>
+        <button
+          className={`hamburger ${menuOpen ? 'hamburger--open' : ''}`}
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
           <span></span>
           <span></span>
           <span></span>
@@ -23,9 +32,8 @@ export default function Navbar({theme, onToggleTheme}) {
       </div>
       {menuOpen && createPortal(
         <div className="navbar-menu">
-          <a href="#">How to play</a>
-          <a href="#">Inventory</a>
-          <a href="#">Log in</a>
+          <button className="navbar-menu-btn" onClick={() => handleNavigate('info')}>Info</button>
+          <a href="#">Log in (WIP)</a>
         </div>,
         document.body
       )}

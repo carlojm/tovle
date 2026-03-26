@@ -121,17 +121,31 @@
   }
 }
 
-.navbar-menu a {
+.navbar-menu a,
+.navbar-menu-btn {
   color: var(--color-text-button);
   text-decoration: none;
   padding: 10px 16px;
   margin: 0px 8px;
 }
 
-.navbar-menu a:hover {
+.navbar-menu a:hover,
+.navbar-menu-btn:hover {
   background-color: var(--color-navbar-background);
 }
 
-.navbar-menu a:active {
+.navbar-menu a:active,
+.navbar-menu-btn:active {
   background-color: var(--color-navbar-dropdown);
+}
+
+
+.navbar-menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  /* width: 100%; */
+  display: block;
 }
