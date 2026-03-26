@@ -31,7 +31,7 @@ const DELVE_MODS = [
     name: 'Astral',
     description: 'The image is flipped upside down',
     maxLevel: 1,
-    pointsPerLevel: 2,
+    pointsPerLevel: 1,
     levels: ['Image is upside down'],
   },
   {
@@ -39,7 +39,7 @@ const DELVE_MODS = [
     name: 'Twisted',
     description: 'The image colors are inverted',
     maxLevel: 1,
-    pointsPerLevel: 2,
+    pointsPerLevel: 1,
     levels: ['Colors inverted'],
   },
   {
@@ -55,7 +55,7 @@ const DELVE_MODS = [
     name: 'Legionary',
     description: 'The image is fragmented',
     maxLevel: 1,
-    pointsPerLevel: 3,
+    pointsPerLevel: 2,
     levels: ['2x2 fragment'],
   },
 ]
