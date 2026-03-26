@@ -86,7 +86,7 @@ const PlayTab = ({
     let msg = ""
     let won = false
 
-    if (distance > 100) {
+    if (distance > 200) {
       msg = "Keep searching!"
     } else if (distance > 50) {
       msg = "Getting close..."
