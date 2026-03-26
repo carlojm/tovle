@@ -270,7 +270,7 @@ const PlayTab = ({
             )}
 
             {(calcTotalPoints(delvePoints) > 0) && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', marginTop: '16px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', marginTop: '16px', marginBottom: '16px' }}>
                 <button className="cache-entry-button" onClick={handleTapOut}>
                   Stuck? Remove 1 point at random
                 </button>

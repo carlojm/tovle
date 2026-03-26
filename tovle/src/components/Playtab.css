@@ -37,7 +37,7 @@
 .cache-image-wrapper {
   /* width: min(90vw, 800px); */
   aspect-ratio: 16/9;
-  margin: 20px 0;
+  margin: 0px 0;
   border-radius: 12px;
   overflow: hidden; /*stop animation from overflowing*/
   background: var(--dark-purple);
