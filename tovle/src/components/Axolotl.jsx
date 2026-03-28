@@ -36,7 +36,7 @@ const Axolotl = () => {
     new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 
   const canCollect = (axolotl) => {
-    return axolotl.hunger >= axolotl.level && axolotl.lastCollected !== getTodayStr()
+    return axolotl.hunger >= Math.min(axolotl.level, MAX_HUNGER) && axolotl.lastCollected !== getTodayStr()
   }
 
   const handleRename = (axolotl) => {
