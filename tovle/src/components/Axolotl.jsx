@@ -25,6 +25,8 @@ const Axolotl = () => {
   const [editingId, setEditingId] = useState(null)
   const [editingName, setEditingName] = useState('')
 
+  const [hoveredFish, setHoveredFish] = useState(null)
+
   if (axolotls.length === 0) return null
 
   const getItemQuantity = (itemId) => {
@@ -249,24 +251,41 @@ const Axolotl = () => {
                 const satisfied = needed > 0 && eaten >= needed
 
                 return (
-                  <button
-                    key={fish}
-                    className={`axolotl-fish-btn ${have <= 0 ? 'axolotl-fish-missing' : ''} ${satisfied ? 'axolotl-fish-satisfied' : ''}`}
-                    onClick={() => handleFeed(axolotl, fish)}
-                    disabled={have <= 0}
-                  >
-                    {itemDef && (
-                      <img
-                        src={itemDef.img}
-                        alt={fish}
-                        className="axolotl-fish-icon"
-                        style={{imageRendering: 'pixelated'}}
-                      />
+                  <div key={fish} style={{ position: 'relative' }}>
+                    <button
+                      className={`axolotl-fish-btn ${have <= 0 ? 'axolotl-fish-missing' : ''} ${satisfied ? 'axolotl-fish-satisfied' : ''}`}
+                      onClick={() => handleFeed(axolotl, fish)}
+                      disabled={have <= 0}
+                      onMouseEnter={() => setHoveredFish(`${axolotl.id}-${fish}`)}
+                      onMouseLeave={() => setHoveredFish(null)}
+                    >
+                      {itemDef && (
+                        <img
+                          src={itemDef.img}
+                          alt={fish}
+                          className="axolotl-fish-icon"
+                          style={{ imageRendering: 'pixelated' }}
+                        />
+                      )}
+                      <span className={`axolotl-fish-count ${needed > 0 ? 'axolotl-fish-needed' : ''}`}>
+                        {needed > 0 ? `${eaten}/${needed}` : `${eaten}`}
+                      </span>
+                    </button>
+
+                    {hoveredFish === `${axolotl.id}-${fish}` && (
+                      <div className="axolotl-fish-tooltip loot-tooltip">
+                        <span>You have: <strong>{have}</strong></span>
+                        <span>Eaten: <strong>{eaten}</strong></span>
+                        <span>Wants: <strong>{needed}</strong></span>
+                        {needed > 0
+                          ? satisfied
+                            ? <span className="axolotl-tooltip-satisfied">Requirement met ✓</span>
+                            : <span>Needed to level: <strong>{needed - eaten}</strong></span>
+                          : <span className="axolotl-tooltip-noneed">Not needed this level</span>
+                        }
+                      </div>
                     )}
-                    <span className={`axolotl-fish-count ${needed > 0 ? 'axolotl-fish-needed' : ''}`}>
-                      {needed > 0 ? `${eaten}/${needed}` : `${eaten}`}
-                    </span>
-                  </button>
+                  </div>
                 )
               })}
             </div>
