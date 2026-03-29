@@ -56,7 +56,7 @@ const DataTab = () => {
 
         <div className="data-uid-display">
           <span className="data-uid-text">
-            {uidVisible ? uid : '••••••••••••••••••••••••'}
+            {uidVisible ? uid : '••••••••'}
           </span>
           <button className="data-uid-copy-btn" onClick={() => setUidVisible(v => !v)}>
             {uidVisible ? 'Hide' : 'Show'}
