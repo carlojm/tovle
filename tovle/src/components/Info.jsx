@@ -4,7 +4,7 @@ import {Ship, DraftingCompass, Gift, NotebookPen, UserLock, BookCopy, Bot, Bug, 
 import Stats from './Stats'
 
 
-const Info = () => {
+const Info = ({onNavigate}) => {
   const [cats, setCats] = useState([])
   const catsRef = useRef([])
   const SIZE = 64
@@ -139,28 +139,29 @@ const Info = () => {
             </p>
           </div>
 
-          <h1>Login</h1>
+        <h1>Login</h1>
           <div className="info-row">
             <NotebookPen size={20} color="var(--color-text)" />
             <p>
               Tovle stores anonymous gameplay data: game stats, guess history, and inventory.
-              This data is tied to a randomly generated uid and contains no personal info.
-              Erasing your browser cache will lose your player data. To prevent losing data,
-              consider linking a Google account to your uid.
+              This data is tied to a randomly generated user ID and contains no personal info.
+              Erasing your browser cache will lose your player data.
             </p>
           </div>
 
           <div className="info-row">
             <UserLock size={20} color="var(--color-text)" />
             <p>
-              Important: Linking a Google account ties your email address to your uid in the app's Firestore database.
-              Consider using an email address that does not reveal personal info so I'm not up in your business like that.
-              Your data is never shared, sold, or used for any purpose outside of saving game data.
-              You can play without linking an account at any time.
+              To prevent losing data, copy your UID from the Data page and save it somewhere.
             </p>
           </div>
 
-          <p style={{textAlign:"center"}}>(Login button here)</p>
+          <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+            {/* reuse button class from data tab lol */}
+            <button className="data-restore-btn" onClick={() => onNavigate('data')}>
+              Go to Data Page
+            </button>
+          </div>
 
       </div>
       

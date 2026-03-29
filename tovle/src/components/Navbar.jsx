@@ -33,7 +33,7 @@ export default function Navbar({ theme, onToggleTheme, onNavigate }) {
       {menuOpen && createPortal(
         <div className="navbar-menu">
           <button className="navbar-menu-btn" onClick={() => handleNavigate('info')}>Info</button>
-          <a href="#">Log in (WIP)</a>
+          <button className="navbar-menu-btn" onClick={() => handleNavigate('data')}>Save Data</button>
         </div>,
         document.body
       )}

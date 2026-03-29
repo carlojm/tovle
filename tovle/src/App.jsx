@@ -8,6 +8,7 @@ import Toggle from './components/Toggle'
 import PlayTab from './components/Playtab'
 import Caches from './components/Caches'
 import Info from './components/Info'
+import DataTab from './components/DataTab'
 
 const IMAGE_BASE_URL_STANDARD = 'https://images.tovle.net/standard'
 const IMAGE_BASE_URL_CUSTOM = 'https://images.tovle.net/custom'
@@ -16,6 +17,7 @@ const TABS = [
   { id: 'play',   label: 'Play' },
   { id: 'caches', label: 'Caches' },
   { id: 'info',   label: 'Info' },
+  { id: 'data',   label: 'Data' },
 ]
 
 const App = () => {
@@ -345,7 +347,7 @@ const App = () => {
     <div className="full-container">
       <div className="app-container">
         <Navbar theme={theme} onToggleTheme={toggleTheme} onNavigate={setActiveTab}/>
-        <Toggle tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
+        <Toggle tabs={TABS.slice(0,3)} activeTab={activeTab} onChange={setActiveTab} />
 
         {activeTab === 'play' && (
           <PlayTab
@@ -382,7 +384,8 @@ const App = () => {
           />
         )}
         {activeTab === 'caches' && <Caches />}
-        {activeTab === 'info' && <Info />}
+        {activeTab === 'info' && <Info onNavigate={setActiveTab} />}
+        {activeTab === 'data' && <DataTab />}
       </div>
     </div>
   )

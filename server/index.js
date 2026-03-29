@@ -4,7 +4,7 @@ const app = express()
 
 const {createAxolotl, generateLevelRequirements} = require('./axolotl')
 const { rollLoot, scoreToLuckMultiplier} = require('./loot')
-const { db } = require('./firebase')
+const { admin, db } = require('./firebase')
 
 //env
 const PORT = process.env.PORT || 3001
@@ -222,6 +222,26 @@ app.post('/api/level-axolotl', async (req, res) => {
     console.error('Error leveling axolotl:', err)
     res.status(500).json({ error: 'Internal server error' })
   }
+})
+
+app.post('/api/auth/token', async (req, res) => {
+  //we can use uid to restore account
+  //this route verifies that a uid actually exists
+
+  const {uid} = req.body
+  if (!uid) return res.status(400).json({ error: 'Missing uid' })
+
+  try {
+    const doc = await db.collection('players').doc(uid).get()
+    if (!doc.exists) return res.status(404).json({ error: 'No player found with that UID' })
+
+    const token = await admin.auth().createCustomToken(uid)
+    res.json({ token })
+  } catch (err) {
+    console.error('Error creating custom token:', err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+
 })
 
 app.listen(PORT, '0.0.0.0', () => {

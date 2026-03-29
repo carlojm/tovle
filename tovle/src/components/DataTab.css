@@ -1,0 +1,62 @@
+.data-uid-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 16px 16px 16px;
+  padding: 10px 14px;
+  background: var(--color-background);
+  border: 1px solid var(--color-coords-border);
+  border-radius: 8px;
+}
+
+.data-uid-text {
+  flex: 1;
+  font-size: 0.75rem;
+  opacity: 70%;
+  word-break: break-all;
+  font-family: monospace;
+}
+
+.data-restore {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 16px 20px 16px;
+}
+
+.data-restore-input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--color-coords-border);
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-family: monospace;
+}
+
+.data-uid-copy-btn,
+.data-restore-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background: var(--color-button);
+  color: var(--color-text-button);
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.data-uid-copy-btn:disabled,
+.data-restore-btn:disabled {
+  opacity: 40%;
+  cursor: not-allowed;
+}
+
+.data-status {
+  font-size: 0.85rem;
+  margin: 0;
+  text-align: center;
+}
+
+.data-status--error  { color: var(--color-error, #e05); }
+.data-status--success { color: var(--color-success, #4a4); }

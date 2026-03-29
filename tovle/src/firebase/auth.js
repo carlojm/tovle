@@ -1,4 +1,4 @@
-import {getAuth, signInAnonymously, onAuthStateChanged} from "firebase/auth"
+import {getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken} from "firebase/auth"
 import app from "./config"
 
 const auth = getAuth(app)
@@ -18,6 +18,29 @@ export function initAuth(onReady) {
       })
     }
   })
+}
+
+export async function restoreWithUid(uid) {
+  //we can use uid to restore data
+
+  //call backend to vierfy uid exists
+  const res = await fetch('api/auth/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({uid})
+  })
+
+  if (!res.ok) {
+    const {error} = await res.json()
+    throw new Error(error)
+  }
+
+  //custom token created by backend api/auth/token call
+  //sign into firebase as this uid using the token.
+  //after this line, firebase considers this device to be that uid/player
+  const {token} = await res.json()
+  await signInWithCustomToken(auth, token)
+  //onauthstatechanged in playercontext fires automatically after this
 }
 
 export {auth}
