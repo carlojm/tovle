@@ -254,10 +254,25 @@ const Axolotl = () => {
                   <div key={fish} style={{ position: 'relative' }}>
                     <button
                       className={`axolotl-fish-btn ${have <= 0 ? 'axolotl-fish-missing' : ''} ${satisfied ? 'axolotl-fish-satisfied' : ''}`}
-                      onClick={() => handleFeed(axolotl, fish)}
+                      onClick={() => {
+                        if (hoveredFish !== `${axolotl.id}-${fish}`) {
+                          setHoveredFish(`${axolotl.id}-${fish}`)
+                        } else {
+                          handleFeed(axolotl, fish)
+                        }
+                      }}
                       disabled={have <= 0}
                       onMouseEnter={() => setHoveredFish(`${axolotl.id}-${fish}`)}
                       onMouseLeave={() => setHoveredFish(null)}
+                      onTouchEnd={(e) => {
+                        e.preventDefault()
+                        if (hoveredFish !== `${axolotl.id}-${fish}`) {
+                          setHoveredFish(`${axolotl.id}-${fish}`)
+                        } else {
+                          handleFeed(axolotl, fish)
+                          setHoveredFish(null)
+                        }
+                      }}
                     >
                       {itemDef && (
                         <img
