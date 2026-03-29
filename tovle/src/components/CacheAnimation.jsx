@@ -8,10 +8,10 @@ const CHEST_SIZE = 64
 const ITEM_SIZE = 28
 
 const WAIT_DUR = 400 //ms
-const TOTAL_BOUNCES = 10
+const TOTAL_BOUNCES = 8
 const BOUNCE_DUR = 200
 const MIN_BOUNCE_DUR = 200 // ms, tweak this
-const MAX_BOUNCE_DUR = 400
+const MAX_BOUNCE_DUR = 350
 const BOUNCE_SPEED = 1.5 // pixels per ms
 const SETTLE_DUR = 500
 const FINAL_SHAKE_DUR = 700
