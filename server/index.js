@@ -64,7 +64,7 @@ const seededShuffle = (array, seed) => {
   return result
 }
 
-const AVAILABLE_IDS = tovs.map(t => t.id).slice(0, 110) //for now, 0-110. when i get all the imgs, 0-169
+const AVAILABLE_IDS = tovs.map(t => t.id).slice(0, 169) //all the imgs, 0-169
 const DAILY_CACHE_COUNT = 4
 
 
