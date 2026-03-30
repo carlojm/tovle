@@ -49,15 +49,20 @@ const Caches = ({ }) => {
   //we save the list before opening the cache and only go back to real list when done animating
   //reduces the amount of elements jumping up and down and screen as they appear and disappear
   const [displayUnopenedCaches, setDisplayUnopenedCaches] = useState(null)
+  //let's do the inventory too
+  const [displayInventory, setDisplayInventory] = useState(null)
 
   const unopenedCaches = displayUnopenedCaches ?? playerData?.inventory?.unopenedCaches ?? []
-  const inventoryItems = playerData?.inventory?.items ?? []
+  const inventoryItems = displayInventory ?? playerData?.inventory?.items ?? []
 
   const showTutorialText = (playerData?.upgrades?.distancePrecision ?? 0) === 0 
     && (playerData?.upgrades?.directionArrows ?? 0) === 0
 
+
   const handleOpenCache = async (cacheEntry) => {
     if (openingCacheKey || loading) return
+
+    unfreeze() //clear previous freeze before starting another open
 
     setLoading(true)
     setError(null)
@@ -96,6 +101,7 @@ const Caches = ({ }) => {
       //freeze the list of unopened caches to keep the opening one on screen
       //"unfreeze" happens in handleAnimationComplete
       setDisplayUnopenedCaches(playerData?.inventory?.unopenedCaches ?? [])
+      setDisplayInventory(playerData?.inventory?.items ?? [])
 
       save({
         inventory: {
@@ -123,15 +129,20 @@ const Caches = ({ }) => {
   }
 
   const handleAnimationComplete = () => {
-    setDisplayUnopenedCaches(null)
-    setOpeningCacheKey(null)
     setPendingItems([])
     setIsRevealing(true)
     setTimeout(() => setIsRevealing(false), 27 * 30 + 400)
   }
 
+  const unfreeze = () => {
+    setDisplayUnopenedCaches(null)
+    setDisplayInventory(null)
+    setOpeningCacheKey(null)
+  }
+
   const handleCollect = () => {
     setActiveGrid(null)
+    unfreeze()
   }
 
   const handleDebugAddCache = () => {
@@ -270,7 +281,9 @@ const Caches = ({ }) => {
             />
           </motion.div>
         )}
-        {activeGrid && !openingCacheKey && (
+        {/* using pendingitems length 0 as my flag that animation is done */}
+        {/* a bit scuffed */}
+        {activeGrid && pendingItems.length === 0 && (
           <motion.section
             key="loot-reveal"
             className="caches-section loot-reveal"
