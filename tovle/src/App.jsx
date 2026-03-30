@@ -142,6 +142,8 @@ const App = () => {
         //restore delve points too
         if (savedToday?.delvePoints) {
           setDelvePoints(savedToday.delvePoints)
+        } else {
+          setDelvePoints(playerData.upgrades?.delveDefaults ?? {})
         }
       }
     }).catch(err => console.error('Failed to fetch daily caches:', err))
