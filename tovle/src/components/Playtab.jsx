@@ -229,7 +229,7 @@ const PlayTab = ({
     const lines = cacheResults.map((result, i) => {
       const dots = '🌊'.repeat(Math.min(result.guessCount, 10))
       const delveSuffix = result.delvePointsTotal > 0 ? ` ${result.delvePointsTotal}pts` : ''
-      return `Cache ${i + 1}: ${dots} (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'},${delveSuffix})`
+      return `Cache ${i + 1}: ${dots} (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'}${delveSuffix === '' ? '' : ', '}${delveSuffix})`
     })
     const text = `Tovle ${todayStr}\n\n${lines.join('\n')}\n\nPlay at https://tovle.net`
 
@@ -244,6 +244,7 @@ const PlayTab = ({
       showToast('Copied to clipboard!')
     }
   }
+  
 
   return (
     <>
@@ -477,10 +478,10 @@ const PlayTab = ({
           {cacheResults.map((result, i) => (
             <div key={result.cacheId} className="summary-row">
               <span>Cache {i + 1}:</span>
+              <span>{result.guessCount} {result.guessCount === 1 ? 'guess!' : 'guesses'}</span>
               {result.delvePointsTotal > 0 && (
                 <span className="summary-delve-pts">{result.delvePointsTotal}pts</span>
               )}
-              <span>{result.guessCount} {result.guessCount === 1 ? 'guess!' : 'guesses'}</span>
               <span className="summary-distances">
                 {result.guesses.length > 5
                   ? [
