@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { usePlayer } from '../context/PlayerContext'
 import { ITEM_MAP } from '../data/itemMap'
 import { PencilLine, ChevronsUp } from 'lucide-react'
@@ -26,6 +26,8 @@ const Axolotl = () => {
   const [editingName, setEditingName] = useState('')
 
   const [hoveredFish, setHoveredFish] = useState(null)
+
+  const feedDebounceRef = useRef(null)
 
   if (axolotls.length === 0) return null
 
@@ -79,10 +81,20 @@ const Axolotl = () => {
         : a
     )
 
+    //local state updates immediately
     save({
       axolotls: updatedAxolotls,
       inventory: { ...playerData.inventory, items: updatedItems },
-    })
+    }, {localOnly: true})
+
+    //"debounce" (delay) firestore write to save on database writing a little bit
+    clearTimeout(feedDebounceRef.current)
+    feedDebounceRef.current = setTimeout(() => {
+      save({
+        axolotls: updatedAxolotls,
+       inventory: { ...playerData.inventory, items: updatedItems },  
+      })
+    }, 1500)
   }
 
   const handleCollect = (axolotl) => {
