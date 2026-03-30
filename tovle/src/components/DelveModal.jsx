@@ -81,6 +81,15 @@ const DelveModal = ({ delvePoints, setDelvePoints, onClose, onSaveDefaults }) =>
     setDelvePoints({ ...delvePoints, [mod.id]: current - 1 })
   }
 
+  const handleMax = () => {
+    const maxed = Object.fromEntries(DELVE_MODS.map(mod => [mod.id, mod.maxLevel]))
+    setDelvePoints(maxed)
+  }
+
+  const handleReset = () => {
+    setDelvePoints({})
+  }
+
   return (
     <div className="delve-backdrop" onClick={onClose}>
       <div className="delve-modal" onClick={e => e.stopPropagation()}>
@@ -88,8 +97,13 @@ const DelveModal = ({ delvePoints, setDelvePoints, onClose, onSaveDefaults }) =>
         <div className="delve-modal-header">
           <div>
             <h2>Delve Modifiers</h2>
-            <p className="delve-total-pts">{totalPoints} pts assigned</p>
-            <p className="delve-total-pts">WIP: these don't provide bonuses yet but you can try them on</p>
+            <div className="delve-header-pts-row">
+              <button className="delve-quick-btn" onClick={handleReset}>Reset</button>
+              <p className="delve-total-pts">{totalPoints} pts assigned</p>
+              <button className="delve-quick-btn" onClick={handleMax}>Max</button>
+            </div>
+            <p className="delve-total-pts" style={{marginTop:"4px"}}>More pts = more loot!</p>
+            <p className="delve-total-pts">WIP: More added soon!</p>
           </div>
           <button className="delve-close-btn" onClick={onClose}>
             <X size={20} />
