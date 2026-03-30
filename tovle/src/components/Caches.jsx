@@ -201,9 +201,6 @@ const Caches = ({ }) => {
 
   return (
     <div className="caches-container">
-      <p>SO EXTREMELY WIP</p>
-      <p>data will likely be deleted often until release</p>
-      <p>and here's a bunch of debug buttons to test stuff</p>
 
       {/* {import.meta.env.DEV && ( */}
         <>
