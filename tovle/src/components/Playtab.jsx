@@ -47,6 +47,12 @@ const PlayTab = ({
   const [showDelveModal, setShowDelveModal] = useState(false)
   const [tapOutMsg, setTapOutMsg] = useState(null)
 
+  const [toast, setToast] = useState(null)
+  const showToast = (msg) => {
+    setToast(msg)
+    setTimeout(() => setToast(null), 3000)
+  }
+
   const hasDelve = (playerData?.upgrades?.delveMods ?? 0) >= 1
   //whether the delve selection overlay has been dismissed or not
   //we want to track this so we can always disable it if delves not unlocked
@@ -218,16 +224,25 @@ const PlayTab = ({
     }
   }
 
-  const handleShare = () => {
+  const handleShare = async () => {
     const todayStr = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' })
     const lines = cacheResults.map((result, i) => {
       const dots = '🌊'.repeat(Math.min(result.guessCount, 10))
       const delveSuffix = result.delvePointsTotal > 0 ? ` ${result.delvePointsTotal}pts` : ''
-      console.log(delveSuffix)
       return `Cache ${i + 1}: ${dots} (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'},${delveSuffix})`
     })
     const text = `Tovle ${todayStr}\n\n${lines.join('\n')}\n\nPlay at https://tovle.net`
-    navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard!'))
+
+    if (navigator.share) {
+      try {
+        await navigator.share({text})
+      } catch (e) {
+        if (e.name !== 'AbortError') showToast('Something went wrong')
+      }
+    } else {
+      await navigator.clipboard.writeText(text)
+      showToast('Copied to clipboard!')
+    }
   }
 
   return (
@@ -519,6 +534,13 @@ const PlayTab = ({
             setShowDelveModal(false)
           }}
         />
+      )}
+
+
+      {toast && (
+        <div className="toast">
+          {toast}
+        </div>
       )}
     </>
   )
