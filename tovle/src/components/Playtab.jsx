@@ -8,6 +8,15 @@ import './Playtab.css'
 import DelveModal, { calcTotalPoints, DELVE_MODS } from './DelveModal'
 import twistedStrand from '../assets/items/twisted_strand.png'
 
+import { IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM } from '../data/constants.js'
+
+function getCacheImage(cache) {
+  if (!cache) return null
+  return cache.id > 1000
+    ? `${IMAGE_BASE_URL_CUSTOM}/${cache.id}.webp`
+    : `${IMAGE_BASE_URL_STANDARD}/${String(cache.id).padStart(3, '0')}.webp`
+}
+
 const PlayTab = ({
   // cache data
   dailyCaches,
@@ -47,6 +56,9 @@ const PlayTab = ({
   const [showDelveModal, setShowDelveModal] = useState(false)
   const [tapOutMsg, setTapOutMsg] = useState(null)
 
+  const [resultsPageCacheIndex, setResultsPageCacheIndex] = useState(currentCacheIndex)
+  const resultsPageCache = dailyCaches[resultsPageCacheIndex]
+  const resultsPageImage = getCacheImage(resultsPageCache)
   const [toast, setToast] = useState(null)
   const showToast = (msg) => {
     setToast(msg)
@@ -453,24 +465,30 @@ const PlayTab = ({
       {allComplete && <>
         {/* i like how the last cache image shows up at the end so im putting it in again here */}
         {/* it is a feature now not a bug */}
-        <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`}>
-          {cacheImage &&
+        <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`} style={{ position: 'relative' }}>
+          {resultsPageCacheIndex > 0 && (
+            <button className="cache-nav-btn cache-nav-btn--left" onClick={() => setResultsPageCacheIndex(i => i - 1)}>
+              ‹
+            </button>
+          )}
+          {resultsPageImage && (
             <img
-              src={cacheImage}
+              src={resultsPageImage}
               className="cache-image"
               onLoad={() => setImageLoaded(true)}
               style={{ width: 'min(90vw,500px)' }}
             />
-          }
+          )}
+          {resultsPageCacheIndex < dailyCaches.length - 1 && (
+            <button className="cache-nav-btn cache-nav-btn--right" onClick={() => setResultsPageCacheIndex(i => i + 1)}>
+              ›
+            </button>
+          )}
         </div>
-        {(currentCache?.subtitle || currentCache?.contributor) && (
+        {(resultsPageCache?.subtitle || resultsPageCache?.contributor) && (
           <div className="cache-subtitle">
-            {currentCache.subtitle && (
-              <p className="cache-subtitle-text">{currentCache.subtitle}</p>
-            )}
-            {currentCache.contributor && (
-              <p className="cache-subtitle-contributor">contributed by {currentCache.contributor}</p>
-            )}
+            {resultsPageCache.subtitle && <p className="cache-subtitle-text">{resultsPageCache.subtitle}</p>}
+            {resultsPageCache.contributor && <p className="cache-subtitle-contributor">contributed by {resultsPageCache.contributor}</p>}
           </div>
         )}
         <div className="completion-summary">

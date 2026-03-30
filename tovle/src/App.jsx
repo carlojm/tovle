@@ -10,8 +10,7 @@ import Caches from './components/Caches'
 import Info from './components/Info'
 import DataTab from './components/DataTab'
 
-const IMAGE_BASE_URL_STANDARD = 'https://images.tovle.net/standard'
-const IMAGE_BASE_URL_CUSTOM = 'https://images.tovle.net/custom'
+import {IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM} from './data/constants.js'
 
 const TABS = [
   { id: 'play',   label: 'Play' },
