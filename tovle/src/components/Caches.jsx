@@ -202,29 +202,6 @@ const Caches = ({ }) => {
   return (
     <div className="caches-container">
 
-      {/* {import.meta.env.DEV && ( */}
-        <>
-        <button onClick={handleDebugAddCache} className="cache-entry-button">
-          [DEBUG] Add Unopened Cache
-        </button>
-        <button onClick={handleDebugResetUpgrades} className="cache-entry-button">
-          [DEBUG] Reset Upgrades
-        </button>
-        <button onClick={handleDebugResetAxolotlCollection} className="cache-entry-button">
-          [DEBUG] Reset Axolotl Collection Timer
-        </button>
-        {/* <button onClick={handleDebugDeduplicateOpenedCaches} className="cache-entry-button">
-          [DEBUG] Clean inv.openedCaches on server side, remove dupes
-        </button> */}
-        <button onClick={handleDebugShowUid} className="cache-entry-button">
-          [DEBUG] Show UID
-        </button>
-        <button onClick={handleDebugClearToday} className="cache-entry-button">
-          [DEBUG] Reset Today's Game
-        </button>
-        </>
-      {/* )} */}
-
 
       {/* unopened caches list */}
       <motion.section layout className="caches-section">
@@ -333,6 +310,30 @@ const Caches = ({ }) => {
           <Axolotl />
         </motion.section>
       )}
+
+
+      {/* {import.meta.env.DEV && ( */}
+      <div style={{gap:"px"}}>
+        <button onClick={handleDebugAddCache} className="cache-entry-button">
+          [DEBUG] Add Unopened Cache
+        </button>
+        <button onClick={handleDebugResetUpgrades} className="cache-entry-button">
+          [DEBUG] Reset Upgrades
+        </button>
+        <button onClick={handleDebugResetAxolotlCollection} className="cache-entry-button">
+          [DEBUG] Reset Axolotl Collection Timer
+        </button>
+        {/* <button onClick={handleDebugDeduplicateOpenedCaches} className="cache-entry-button">
+          [DEBUG] Clean inv.openedCaches on server side, remove dupes
+        </button> */}
+        <button onClick={handleDebugShowUid} className="cache-entry-button">
+          [DEBUG] Show UID
+        </button>
+        <button onClick={handleDebugClearToday} className="cache-entry-button">
+          [DEBUG] Reset Today's Game
+        </button>
+      </div>
+      {/* )} */}
 
     </div>
   )
