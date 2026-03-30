@@ -1,4 +1,4 @@
-import { cache, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Dateline from './Dateline'
 import Map from './Map'
@@ -59,6 +59,12 @@ const PlayTab = ({
   const [resultsPageCacheIndex, setResultsPageCacheIndex] = useState(currentCacheIndex)
   const resultsPageCache = dailyCaches[resultsPageCacheIndex]
   const resultsPageImage = getCacheImage(resultsPageCache)
+  //i know use effect is like bad but im gonna use it anyways
+  //to set the results page current cache to the last one
+  useEffect(() => {
+    if (allComplete) setResultsPageCacheIndex(currentCacheIndex)
+  }, [allComplete])
+
   const [toast, setToast] = useState(null)
   const showToast = (msg) => {
     setToast(msg)
