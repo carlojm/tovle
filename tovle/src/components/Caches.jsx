@@ -53,6 +53,9 @@ const Caches = ({ }) => {
   const unopenedCaches = displayUnopenedCaches ?? playerData?.inventory?.unopenedCaches ?? []
   const inventoryItems = playerData?.inventory?.items ?? []
 
+  const showTutorialText = (playerData?.upgrades?.distancePrecision ?? 0) === 0 
+    && (playerData?.upgrades?.directionArrows ?? 0) === 0
+
   const handleOpenCache = async (cacheEntry) => {
     if (openingCacheKey || loading) return
 
@@ -205,6 +208,17 @@ const Caches = ({ }) => {
 
       {/* unopened caches list */}
       <motion.section layout className="caches-section">
+        {showTutorialText && (
+          <p style={{marginTop:"-24px", marginBottom:"8px"}}>
+            Here, you can open caches and use the items to craft upgrades.
+            The first few upgrades will impact the daily game. The rest of the upgrades 
+            are part of Tovle's long term progression and only affect cache loot and 
+            related mechanics.
+
+            Tap an unopened cache to get started!
+          </p>
+        )}
+        
         <motion.h2 layout="position">Unopened Caches</motion.h2>
         {unopenedCaches.length === 0 && !activeGrid && (
           <p className="caches-empty">No unopened caches. Play today's caches to earn more!</p>
