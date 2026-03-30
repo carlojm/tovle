@@ -267,7 +267,7 @@ const Caches = ({ }) => {
           >
             <LootGrid grid={activeGrid} revealing={isRevealing}/>
             <button className="submit-button" onClick={handleCollect}>
-              Close
+              Collect
             </button>
           </motion.section>
         )}
