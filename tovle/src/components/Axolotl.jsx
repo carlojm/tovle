@@ -181,7 +181,7 @@ const Axolotl = () => {
   }
 
   return (
-    <div className="axolotl-container">
+    <div className="axolotl-container" onTouchEnd={()=> setHoveredFish(null)}>
       {axolotls.map(axolotl => {
         const nextLevel = axolotl.level + 1
         const requirements = axolotl.levelRequirements?.[nextLevel] ?? []
@@ -278,11 +278,12 @@ const Axolotl = () => {
                       onMouseLeave={() => setHoveredFish(null)}
                       onTouchEnd={(e) => {
                         e.preventDefault()
+                        e.stopPropagation()
                         if (hoveredFish !== `${axolotl.id}-${fish}`) {
                           setHoveredFish(`${axolotl.id}-${fish}`)
                         } else {
                           handleFeed(axolotl, fish)
-                          setHoveredFish(null)
+                          // setHoveredFish(null)
                         }
                       }}
                     >
