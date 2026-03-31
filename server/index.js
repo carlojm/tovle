@@ -155,7 +155,8 @@ app.post('/api/open-cache', async(req, res) => {
     //get player's luck multipliers TODO figure out exactly what these look like
     const cacheScore = cacheEntry.score ?? 25
     const multipliers = {
-      global: 1.0 + (playerData.upgrades?.luckTier ?? 0) * 0.1 * scoreToLuckMultiplier(cacheScore),
+      global: 1.0 + (playerData.upgrades?.luckTier ?? 0),
+      cache: scoreToLuckMultiplier(cacheScore),
       items: {} //item specific multipliers TODO
     }
 

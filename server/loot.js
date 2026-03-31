@@ -1,6 +1,7 @@
 // hello everybody my name is multiplier
 const DEFAULT_MULTIPLIERS = {
   global: 1.0,
+  cache: 1.0,
   items: {} // item-specific multipliers keyed by itemId
 }
 
@@ -284,7 +285,7 @@ const stackItems = (items) => {
 //=========== main functions ===============
 const rollLoot = (multipliers = DEFAULT_MULTIPLIERS, playerUpgrades = {}, source = 'cache') => {
   const items = []
-  const global = multipliers.global ?? 1.0
+  const mult = multipliers.global ?? 1.0 * (multipliers.cache ?? 1.0)
   const table = source === 'axolotl' ? AXOLOTL_LOOT_TABLE : LOOT_TABLE
 
   // roll each item in the loot table
@@ -297,7 +298,7 @@ const rollLoot = (multipliers = DEFAULT_MULTIPLIERS, playerUpgrades = {}, source
     }
 
     const itemMultiplier = multipliers.items?.[entry.itemId] ?? 1.0
-    const totalMultiplier = global * itemMultiplier
+    const totalMultiplier = mult * itemMultiplier
 
     const effectiveRolls = Math.floor(entry.rolls * totalMultiplier)
     const remainder = (entry.rolls * totalMultiplier) % 1
@@ -329,7 +330,7 @@ const rollLoot = (multipliers = DEFAULT_MULTIPLIERS, playerUpgrades = {}, source
 
   // roll filler blocks
   // TODO if we want an upgrade for specifically the filler block loot chances we need to update this
-  const fillers = rollFillerBlocks(global)
+  const fillers = rollFillerBlocks(mult)
   items.push(...fillers)
 
   //make a version of the items list where items are in stacks
@@ -342,7 +343,7 @@ const rollLoot = (multipliers = DEFAULT_MULTIPLIERS, playerUpgrades = {}, source
 }
 
 //caches will get scores based on different factors (TODO)
-//with this formula, score 25 = 0.95x, score 100 = 1.4x
+//with this formula, score 25 = 0.95x, score 100 = 1.4x, score 200 = 2x, + .6x per 100 score
 const scoreToLuckMultiplier = (score) => {
   return 0.8 + (score / 100) * 0.6
 }

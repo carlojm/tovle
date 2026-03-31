@@ -224,7 +224,7 @@ const App = () => {
       return 25 //score of 25 equates to 95% luck
     })()
 
-    const delveMultiplier = 1 + (delvePointsTotal * 0.1)
+    const delveMultiplier = 1 + (delvePointsTotal * 0.15) //10pts = 2.5x score
 
     const streakBonus = streak <= 10
       ? streak * 5 //5 each day for ten days
