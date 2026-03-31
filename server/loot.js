@@ -160,7 +160,7 @@ const AXOLOTL_LOOT_TABLE = [
     itemId: 'torn_canvas',
     name: 'Torn Canvas',
     rolls: 3,
-    baseChance: 0.3,
+    baseChance: 0.5,
   },
 ]
 
