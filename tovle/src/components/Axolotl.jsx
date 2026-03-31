@@ -325,7 +325,7 @@ const Axolotl = () => {
             >
               {alreadyCollected
                 ? `Collected ${axolotl.lastCollectedCount} cache${axolotl.lastCollectedCount > 1 ? 's' : ''} today`
-                : axolotl.hunger >= axolotl.level
+                : axolotl.hunger >= Math.min(axolotl.level, MAX_HUNGER)
                   ? axolotl.level === 1
                     ? `Collect 1 cache`
                     : `Collect 1-${axolotl.level} caches`
