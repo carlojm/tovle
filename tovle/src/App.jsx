@@ -10,7 +10,7 @@ import Caches from './components/Caches'
 import Info from './components/Info'
 import DataTab from './components/DataTab'
 
-import {IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM} from './data/constants.js'
+import { IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM } from './data/constants.js'
 
 const TABS = [
   { id: 'play',   label: 'Play' },
@@ -165,17 +165,6 @@ const App = () => {
     localStorage.setItem('theme', next)
   }
 
-  //cache score based on guess count.
-  //score of 25 equates to 95% luck
-  const calculateScore = (guessCount) => {
-    if (guessCount === 1) return 100
-    if (guessCount === 2) return 85
-    if (guessCount === 3) return 70
-    if (guessCount === 4) return 55
-    if (guessCount === 5) return 40
-    return 25
-  }
-
   const calculateUpdatedStats = (currentStats, results) => {
     const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     const yesterday = new Date()
@@ -225,6 +214,25 @@ const App = () => {
     }
   }
 
+  const calculateScore = (guessCount, delvePointsTotal = 0, streak = 0) => {
+    const baseScore = (() => {
+      if (guessCount === 1) return 100
+      if (guessCount === 2) return 85
+      if (guessCount === 3) return 70
+      if (guessCount === 4) return 55
+      if (guessCount === 5) return 40
+      return 25 //score of 25 equates to 95% luck
+    })()
+
+    const delveMultiplier = 1 + (delvePointsTotal * 0.1)
+
+    const streakBonus = streak <= 10
+      ? streak * 5 //5 each day for ten days
+      : 50 + (streak - 10) //1 each day after ten days
+
+    return Math.round(baseScore * delveMultiplier + streakBonus)
+  }
+
   //advancing the game
   const handleNextCache = () => {
 
@@ -235,7 +243,11 @@ const App = () => {
       status: 'advanced', //advanced = solved AND next cache button pressed
       guesses: guessHistory,
       guessCount: numGuesses,
-      score: calculateScore(numGuesses),
+      score: calculateScore(
+        numGuesses,
+        savedCacheEntry?.delvePointsTotal ?? 0,
+        playerData?.stats?.currentStreak ?? 0,
+      ),
       delvePointsTotal: savedCacheEntry?.delvePointsTotal ?? 0,
       delvePointsSnapshot: savedCacheEntry?.delvePointsSnapshot ?? {},
     }
@@ -248,8 +260,13 @@ const App = () => {
       cacheId: currentCache.id,
       date: todayStr,
       guessCount: numGuesses,
-      score: calculateScore(numGuesses),
+      score: calculateScore(
+        numGuesses,
+        savedCacheEntry?.delvePointsTotal ?? 0,
+        playerData?.stats?.currentStreak ?? 0,
+      ),
       delvePointsTotal: savedCacheEntry?.delvePointsTotal ?? 0,
+      delvePointsSnapshot: savedCacheEntry?.delvePointsSnapshot ?? {},
     }
 
     //prevent player from refreshing and claiming a cache again
@@ -306,7 +323,11 @@ const App = () => {
       status: 'advanced',
       guesses: guessHistory,
       guessCount: numGuesses,
-      score: calculateScore(numGuesses),
+      score: calculateScore(
+        numGuesses,
+        savedCacheEntry?.delvePointsTotal ?? 0,
+        playerData?.stats?.currentStreak ?? 0,
+      ),
       delvePointsTotal: savedCacheEntry?.delvePointsTotal ?? 0,
       delvePointsSnapshot: savedCacheEntry?.delvePointsSnapshot ?? {},
     }
@@ -321,8 +342,13 @@ const App = () => {
       cacheId: currentCache.id,
       date: todayStr,
       guessCount: numGuesses,
-      score: calculateScore(numGuesses),
+      score: calculateScore(
+        numGuesses,
+        savedCacheEntry?.delvePointsTotal ?? 0,
+        playerData?.stats?.currentStreak ?? 0,
+      ),
       delvePointsTotal: savedCacheEntry?.delvePointsTotal ?? 0,
+      delvePointsSnapshot: savedCacheEntry?.delvePointsSnapshot ?? {},
     }
 
     save({

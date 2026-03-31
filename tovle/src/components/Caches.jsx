@@ -258,6 +258,7 @@ const Caches = ({ }) => {
                   {cache.delvePointsTotal > 0 &&
                     <span>{cache.delvePointsTotal} pts</span>
                   }
+                  {/* <span>{cache.score}</span> */}
                   <span>{cache.date}</span>
                 </>
               )}

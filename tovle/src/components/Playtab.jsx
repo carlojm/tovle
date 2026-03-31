@@ -546,6 +546,7 @@ const PlayTab = ({
             </div>
           </div>
           <p style={{ marginTop: '16px' }}>See full statistics on the info page.</p>
+          <p>Keep up a streak for better loot!</p>
         </>
       )}
 
