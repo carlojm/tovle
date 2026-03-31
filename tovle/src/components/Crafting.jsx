@@ -2,7 +2,21 @@ import { usePlayer } from '../context/PlayerContext'
 import { ITEM_MAP } from '../data/itemMap'
 import './Crafting.css'
 
+
 const UPGRADES = [
+  {
+    id: 'streakRestore',
+    name: 'Streak Restore',
+    description: [
+      'You broke your daily streak!',
+      'Sacrifice a Harbinger to restore a lost streak. Only available the day after your streak breaks.',
+    ],
+    maxTier: 1,
+    requiresUnlocked: 'streakRedeemable',
+    costs: [
+      [{ itemId: 'harbinger', quantity: 1 }],
+    ]
+  },
   {
     id: 'distancePrecision',
     name: 'Distance Precision',
@@ -158,7 +172,51 @@ const Crafting = ({hideMaxed = false}) => {
 
     const newValue = currentTier + 1
 
-    // special case: New Hire creates an axolotl on the backend
+    //special case: streak restore
+    if (upgrade.id === 'streakRestore') {
+      const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+      const streakBrokeDate = playerData?.stats?.streakBrokeDate
+      
+      if (!streakBrokeDate) {return}
+
+      //calculate day after streak broken
+      const brokeDate = new Date(streakBrokeDate + 'T12:00:00') // noon to avoid DST issues?
+      brokeDate.setDate(brokeDate.getDate() + 1)
+      const dayAfterBroke = brokeDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+
+      // console.log('streakBrokeDate:', streakBrokeDate)
+      // console.log('dayAfterBroke:', dayAfterBroke)
+      // console.log('todayStr:', todayStr)
+
+      if (todayStr !== dayAfterBroke) {return} //too late or invalid
+
+      const yesterdayStr = brokeDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+      const restoredStreak = (playerData?.stats?.previousStreak ?? 1) + 1
+      const updatedUnlocked = (upgrades?.unlocked ?? []).filter(f => f !== 'streakRedeemable')
+
+      save({
+        stats: {
+          ...playerData.stats,
+          currentStreak: restoredStreak,
+          bestStreak: Math.max(playerData?.stats?.bestStreak ?? 0, restoredStreak),
+          lastPlayedDate: yesterdayStr,
+          previousStreak: null,
+          streakBrokeDate: null,
+        },
+        upgrades: {
+          ...upgrades,
+          unlocked: updatedUnlocked,
+          streakRestore: 1, //mark as used
+        },
+        inventory: {
+          ...playerData.inventory,
+          items: updatedItems,
+        }
+      })
+      return
+    }
+
+    //special case: newhire creates an axolotl on the backend
     if (upgrade.id === 'newHire') {
       try {
         const res = await fetch('/api/create-axolotl', {
@@ -195,6 +253,10 @@ const Crafting = ({hideMaxed = false}) => {
   .filter(upgrade => {
     if (!upgrade.requiresUpgrade) return true
     return (upgrades[upgrade.requiresUpgrade] ?? 0) >= 1
+  })
+  .filter(upgrade => {
+    if (!upgrade.requiresUnlocked) return true
+    return (upgrades?.unlocked ?? []).includes(upgrade.requiresUnlocked)
   })
   .filter(upgrade => {
     if (!hideMaxed) return true

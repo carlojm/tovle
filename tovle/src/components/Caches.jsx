@@ -205,6 +205,30 @@ const Caches = ({ }) => {
     })
   }
 
+  const handleDebugBreakStreak = () => {
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    const yesterdayStr = yesterday.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+
+    const twoDaysAgo = new Date()
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2)
+    const twoDaysAgoStr = twoDaysAgo.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+
+    save({
+      stats: {
+        ...playerData.stats,
+        currentStreak: 1,
+        previousStreak: playerData.stats?.currentStreak ?? 5,
+        lastPlayedDate: twoDaysAgoStr, // last actual play was two days ago
+        streakBrokeDate: yesterdayStr, // missed yesterday, so window is today
+      },
+      upgrades: {
+        ...playerData.upgrades,
+        unlocked: [...(playerData.upgrades?.unlocked ?? []).filter(f => f !== 'streakRedeemable'), 'streakRedeemable'],
+      }
+    })
+  }
+
   const handleDebugShowUid = () => {
     alert(`UID: ${uid}`)
   }
@@ -362,6 +386,9 @@ const Caches = ({ }) => {
         </button>
         <button onClick={handleDebugClearToday} className="cache-entry-button">
           [DEBUG] Reset Today's Game
+        </button>
+        <button onClick={handleDebugBreakStreak} className="cache-entry-button">
+          [DEBUG] Simulate Broken Streak
         </button>
       </div>
       {/* )} */}

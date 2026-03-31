@@ -165,7 +165,7 @@ const App = () => {
     localStorage.setItem('theme', next)
   }
 
-  const calculateUpdatedStats = (currentStats, results) => {
+  const calculateUpdatedStats = (currentStats, currentUpgrades, results) => {
     const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     const yesterday = new Date()
     yesterday.setDate(yesterday.getDate() - 1)
@@ -183,6 +183,19 @@ const App = () => {
       newStreak = currentStreak //already updated today, don't double count
     } else {
       newStreak = 1 //streak broken, start fresh
+    }
+
+    //figure out unlock flags for streak redemption flags
+    const currentUnlocked = currentUpgrades?.unlocked ?? []
+    let updatedUnlocked = [...currentUnlocked]
+    if (newStreak === 1 && currentStreak > 1) {
+      //streak just broke, save previous streak info and add redeemable flag
+      if (!updatedUnlocked.includes('streakRedeemable')) {
+        updatedUnlocked.push('streakRedeemable')
+      }
+    } else if (newStreak > 1) {
+      //streak continuing, remove redeemable flag if present
+      updatedUnlocked = updatedUnlocked.filter(f => f !== 'streakRedeemable')
     }
 
     const newBestStreak = Math.max(bestStreak, newStreak)
@@ -204,13 +217,28 @@ const App = () => {
       Math.round(((prevTotalGuesses + totalNewGuesses) / newTotalSolved) * 10) / 10
 
     return {
-      currentStreak: newStreak,
-      bestStreak: newBestStreak,
-      totalCachesSolved: newTotalSolved,
-      totalDaysPlayed: (currentStats?.totalDaysPlayed ?? 0) + 1,
-      lastPlayedDate: todayStr,
-      guessDistribution: distribution,
-      averageGuesses: newAverageGuesses,
+      stats: {
+        currentStreak: newStreak,
+        bestStreak: newBestStreak,
+        totalCachesSolved: newTotalSolved,
+        totalDaysPlayed: (currentStats?.totalDaysPlayed ?? 0) + 1,
+        lastPlayedDate: todayStr,
+        guessDistribution: distribution,
+        averageGuesses: newAverageGuesses,
+        ...(newStreak === 1 && currentStreak > 1 && {
+          previousStreak: currentStreak,
+          streakBrokeDate: lastPlayed,
+        }),
+        ...(newStreak > 1 && {
+          previousStreak: null,
+          streakBrokeDate: null,
+        }),
+      },
+      upgrades: {
+        ...currentUpgrades,
+        unlocked: updatedUnlocked,
+        ...(newStreak > 1 && { streakRestore: 0 }), // reset when flag removed
+      }
     }
   }
 
@@ -335,8 +363,8 @@ const App = () => {
     const updatedResults = [...cacheResults, currentResult]
     setCacheResults(updatedResults)
 
-    const updatedStats = calculateUpdatedStats(playerData?.stats, updatedResults)
-    setTodayStats(updatedStats) //save to display in results screen
+    const updatedStats = calculateUpdatedStats(playerData?.stats, playerData?.upgrades, updatedResults)
+    setTodayStats(updatedStats.stats) //save to display in results screen
 
     const newUnopenedCache = {
       cacheId: currentCache.id,
@@ -362,9 +390,10 @@ const App = () => {
         unopenedCaches: [...(playerData.inventory?.unopenedCaches ?? []), newUnopenedCache],
       },
       stats: {
-        ...playerData.stats,  //preserve all existing fields including totalCachesOpened etc.
-        ...updatedStats,      //override with freshly calculated fields
-      }
+        ...playerData.stats,   //preserve all existing fields including totalCachesOpened etc.
+        ...updatedStats.stats, //override with freshly calculated fields
+      },
+      upgrades: updatedStats.upgrades,
     })
 
     setAllComplete(true)
