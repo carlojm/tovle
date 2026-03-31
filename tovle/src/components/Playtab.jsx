@@ -251,9 +251,11 @@ const PlayTab = ({
     })
     const text = `Tovle ${todayStr}\n\n${lines.join('\n')}\n\nPlay at https://tovle.net`
 
-    if (navigator.share) {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+
+    if (isMobile && navigator.share) {
       try {
-        await navigator.share({text})
+        await navigator.share({ text })
       } catch (e) {
         if (e.name !== 'AbortError') showToast('Something went wrong')
       }
