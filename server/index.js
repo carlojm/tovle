@@ -111,6 +111,18 @@ const getDailyIds = (dateString) => {
   })
 }
 
+const mergeItems = (existing, incoming) => {
+  const map = {}
+  for (const item of [...existing, ...incoming]) {
+    if (map[item.itemId]) {
+      map[item.itemId].quantity += item.quantity
+    } else {
+      map[item.itemId] = { ...item }
+    }
+  }
+  return Object.values(map)
+}
+
 // --- routes -------------------------------------------
 app.get('/api/daily', (request, response) => {
   const today = getEasternDateString()
@@ -133,54 +145,62 @@ app.post('/api/open-cache', async(req, res) => {
   }
 
   try {
-    const playerRef = db.collection('players').doc(uid)
-    const playerSnap = await playerRef.get()
+    let lootResult = null
 
-    if (!playerSnap.exists) {
-      return res.status(404).json({error: 'Player not found'})
-    }
+    await db.runTransaction(async (t) => {
+      const playerRef = db.collection('players').doc(uid)
+      const playerSnap = await t.get(playerRef)
 
-    const playerData = playerSnap.data()
+      if (!playerSnap.exists) {
+        throw Object.assign(new Error('Player not found'), { status: 404 })
+      }
 
-    //check cache hasn't been opened already
-    const unopened = playerData.inventory?.unopenedCaches ?? []
-    const cacheEntry = unopened.find(c => c.cacheId === cacheId && c.date === date)
+      const playerData = playerSnap.data()
 
-    //TODO luck score?
+      //check cache hasn't been opened already
+      //idempotency!
+      const openedCaches = playerData.inventory?.openedCaches ?? []
+      if (openedCaches.some(c => c.cacheId === cacheId && c.date === date)) {
+        throw Object.assign(new Error('Already opened'), { status: 409, alreadyOpened: true })
+      }
 
-    if (!cacheEntry) {
-      return res.status(403).json({ error: 'Cache not in unopened inventory' })
-    }
+      //check if in unopened inventory
+      const unopened = playerData.inventory?.unopenedCaches ?? []
+      const cacheEntry = unopened.find(c => c.cacheId === cacheId && c.date === date)
+      if (!cacheEntry) {
+        throw Object.assign(new Error('Cache not in unopened inventory'), { status: 403 })
+      }
 
-    //get player's luck multipliers TODO figure out exactly what these look like
-    const cacheScore = cacheEntry.score ?? 25
-    const multipliers = {
-      global: 1.0 + (playerData.upgrades?.luckTier ?? 0),
-      cache: scoreToLuckMultiplier(cacheScore),
-      items: {} //item specific multipliers TODO
-    }
+      //get player's luck multipliers TODO figure out exactly what these look like
+      const cacheScore = cacheEntry.score ?? 25
+      const multipliers = {
+        global: 1.0 + (playerData.upgrades?.luckTier ?? 0),
+        cache: scoreToLuckMultiplier(cacheScore),
+        items: {} //item specific multipliers TODO
+      }
+      //roll loot
+      const isAxolotlCache = String(cacheId).startsWith('axolotl_')
+      lootResult = rollLoot(multipliers, playerData.upgrades ?? {}, isAxolotlCache ? 'axolotl' : 'cache')
 
-    //roll loot
-    const isAxolotlCache = String(cacheId).startsWith('axolotl_')
-    const { items, grid } = rollLoot(multipliers, playerData.upgrades ?? {}, isAxolotlCache ? 'axolotl' : 'cache')
-    // const {items, grid} = rollLoot(multipliers, playerData.upgrades ?? {})
 
-    //build updated inventory
-    const updatedUnopenedCaches = unopened.filter(c => !(c.cacheId === cacheId && c.date === date))
-    const openedCacheRecord = { cacheId, date }
-    const existingOpenedCaches = playerData.inventory?.openedCaches ?? []
-    const existingItems = playerData.inventory?.items ?? []
+      //build updated inventory
+      const updatedUnopenedCaches = unopened.filter(c => !(c.cacheId === cacheId && c.date === date))
+      const existingItems = playerData.inventory?.items ?? []
 
-    await playerRef.update({
-      'inventory.unopenedCaches': updatedUnopenedCaches,
-      'inventory.openedCaches': [...existingOpenedCaches, openedCacheRecord],
-      'inventory.items': [...existingItems, ...items],
+      t.update(playerRef, {
+        'inventory.unopenedCaches': updatedUnopenedCaches,
+        'inventory.openedCaches': [...openedCaches, { cacheId, date }],
+        'inventory.items': mergeItems(existingItems, lootResult.items),
+      })
     })
 
-    res.json({grid, items})
+    res.json({ grid: lootResult.grid, items: lootResult.items })
   } catch (err) {
+    if (err.alreadyOpened) return res.status(409).json({ alreadyOpened: true })
+    if (err.status === 404) return res.status(404).json({ error: err.message })
+    if (err.status === 403) return res.status(403).json({ error: err.message })
     console.error('Error opening cache!:', err)
-    res.status(500).json({error: 'Internal server error'})
+    res.status(500).json({ error: 'Internal server error' })
   }
 })
 
