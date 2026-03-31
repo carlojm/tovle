@@ -16,7 +16,7 @@ const AxolotlTooltip = () => {
       />
       {visible && (
         <span className="axolotl-tooltip-box loot-tooltip">
-          Axolotls find an extra cache every day. Leveling them gives a chance to find multiple caches per day.
+          Axolotls find an extra cache every day. Leveling them multiplies the cache's loot.
           Axolotl caches have a different loot pool, including some unique items like torn canvas.
           Hunger consumed per collection is based on level.
         </span>

@@ -99,14 +99,16 @@ const Axolotl = () => {
 
   const handleCollect = (axolotl) => {
     if (!canCollect(axolotl)) return
-    const count = axolotl.level === 1 ? 1 : Math.floor(Math.random() * axolotl.level) + 1
+    // const count = axolotl.level === 1 ? 1 : Math.floor(Math.random() * axolotl.level) + 1
+    const count = 1
+    const score = axolotl.level * 100
     const todayStr = getTodayStr()
     
     const newCaches = Array.from({length: count}, (_, i) => ({
       cacheId: `axolotl_${axolotl.id}_${todayStr}_${i}`,
       date: todayStr,
       guessCount: 0,
-      score: 25, //base score
+      score, //base score
       source: 'axolotl',
       axolotlName: axolotl.name
     }))
@@ -243,13 +245,9 @@ const Axolotl = () => {
 
                 {/* info text */}
                 <p className="axolotl-info">
-                  {axolotl.level === 1 
-                    ? `Finds 1 cache per day if hunger bar isn't empty.`
-                    : `Finds 1-${axolotl.level} cache${axolotl.level > 1 ? 's' : ''} per day if hunger bar isn't empty.`
-                  }
-                  
+                  Finds a cache each day if hunger bar isn't empty.
                 </p>
-                <p className="axolotl-info">Feed any fish to fill hunger bar. Feed specific fish to level up.</p>
+                <p className="axolotl-info">Feed any fish to fill hunger bar. Feed desired fish to level up.</p>
               </div>
             </div>
 
@@ -326,9 +324,7 @@ const Axolotl = () => {
               {alreadyCollected
                 ? `Collected ${axolotl.lastCollectedCount} cache${axolotl.lastCollectedCount > 1 ? 's' : ''} today`
                 : axolotl.hunger >= Math.min(axolotl.level, MAX_HUNGER)
-                  ? axolotl.level === 1
-                    ? `Collect 1 cache`
-                    : `Collect 1-${axolotl.level} caches`
+                  ? `Collect today's cache`
                   : 'Too hungry...'}
             </button>
 
