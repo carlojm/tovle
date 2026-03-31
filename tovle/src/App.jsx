@@ -249,6 +249,7 @@ const App = () => {
       date: todayStr,
       guessCount: numGuesses,
       score: calculateScore(numGuesses),
+      delvePointsTotal: savedCacheEntry?.delvePointsTotal ?? 0,
     }
 
     //prevent player from refreshing and claiming a cache again
@@ -321,6 +322,7 @@ const App = () => {
       date: todayStr,
       guessCount: numGuesses,
       score: calculateScore(numGuesses),
+      delvePointsTotal: savedCacheEntry?.delvePointsTotal ?? 0,
     }
 
     save({
