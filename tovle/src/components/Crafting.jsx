@@ -16,11 +16,11 @@ const UPGRADES = [
     maxTier: 3,
     costs: [
       // tier 0→1
-      [{ itemId: 'eye_of_viridia', quantity: 3 }],
+      [{ itemId: 'eye_of_viridia', quantity: 1 }],
       // tier 1→2
-      [{ itemId: 'eye_of_viridia', quantity: 5 }, { itemId: 'gold_nugget', quantity: 5 }],
+      [{ itemId: 'eye_of_viridia', quantity: 5 }, { itemId: 'gold_nugget', quantity: 2 }],
       // tier 2→3
-      [{ itemId: 'eye_of_viridia', quantity: 5 }, { itemId: 'ade', quantity: 1 }],
+      [{ itemId: 'eye_of_viridia', quantity: 10 }, { itemId: 'ade', quantity: 1 }],
     ]
   },
   {
@@ -35,21 +35,6 @@ const UPGRADES = [
     costs: [
       // tier 0→1
       [{ itemId: 'iron_nugget', quantity: 10 }, { itemId: 'hyperexperience', quantity: 1 }],
-    ]
-  },
-  {
-    id: 'delveMods',
-    name: 'Delve Modifiers',
-    description: [
-      'The game is way too easy and you keep one-shotting caches.',
-      'Unlock delve modifier page.',
-      'None'
-    ],
-    maxTier: 1,
-    // requiresUpgrade: 'perfectGameAchieved', // hidden until this is owned
-    costs: [
-      // tier 0→1
-      [{ itemId: 'den_piece_100', quantity: 1 }, { itemId: 'torn_canvas', quantity: 1 }],
     ]
   },
   {
@@ -92,12 +77,53 @@ const UPGRADES = [
     description: [
       'None',
       'An axolotl wants to live in your newly crafted habitat. Searches for caches in exchange for fish.',
-      'WIP',
+      'Use some shiny objects to attract another axolotl to your team.',
+      'WIP'
     ],
-    maxTier: 1,
+    maxTier: 2,
     requiresUpgrade: 'buildHabitat', // hidden until this is owned
     costs: [
       [{ itemId: 'viridian_cod', quantity: 1 }],
+
+      [
+        { itemId: 'arcane_fish', quantity: 5 },
+        { itemId: 'hyperexperience', quantity: 5 },
+        { itemId: 'pulsating_emerald', quantity: 5 },
+      ],
+    ]
+  },
+  {
+    id: 'delveMods',
+    name: 'Delve Modifiers',
+    description: [
+      'The game is way too easy and you keep one-shotting caches.',
+      'Unlock delve modifier page.',
+      'None'
+    ],
+    maxTier: 1,
+    requiresUpgrade: 'newHire', // hidden until this is owned
+    // requiresUpgrade: 'perfectGameAchieved', // hidden until this is owned
+    costs: [
+      // tier 0→1
+      [{ itemId: 'twisted_strand', quantity: 1 }, { itemId: 'torn_canvas', quantity: 1 }],
+    ]
+  },
+  {
+    id: 'unlockTravel',
+    name: 'Set Sail',
+    description: [
+      'None',
+      'Build a raft with fabric and wood. Unlocks the travel tab. Not yet implemented.',
+      'WIP',
+    ],
+    maxTier: 1,
+    requiresUpgrade: 'newHire', // hidden until this is owned
+    costs: [
+      [
+        { itemId: 'torn_canvas', quantity: 5 },
+        { itemId: 'warped_stem', quantity: 5 },
+        { itemId: 'warped_hyphae', quantity: 5 },
+      ],
     ]
   },
 ]
