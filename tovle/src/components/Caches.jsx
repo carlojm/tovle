@@ -81,6 +81,19 @@ const Caches = ({ }) => {
       })
 
       const data = await res.json()
+
+      //remove cache if server says it was already opened
+      if (res.status === 409) {
+        const updatedUnopenedCaches = unopenedCaches.filter(
+          c => !(c.cacheId === cacheEntry.cacheId && c.date === cacheEntry.date)
+        )
+        save({ inventory: { ...playerData.inventory, unopenedCaches: updatedUnopenedCaches } })
+        setError(data.error ?? 'Cache already opened')
+        setOpeningCacheKey(null)
+        return
+      }
+
+
       if (!res.ok) {
         setError(data.error ?? 'Something went wrong')
         setOpeningCacheKey(null)
@@ -248,7 +261,7 @@ const Caches = ({ }) => {
       {/* unopened caches list */}
       <motion.section layout className="caches-section">
         {showTutorialText && (
-          <p style={{marginTop:"-24px", marginBottom:"8px"}}>
+          <p layout="position" style={{marginTop:"-24px", marginBottom:"8px"}}>
             Here, you can open caches and use the items to craft upgrades.
             The first few upgrades will impact the daily game. The rest of the upgrades 
             are part of Tovle's long term progression and only affect cache loot and 
