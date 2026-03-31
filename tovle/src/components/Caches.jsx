@@ -255,6 +255,9 @@ const Caches = ({ }) => {
                 <>
                   <span>Cache #{cache.cacheId}</span>
                   <span>{cache.guessCount} {cache.guessCount === 1 ? 'guess' : 'guesses'}</span>
+                  {cache.delvePointsTotal > 0 &&
+                    <span>{cache.delvePointsTotal} pts</span>
+                  }
                   <span>{cache.date}</span>
                 </>
               )}
