@@ -60,7 +60,7 @@ const Caches = ({ }) => {
 
 
   const handleOpenCache = async (cacheEntry) => {
-    if (openingCacheKey || loading) return
+    if (pendingItems.length > 0 || loading) return
 
     unfreeze() //clear previous freeze before starting another open
 
@@ -241,8 +241,8 @@ const Caches = ({ }) => {
           return (
             <button
               key={key}
-              className={`cache-entry-button ${loading || openingCacheKey ? 'disable-button' : ''}`}
-              onClick={() => !loading && !openingCacheKey && handleOpenCache(cache)}
+              className={`cache-entry-button ${loading || pendingItems.length > 0 ? 'disable-button' : ''}`}
+              onClick={() => !loading && pendingItems.length === 0 && handleOpenCache(cache)}
             >
               {isOpening ? (
                 <span>Opening...</span>
