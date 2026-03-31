@@ -5,6 +5,18 @@ import './Crafting.css'
 
 const UPGRADES = [
   {
+    id: 'craftingTable',
+    name: 'Crafting Table',
+    description: [
+      'You hunger for numbers to go up.',
+      'Make a crafting table.',
+    ],
+    maxTier: 1,
+    costs: [
+      [{ itemId: 'warped_stem', quantity: 1 }],
+    ]
+  },
+  {
     id: 'streakRestore',
     name: 'Streak Restore',
     description: [
@@ -12,7 +24,7 @@ const UPGRADES = [
       'Sacrifice a Harbinger to restore a lost streak. Only available the day after your streak breaks.',
     ],
     maxTier: 1,
-    requiresUnlocked: 'streakRedeemable',
+    requiresUpgrade: 'streakRedeemable',
     costs: [
       [{ itemId: 'harbinger', quantity: 1 }],
     ]
@@ -27,6 +39,7 @@ const UPGRADES = [
       'Hints show exact distance',
       'None'
     ],
+    requiresUpgrade: 'craftingTable',
     maxTier: 3,
     costs: [
       // tier 0→1
@@ -45,6 +58,7 @@ const UPGRADES = [
       'Hints show all 8 directions (↑ ↓ ← → ↗ ↘ ↙ ↖)',
       'None'
     ],
+    requiresUpgrade: 'craftingTable',
     maxTier: 1,
     costs: [
       // tier 0→1
@@ -60,9 +74,10 @@ const UPGRADES = [
       'Upgrade your net to catch more types of fish.',
       'None',
     ],
+    requiresUpgrade: 'craftingTable',
     maxTier: 2,
     costs: [
-      [{ itemId: 'den_piece_100', quantity: 1 }, { itemId: 'hypercrystalline_shard', quantity: 1 }],
+      [{ itemId: 'den_piece_100', quantity: 4 }, { itemId: 'hypercrystalline_shard', quantity: 1 }],
       [{ itemId: 'twisted_strand', quantity: 2 }, { itemId: 'hypercrystalline_shard', quantity: 1 }],
     ]
   },
@@ -74,6 +89,7 @@ const UPGRADES = [
       'Build an underwater habitat with all this scrap material.',
       'WIP',
     ],
+    requiresUpgrade: 'craftingTable',
     maxTier: 1,
     costs: [
       [

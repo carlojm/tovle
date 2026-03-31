@@ -78,6 +78,7 @@ function buildFreshPlayerData() {
       items: []
     },
     upgrades: {
+      craftingTable: 0,
       luckTier: 0,
       distancePrecision: 0,
       directionArrows: 0,

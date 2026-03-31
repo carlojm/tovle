@@ -55,7 +55,7 @@ const Caches = ({ }) => {
   const unopenedCaches = displayUnopenedCaches ?? playerData?.inventory?.unopenedCaches ?? []
   const inventoryItems = displayInventory ?? playerData?.inventory?.items ?? []
 
-  const showTutorialText = (playerData?.upgrades?.distancePrecision ?? 0) === 0 
+  const showTutorialText = (playerData?.upgrades?.distancePrecision ?? 0) <= 2
     && (playerData?.upgrades?.directionArrows ?? 0) === 0
 
 
@@ -165,12 +165,16 @@ const Caches = ({ }) => {
     save({
       upgrades: {
         ...playerData.upgrades,
+        craftingTable: 0,
+        streakRestore: 0,
         luckTier: 0,
         distancePrecision: 0,
         directionArrows: 0,
         fishingNet: 0,
         buildHabitat: 0,
         newHire: 0,
+        delveMode: 0,
+        unlockTravel: 0,
       }
     })
   }
