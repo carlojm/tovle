@@ -278,7 +278,7 @@ const PlayTab = ({
           <motion.div layout className="play-image-col">
 
             <Dateline />
-            <p>{loadedDate.current}</p>
+            {/* <p>{loadedDate.current}</p> */}
 
             {/* {import.meta.env.DEV && (
               <button
