@@ -1215,5 +1215,15 @@
     "description": "happy birthday weekendtech @ the pineapple plantation",
     "contributor": "carlo",
     "subtitle": "that sign text lowkey too small but everyone say happy birthday weekendtech"
+  },
+  {
+    "id": 1401,
+    "coordinates": {
+      "x": -1053,
+      "z": 1753
+    },
+    "description": "parrot island",
+    "contributor": "weekendtech",
+    "subtitle": "send in your own custom caches to be featured on upcoming days!"
   }
 ]
