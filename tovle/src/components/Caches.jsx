@@ -384,7 +384,7 @@ const Caches = ({ }) => {
       )}
 
 
-      {/* {import.meta.env.DEV && ( */}
+      {import.meta.env.DEV && (
       <div style={{gap:"px"}}>
         <button onClick={handleDebugAddCache} className="cache-entry-button">
           [DEBUG] Add Unopened Cache
@@ -408,7 +408,7 @@ const Caches = ({ }) => {
           [DEBUG] Simulate Broken Streak
         </button>
       </div>
-      {/* )} */}
+      )}
 
     </div>
   )
