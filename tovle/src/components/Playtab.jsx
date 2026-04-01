@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef} from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Dateline from './Dateline'
 import Map from './Map'
@@ -85,6 +85,11 @@ const PlayTab = ({
     const savedCache = savedToday?.caches?.find(c => c.cacheId === currentCache.id)
     return savedCache?.overlayDismissed ?? false
   })()
+
+  //the date at time of loading the game
+  const loadedDate = useRef(
+    new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+  )
 
   const updateDelvePoints = (newPoints) => {
     setDelvePoints(newPoints)
@@ -273,6 +278,7 @@ const PlayTab = ({
           <motion.div layout className="play-image-col">
 
             <Dateline />
+            <p>{loadedDate.current}</p>
 
             {/* {import.meta.env.DEV && (
               <button
@@ -467,6 +473,7 @@ const PlayTab = ({
           currentCacheIndex={currentCacheIndex}
           allComplete={allComplete}
           distancePrecision={distancePrecision}
+          gameDate={loadedDate.current}
         />
       </>}
 
