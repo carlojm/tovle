@@ -78,7 +78,7 @@ const UPGRADES = [
     maxTier: 2,
     costs: [
       [{ itemId: 'den_piece_100', quantity: 4 }, { itemId: 'hypercrystalline_shard', quantity: 1 }],
-      [{ itemId: 'twisted_strand', quantity: 2 }, { itemId: 'hypercrystalline_shard', quantity: 1 }],
+      [{ itemId: 'twisted_strand', quantity: 1 }, { itemId: 'hypercrystalline_shard', quantity: 2 }],
     ]
   },
   {
