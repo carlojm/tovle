@@ -81,12 +81,21 @@ const Info = ({onNavigate}) => {
       <div className="info-box">
         <h1>Welcome to Tovle!</h1>
         <p>
+          Tovle is a daily game based on Monumenta's{' '}
+          <a
+            href="https://monumenta.wiki.gg/wiki/Treasures_of_Viridia"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="wiki-link"
+          >
+            Treasures of Viridia
+          </a>{' '} gamemode.
           I am building this project to learn React and CSS. 
           Tovle is a fanmade site and not affiliated with Monumenta.
         </p>
         <p>
           For feedback or suggestions, message me @carlojm on Discord.
-          And send in your own custom caches! Submission guidelines at the bottom of this page.
+          Send in your own custom caches! Submission guidelines at the bottom of this page.
         </p>
 
         {cats.map(cat => (
@@ -212,9 +221,9 @@ const Info = ({onNavigate}) => {
 
             <p>
               I am using LLMs in the development of this project, however.
-              My main sources for learning web development over the last six months have been FullStackOpen's React course, CSS videos on Youtube, and Claude to fill in the gaps.
+              My main sources for learning web dev over the last six months have been FullStackOpen's React course, CSS videos on Youtube, and Claude to fill in the gaps.
               I use copilot to write boilerplate or refactor code on the backend.
-              It can be hard to tow the line, so I want to be as transparent about it as possible.
+              It can be hard to tow the line, so I want to be transparent when possible.
             </p>
             <p>
               There is no AI-generated artwork in this project.
@@ -227,8 +236,7 @@ const Info = ({onNavigate}) => {
           <div className="info-row">
             <Bug size={20} color="var(--color-text)" />
             <p>
-              Beta testers: YezXD, weekendtech, Endertective, BlissedYui, Rushdog7,
-              If I missed your name and you want it here DM me
+              Beta testers: BlissedYui, Endertective, Rushdog7, weekendtech, YezXD 
             </p>
             <Gem size={20} color="var(--color-text)" />
             <p>

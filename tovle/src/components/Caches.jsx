@@ -262,7 +262,7 @@ const Caches = ({ }) => {
       <motion.section layout className="caches-section">
         {showTutorialText && (
           <motion.p layout="position" style={{marginTop:"-24px", marginBottom:"8px"}}>
-            Here, you can open caches and use the items to craft upgrades.
+            Here you can open caches and use the items to craft upgrades.
             The first few upgrades will impact the daily game. The rest of the upgrades 
             are part of Tovle's long term progression and only affect cache loot and 
             related mechanics.

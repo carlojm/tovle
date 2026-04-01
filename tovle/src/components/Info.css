@@ -122,3 +122,18 @@
 
   transition: all 0.2s ease, opacity 0.2s ease;
 }
+
+
+.wiki-link {
+  color: var(--color-coords-border);
+  text-decoration: none;
+  text-decoration-color: color-mix(in srgb, var(--color-coords-border) 40%, transparent);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s ease, opacity 0.2s ease;
+}
+
+.wiki-link:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--color-coords-border);
+  opacity: 0.85;
+}
