@@ -106,10 +106,31 @@ const Info = ({onNavigate}) => {
           style={{ cursor: 'pointer' }}
         />
 
-        <p>
+
+        <div style={{ textAlign: 'center', marginBottom: '16px', marginTop: '12px' }}>
+          <a
+            href="https://ko-fi.com/carlojm"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="data-restore-btn kofi-btn"
+          >
+            Support Tovle on Ko-fi
+          </a>
+        </div>
+        
+
+        {/* <p>
           IMPORTANT! If you're reading this, you are playing pre-release.
           Expect user data to get randomly erased or corrupted.
           Actually if it gets corrupted that's weird and you should tell me.
+        </p> */}
+
+        <p>
+          If you'd like to support the game's development and cover any server costs,
+          I made a ko-fi page!
+        </p>
+        <p>
+          Current planned features: Travel system, Equipment
         </p>
 
         <h1>Info</h1>

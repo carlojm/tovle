@@ -93,3 +93,12 @@
   margin: 0;
 }
 
+
+.kofi-btn {
+  text-decoration: none;
+}
+
+.kofi-btn:hover {
+  text-decoration: underline;
+  
+}
