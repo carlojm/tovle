@@ -113,7 +113,7 @@ const Caches = ({ }) => {
 
       //freeze the list of unopened caches to keep the opening one on screen
       //"unfreeze" happens in handleAnimationComplete
-      setDisplayUnopenedCaches(playerData?.inventory?.unopenedCaches ?? [])
+      setDisplayUnopenedCaches(updatedUnopenedCaches)
       setDisplayInventory(playerData?.inventory?.items ?? [])
 
       save({
@@ -261,14 +261,14 @@ const Caches = ({ }) => {
       {/* unopened caches list */}
       <motion.section layout className="caches-section">
         {showTutorialText && (
-          <p layout="position" style={{marginTop:"-24px", marginBottom:"8px"}}>
+          <motion.p layout="position" style={{marginTop:"-24px", marginBottom:"8px"}}>
             Here, you can open caches and use the items to craft upgrades.
             The first few upgrades will impact the daily game. The rest of the upgrades 
             are part of Tovle's long term progression and only affect cache loot and 
             related mechanics.
 
             Tap an unopened cache to get started!
-          </p>
+          </motion.p>
         )}
         
         <motion.h2 layout="position">Unopened Caches</motion.h2>
