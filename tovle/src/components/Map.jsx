@@ -357,8 +357,8 @@ const Map = forwardRef(function Map({selectedCoords, setSelectedCoords, correctC
       return //out of bounds click
     }
 
-    console.log("map clicked! at:", clickX, clickY, imageX, imageY, xPercent, yPercent)
-    console.log("click event:", event)
+    // console.log("map clicked! at:", clickX, clickY, imageX, imageY, xPercent, yPercent)
+    // console.log("click event:", event)
 
     setSelectedCoords({
       percentX: xPercent,

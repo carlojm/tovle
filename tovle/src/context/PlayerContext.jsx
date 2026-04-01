@@ -38,7 +38,7 @@ export function PlayerProvider({ children }) {
     const updated = { ...playerData, ...updates}
     setPlayerData(updated) //update state variable
     if (!localOnly) await savePlayerData(uid, updates) // update firebase document
-    console.log("saved")
+    // console.log("saved")
   }
 
   return (
