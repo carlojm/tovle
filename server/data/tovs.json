@@ -1225,5 +1225,25 @@
     "description": "parrot island",
     "contributor": "weekendtech",
     "subtitle": "send in your own custom caches to be featured on upcoming days!"
+  },
+  {
+    "id": 1402,
+    "coordinates": {
+      "x": -2171,
+      "z": 1557
+    },
+    "description": "celica's cache in southwest",
+    "contributor": "CelicaWolf",
+    "subtitle": "\"did you know that a mountain chicken is a type of frog?\""
+  },
+  {
+    "id": 1403,
+    "coordinates": {
+      "x": -1053,
+      "z": 1753
+    },
+    "description": "smolfox cache in top of magmortic",
+    "contributor": "Smolfox + Shining_Cat",
+    "subtitle": "\"Destroyed, perhaps beyond repair. It is only a memory of its former self.\""
   }
 ]

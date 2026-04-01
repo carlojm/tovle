@@ -240,7 +240,8 @@ const Info = ({onNavigate}) => {
             </p>
             <Gem size={20} color="var(--color-text)" />
             <p>
-              Custom cache contributors: weekendtech (4/1)
+              Custom cache contributors:
+              weekendtech (4/1), CelicaWolf (4/2), Smolfox & Shining_Cat (4/3)
             </p>
             <Pointer size={20} color="var(--color-text)" />
             <p>
