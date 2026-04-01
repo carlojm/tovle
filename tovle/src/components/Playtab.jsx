@@ -274,7 +274,7 @@ const PlayTab = ({
 
             <Dateline />
 
-            {/* {import.meta.env.DEV && ( */}
+            {/* {import.meta.env.DEV && (
               <button
                 className="cache-entry-button"
                 onClick={() => save({
@@ -287,9 +287,9 @@ const PlayTab = ({
               >
                 [DEBUG] Unlock Delve Mods
               </button>
-            {/* )} */}
+            )}
 
-            {/* {import.meta.env.DEV && ( */}
+            {import.meta.env.DEV && (
               <button
                 className="cache-entry-button"
                 onClick={() => setShowDelveModal(true)}
@@ -297,7 +297,7 @@ const PlayTab = ({
               >
                 [DEBUG] Open Delve Modal mid-cache
               </button>
-            {/* )} */}
+            )} */}
 
             <AnimatePresence mode="popLayout">
               {hasDelve && calcTotalPoints(delvePoints) > 0 && (
