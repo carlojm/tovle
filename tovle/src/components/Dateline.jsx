@@ -41,7 +41,7 @@ const Dateline = () => {
 			<p><strong>Welcome to Tovle!</strong></p>
 			{/* <p style={{fontStyle: 'italic'}}>Today's caches: {formattedDate}</p> */}
 			<p style={{marginBottom: "8px"}}>{formattedDate}</p>
-      <p>Pinpoint these four cache's locations on the map.</p>
+      <p>Pinpoint four cache locations on the map.</p>
 			<p>Guess within 50 blocks to find the cache.</p>
 			<p style={{ marginTop: "8px", opacity: 0.7, fontSize: "0.85rem" }}>
         Caches wash away in: <strong>{timeLeft}</strong>
