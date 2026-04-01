@@ -112,7 +112,7 @@ const Info = ({onNavigate}) => {
             href="https://ko-fi.com/carlojm"
             target="_blank"
             rel="noopener noreferrer"
-            className="data-restore-btn kofi-btn"
+            className="kofi-btn info-button"
           >
             Support Tovle on Ko-fi
           </a>
@@ -177,9 +177,9 @@ const Info = ({onNavigate}) => {
             </p>
           </div>
 
-          <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '16px'}}>
             {/* reuse button class from data tab lol */}
-            <button className="data-restore-btn" onClick={() => onNavigate('data')}>
+            <button className="info-button" onClick={() => onNavigate('data')}>
               Go to Data Page
             </button>
           </div>

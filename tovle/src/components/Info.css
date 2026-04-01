@@ -100,5 +100,25 @@
 
 .kofi-btn:hover {
   text-decoration: underline;
-  
+
+}
+
+.info-button {
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0 auto;
+
+  padding: 12px 16px;
+  background: var(--color-background-coords-display);
+  border: 2px solid var(--color-coords-border);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: clamp(12px, 3vw, 15px);
+  cursor: pointer;
+
+  transition: all 0.2s ease, opacity 0.2s ease;
 }
