@@ -72,6 +72,7 @@
 
 .cache-subtitle {
   width: 100%;
+  max-width: 500px;
   padding: 0px 4px 0 4px;
   display: flex;
   flex-direction: row;
