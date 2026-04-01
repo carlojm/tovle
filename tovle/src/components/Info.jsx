@@ -217,8 +217,8 @@ const Info = ({onNavigate}) => {
               It can be hard to tow the line, so I want to be as transparent about it as possible.
             </p>
             <p>
-              There is absolutely no AI-generated artwork in this project and there never will be.
-              I didn't even let it pick my CSS colors.
+              There is no AI-generated artwork in this project.
+              I don't even like letting it pick my CSS colors.
             </p>
           </div>
 
