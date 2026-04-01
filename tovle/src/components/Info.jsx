@@ -227,22 +227,21 @@ const Info = ({onNavigate}) => {
           <div className="info-row">
             <Bug size={20} color="var(--color-text)" />
             <p>
-              Beta testers:
-            </p>
-            <p>
-              If you're reading this and want your name here lmk
+              Beta testers: YezXD, weekendtech, Endertective, BlissedYui, Rushdog7,
+              If I missed your name and you want it here DM me
             </p>
             <Gem size={20} color="var(--color-text)" />
             <p>
-              Custom cache contributors:
+              Custom cache contributors: weekendtech (4/1)
             </p>
             <Pointer size={20} color="var(--color-text)" />
             <p>
               Your name can be here! Send a custom cache image and its coordinates to @carlojm on Discord.
+              Guidelines:
               The coords must be within the bounds of the isles map.
               The coords must directly point to a chest placed in the picture.
-              Please turn FOV down to &lt;60 before taking the picture.
-              As long as you follow these guidelines, you can get as creative as you want!
+              Please turn FOV down to 50-60 before taking the picture.
+              Otherwise, get as creative as you want!
             </p>
           </div>
 
