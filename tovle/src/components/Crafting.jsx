@@ -151,8 +151,8 @@ const UPGRADES = [
     costs: [
       [
         { itemId: 'torn_canvas', quantity: 5 },
-        { itemId: 'warped_stem', quantity: 5 },
-        { itemId: 'warped_hyphae', quantity: 5 },
+        { itemId: 'warped_stem', quantity: 15 },
+        { itemId: 'warped_hyphae', quantity: 15 },
       ],
     ]
   },
