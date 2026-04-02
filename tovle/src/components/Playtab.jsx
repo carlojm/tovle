@@ -480,32 +480,34 @@ const PlayTab = ({
       {allComplete && <>
         {/* i like how the last cache image shows up at the end so im putting it in again here */}
         {/* it is a feature now not a bug */}
-        <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`} style={{ position: 'relative' }}>
-          {resultsPageCacheIndex > 0 && (
-            <button className="cache-nav-btn cache-nav-btn--left" onClick={() => setResultsPageCacheIndex(i => i - 1)}>
-              ‹
-            </button>
-          )}
-          {resultsPageImage && (
-            <img
-              src={resultsPageImage}
-              className="cache-image"
-              onLoad={() => setImageLoaded(true)}
-              style={{ width: 'min(90vw,500px)' }}
-            />
-          )}
-          {resultsPageCacheIndex < dailyCaches.length - 1 && (
-            <button className="cache-nav-btn cache-nav-btn--right" onClick={() => setResultsPageCacheIndex(i => i + 1)}>
-              ›
-            </button>
+        <div style ={{width: 'min(90vw, 500px'}}>
+          <div className={`cache-image-wrapper ${imageLoaded ? '' : 'loading'}`} style={{ position: 'relative' }}>
+            {resultsPageCacheIndex > 0 && (
+              <button className="cache-nav-btn cache-nav-btn--left" onClick={() => setResultsPageCacheIndex(i => i - 1)}>
+                ‹
+              </button>
+            )}
+            {resultsPageImage && (
+              <img
+                src={resultsPageImage}
+                className="cache-image"
+                onLoad={() => setImageLoaded(true)}
+                style={{ width: 'min(90vw,500px)' }}
+              />
+            )}
+            {resultsPageCacheIndex < dailyCaches.length - 1 && (
+              <button className="cache-nav-btn cache-nav-btn--right" onClick={() => setResultsPageCacheIndex(i => i + 1)}>
+                ›
+              </button>
+            )}
+          </div>
+          {(resultsPageCache?.subtitle || resultsPageCache?.contributor) && (
+            <div className="cache-subtitle">
+              {resultsPageCache.subtitle && <p className="cache-subtitle-text">{resultsPageCache.subtitle}</p>}
+              {resultsPageCache.contributor && <p className="cache-subtitle-contributor">contributed by {resultsPageCache.contributor}</p>}
+            </div>
           )}
         </div>
-        {(resultsPageCache?.subtitle || resultsPageCache?.contributor) && (
-          <div className="cache-subtitle">
-            {resultsPageCache.subtitle && <p className="cache-subtitle-text">{resultsPageCache.subtitle}</p>}
-            {resultsPageCache.contributor && <p className="cache-subtitle-contributor">contributed by {resultsPageCache.contributor}</p>}
-          </div>
-        )}
         <div className="completion-summary">
           <p>You found all {dailyCaches.length} caches today!</p>
           {cacheResults.map((result, i) => (
