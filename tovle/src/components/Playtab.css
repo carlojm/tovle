@@ -68,6 +68,12 @@
   object-fit: cover;
   border-radius: 12px;
   /* margin: 20px 0; */
+
+  /* prevent interaction */
+  /* bc things like dragging/selecting can show a delve image w/o delve mods */
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
 }
 
 .cache-subtitle {
