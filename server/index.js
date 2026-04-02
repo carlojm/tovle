@@ -23,7 +23,7 @@ app.use(express.json())
 
 //serve static files with long cache for hashed assets
 //should help with performance, specifically for the map image
-app.use(express.static(path.join(__dirname, '../dist'), {
+app.use(express.static(path.join(__dirname, 'dist'), {
   setHeaders: (res, filePath) => {
     // Vite-hashed assets (have a hash in filename) can be cached forever
     if (/\.[a-f0-9]{8,}\.(js|css|png|webp|svg|woff2?)$/.test(filePath)) {
