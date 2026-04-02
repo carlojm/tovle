@@ -4,6 +4,7 @@ import { ITEM_MAP } from '../data/itemMap'
 import { PencilLine, ChevronsUp } from 'lucide-react'
 import './Axolotl.css'
 import axolotlImg from '../assets/axolotl.png'
+import axolotlGoldImg from '../assets/axolotl_gold.png'
 
 const FISH_POOL = [
   'viridian_cod',
@@ -28,6 +29,8 @@ const Axolotl = () => {
   const [hoveredFish, setHoveredFish] = useState(null)
 
   const feedDebounceRef = useRef(null)
+
+  const axolotlImages = [axolotlImg, axolotlGoldImg]
 
   if (axolotls.length === 0) return null
 
@@ -184,7 +187,8 @@ const Axolotl = () => {
 
   return (
     <div className="axolotl-container" onTouchEnd={()=> setHoveredFish(null)}>
-      {axolotls.map(axolotl => {
+      {axolotls.map((axolotl, index) => {
+        const avatarImg = axolotlImages[index % axolotlImages.length]
         const nextLevel = axolotl.level + 1
         const requirements = axolotl.levelRequirements?.[nextLevel] ?? []
         const levelUpReady = canLevelUp(axolotl)
@@ -196,7 +200,7 @@ const Axolotl = () => {
 
             {/* header */}
             <div className="axolotl-header">
-              <img src={axolotlImg} alt="axolotl" className="axolotl-img" />
+              <img src={avatarImg} alt="axolotl" className="axolotl-img" />
               <div className="axolotl-header-info">
 
                 {/* name row */}
