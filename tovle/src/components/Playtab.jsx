@@ -379,6 +379,7 @@ const PlayTab = ({
                   className="cache-image"
                   onLoad={() => setImageLoaded(true)}
                   style={getDelveImageStyle()}
+                  fetchPriority="high" //should make image fetching faster?
                 />
               )}
               {!overlayDismissed && (

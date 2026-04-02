@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const app = express()
+const path = require('path')
 
 const {createAxolotl, generateLevelRequirements} = require('./axolotl')
 const { rollLoot, scoreToLuckMultiplier} = require('./loot')
@@ -19,7 +20,20 @@ const schedule = require('./data/schedule.json')
 const tovs = require('./data/tovs.json')
 
 app.use(express.json())
-app.use(express.static('dist'))
+
+//serve static files with long cache for hashed assets
+//should help with performance, specifically for the map image
+app.use(express.static(path.join(__dirname, '../dist'), {
+  setHeaders: (res, filePath) => {
+    // Vite-hashed assets (have a hash in filename) can be cached forever
+    if (/\.[a-f0-9]{8,}\.(js|css|png|webp|svg|woff2?)$/.test(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+    } else {
+      // index.html and unhashed files should not be cached
+      res.setHeader('Cache-Control', 'no-cache')
+    }
+  }
+}))
 
 //logging middleware
 app.use((req, res, next) => {
