@@ -93,6 +93,31 @@ const getScheduledId = (dateString) => {
 //return an array of DAILY_CACHE_COUNT unique ids for the given date
 //cache 0 is scheduled or fallback (random) if no schedule
 //cache 1-3 are fallback (random)
+
+// raw version, no recent exclusion — used to compute history
+const getDailyIds_raw = (dateString) => {
+  const seed = dateToSeed(dateString)
+  const entry = schedule.find(item => item.date === dateString)
+
+  const scheduledSlots = Array.from({length: DAILY_CACHE_COUNT}, (_, i) => {
+    const val = entry?.ids?.[i]
+    if (val === undefined || val === 'random') return null
+    return Number(val)
+  })
+
+  const scheduledIds = scheduledSlots.filter(Boolean)
+  const shuffledFallbacks = seededShuffle(
+    AVAILABLE_IDS.filter(id => !scheduledIds.includes(id)),
+    seed
+  )
+
+  let fallbackIndex = 0
+  return scheduledSlots.map(id => {
+    if (id !== null) return id
+    return shuffledFallbacks[fallbackIndex++]
+  })
+}
+
 const getDailyIds = (dateString) => {
   const seed = dateToSeed(dateString)
   const entry = schedule.find(item => item.date === dateString)
@@ -109,10 +134,19 @@ const getDailyIds = (dateString) => {
     return Number(val)
   })
 
+  // exclude IDs from the past 7 days
+  const recentIds = new Set()
+  for (let i = 1; i <= 7; i++) {
+    const past = new Date(dateString + 'T12:00:00') // noon to avoid DST edge cases
+    past.setDate(past.getDate() - i)
+    const pastStr = past.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    getDailyIds_raw(pastStr).forEach(id => recentIds.add(id))
+  }
+
   //shuffle ids not already claimed by scheduled slots
   const scheduledIds = scheduledSlots.filter(Boolean)
   const shuffledFallbacks = seededShuffle(
-    AVAILABLE_IDS.filter(id => !scheduledIds.includes(id)),
+    AVAILABLE_IDS.filter(id => !scheduledIds.includes(id) && !recentIds.has(id)),
     seed
   )
 
