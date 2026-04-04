@@ -90,12 +90,12 @@ const Info = ({onNavigate}) => {
           >
             Treasures of Viridia
           </a>{' '} gamemode.
-          I am building this project to learn React and CSS. 
           Tovle is a fanmade site and not affiliated with Monumenta.
         </p>
         <p>
+          I am building this project to learn React and CSS.
           For feedback or suggestions, message me @carlojm on Discord.
-          Send in your own custom caches! Submission guidelines at the bottom of this page.
+          Send in your own custom caches! Submission guidelines at the end of this page.
         </p>
 
         {cats.map(cat => (
@@ -241,7 +241,8 @@ const Info = ({onNavigate}) => {
             <Gem size={20} color="var(--color-text)" />
             <p>
               Custom cache contributors:
-              weekendtech (4/1), CelicaWolf (4/2), Smolfox & Shining_Cat (4/3)
+              weekendtech (4/1), CelicaWolf (4/2), Smolfox & Shining_Cat (4/3).
+              This list may lag behind a bit to avoid spoilers.
             </p>
             <Pointer size={20} color="var(--color-text)" />
             <p>

@@ -1245,5 +1245,35 @@
     "description": "smolfox cache in top of magmortic",
     "contributor": "Smolfox + Shining_Cat",
     "subtitle": "\"Destroyed, perhaps beyond repair. It is only a memory of its former self.\""
+  },
+  {
+    "id": 1404,
+    "coordinates": {
+      "x": -1650,
+      "z": -389
+    },
+    "description": "CelicaWolf second cache on top of the octopus poi https://monumentammo.fandom.com/wiki/Vengeance_of_the_Sea",
+    "contributor": "CelicaWolf",
+    "subtitle": "\"Great misfortune!\""
+  },
+  {
+    "id": 1405,
+    "coordinates": {
+      "x": -412,
+      "z": 1892
+    },
+    "description": "yellow coral from mechanistor",
+    "contributor": "Mechanistor",
+    "subtitle": "\"You can hear the tide's chime calling...\""
+  },
+  {
+    "id": 1406,
+    "coordinates": {
+      "x": -1454,
+      "z": 24
+    },
+    "description": "in a pond in the cherry place in chillwind; pic has good shaders",
+    "contributor": "SoulSkarm",
+    "subtitle": "\"Where have all the roamers gone? The walkers yet to dream? Their footsteps make valleys. Their lifeblood forms the streams.\""
   }
 ]
