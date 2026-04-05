@@ -93,6 +93,10 @@ const Info = ({onNavigate}) => {
           Tovle is a fanmade site and not affiliated with Monumenta.
         </p>
         <p>
+          If you'd like to share your score with other players, join the Tovle thread
+          in #community-general on the Monumenta Discord.
+        </p>
+        <p>
           I am building this project to learn React and CSS.
           For feedback or suggestions, message me @carlojm on Discord.
           Send in your own custom caches! Submission guidelines at the end of this page.
