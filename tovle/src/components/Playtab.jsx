@@ -65,6 +65,20 @@ const PlayTab = ({
     if (allComplete) setResultsPageCacheIndex(currentCacheIndex)
   }, [allComplete])
 
+  //share button options
+  const [showShareDropdown, setShowShareDropdown] = useState(false)
+  const shareDropdownRef = useRef(null)
+  useEffect(() => {
+    if (!showShareDropdown) return
+    const handler = (e) => {
+      if (shareDropdownRef.current && !shareDropdownRef.current.contains(e.target)) {
+        setShowShareDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [showShareDropdown])
+
   const [toast, setToast] = useState(null)
   const showToast = (msg) => {
     setToast(msg)
@@ -247,17 +261,31 @@ const PlayTab = ({
     }
   }
 
-  const handleShare = async () => {
+  const buildStandardText = () => {
     const todayStr = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' })
+    const launch = new Date('2026-04-01T00:00:00-04:00')
+    const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }))
+    const puzzleNum = Math.floor((now - launch) / (1000 * 60 * 60 * 24)) + 1
     const lines = cacheResults.map((result, i) => {
       const dots = '🌊'.repeat(Math.min(result.guessCount, 10))
-      const delveSuffix = result.delvePointsTotal > 0 ? `${result.delvePointsTotal}pts` : ''
-      return `Cache ${i + 1}: ${dots} (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'}${delveSuffix === '' ? '' : ', '}${delveSuffix})`
+      const delveSuffix = result.delvePointsTotal > 0 ? `, ${result.delvePointsTotal}pts` : ''
+      return `Cache ${i + 1}: ${dots} (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'}${delveSuffix})`
     })
-    const text = `Tovle ${todayStr}\n\n${lines.join('\n')}\n\nPlay at https://tovle.net`
+    return `Tovle #${puzzleNum} ${todayStr}\n\n${lines.join('\n')}\n\nPlay at https://tovle.net`
+  }
 
+  const buildCompactText = () => {
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const parts = cacheResults.map((result, i) => {
+      const delveSuffix = result.delvePointsTotal > 0 ? `, ${result.delvePointsTotal}pts` : ''
+      return `#${i + 1}: (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'}${delveSuffix})`
+    })
+    return `My ${todayStr} Tovle stats: ||${parts.join(' ')} Play at https://tovle.net||`
+  }
+
+  const doShare = async (text) => {
+    setShowShareDropdown(false)
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-
     if (isMobile && navigator.share) {
       try {
         await navigator.share({ text })
@@ -269,6 +297,9 @@ const PlayTab = ({
       showToast('Copied to clipboard!')
     }
   }
+
+  const handleShare = () => doShare(buildStandardText())
+  const handleShareCompact = () => doShare(buildCompactText())
 
   return (
     <>
@@ -531,7 +562,28 @@ const PlayTab = ({
           ))}
         </div>
         <div className="completion-buttons">
-          <button onClick={handleShare}>Share</button>
+          <div className="share-btn-group" ref={shareDropdownRef}>
+            <button className="share-btn-main" onClick={handleShare}>Share</button>
+            <button
+              className="share-btn-chevron"
+              onClick={() => setShowShareDropdown(v => !v)}
+              aria-label="More share options"
+            >
+              ...
+            </button>
+            {showShareDropdown && (
+              <div className="share-dropdown">
+                <button onClick={handleShare}>
+                  <span className="share-dropdown-label">Standard</span>
+                  <span className="share-dropdown-desc">Wordle-style share</span>
+                </button>
+                <button onClick={handleShareCompact}>
+                  <span className="share-dropdown-label">Compact</span>
+                  <span className="share-dropdown-desc">For Monumenta chat</span>
+                </button>
+              </div>
+            )}
+          </div>
           <button onClick={() => setActiveTab('caches')}>Open Caches</button>
         </div>
       </>}
