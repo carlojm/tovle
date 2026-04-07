@@ -245,7 +245,8 @@ const Info = ({onNavigate}) => {
             <Gem size={20} color="var(--color-text)" />
             <p>
               Custom cache contributors:
-              weekendtech (4/1), CelicaWolf (4/2), Smolfox & Shining_Cat (4/3).
+              weekendtech (4/1), CelicaWolf (4/2, 4/4), Smolfox & Shining_Cat (4/3),
+              Mechanistor (4/5), Soulskarn (4/6).
               This list may lag behind a bit to avoid spoilers.
             </p>
             <Pointer size={20} color="var(--color-text)" />

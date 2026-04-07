@@ -585,7 +585,9 @@
     "coordinates": {
       "x": -1255,
       "z": 1669
-    }
+    },
+    "description": "southwest ocean adventure mode one",
+    "subtitle": "\"TODO get a proper pic of this one\""
   },
   {
     "id": 85,
@@ -851,7 +853,9 @@
     "coordinates": {
       "x": -1215,
       "z": -510
-    }
+    },
+    "description": "horse",
+    "subtitle": "\"TODO get a proper pic of this one\""
   },
   {
     "id": 123,
@@ -1275,5 +1279,25 @@
     "description": "in a pond in the cherry place in chillwind; pic has good shaders",
     "contributor": "SoulSkarm",
     "subtitle": "\"Where have all the roamers gone? The walkers yet to dream? Their footsteps make valleys. Their lifeblood forms the streams.\""
+  },
+  {
+    "id": 1407,
+    "coordinates": {
+      "x": 231,
+      "z": 531
+    },
+    "description": "in the magma river part of ishnir behind a waterfall where one of the secret things is",
+    "contributor": "carlo",
+    "subtitle": "\"Crafted bricks of a warped world beyond ours.\""
+  },
+  {
+    "id": 1408,
+    "coordinates": {
+      "x": -97,
+      "z": 1460
+    },
+    "description": "under skull island",
+    "contributor": "carlo",
+    "subtitle": "\"I see death and water within the cards. Seek an island, an ancient refuge...\""
   }
 ]
