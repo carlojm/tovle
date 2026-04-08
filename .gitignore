@@ -1,6 +1,7 @@
 #tovle
 schedule.json
 generateschedule.js
+server/scripts/
 
 #vscode workspace thing
 *.code-workspace
