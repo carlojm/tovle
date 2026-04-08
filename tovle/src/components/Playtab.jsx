@@ -262,20 +262,25 @@ const PlayTab = ({
   }
 
   const buildStandardText = () => {
-    const todayStr = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' })
-    const launch = new Date('2026-04-01T00:00:00-04:00')
-    const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }))
-    const puzzleNum = Math.floor((now - launch) / (1000 * 60 * 60 * 24)) + 1
+    const todayStr = playerData.today.date // "2026-04-08"
+    const [y, m, d] = todayStr.split('-').map(Number)
+    const toDayNumber = ({ y, m, d }) => y * 365 + m * 31 + d
+    const launch = toDayNumber({ y: 2026, m: 4, d: 1 })
+    const puzzleNum = toDayNumber({ y, m, d }) - launch + 1
+
+    const displayDate = new Date(todayStr + 'T12:00:00').toLocaleDateString('en-US', { timeZone: 'America/New_York' })
+
     const lines = cacheResults.map((result, i) => {
       const dots = '🌊'.repeat(Math.min(result.guessCount, 10))
       const delveSuffix = result.delvePointsTotal > 0 ? `, ${result.delvePointsTotal}pts` : ''
       return `Cache ${i + 1}: ${dots} (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'}${delveSuffix})`
     })
-    return `Tovle #${puzzleNum} ${todayStr}\n\n${lines.join('\n')}\n\nPlay at https://tovle.net`
+
+    return `Tovle #${puzzleNum} ${displayDate}\n\n${lines.join('\n')}\n\nPlay at https://tovle.net`
   }
 
   const buildCompactText = () => {
-    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const todayStr = playerData.today.date
     const parts = cacheResults.map((result, i) => {
       const delveSuffix = result.delvePointsTotal > 0 ? `, ${result.delvePointsTotal}pts` : ''
       return `#${i + 1}: (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'}${delveSuffix})`
