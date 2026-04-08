@@ -64,6 +64,7 @@ function buildFreshPlayerData() {
       totalCachesOpened: 0,
       totalItemsCollected: 0,
       lastPlayedDate: null,
+      createdDate: new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' }),
       guessDistribution: {},
       averageGuesses: 0,
     },
