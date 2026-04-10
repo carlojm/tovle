@@ -6,6 +6,8 @@ import './Axolotl.css'
 import axolotlImg from '../assets/axolotl.png'
 import axolotlGoldImg from '../assets/axolotl_gold.png'
 
+import debounce from 'lodash.debounce'
+
 const FISH_POOL = [
   'viridian_cod',
   'brown_carp',
@@ -28,7 +30,9 @@ const Axolotl = () => {
 
   const [hoveredFish, setHoveredFish] = useState(null)
 
-  const feedDebounceRef = useRef(null)
+  const debouncedFeedSave = useRef(
+    debounce((data) => save(data), 2000)
+  ).current
 
   const axolotlImages = [axolotlImg, axolotlGoldImg]
 
@@ -53,6 +57,10 @@ const Axolotl = () => {
 
   const handleRenameSubmit = (axolotl) => {
     if (!editingName.trim()) return
+
+    //first, flush debounce to prevent desync
+    debouncedFeedSave.flush()
+    
     const updatedAxolotls = axolotls.map(a =>
       a.id === axolotl.id ? { ...a, name: editingName.trim() } : a
     )
@@ -91,13 +99,10 @@ const Axolotl = () => {
     }, {localOnly: true})
 
     //"debounce" (delay) firestore write to save on database writing a little bit
-    clearTimeout(feedDebounceRef.current)
-    feedDebounceRef.current = setTimeout(() => {
-      save({
-        axolotls: updatedAxolotls,
-       inventory: { ...playerData.inventory, items: updatedItems },  
-      })
-    }, 1500)
+    debouncedFeedSave({
+      axolotls: updatedAxolotls,
+      inventory: { ...playerData.inventory, items: updatedItems },
+    })
   }
 
   const handleCollect = (axolotl) => {
@@ -106,6 +111,9 @@ const Axolotl = () => {
     const count = 1
     const score = axolotl.level * 50
     const todayStr = getTodayStr()
+
+    //first, flush debounce to prevent desync
+    debouncedFeedSave.flush()
     
     const newCaches = Array.from({length: count}, (_, i) => ({
       cacheId: `axolotl_${axolotl.id}_${todayStr}_${i}`,
@@ -146,6 +154,9 @@ const Axolotl = () => {
     if (!canLevelUp(axolotl)) return
     const nextLevel = axolotl.level + 1
     const requirements = axolotl.levelRequirements?.[nextLevel] ?? []
+
+    //first, flush debounce to prevent desync
+    debouncedFeedSave.flush()
 
     try {
       const res = await fetch('/api/level-axolotl', {
