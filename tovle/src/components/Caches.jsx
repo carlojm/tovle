@@ -39,7 +39,7 @@ const Caches = ({ }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const [hideMaxed, setHideMaxed] = useState(false)
+  const [hideMaxed, setHideMaxed] = useState(true)
 
   const [pendingItems, setPendingItems] = useState([]) //items to use in cache animation
   const [openingCacheKey, setOpeningCacheKey] = useState(null) //cache being animated
