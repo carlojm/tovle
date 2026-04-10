@@ -100,7 +100,7 @@
 
 .completion-summary {
   width: min(90vw, 800px);
-  padding: 24px;
+  padding: 16px;
   padding-bottom: 16px;
   display: flex;
   flex-direction: column;
@@ -111,7 +111,6 @@
 .completion-summary > p {
   font-size: clamp(14px, 3vw, 18px);
   font-weight: 600;
-  margin-bottom: 8px;
 }
 
 .summary-row {

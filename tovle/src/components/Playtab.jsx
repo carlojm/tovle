@@ -10,6 +10,9 @@ import twistedStrand from '../assets/items/twisted_strand.png'
 
 import { IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM } from '../data/constants.js'
 
+import { getEasternDateStr, getPuzzleNumber, getDisplayDate } from '../utils/dates.js'
+import DayTimer from './DayTimer.jsx'
+
 function getCacheImage(cache) {
   if (!cache) return null
   return cache.id > 1000
@@ -93,25 +96,21 @@ const PlayTab = ({
     //this was originally state but we don't need that we can just derive it
     if (!hasDelve) return true
     if (!currentCache) return false
-    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     const savedToday = playerData?.today
-    if (savedToday?.date !== todayStr) return false
+    if (savedToday?.date !== getEasternDateStr()) return false
     const savedCache = savedToday?.caches?.find(c => c.cacheId === currentCache.id)
     return savedCache?.overlayDismissed ?? false
   })()
 
   //the date at time of loading the game
-  const loadedDate = useRef(
-    new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
-  )
+  const loadedDate = useRef(getEasternDateStr())
 
   const updateDelvePoints = (newPoints) => {
     setDelvePoints(newPoints)
-    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     save({
       today: {
         ...playerData.today,
-        date: todayStr,
+        date: loadedDate.current,
         delvePoints: newPoints,
       }
     })
@@ -187,7 +186,6 @@ const PlayTab = ({
 
     console.log(distance < 50 ? calcTotalPoints(delvePoints) : undefined)
 
-    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     const existingCaches = cacheResults.filter(r => r.cacheId !== currentCache.id)
     const inProgressCache = {
       cacheId: currentCache.id,
@@ -204,7 +202,7 @@ const PlayTab = ({
 
     save({
       today: {
-        date: todayStr,
+        date: loadedDate.current,
         caches: [...existingCaches, inProgressCache],
       }
     })
@@ -262,13 +260,8 @@ const PlayTab = ({
   }
 
   const buildStandardText = () => {
-    const todayStr = playerData.today.date // "2026-04-08"
-    const [y, m, d] = todayStr.split('-').map(Number)
-    const toDayNumber = ({ y, m, d }) => y * 365 + m * 31 + d
-    const launch = toDayNumber({ y: 2026, m: 4, d: 1 })
-    const puzzleNum = toDayNumber({ y, m, d }) - launch + 1
-
-    const displayDate = new Date(todayStr + 'T12:00:00').toLocaleDateString('en-US', { timeZone: 'America/New_York' })
+    const puzzleNum = getPuzzleNumber(playerData.today.date)
+    const displayDate = getDisplayDate(playerData.today.date)
 
     const lines = cacheResults.map((result, i) => {
       const dots = '🌊'.repeat(Math.min(result.guessCount, 10))
@@ -276,16 +269,16 @@ const PlayTab = ({
       return `Cache ${i + 1}: ${dots} (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'}${delveSuffix})`
     })
 
-    return `Tovle #${puzzleNum} ${displayDate}\n\n${lines.join('\n')}\n\nPlay at https://tovle.net`
+    return `Tovle #${puzzleNum} ${displayDate}\n${lines.join('\n')}\nPlay at https://tovle.net`
   }
 
   const buildCompactText = () => {
-    const todayStr = playerData.today.date
+    const puzzleNum = getPuzzleNumber(playerData.today.date)
     const parts = cacheResults.map((result, i) => {
       const delveSuffix = result.delvePointsTotal > 0 ? `, ${result.delvePointsTotal}pts` : ''
       return `#${i + 1}: (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'}${delveSuffix})`
     })
-    return `My ${todayStr} Tovle stats: ||${parts.join(' ')} Play at https://tovle.net||`
+    return `My Tovle #${puzzleNum} stats: ||${parts.join(' ')} Play at https://tovle.net||`
   }
 
   const doShare = async (text) => {
@@ -437,9 +430,8 @@ const PlayTab = ({
                     <button
                       className="cache-overlay-btn cache-overlay-btn--primary"
                       onClick={() => {
-                        //save overlaydismissed and delvepoints to today so refreshing page restores correctly
+                        //save overlaydismissed and delvepoints to playerData.today so refreshing page restores correctly
                         //we save it per cache so we gotta do this whole rigamarole
-                        const todayStr = new Date().toLocaleDateString('en-CA', {timeZone: 'America/New_York'})
                         const existingCaches = cacheResults.filter(r => r.cacheId !== currentCache.id)
                         const inProgressCache = {
                           cacheId: currentCache.id,
@@ -451,7 +443,7 @@ const PlayTab = ({
                         }
                         save({
                           today: {
-                            date: todayStr,
+                            date: loadedDate.current,
                             caches: [...existingCaches, inProgressCache],
                             delvePoints: delvePoints,
                           }
@@ -544,8 +536,12 @@ const PlayTab = ({
             </div>
           )}
         </div>
+        
         <div className="completion-summary">
           <p>You found all {dailyCaches.length} caches today!</p>
+          <div>
+            <DayTimer />
+          </div>
           {cacheResults.map((result, i) => (
             <div key={result.cacheId} className="summary-row">
               <span>Cache {i + 1}:</span>
