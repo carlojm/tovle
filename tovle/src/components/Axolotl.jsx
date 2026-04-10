@@ -104,7 +104,7 @@ const Axolotl = () => {
     if (!canCollect(axolotl)) return
     // const count = axolotl.level === 1 ? 1 : Math.floor(Math.random() * axolotl.level) + 1
     const count = 1
-    const score = axolotl.level * 100
+    const score = axolotl.level * 50
     const todayStr = getTodayStr()
     
     const newCaches = Array.from({length: count}, (_, i) => ({
