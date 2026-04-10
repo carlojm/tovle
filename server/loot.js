@@ -285,7 +285,8 @@ const stackItems = (items) => {
 //=========== main functions ===============
 const rollLoot = (multipliers = DEFAULT_MULTIPLIERS, playerUpgrades = {}, source = 'cache') => {
   const items = []
-  const mult = multipliers.global ?? 1.0 * (multipliers.cache ?? 1.0)
+  const mult = (multipliers.global ?? 1.0) * (multipliers.cache ?? 1.0)
+  // console.log(mult, (multipliers.global ?? 1.0), (multipliers.cache ?? 1.0))
   const table = source === 'axolotl' ? AXOLOTL_LOOT_TABLE : LOOT_TABLE
 
   // roll each item in the loot table
