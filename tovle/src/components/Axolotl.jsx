@@ -27,8 +27,8 @@ const Axolotl = () => {
   const items = playerData?.inventory?.items ?? []
   const [editingId, setEditingId] = useState(null)
   const [editingName, setEditingName] = useState('')
-
   const [hoveredFish, setHoveredFish] = useState(null)
+  const [pendingCollectId, setPendingCollectId] = useState(null)
 
   const debouncedFeedSave = useRef(
     debounce((data) => save(data), 2000)
@@ -60,7 +60,7 @@ const Axolotl = () => {
 
     //first, flush debounce to prevent desync
     debouncedFeedSave.flush()
-    
+
     const updatedAxolotls = axolotls.map(a =>
       a.id === axolotl.id ? { ...a, name: editingName.trim() } : a
     )
@@ -332,16 +332,36 @@ const Axolotl = () => {
             </div>
 
             {/* collect button */}
-            <button
-              className={`submit-button ${!canCollect(axolotl) ? 'disable-button' : ''}`}
-              onClick={() => handleCollect(axolotl)}
-            >
-              {alreadyCollected
-                ? `Collected ${axolotl.lastCollectedCount} cache${axolotl.lastCollectedCount > 1 ? 's' : ''} today`
-                : axolotl.hunger >= Math.min(axolotl.level, MAX_HUNGER)
-                  ? `Collect today's cache`
-                  : 'Too hungry...'}
-            </button>
+            {pendingCollectId === axolotl.id ? (
+              <div className="axolotl-collect-warning">
+                <p className="axolotl-collect-warning-text">This axolotl can level up first! Collect anyway?</p>
+                <div className="axolotl-collect-warning-buttons">
+                  <button className="axolotl-fish-btn" onClick={() => setPendingCollectId(null)}>
+                    Cancel
+                  </button>
+                  <button className="axolotl-fish-btn axolotl-collect-confirm" onClick={() => { handleCollect(axolotl); setPendingCollectId(null) }}>
+                    Collect anyway
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                className={`submit-button ${!canCollect(axolotl) ? 'disable-button' : ''}`}
+                onClick={() => {
+                  if (levelUpReady && canCollect(axolotl)) {
+                    setPendingCollectId(axolotl.id)
+                  } else {
+                    handleCollect(axolotl)
+                  }
+                }}
+              >
+                {alreadyCollected
+                  ? `Collected ${axolotl.lastCollectedCount} cache${axolotl.lastCollectedCount > 1 ? 's' : ''} today`
+                  : axolotl.hunger >= Math.min(axolotl.level, MAX_HUNGER)
+                    ? `Collect today's cache`
+                    : 'Too hungry...'}
+              </button>
+            )}
 
           </div>
         )

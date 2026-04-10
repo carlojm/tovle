@@ -222,3 +222,39 @@
 .axolotl-tooltip-noneed {
   opacity: 0.5;
 }
+
+
+
+
+.axolotl-collect-warning {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--color-coords-border);
+  border-radius: 8px;
+}
+
+.axolotl-collect-warning-text {
+  font-size: clamp(11px, 2.5vw, 13px);
+  opacity: 0.85;
+  margin: 0;
+  text-align: center;
+}
+
+.axolotl-collect-warning-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.axolotl-collect-confirm {
+  border-color: var(--color-button);
+  color: var(--color-button);
+  font-weight: 600;
+}
+
+.axolotl-collect-confirm:hover:not(:disabled) {
+  background: var(--color-button);
+  color: var(--color-text-button);
+}
