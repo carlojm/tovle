@@ -346,7 +346,7 @@ const Axolotl = () => {
               </div>
             ) : (
               <button
-                className={`submit-button ${!canCollect(axolotl) ? 'disable-button' : ''}`}
+                className={`upgrade-button ${!canCollect(axolotl) ? 'disable-button' : ''}`}
                 onClick={() => {
                   if (levelUpReady && canCollect(axolotl)) {
                     setPendingCollectId(axolotl.id)

@@ -325,7 +325,7 @@ const Crafting = ({hideMaxed = false}) => {
                   })}
                 </div>
                 <button
-                  className={`submit-button ${!affordable ? 'disable-button' : ''}`}
+                  className={`upgrade-button ${!affordable ? 'disable-button' : ''}`}
                   onClick={() => affordable && handleCraft(upgrade)}
                 >
                   Craft

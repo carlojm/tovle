@@ -106,3 +106,39 @@
   justify-content: center;
   width: 100%;
 }
+
+
+.upgrade-button {
+  padding: 8px 36px;
+  font-size: 16px;
+  background: var(--color-button);
+  color: var(--color-text-button);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  /* margin-left: 16px; */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+}
+
+.upgrade-button:hover {
+  transform: translateY(-2px);
+  background: var(--color-button-hover);
+}
+
+.upgrade-button:active {
+  transform: translateY(4px);
+  background: var(--color-button-hover);
+}
+
+.disable-button {
+  background: var(--color-button-disabled);
+  cursor:default;
+}
+
+.disable-button:hover {
+  transform: none;
+  background: var(--color-button-disabled);
+}
