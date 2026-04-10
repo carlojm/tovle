@@ -231,9 +231,9 @@
   gap: 2px;
 }
 
-.share-dropdown button:hover {
-  /* background: var(--color-hover, rgba(255,255,255,0.07)); */
-}
+/* .share-dropdown button:hover {
+  background: var(--color-hover, rgba(255,255,255,0.07));
+} */
 
 
 .share-dropdown-label {

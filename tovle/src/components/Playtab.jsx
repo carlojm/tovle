@@ -609,8 +609,8 @@ const PlayTab = ({
               <span className="completion-stat-label">avg guesses</span>
             </div>
           </div>
-          <p style={{ marginTop: '16px' }}>See full statistics on the info page.</p>
-          <p>Keep up a streak for better loot!</p>
+          <p style={{ marginTop: '12px', opacity: 0.7, fontSize: '0.85em' }}>See full statistics on the info page.</p>
+          <p style={{ opacity: 0.7, fontSize: "0.85rem" }} >Keep up a streak for better loot!</p>
         </>
       )}
 
