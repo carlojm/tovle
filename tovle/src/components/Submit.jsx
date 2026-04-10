@@ -1,6 +1,8 @@
 import './Submit.css'
 import {Fragment, useState, useEffect} from 'react'
 
+import { AnimatePresence, motion } from 'framer-motion'
+
 const placeholder_message = "The cache is ... blocks away."
 
 const Submit = ({
@@ -79,6 +81,7 @@ const Submit = ({
   return (
     <div className="coords-wrapper">
       <div className="coords-display">
+        
         <p className="selected-text">
           <strong>Selected:</strong>{' '}
           {selectedCoords ? `X ${selectedCoords.minecraftX}, Z ${selectedCoords.minecraftZ}` : 'X ..., Z ...'}
@@ -89,14 +92,30 @@ const Submit = ({
         )}
 
         <p><strong>Attempts:</strong> {numGuesses}</p>
+
+        <AnimatePresence mode="wait">
+          {hasGuesses && (
+            <motion.p
+              key={guessHistory.length}
+              className="latest-hint"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.25 }}
+            >
+              {getDisplayDistance(guessHistory.at(-1).distance, distancePrecision)} {guessHistory.at(-1).arrow}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
 
-      <button
+      <motion.button
+        layout
         onClick={isDisabled ? null : handlePrimaryAction}
         className={`submit-button ${isDisabled ? 'disable-button' : ''}`}
       >
         {buttonLabel}
-      </button>
+      </motion.button>
 
       <div className="answer-message">
         {!hasGuesses && <p className="answer-log">{placeholder_message}</p>}

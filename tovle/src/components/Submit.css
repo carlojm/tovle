@@ -6,14 +6,16 @@
   grid-template-areas:
     'coords-display submit-button'
     'answer-message answer-message';
-  padding: 24px;
+  padding: 0px 8px;
   width: min(90vw, 800px);
+
+  margin-top: 16px;
 }
 
 .answer-message {
   grid-area: answer-message;
 
-  margin-top: 24px;
+  margin-top: 16px;
 }
 
 .answer-log {
@@ -30,7 +32,7 @@
 
 .submit-button {
   grid-area: 'submit-button';
-  padding: 14px 24px;
+  padding: 20px 24px;
   font-size: 16px;
   background: var(--color-button);
   color: var(--color-text-button);
@@ -41,6 +43,8 @@
   transition: all 0.3s ease;
   margin-left: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  align-self:center;
 }
 
 .submit-button:hover {
@@ -98,3 +102,8 @@
   color: var(--color-coords-text)
 }
 
+.latest-hint {
+  grid-column: auto / span 2;
+  /* font-style: italic; */
+  opacity: 0.8;
+}
