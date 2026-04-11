@@ -25,7 +25,7 @@ const Stats = () => {
       <h1>Your Stats</h1>
       
       {/* top stat tiles */}
-      <div className="stats-list">
+      <div className="stats-list selectable">
         <div className="stats-list-row">
           <span>Day stats only update on day completion.</span>
         </div>

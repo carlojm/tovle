@@ -42,6 +42,18 @@ body {
   background: var(--color-background); 
   min-height: 100vh; /* TODO this might be janky idk but it's fine for now*/
   background-attachment: fixed;
+
+  /* disable selecting */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* but also if we need select heres a class */
+/* could use it on info page */
+.selectable {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 .light body {
