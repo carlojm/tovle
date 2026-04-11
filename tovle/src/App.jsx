@@ -9,6 +9,7 @@ import PlayTab from './components/Playtab'
 import Caches from './components/Caches'
 import Info from './components/Info'
 import DataTab from './components/DataTab'
+import Travel from './components/Travel.jsx'
 
 import { IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM } from './data/constants.js'
 
@@ -59,6 +60,13 @@ const App = () => {
       : `${IMAGE_BASE_URL_STANDARD}/${String(currentCache.id).padStart(3, '0')}.webp`
     : null
   const correctCoords = currentCache?.coordinates ?? null
+
+  const hasTravel = playerData?.upgrades?.unlockTravel ?? false
+  const activeTabs = TABS.map(tab =>
+    tab.id === 'info' && hasTravel
+      ? { id: 'travel', label: 'Travel' }
+      : tab
+  )
 
   useEffect(() => {
     //dont run effect until firebase finishing loading player data
@@ -405,7 +413,7 @@ const App = () => {
     <div className="full-container">
       <div className="app-container">
         <Navbar theme={theme} onToggleTheme={toggleTheme} onNavigate={setActiveTab}/>
-        <Toggle tabs={TABS.slice(0,3)} activeTab={activeTab} onChange={setActiveTab} />
+        <Toggle tabs={activeTabs.slice(0,3)} activeTab={activeTab} onChange={setActiveTab} />
 
         {activeTab === 'play' && (
           <PlayTab
@@ -443,6 +451,7 @@ const App = () => {
         )}
         {activeTab === 'caches' && <Caches />}
         {activeTab === 'info' && <Info onNavigate={setActiveTab} />}
+        {activeTab === 'travel' && <Travel />}
         {activeTab === 'data' && <DataTab />}
       </div>
     </div>
