@@ -15,6 +15,9 @@ export default function Navbar({ theme, onToggleTheme, onNavigate }) {
   return (
     <nav className="navbar">
       <Logo />
+      {import.meta.env.VITE_BETA === '1' && (
+        <h1>BETA</h1>
+      )}
       <div className="navbar-buttons">
         <button className="theme-toggle" onClick={onToggleTheme}>
           {theme === 'dark'

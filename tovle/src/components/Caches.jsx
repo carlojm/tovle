@@ -158,13 +158,14 @@ const Caches = ({ }) => {
     unfreeze()
   }
 
-  const handleDebugAddCache = () => {
+  const handleDebugAddCache = (score) => {
+    if (typeof score !== 'number') score = 70
     const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     const newUnopenedCache = {
       cacheId: Math.round(Math.random()*999)+10000,
       date: todayStr,
       guessCount: 3,
-      score: 70,
+      score:score,
     }
     save({
       inventory: {
@@ -388,6 +389,9 @@ const Caches = ({ }) => {
       <div style={{gap:"px"}}>
         <button onClick={handleDebugAddCache} className="cache-entry-button">
           [DEBUG] Add Unopened Cache
+        </button>
+        <button onClick={() => handleDebugAddCache(10000)} className="cache-entry-button">
+          [DEBUG] Add Unopened Cache Score = 100x
         </button>
         <button onClick={handleDebugResetUpgrades} className="cache-entry-button">
           [DEBUG] Reset Upgrades
