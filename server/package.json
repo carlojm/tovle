@@ -10,7 +10,12 @@
     "build:ui": "rm -rf dist && cd ../tovle && npm run build && cp -r dist ../server/",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
-    "logs:prod": "fly logs"
+    "logs:prod": "fly logs",
+
+    "dev:beta": "node --env-file=.env.beta index.js",
+    "build:ui:beta": "rm -rf dist && cd ../tovle && npm run build -- --mode beta && cp -r dist ../server/",
+    "deploy:beta": "fly deploy --config fly.beta.toml --app tovle-beta",
+    "deploy:full:beta": "npm run build:ui:beta && npm run deploy:beta"
   },
   "author": "carlo",
   "license": "MIT",
