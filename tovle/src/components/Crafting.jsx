@@ -24,7 +24,7 @@ const UPGRADES = [
       'Sacrifice a Harbinger to restore a lost streak. Only available the day after your streak breaks.',
     ],
     maxTier: 1,
-    requiresUpgrade: 'streakRedeemable',
+    requiresUnlocked: 'streakRedeemable',
     costs: [
       [{ itemId: 'harbinger', quantity: 1 }],
     ]
