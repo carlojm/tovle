@@ -129,6 +129,7 @@ const Map = forwardRef(function Map({selectedCoords, setSelectedCoords, correctC
 
   const handleWheel = (event) => {
     event.preventDefault()
+    if (isDragging) return
     if (!containerRef.current) return
 
     const delta = event.deltaY * -0.001 * zoom //make it negative so scroll down = zoom out
