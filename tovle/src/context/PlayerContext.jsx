@@ -88,6 +88,18 @@ function buildFreshPlayerData() {
       buildHabitat: 0,
       newHire: 0,
       unlocked: [],
+    },
+    travel: {
+      forum: {
+        xp: 0,
+        name: 'The Fallen Forum',
+      },
+      towns: {
+        alnera:    { reputation: 0, lastShipment: null },
+        frostgate: { reputation: 0, lastShipment: null },
+        mistport:  { reputation: 0, lastShipment: null },
+        steelmeld: { reputation: 0, lastShipment: null },
+      }
     }
   }
 }
