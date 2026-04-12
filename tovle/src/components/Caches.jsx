@@ -405,7 +405,7 @@ const Caches = ({ }) => {
             Axolotls
             <AxolotlTooltip />
           </h2>
-          <Axolotl />
+          <Axolotl scheduleSave={scheduleSave} flushSave={flushSave} />
         </motion.section>
       )}
 
