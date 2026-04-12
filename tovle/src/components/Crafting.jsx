@@ -158,7 +158,7 @@ const UPGRADES = [
   },
 ]
 
-const Crafting = ({hideMaxed = false}) => {
+const Crafting = ({hideMaxed = false, flushSave}) => {
   const { uid, playerData, save } = usePlayer()
   const upgrades = playerData?.upgrades ?? {}
   const items = playerData?.inventory?.items ?? []
@@ -178,6 +178,9 @@ const Crafting = ({hideMaxed = false}) => {
 
     const cost = upgrade.costs[currentTier]
     if (!canAfford(cost)) return
+
+    //flush debounce if necessary
+    flushSave()
 
     //deduct items
     const updatedItems = items.map(item => {
