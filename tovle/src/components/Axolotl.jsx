@@ -19,7 +19,7 @@ const FISH_POOL = [
 
 const MAX_HUNGER = 10
 
-const Axolotl = ( scheduleSave, flushSave) => {
+const Axolotl = ({scheduleSave, flushSave}) => {
   const { uid, playerData, save } = usePlayer()
   const axolotls = playerData?.axolotls ?? []
   const items = playerData?.inventory?.items ?? []
