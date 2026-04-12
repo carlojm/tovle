@@ -6,8 +6,6 @@ import './Axolotl.css'
 import axolotlImg from '../assets/axolotl.png'
 import axolotlGoldImg from '../assets/axolotl_gold.png'
 
-import debounce from 'lodash.debounce'
-
 const FISH_POOL = [
   'viridian_cod',
   'brown_carp',
@@ -21,7 +19,7 @@ const FISH_POOL = [
 
 const MAX_HUNGER = 10
 
-const Axolotl = () => {
+const Axolotl = ({scheduleSave, flushSave}) => {
   const { uid, playerData, save } = usePlayer()
   const axolotls = playerData?.axolotls ?? []
   const items = playerData?.inventory?.items ?? []
@@ -29,10 +27,6 @@ const Axolotl = () => {
   const [editingName, setEditingName] = useState('')
   const [hoveredFish, setHoveredFish] = useState(null)
   const [pendingCollectId, setPendingCollectId] = useState(null)
-
-  const debouncedFeedSave = useRef(
-    debounce((data) => save(data), 2000)
-  ).current
 
   const axolotlImages = [axolotlImg, axolotlGoldImg]
 
@@ -59,7 +53,7 @@ const Axolotl = () => {
     if (!editingName.trim()) return
 
     //first, flush debounce to prevent desync
-    debouncedFeedSave.flush()
+    flushSave()
 
     const updatedAxolotls = axolotls.map(a =>
       a.id === axolotl.id ? { ...a, name: editingName.trim() } : a
@@ -99,7 +93,7 @@ const Axolotl = () => {
     }, {localOnly: true})
 
     //"debounce" (delay) firestore write to save on database writing a little bit
-    debouncedFeedSave({
+    scheduleSave({
       axolotls: updatedAxolotls,
       inventory: { ...playerData.inventory, items: updatedItems },
     })
@@ -113,7 +107,7 @@ const Axolotl = () => {
     const todayStr = getTodayStr()
 
     //first, flush debounce to prevent desync
-    debouncedFeedSave.flush()
+    flushSave()
     
     const newCaches = Array.from({length: count}, (_, i) => ({
       cacheId: `axolotl_${axolotl.id}_${todayStr}_${i}`,
@@ -156,7 +150,7 @@ const Axolotl = () => {
     const requirements = axolotl.levelRequirements?.[nextLevel] ?? []
 
     //first, flush debounce to prevent desync
-    debouncedFeedSave.flush()
+    flushSave()
 
     try {
       const res = await fetch('/api/level-axolotl', {

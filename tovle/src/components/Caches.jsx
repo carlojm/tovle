@@ -9,6 +9,8 @@ import CacheAnimation from './CacheAnimation'
 import { AnimatePresence, motion } from 'framer-motion'
 import AxolotlTooltip from './AxolotlTooltip'
 
+import debounce from 'lodash.debounce'
+
 const mergeItems = (existing, incoming) => {
   const merged = {}
 
@@ -58,11 +60,35 @@ const Caches = ({ }) => {
   const showTutorialText = (playerData?.upgrades?.distancePrecision ?? 0) <= 2
     && (playerData?.upgrades?.directionArrows ?? 0) === 0
 
+  //debounce used for axolotl feeding
+  //we debounce in axolotl's handlefeed
+  //we flush in Cache's handleOpenCache, Crafting's handleFlush,
+  //and Axolotl's handle functions that are not feeding
+  //to prevent overwriting anything wrong
+  //is this too complicated probably but it hopefully works to reduce db writes
+  const pendingFeedDataRef = useRef(null)
+  const debouncedFeedSave = useRef(
+    debounce(() => {
+      if (pendingFeedDataRef.current) {
+        save(pendingFeedDataRef.current)
+        pendingFeedDataRef.current = null
+      }
+    }, 2000)
+  ).current
+  const scheduleSave = (data) => {
+    pendingFeedDataRef.current = data
+    debouncedFeedSave()
+  }
+  const flushSave = () => debouncedFeedSave.flush()
+
 
   const handleOpenCache = async (cacheEntry) => {
     if (pendingItems.length > 0 || loading) return
 
     unfreeze() //clear previous freeze before starting another open
+
+    //flush debounce if necessary
+    flushSave()
 
     setLoading(true)
     setError(null)
@@ -371,7 +397,7 @@ const Caches = ({ }) => {
             {hideMaxed ? 'Show Maxed' : 'Hide Maxed'}
           </motion.button>
         </div>
-        <Crafting hideMaxed={hideMaxed}/>
+        <Crafting hideMaxed={hideMaxed} flushSave={flushSave}/>
       </motion.section>
 
       {playerData?.upgrades?.newHire >= 1 && (
@@ -380,7 +406,7 @@ const Caches = ({ }) => {
             Axolotls
             <AxolotlTooltip />
           </h2>
-          <Axolotl />
+          <Axolotl scheduleSave={scheduleSave} flushSave={flushSave} />
         </motion.section>
       )}
 
