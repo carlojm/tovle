@@ -1,4 +1,4 @@
-import { usePlayer } from '../context/PlayerContext'
+import { usePlayer } from '../../context/PlayerContext'
 import TravelMap from './TravelMap'
 import TravelForum from './TravelForum'
 import './Travel.css'

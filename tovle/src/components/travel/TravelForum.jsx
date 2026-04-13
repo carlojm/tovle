@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Pencil, Check } from 'lucide-react'
-import forumIcon from '../assets/icon_forum.png'
+import forumIcon from '../../assets/icon_forum.png'
 import './TravelForum.css'
 
 // derive tier and stats from xp

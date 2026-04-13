@@ -9,7 +9,7 @@ import PlayTab from './components/Playtab'
 import Caches from './components/Caches'
 import Info from './components/Info'
 import DataTab from './components/DataTab'
-import Travel from './components/Travel.jsx'
+import Travel from './components/travel/Travel.jsx'
 
 import { IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM } from './data/constants.js'
 

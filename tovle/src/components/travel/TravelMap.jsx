@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import mapImage from '../assets/map.png'
+import mapImage from '../../assets/map.png'
 import './TravelMap.css'
 
 const QUADRANTS = [
