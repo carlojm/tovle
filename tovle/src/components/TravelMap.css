@@ -1,7 +1,7 @@
 .travel-map-wrap {
   display: flex;
   flex-direction: column;
-  width: min(90vw, 500px);
+  width: 100%;
 }
 
 .travel-map-image-wrap {
@@ -67,7 +67,7 @@
   opacity: 1;
 }
 
-.travel-map-overlay.hide-all .travel-map-quadrant:hover {
+.travel-map-overlay .travel-map-quadrant:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 

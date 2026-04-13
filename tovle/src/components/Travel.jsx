@@ -1,10 +1,15 @@
-import TravelMap from "./TravelMap"
+import { usePlayer } from '../context/PlayerContext'
+import TravelMap from './TravelMap'
+import TravelForum from './TravelForum'
+import './Travel.css'
 
 const Travel = () => {
+  const { playerData, save } = usePlayer()
+
   return (
-    <div>
-      <h2 style={{opacity:0.85}}>Bonuses by Region</h2>
+    <div className="travel-container">
       <TravelMap />
+      <TravelForum playerData={playerData} save={save} />
     </div>
   )
 }

@@ -41,6 +41,7 @@ const TravelMap = () => {
   const [hideBonuses, setHideBonuses] = useState(false)
   return (
     <div className="travel-map-wrap">
+      <h2>Trade Routes</h2>
       <div className="travel-map-image-wrap">
         <img
           className="travel-map-img"

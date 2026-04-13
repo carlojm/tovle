@@ -4,7 +4,7 @@
   align-items: center;
   gap: 32px;
   width: min(90vw, 600px);
-  padding: 24px 0;
+  padding: 12px 0;
 }
 
 .caches-section {
