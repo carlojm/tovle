@@ -3,6 +3,8 @@ import TravelMap from './TravelMap'
 import TravelForum from './TravelForum'
 import './Travel.css'
 
+import ForumGame from './ForumGame'
+
 const Travel = () => {
   const { playerData, save } = usePlayer()
 
@@ -10,6 +12,7 @@ const Travel = () => {
     <div className="travel-container">
       <TravelMap />
       <TravelForum playerData={playerData} save={save} />
+      {/* <ForumGame /> */}
     </div>
   )
 }

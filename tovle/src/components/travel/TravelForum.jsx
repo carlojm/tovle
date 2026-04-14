@@ -3,6 +3,7 @@ import { Pencil, Check } from 'lucide-react'
 import forumIcon from '../../assets/icon_forum.png'
 import './TravelForum.css'
 import ForumBuildModal from './ForumBuildModal'
+import ForumGame from './ForumGame'
 
 // derive tier and stats from xp
 // thresholds and values are placeholders — easy to tune later
@@ -24,27 +25,6 @@ const getNextTier = (xp) => {
   return FORUM_TIERS.find(t => t.minXp > xp) ?? null
 }
 
-// const ForumUpgradeModal = ({ onClose }) => {
-//   return (
-//     <div className="forum-backdrop" onClick={onClose}>
-//       <div className="forum-modal" onClick={e => e.stopPropagation()}>
-//         <div className="forum-modal-header">
-//           <h2>Upgrade Forum</h2>
-//           <button className="forum-close-btn" onClick={onClose}>✕</button>
-//         </div>
-//         <div className="forum-modal-body">
-//           <p className="forum-modal-placeholder">Upgrade options coming soon.</p>
-//         </div>
-//         <div className="forum-modal-footer">
-//           <button className="forum-footer-btn forum-footer-btn--primary" onClick={onClose}>
-//             Done
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
 const TravelForum = ({ playerData, save }) => {
   const forum = playerData?.travel?.forum
   const xp = forum?.xp ?? 0
@@ -55,13 +35,20 @@ const TravelForum = ({ playerData, save }) => {
 
   const [isEditing, setIsEditing] = useState(false)
   const [nameInput, setNameInput] = useState(savedName)
-  const [showModal, setShowModal] = useState(false)
+  // const [showModal, setShowModal] = useState(false)
+  const [showBuildModal, setShowBuildModal] = useState(false)
+  const [gameConfig, setGameConfig] = useState(null)
 
   const handleSaveName = () => {
     const trimmed = nameInput.trim() || 'The Fallen Forum'
     setNameInput(trimmed)
     setIsEditing(false)
     save({ travel: { ...playerData?.travel, forum: { ...forum, name: trimmed } } })
+  }
+
+  const handlePlay = (config) => {
+    setShowBuildModal(false)
+    setGameConfig(config)
   }
 
   return (
@@ -151,18 +138,32 @@ const TravelForum = ({ playerData, save }) => {
           )}
         </div>
 
-        <button className="forum-upgrade-btn" onClick={() => setShowModal(true)}>
+        <button className="forum-upgrade-btn" onClick={() => setShowBuildModal(true)}>
           Rebuild Forum
         </button>
 
       </div>
 
-      {showModal && (
+      {showBuildModal && (
         <ForumBuildModal 
           playerData={playerData}
-          onClose={() => setShowModal(false)}
+          onClose={() => setShowBuildModal(false)}
+          onPlay={handlePlay}
         />
       )}
+      
+      {gameConfig && (
+        <ForumGame
+          totalFuel={gameConfig.totalFuel}
+          itemsPerTap={gameConfig.itemsPerTap}
+          anchorChance={gameConfig.anchorChance}
+          onGameEnd={(xpEarned) => {
+            setGameConfig(null)
+            // will handle saving xp here later
+          }}
+        />
+      )}
+      
     </>
   )
 }
