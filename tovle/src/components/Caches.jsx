@@ -405,7 +405,18 @@ const Caches = ({ }) => {
             Axolotls
             <AxolotlTooltip />
           </h2>
-          <Axolotl scheduleSave={scheduleSave} flushSave={flushSave} />
+          <Axolotl
+            scheduleSave={scheduleSave}
+            flushSave={flushSave}
+            // bandaid fix for axo caches disappearing if collected during open animation freeze
+            // onCacheAdded={(newCache) => {
+            //   if (displayUnopenedCaches !== null) {
+            //     setDisplayUnopenedCaches(prev => [...(prev ?? []), newCache])
+            //   }
+            // }}
+            //actually lets just disable buttons
+            disableButtons={activeGrid !== null || pendingItems.length > 0}
+          />
         </motion.section>
       )}
 

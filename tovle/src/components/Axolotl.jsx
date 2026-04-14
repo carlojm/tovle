@@ -19,7 +19,7 @@ const FISH_POOL = [
 
 const MAX_HUNGER = 10
 
-const Axolotl = ({scheduleSave, flushSave}) => {
+const Axolotl = ({scheduleSave, flushSave, disableButtons}) => {
   const { uid, playerData, save } = usePlayer()
   const axolotls = playerData?.axolotls ?? []
   const items = playerData?.inventory?.items ?? []
@@ -63,6 +63,7 @@ const Axolotl = ({scheduleSave, flushSave}) => {
   }
 
   const handleFeed = (axolotl, fish) => {
+    if (disableButtons) return //safeguard
     const have = getItemQuantity(fish)
     if (have <= 0) return
 
@@ -100,6 +101,7 @@ const Axolotl = ({scheduleSave, flushSave}) => {
   }
 
   const handleCollect = (axolotl) => {
+    if (disableButtons) return //safeguard
     if (!canCollect(axolotl)) return
     // const count = axolotl.level === 1 ? 1 : Math.floor(Math.random() * axolotl.level) + 1
     const count = 1
@@ -280,7 +282,7 @@ const Axolotl = ({scheduleSave, flushSave}) => {
                           handleFeed(axolotl, fish)
                         }
                       }}
-                      disabled={have <= 0}
+                      disabled={have <= 0 || disableButtons}
                       onMouseEnter={() => setHoveredFish(`${axolotl.id}-${fish}`)}
                       onMouseLeave={() => setHoveredFish(null)}
                       onTouchEnd={(e) => {
@@ -340,7 +342,7 @@ const Axolotl = ({scheduleSave, flushSave}) => {
               </div>
             ) : (
               <button
-                className={`upgrade-button ${!canCollect(axolotl) ? 'disable-button' : ''}`}
+                className={`upgrade-button ${!canCollect(axolotl) || disableButtons ? 'disable-button' : ''}`}
                 onClick={() => {
                   if (levelUpReady && canCollect(axolotl)) {
                     setPendingCollectId(axolotl.id)
