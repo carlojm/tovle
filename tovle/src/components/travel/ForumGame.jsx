@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import * as Phaser from 'phaser'
+import { FadeInEffectAction } from '@cloudinary/url-gen/actions/effect/leveled/FadeIn'
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -11,6 +12,7 @@ class GameScene extends Phaser.Scene {
     this.anchorChance = data.anchorChance
     this.totalFuel = data.totalFuel
     this.onGameEnd = data.onGameEnd
+    this.maxTaps = Math.floor(data.totalFuel / data.itemsPerTap)
   }
 
   getOverlap(blockA, blockB) {
@@ -47,8 +49,13 @@ class GameScene extends Phaser.Scene {
     this.blockCount = 0
     this.cameraTargetY = 0
 
-    this.gameOverText = this.add.text(this.scale.width / 2, this.scale.height / 2, 'Game Over!', {
+    this.gameOverText = this.add.text(this.scale.width / 2, 20, 'Game Over!', {
       fontSize: '32px',
+      color: '#ffffff',
+    }).setOrigin(0.5).setScrollFactor(0).setVisible(false)
+
+    this.xpText = this.add.text(this.scale.width / 2, 20 + 40, '', {
+      fontSize: '20px',
       color: '#ffffff',
     }).setOrigin(0.5).setScrollFactor(0).setVisible(false)
 
@@ -59,8 +66,10 @@ class GameScene extends Phaser.Scene {
       if (result === null) {
         console.log('game over!!!!!!')
         this.gameOverText.setVisible(true)
+        this.xpText.setText(`XP earned: ${this.calculateXP()}`)
+        this.xpText.setVisible(true)
         this.time.delayedCall(1500, () => {
-          this.onGameEnd(this.calculateXP())
+          this.onGameEnd(this.calculateXP(), this.blockCount)
         })
       } else {
 
@@ -78,6 +87,18 @@ class GameScene extends Phaser.Scene {
         this.blockCount = this.blockCount + 1
         if (this.blockCount > 5) {
           this.cameraTargetY -= 20
+        }
+
+        if (this.blockCount >= this.maxTaps) {
+          this.blockSpeed = 0
+          this.movingBlock.setSize(0, 20) //make it invisible lol
+          this.gameOverText.setText('Out of blocks!')
+          this.gameOverText.setVisible(true)
+          this.xpText.setText(`XP earned: ${this.calculateXP()}`)
+          this.xpText.setVisible(true)
+          this.time.delayedCall(1500, () => {
+            this.onGameEnd(this.calculateXP(), this.blockCount)
+          })
         }
       }
 

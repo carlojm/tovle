@@ -49,6 +49,27 @@ const TravelForum = ({ playerData, save }) => {
   const handlePlay = (config) => {
     setShowBuildModal(false)
     setGameConfig(config)
+
+    //remove selected blocks from inv
+    const updatedItems = (playerData?.inventory?.items ?? []).map(item => {
+      const spent = config.fuel[item.itemId] ?? 0
+      return spent > 0 ? { ...item, quantity: item.quantity - spent } : item
+    }).filter(item => item.quantity > 0)
+
+    //update inventory and update fuel count
+    save({ 
+      inventory: {
+        ...playerData?.inventory,
+        items: updatedItems
+      },
+      travel: { 
+        ...playerData?.travel,
+        forum: {
+          ...forum,
+          fuel: config.totalFuel
+        }
+      }
+    })
   }
 
   return (
@@ -147,6 +168,7 @@ const TravelForum = ({ playerData, save }) => {
       {showBuildModal && (
         <ForumBuildModal 
           playerData={playerData}
+          existingFuel={forum?.fuel ?? 0}
           onClose={() => setShowBuildModal(false)}
           onPlay={handlePlay}
         />
@@ -157,13 +179,26 @@ const TravelForum = ({ playerData, save }) => {
           totalFuel={gameConfig.totalFuel}
           itemsPerTap={gameConfig.itemsPerTap}
           anchorChance={gameConfig.anchorChance}
-          onGameEnd={(xpEarned) => {
+          onGameEnd={(xpEarned, blocksBuilt) => {
             setGameConfig(null)
-            // will handle saving xp here later
+
+            const fuelUsed = blocksBuilt * gameConfig.itemsPerTap
+            const fuelRemaining = Math.max(0, (forum?.fuel ?? 0) - fuelUsed)
+
+            save({ 
+              travel: { 
+                ...playerData?.travel,
+                forum: {
+                  ...forum,
+                  xp: (forum?.xp ?? 0) + xpEarned,
+                  fuel: fuelRemaining
+                }
+              }
+            })
           }}
         />
       )}
-      
+
     </>
   )
 }

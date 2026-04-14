@@ -15,7 +15,8 @@ const MIN_ITEMS_PER_TAP = 1
 const MAX_ITEMS_PER_TAP = 10
 const MAX_FUEL = 100 // increases with forum upgrades later
 
-const ForumBuildModal = ({ playerData, onClose, onPlay }) => {
+const ForumBuildModal = ({ playerData, existingFuel, onClose, onPlay }) => {
+  console.log("existing:",existingFuel)
   const items = playerData?.inventory?.items ?? []
 
   const getItemQuantity = (itemId) => {
@@ -23,7 +24,10 @@ const ForumBuildModal = ({ playerData, onClose, onPlay }) => {
   }
 
   // fuel: { prismarine_block: 3, warped_hyphae: 5, ... }
-  const [fuel, setFuel] = useState({})
+  const [fuel, setFuel] = useState(
+    //treat existing fuel like its own item in the list
+    existingFuel > 0 ? {_existing: existingFuel} : {}
+  )
   const [itemsPerTap, setItemsPerTap] = useState(1)
 
   const totalFuel = Object.values(fuel).reduce((sum, n) => sum + n, 0)
@@ -49,7 +53,8 @@ const ForumBuildModal = ({ playerData, onClose, onPlay }) => {
 
   const handlePlay = () => {
     if (totalFuel === 0) return
-    onPlay({ fuel, totalFuel, itemsPerTap, anchorChance })
+    const {_existing, ...itemFuel} = fuel
+    onPlay({ fuel: itemFuel, totalFuel, itemsPerTap, anchorChance })
   }
 
   return (

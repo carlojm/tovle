@@ -92,6 +92,7 @@ function buildFreshPlayerData() {
     travel: {
       forum: {
         xp: 0,
+        fuel: 0,
         name: 'The Fallen Forum',
       },
       towns: {
