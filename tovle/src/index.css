@@ -57,7 +57,6 @@
   --color-text-loot-display: var(--white-smoke);
   --color-text-shadow-loot-display: var(--deepest-ocean);
 
-
   --color-navbar-background: var(--deep-ocean);
   /* --color-navbar-background: var(--dark-cyan); */
   --color-navbar-dropdown: var(--deeper-ocean);
@@ -80,6 +79,7 @@
   --color-background-coords-display: rgba(255, 255, 255, 0.08);
 
 
+  --color-background-modal: var(--deepest-ocean);
 
 
 }
@@ -108,6 +108,7 @@
 
   --color-background-toggle: rgba(0, 0, 0, 0.08);
   --color-background-coords-display: rgba(148, 207, 255, 0.226);
+
 
 
   /* --void-navy: #dce8f0; */
@@ -141,5 +142,7 @@
   --color-text-loot-display: var(--deepest-ocean);
   --color-text-shadow-loot-display: var(--white-smoke);
   
+  --color-background-modal: rgb(198, 227, 253);
+
 
 }

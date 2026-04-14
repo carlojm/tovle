@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Pencil, Check } from 'lucide-react'
 import forumIcon from '../../assets/icon_forum.png'
 import './TravelForum.css'
+import ForumBuildModal from './ForumBuildModal'
 
 // derive tier and stats from xp
 // thresholds and values are placeholders — easy to tune later
@@ -23,26 +24,26 @@ const getNextTier = (xp) => {
   return FORUM_TIERS.find(t => t.minXp > xp) ?? null
 }
 
-const ForumUpgradeModal = ({ onClose }) => {
-  return (
-    <div className="forum-backdrop" onClick={onClose}>
-      <div className="forum-modal" onClick={e => e.stopPropagation()}>
-        <div className="forum-modal-header">
-          <h2>Upgrade Forum</h2>
-          <button className="forum-close-btn" onClick={onClose}>✕</button>
-        </div>
-        <div className="forum-modal-body">
-          <p className="forum-modal-placeholder">Upgrade options coming soon.</p>
-        </div>
-        <div className="forum-modal-footer">
-          <button className="forum-footer-btn forum-footer-btn--primary" onClick={onClose}>
-            Done
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
+// const ForumUpgradeModal = ({ onClose }) => {
+//   return (
+//     <div className="forum-backdrop" onClick={onClose}>
+//       <div className="forum-modal" onClick={e => e.stopPropagation()}>
+//         <div className="forum-modal-header">
+//           <h2>Upgrade Forum</h2>
+//           <button className="forum-close-btn" onClick={onClose}>✕</button>
+//         </div>
+//         <div className="forum-modal-body">
+//           <p className="forum-modal-placeholder">Upgrade options coming soon.</p>
+//         </div>
+//         <div className="forum-modal-footer">
+//           <button className="forum-footer-btn forum-footer-btn--primary" onClick={onClose}>
+//             Done
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   )
+// }
 
 const TravelForum = ({ playerData, save }) => {
   const forum = playerData?.travel?.forum
@@ -157,7 +158,10 @@ const TravelForum = ({ playerData, save }) => {
       </div>
 
       {showModal && (
-        <ForumUpgradeModal onClose={() => setShowModal(false)} />
+        <ForumBuildModal 
+          playerData={playerData}
+          onClose={() => setShowModal(false)}
+        />
       )}
     </>
   )
