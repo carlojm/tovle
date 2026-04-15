@@ -1,8 +1,12 @@
 import { useEffect, useRef } from 'react'
 import * as Phaser from 'phaser'
-import { FadeInEffectAction } from '@cloudinary/url-gen/actions/effect/leveled/FadeIn'
+
+const BASE_SPEED = 200
+const SPEED_INCREMENT = 15
+const MAX_SPEED = 600
 
 class GameScene extends Phaser.Scene {
+
   constructor() {
     super('GameScene')
   }
@@ -31,7 +35,21 @@ class GameScene extends Phaser.Scene {
   calculateXP() {
     const blocksSpent = this.blockCount * this.itemsPerTap
     const heightMultiplier = Math.pow(1 + this.blockCount * 0.15, 2)
-    return Math.round(blocksSpent * heightMultiplier)
+    const limiter = 100
+    const xp = blocksSpent * heightMultiplier / limiter
+    return Math.round(xp * 10) / 10 //nearest tens place
+  }
+
+  handleGameOver(message = "Game Over!") {
+    this.isGameOver = true
+    this.blockSpeed = 0
+    this.gameOverText.setText(message)
+    this.gameOverText.setVisible(true)
+    this.xpText.setText(`XP earned: ${this.calculateXP()}`)
+    this.xpText.setVisible(true)
+    this.time.delayedCall(2000, () => {
+      this.onGameEnd(this.calculateXP(), this.blockCount)
+    })
   }
 
   preload() {}
@@ -48,6 +66,7 @@ class GameScene extends Phaser.Scene {
     this.topBlock = this.platform
     this.blockCount = 0
     this.cameraTargetY = 0
+    this.isGameOver = false
 
     this.gameOverText = this.add.text(this.scale.width / 2, 20, 'Game Over!', {
       fontSize: '32px',
@@ -58,51 +77,38 @@ class GameScene extends Phaser.Scene {
       fontSize: '20px',
       color: '#ffffff',
     }).setOrigin(0.5).setScrollFactor(0).setVisible(false)
+    
 
     this.input.on('pointerdown', () => {
+      if (this.isGameOver) return
       this.blockSpeed = 0
       
       const result = this.getOverlap(this.movingBlock, this.topBlock)
       if (result === null) {
-        console.log('game over!!!!!!')
-        this.gameOverText.setVisible(true)
-        this.xpText.setText(`XP earned: ${this.calculateXP()}`)
-        this.xpText.setVisible(true)
-        this.time.delayedCall(1500, () => {
-          this.onGameEnd(this.calculateXP(), this.blockCount)
-        })
-      } else {
-
-        const { overlap, newX } = result
-        
-        //resize placed block
-        this.movingBlock.setSize(overlap, 20)
-        this.movingBlock.setPosition(newX, this.movingBlock.y)
-        this.topBlock = this.movingBlock
-
-        const newY = this.movingBlock.y - 20
-        this.movingBlock = this.add.rectangle(-overlap/2, newY, overlap, 20, 0xff6b6b)
-        this.blockSpeed = 200
-
-        this.blockCount = this.blockCount + 1
-        if (this.blockCount > 5) {
-          this.cameraTargetY -= 20
-        }
-
-        if (this.blockCount >= this.maxTaps) {
-          this.blockSpeed = 0
-          this.movingBlock.setSize(0, 20) //make it invisible lol
-          this.gameOverText.setText('Out of blocks!')
-          this.gameOverText.setVisible(true)
-          this.xpText.setText(`XP earned: ${this.calculateXP()}`)
-          this.xpText.setVisible(true)
-          this.time.delayedCall(1500, () => {
-            this.onGameEnd(this.calculateXP(), this.blockCount)
-          })
-        }
+        this.handleGameOver('Game Over!')
+        return
       }
 
+      const { overlap, newX } = result
+      
+      //resize placed block
+      this.movingBlock.setSize(overlap, 20)
+      this.movingBlock.setPosition(newX, this.movingBlock.y)
+      this.topBlock = this.movingBlock
 
+      const newY = this.movingBlock.y - 20
+      this.movingBlock = this.add.rectangle(-overlap/2, newY, overlap, 20, 0xff6b6b)
+      const direction = this.blockSpeed > 0 ? 1 : -1
+      this.blockSpeed = direction * Math.min(BASE_SPEED + this.blockCount * SPEED_INCREMENT, MAX_SPEED)
+
+      this.blockCount = this.blockCount + 1
+      if (this.blockCount > 5) {
+        this.cameraTargetY -= 20
+      }
+      if (this.blockCount >= this.maxTaps) {
+        this.movingBlock.setSize(0, 20) //make it invisible lol
+        this.handleGameOver('Game Over!')
+      }
     })
   }
 
