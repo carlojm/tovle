@@ -32,6 +32,14 @@ class GameScene extends Phaser.Scene {
     return {overlap, newX}
   }
 
+  getBlockColor() {
+    const t = Math.min(this.blockCount / 30, 1) // 0 to 1 over 30 blocks
+    const r = Math.round(255 * (1 - t * 0.8))
+    const g = Math.round(255 * (1 - t * 0.6))
+    const b = 255
+    return Phaser.Display.Color.GetColor(r, g, b)
+  }
+
   calculateXP() {
     const blocksSpent = this.blockCount * this.itemsPerTap
     const heightMultiplier = Math.pow(1 + this.blockCount * 0.15, 2)
@@ -61,7 +69,7 @@ class GameScene extends Phaser.Scene {
     // }).setOrigin(0.5)
 
     this.platform = this.add.rectangle(this.scale.width/2, this.scale.height - 40, 100, 80, 0xffffff)
-    this.movingBlock = this.add.rectangle(this.scale.width/3, this.scale.height - 90, 100, 20, 0x4ecdc4)
+    this.movingBlock = this.add.rectangle(this.scale.width/3, this.scale.height - 90, 100, 20, 0xffffff)
     this.blockSpeed = 200
     this.topBlock = this.platform
     this.blockCount = 0
@@ -97,7 +105,7 @@ class GameScene extends Phaser.Scene {
       this.topBlock = this.movingBlock
 
       const newY = this.movingBlock.y - 20
-      this.movingBlock = this.add.rectangle(-overlap/2, newY, overlap, 20, 0xff6b6b)
+      this.movingBlock = this.add.rectangle(-overlap/2, newY, overlap, 20, this.getBlockColor())
       const direction = this.blockSpeed > 0 ? 1 : -1
       this.blockSpeed = direction * Math.min(BASE_SPEED + this.blockCount * SPEED_INCREMENT, MAX_SPEED)
 
