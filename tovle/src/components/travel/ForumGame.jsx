@@ -36,7 +36,7 @@ class UIScene extends Phaser.Scene {
       fontSize: '45px',
       color: '#ffffff',
       fontFamily: '"Jersey 15"',
-    }).setOrigin(0.5).setVisible(true)
+    }).setOrigin(0.5).setVisible(false)
 
     this.xpText = this.add.text(this.scale.width / 2, 90, '', {
       fontSize: '30px',
@@ -49,7 +49,7 @@ class UIScene extends Phaser.Scene {
       color: '#ffffff',
       fontFamily: '"Jersey 15"',
       // resolution: 1,
-    }).setVisible(true)
+    }).setVisible(false)
 
     // listen for game over event from GameScene
     this.scene.get('GameScene').events.on('gameover', ({ message, xp }) => {
@@ -120,6 +120,23 @@ class GameScene extends Phaser.Scene {
     })
   }
 
+  spawnDebris(x, y, width, color, direction) {
+    const debris = this.add.rectangle(x,y,width,20,color)
+    this.physics.add.existing(debris)
+    debris.body.setVelocityX(direction * (60 + Math.random() * 60))
+    debris.body.setVelocityY(-60 + Math.random() * -80) // slight upward kick then falls
+    debris.body.setAngularVelocity((Math.random() - 0.5) * 300)
+
+    // fade out after a moment
+    this.tweens.add({
+      targets: debris,
+      alpha: 0,
+      delay: 600,
+      duration: 400,
+      onComplete: () => debris.destroy()
+    })
+  }
+
   preload() {
     const g = this.make.graphics({ x: 0, y: 0, add: false })
     g.fillStyle(0xffffff)
@@ -176,9 +193,26 @@ class GameScene extends Phaser.Scene {
       }
 
       const { overlap, newX } = result
+      const cutRatio = (this.topBlock.width-overlap) / this.topBlock.width
+
+      //throw debris
+      const cutWidth = this.movingBlock.width - overlap
+      if (cutWidth > 4 && cutRatio > this.perfectPlaceThreshold) { //cant be tiny
+        const movingLeft  = this.movingBlock.x - this.movingBlock.width / 2
+        const movingRight = this.movingBlock.x + this.movingBlock.width / 2
+        const topLeft     = this.topBlock.x - this.topBlock.width / 2
+        const topRight    = this.topBlock.x + this.topBlock.width / 2
+
+        // the trimmed piece is on whichever side of the moving block sticks out
+        const debrisX = movingLeft < topLeft
+          ? movingLeft + cutWidth / 2   // trimmed from the left side
+          : movingRight - cutWidth / 2  // trimmed from the right side
+
+        const debrisDirection = movingLeft < topLeft ? -1 : 1
+        this.spawnDebris(debrisX, this.movingBlock.y, cutWidth, this.movingBlock.fillColor, debrisDirection)
+      }
 
       //on a bad cut, shake camera
-      const cutRatio = (this.topBlock.width-overlap) / this.topBlock.width
       if (cutRatio > this.shakyPlaceThreshold) {
         this.cameras.main.shake(500, 0.0025, true)
       }
@@ -250,6 +284,10 @@ const ForumGame = ({totalFuel, itemsPerTap, anchorChance, onGameEnd}) => {
       parent: containerRef.current,
       backgroundColor: '#1a1a2e',
       pixelArt: true,
+      physics: {
+        default: 'arcade',
+        arcade: { gravity: { y: 400 }, debug: false },
+      },
     })
 
     game.scene.add(
