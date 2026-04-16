@@ -21,7 +21,7 @@ const UPGRADES = [
     name: 'Streak Restore',
     description: [
       'You broke your daily streak!',
-      'Sacrifice a Harbinger to restore a lost streak. Only available the day after your streak breaks.',
+      'Sacrifice a Harbinger to restore a lost streak. Only available the day after your streak breaks. May require a page reload.',
     ],
     maxTier: 1,
     requiresUnlocked: 'streakRedeemable',
