@@ -5,15 +5,65 @@ const BASE_SPEED = 200
 const SPEED_INCREMENT = 15
 const MAX_SPEED = 600
 
-//width the game is designed for
-//used to scale camera zoom on diff screen sizes
-const REFERENCE_WIDTH = 400
+// if (!document.querySelector('link[href*="Press+Start+2P"]')) {
+//   const link = document.createElement('link')
+//   link.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'
+//   link.rel = 'stylesheet'
+//   document.head.appendChild(link)
+// }
 
-if (!document.querySelector('link[href*="Press+Start+2P"]')) {
+// if (!document.querySelector('link[href*="Tiny5"]')) {
+//   const link = document.createElement('link')
+//   link.href = 'https://fonts.googleapis.com/css2?family=Tiny5&display=swap'
+//   link.rel = 'stylesheet'
+//   document.head.appendChild(link)
+// }
+
+if (!document.querySelector('link[href*="Jersey+15"]')) {
   const link = document.createElement('link')
-  link.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'
+  link.href = 'https://fonts.googleapis.com/css2?family=Jersey+15&display=swap'
   link.rel = 'stylesheet'
   document.head.appendChild(link)
+}
+
+class UIScene extends Phaser.Scene {
+  constructor() {
+    super({ key: 'UIScene' })
+  }
+
+  create() {
+    this.gameOverText = this.add.text(this.scale.width / 2, 40, 'Game Over!', {
+      fontSize: '45px',
+      color: '#ffffff',
+      fontFamily: '"Jersey 15"',
+    }).setOrigin(0.5).setVisible(true)
+
+    this.xpText = this.add.text(this.scale.width / 2, 90, '', {
+      fontSize: '30px',
+      color: '#ffffff',
+      fontFamily: '"Jersey 15"',
+    }).setOrigin(0.5).setVisible(false)
+
+    this.debugText = this.add.text(10,10, '', {
+      fontSize: `30px`,
+      color: '#ffffff',
+      fontFamily: '"Jersey 15"',
+      // resolution: 1,
+    }).setVisible(true)
+
+    // listen for game over event from GameScene
+    this.scene.get('GameScene').events.on('gameover', ({ message, xp }) => {
+      this.gameOverText.setText(message)
+      this.gameOverText.setVisible(true)
+      this.xpText.setText(`XP earned: ${xp}`)
+      this.xpText.setVisible(true)
+    })
+  }
+
+  update() {
+    const game = this.scene.get('GameScene')
+    this.debugText.setText(`${this.scale.width}x${this.scale.height} blocks:${game.blockCount}`)
+  }
 }
 
 class GameScene extends Phaser.Scene {
@@ -62,10 +112,9 @@ class GameScene extends Phaser.Scene {
   handleGameOver(message = "Game Over!") {
     this.isGameOver = true
     this.blockSpeed = 0
-    this.gameOverText.setText(message)
-    this.gameOverText.setVisible(true)
-    this.xpText.setText(`XP earned: ${this.calculateXP()}`)
-    this.xpText.setVisible(true)
+
+    this.events.emit('gameover', { message, xp: this.calculateXP() })
+
     this.time.delayedCall(2000, () => {
       this.onGameEnd(this.calculateXP(), this.blockCount)
     })
@@ -80,36 +129,23 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
-    const zoom = this.scale.width / REFERENCE_WIDTH
+    const W = 400
+    const H = 300
+    const zoom = this.scale.width / 400
     this.cameras.main.setZoom(zoom)
-    this.cameras.main.centerOn(REFERENCE_WIDTH / 2, this.scale.height / zoom / 2)
-    const width = this.scale.width / zoom   // = REFERENCE_WIDTH
-    const height = this.scale.height / zoom
+    this.cameras.main.centerOn(W / 2, H / 2)
+    this.cameraTargetY = this.cameras.main.scrollY - (40 / zoom)
+    
+    this.platform = this.add.rectangle(W / 2, H + 120, 100, 400, 0xffffff)
+    this.movingBlock = this.add.rectangle(W / 4, H - 90, 100, 20, 0xffffff)
 
-    this.platform = this.add.rectangle(width/2, height + 120, 100, 400, 0xffffff)
-    this.movingBlock = this.add.rectangle(width/3, height - 90, 100, 20, 0xffffff)
-    this.blockSpeed = 200
+    this.blockSpeed = BASE_SPEED
     this.perfectPlaceThreshold = 0.05
     this.shakyPlaceThreshold = 0.4
     this.topBlock = this.platform
     this.blockCount = 0
-    this.cameraTargetY = 0
     this.isGameOver = false
-
-    this.gameOverText = this.add.text(this.scale.width / 2, 20, 'Game Over!', {
-      fontSize: '24px',
-      color: '#ffffff',
-      fontFamily: '"Press Start 2P"',
-      resolution: 1,
-    }).setOrigin(0.5).setScrollFactor(0).setVisible(false)
-
-    this.xpText = this.add.text(this.scale.width / 2, 20 + 40, '', {
-      fontSize: '16px',
-      color: '#ffffff',
-      fontFamily: '"Press Start 2P"',
-      resolution: 1,
-    }).setOrigin(0.5).setScrollFactor(0).setVisible(false)
-
+    
     this.particlesLeft = this.add.particles(0, 0, 'particle', {
       speed: { start: 120, end: 40 },
       angle: { min: 180, max: 180 },
@@ -186,12 +222,9 @@ class GameScene extends Phaser.Scene {
 
   update(time, delta) {
     this.movingBlock.x += this.blockSpeed * (delta / 1000)
-
     const halfWidth = this.movingBlock.width / 2
-    const worldWidth = this.cameras.main.width / this.cameras.main.zoom
-
-    if (this.movingBlock.x >= worldWidth - halfWidth) {
-      this.movingBlock.x = worldWidth - halfWidth
+    if (this.movingBlock.x >= 400 - halfWidth) {
+      this.movingBlock.x = 400 - halfWidth
       this.blockSpeed *= -1
     } else if (this.movingBlock.x <= halfWidth) {
       this.movingBlock.x = halfWidth
@@ -225,11 +258,17 @@ const ForumGame = ({totalFuel, itemsPerTap, anchorChance, onGameEnd}) => {
       true, //start immediately
       {totalFuel, itemsPerTap, anchorChance, onGameEnd} //data
     )
+    game.scene.add('UIScene', UIScene, true)
 
     return () => game.destroy(true)
   }, [])
 
-  return <div ref={containerRef} style={{ width: '100%', height: '40vh' }} />
+  // return <div ref={containerRef} style={{ width: '400px', height: '500px', margin: '0 auto' }} />
+  return (
+    <div style={{ width: '100%', margin: '0 auto', aspectRatio: '4/3' }}>
+      <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
+    </div>
+  )
 }
 
 export default ForumGame
