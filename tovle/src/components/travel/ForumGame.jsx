@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react'
 import * as Phaser from 'phaser'
 
+import BackgroundScene from './ForumGame/BackgroundScene'
+
 const BASE_SPEED = 200
 const SPEED_INCREMENT = 15
 const MAX_SPEED = 600
@@ -157,7 +159,7 @@ class GameScene extends Phaser.Scene {
     this.movingBlock = this.add.rectangle(W / 4, H - 90, 100, 20, 0xffffff)
 
     this.blockSpeed = BASE_SPEED
-    this.perfectPlaceThreshold = 0.05
+    this.perfectPlaceThreshold = 1
     this.shakyPlaceThreshold = 0.4
     this.topBlock = this.platform
     this.blockCount = 0
@@ -282,7 +284,7 @@ const ForumGame = ({totalFuel, itemsPerTap, anchorChance, onGameEnd}) => {
       width,
       height,
       parent: containerRef.current,
-      backgroundColor: '#1a1a2e',
+      // backgroundColor: '#1a1a2e',
       pixelArt: true,
       physics: {
         default: 'arcade',
@@ -290,6 +292,7 @@ const ForumGame = ({totalFuel, itemsPerTap, anchorChance, onGameEnd}) => {
       },
     })
 
+    game.scene.add('BackgroundScene', BackgroundScene, true)
     game.scene.add(
       'GameScene', //key
       GameScene, //scene class
