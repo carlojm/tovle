@@ -249,10 +249,6 @@ const Caches = ({ }) => {
   }
 
   const handleDebugBreakStreak = () => {
-    const yesterday = new Date()
-    yesterday.setDate(yesterday.getDate() - 1)
-    const yesterdayStr = yesterday.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
-
     const twoDaysAgo = new Date()
     twoDaysAgo.setDate(twoDaysAgo.getDate() - 2)
     const twoDaysAgoStr = twoDaysAgo.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
@@ -260,18 +256,21 @@ const Caches = ({ }) => {
     save({
       stats: {
         ...playerData.stats,
-        currentStreak: 1,
-        previousStreak: playerData.stats?.currentStreak ?? 5,
-        lastPlayedDate: twoDaysAgoStr, // last actual play was two days ago
-        streakBrokeDate: yesterdayStr, // missed yesterday, so window is today
+        currentStreak: 5,
+        lastPlayedDate: twoDaysAgoStr,
+        streakBrokeDate: null,
+        previousStreak: null,
       },
       upgrades: {
         ...playerData.upgrades,
-        unlocked: [...(playerData.upgrades?.unlocked ?? []).filter(f => f !== 'streakRedeemable'), 'streakRedeemable'],
+        unlocked: (playerData.upgrades?.unlocked ?? []).filter(f => f !== 'streakRedeemable'),
+        streakRestore: 0,
       }
     })
-  }
 
+    setTimeout(() => window.location.reload(), 500)
+  }
+  
   const handleDebugShowUid = () => {
     alert(`UID: ${uid}`)
   }

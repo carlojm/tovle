@@ -67,10 +67,47 @@ const App = () => {
     fetch('/api/daily').then(res => res.json()).then(data => {
       setDailyCaches(data.caches)
 
+      // ── streak break detection ──────────────────────────────────────────
+      const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+      const yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      const yesterdayStr = yesterday.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+      const lastPlayed = playerData?.stats?.lastPlayedDate
+      const currentStreak = playerData?.stats?.currentStreak ?? 0
+      const alreadyFlagged = (playerData?.upgrades?.unlocked ?? []).includes('streakRedeemable')
+
+      const missedDay = new Date(lastPlayed + 'T12:00:00')
+      missedDay.setDate(missedDay.getDate() + 1)
+      const streakBrokeDate = missedDay.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+
+
+
+      if (
+        lastPlayed &&
+        lastPlayed !== todayStr &&
+        lastPlayed !== yesterdayStr &&
+        currentStreak > 0 &&
+        !alreadyFlagged
+      ) {
+        save({
+          stats: {
+            ...playerData.stats,
+            currentStreak: 0,
+            previousStreak: currentStreak,
+            streakBrokeDate: streakBrokeDate,
+          },
+          upgrades: {
+            ...playerData.upgrades,
+            unlocked: [...(playerData.upgrades?.unlocked ?? []), 'streakRedeemable'],
+            streakRestore: 0,
+          }
+        })
+      }
+
       //the following lines handle game state storage.
       //if the player has played today, we reload their data from where they left off.
       //prevents stuff like save scumming for example, or losing data from a page refresh
-      const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+      // const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
       const savedToday = playerData.today
 
       if (savedToday?.date === todayStr && savedToday.caches?.length > 0) {
@@ -170,37 +207,29 @@ const App = () => {
     const yesterday = new Date()
     yesterday.setDate(yesterday.getDate() - 1)
     const yesterdayStr = yesterday.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
-
     const lastPlayed = currentStats?.lastPlayedDate ?? null
     const currentStreak = currentStats?.currentStreak ?? 0
     const bestStreak = currentStats?.bestStreak ?? 0
 
-    //streak logic
+    // streak logic
     let newStreak
     if (lastPlayed === yesterdayStr) {
       newStreak = currentStreak + 1
     } else if (lastPlayed === todayStr) {
-      newStreak = currentStreak //already updated today, don't double count
+      newStreak = currentStreak // already updated today, don't double count
     } else {
-      newStreak = 1 //streak broken, start fresh
+      newStreak = 1 // starting fresh
     }
 
-    //figure out unlock flags for streak redemption flags
+    // remove streakRedeemable flag if streak is continuing
     const currentUnlocked = currentUpgrades?.unlocked ?? []
-    let updatedUnlocked = [...currentUnlocked]
-    if (newStreak === 1 && currentStreak > 1) {
-      //streak just broke, save previous streak info and add redeemable flag
-      if (!updatedUnlocked.includes('streakRedeemable')) {
-        updatedUnlocked.push('streakRedeemable')
-      }
-    } else if (newStreak > 1) {
-      //streak continuing, remove redeemable flag if present
-      updatedUnlocked = updatedUnlocked.filter(f => f !== 'streakRedeemable')
-    }
+    let updatedUnlocked = newStreak > 1
+      ? currentUnlocked.filter(f => f !== 'streakRedeemable')
+      : [...currentUnlocked]
 
     const newBestStreak = Math.max(bestStreak, newStreak)
 
-    //guess distribution
+    // guess distribution
     const distribution = { ...(currentStats?.guessDistribution ?? {}) }
     let totalNewGuesses = 0
     for (const result of results) {
@@ -209,12 +238,12 @@ const App = () => {
       totalNewGuesses += result.guessCount
     }
 
-    //average guesses
+    // average guesses
     const prevTotalSolved = currentStats?.totalCachesSolved ?? 0
     const prevTotalGuesses = Math.round((currentStats?.averageGuesses ?? 0) * prevTotalSolved)
     const newTotalSolved = prevTotalSolved + results.length
-    const newAverageGuesses = newTotalSolved === 0 ? 0 :
-      Math.round(((prevTotalGuesses + totalNewGuesses) / newTotalSolved) * 10) / 10
+    const newAverageGuesses = newTotalSolved === 0 ? 0
+      : Math.round(((prevTotalGuesses + totalNewGuesses) / newTotalSolved) * 10) / 10
 
     return {
       stats: {
@@ -225,10 +254,6 @@ const App = () => {
         lastPlayedDate: todayStr,
         guessDistribution: distribution,
         averageGuesses: newAverageGuesses,
-        ...(newStreak === 1 && currentStreak > 1 && {
-          previousStreak: currentStreak,
-          streakBrokeDate: lastPlayed,
-        }),
         ...(newStreak > 1 && {
           previousStreak: null,
           streakBrokeDate: null,
@@ -237,7 +262,7 @@ const App = () => {
       upgrades: {
         ...currentUpgrades,
         unlocked: updatedUnlocked,
-        ...(newStreak > 1 && { streakRestore: 0 }), // reset when flag removed
+        ...(newStreak > 1 && { streakRestore: 0 }),
       }
     }
   }
