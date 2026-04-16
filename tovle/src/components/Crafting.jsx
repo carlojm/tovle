@@ -21,7 +21,7 @@ const UPGRADES = [
     name: 'Streak Restore',
     description: [
       'You broke your daily streak!',
-      'Sacrifice a Harbinger to restore a lost streak. Only available the day after your streak breaks.',
+      'Sacrifice a Harbinger to restore a lost streak. Only available the day after your streak breaks. May require a page reload.',
     ],
     maxTier: 1,
     requiresUnlocked: 'streakRedeemable',
@@ -195,6 +195,10 @@ const Crafting = ({hideMaxed = false, flushSave}) => {
     if (upgrade.id === 'streakRestore') {
       const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
       const streakBrokeDate = playerData?.stats?.streakBrokeDate
+
+      console.log('=== Streak Restore Attempt ===')
+      console.log('todayStr:', todayStr)
+      console.log('streakBrokeDate:', streakBrokeDate)
       
       if (!streakBrokeDate) {return}
 
@@ -203,22 +207,30 @@ const Crafting = ({hideMaxed = false, flushSave}) => {
       brokeDate.setDate(brokeDate.getDate() + 1)
       const dayAfterBroke = brokeDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 
+      console.log('dayAfterBroke:', dayAfterBroke)
+      console.log('window match:', todayStr === dayAfterBroke)
+
       // console.log('streakBrokeDate:', streakBrokeDate)
       // console.log('dayAfterBroke:', dayAfterBroke)
       // console.log('todayStr:', todayStr)
 
       if (todayStr !== dayAfterBroke) {return} //too late or invalid
 
-      const yesterdayStr = brokeDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
-      const restoredStreak = (playerData?.stats?.previousStreak ?? 1) + 1
+      const yesterdayStr = streakBrokeDate
+      const alreadyPlayedToday = playerData?.stats?.lastPlayedDate === todayStr
+      const restoredStreak = (playerData?.stats?.previousStreak ?? 1) + (alreadyPlayedToday ? 2 : 1)
       const updatedUnlocked = (upgrades?.unlocked ?? []).filter(f => f !== 'streakRedeemable')
+
+      console.log('yesterdayStr (lastPlayedDate will be set to):', yesterdayStr)
+      console.log('restoredStreak:', restoredStreak)
+      console.log('updatedUnlocked:', updatedUnlocked)
 
       save({
         stats: {
           ...playerData.stats,
           currentStreak: restoredStreak,
           bestStreak: Math.max(playerData?.stats?.bestStreak ?? 0, restoredStreak),
-          lastPlayedDate: yesterdayStr,
+          lastPlayedDate: alreadyPlayedToday ? todayStr : streakBrokeDate,
           previousStreak: null,
           streakBrokeDate: null,
         },
