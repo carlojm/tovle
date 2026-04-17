@@ -176,9 +176,6 @@ class GameScene extends Phaser.Scene {
   }
 
   triggerAnchor(block, targetWidth, color) {
-    // const growAmount = Math.max(10, block.width * 0.1) // 10% or 10px minimum
-    // const targetWidth = block.width + growAmount
-
     // tint it to signal anchor
     // darken the color by 30%
     const r = Math.round(((color >> 16) & 0xff) * 0.8)
@@ -186,6 +183,12 @@ class GameScene extends Phaser.Scene {
     const b = Math.round(((color)       & 0xff) * 0.95)
     const darkColor = Phaser.Display.Color.GetColor(r, g, b)
     block.setFillStyle(darkColor)
+
+    //particles
+    const leftEdge  = block.x - targetWidth / 2
+    const rightEdge = block.x + targetWidth / 2
+    this.diagEmitters[0].emitParticleAt(leftEdge,  block.y, 1) // 135
+    this.diagEmitters[1].emitParticleAt(rightEdge, block.y, 1) // 45
 
     const proxy = { width: block.width }
     this.tweens.add({
@@ -226,7 +229,7 @@ class GameScene extends Phaser.Scene {
     this.blockSpeed = BASE_SPEED
     this.perfectPlaceThreshold = 0.05
     this.shakyPlaceThreshold = 0.4
-    this.anchorChance = 0.1
+    this.anchorChance = 1
     this.topBlock = this.platform
     this.blockCount = 0
     this.isGameOver = false
@@ -248,6 +251,18 @@ class GameScene extends Phaser.Scene {
       lifespan: 800,
       emitting: false
     })
+
+    const diagAngles = [135, 45]
+    this.diagEmitters = diagAngles.map(angle => 
+      this.add.particles(0, 0, 'particle', {
+        speed: { start: 120, end: 40 },
+        angle: { min: angle, max: angle },
+        scale: { start: 2, end: 1 },
+        rotate: { min: angle +90, max: angle+90 },
+        lifespan: 800,
+        emitting: false
+      })
+    )
     
 
     this.input.on('pointerdown', () => {
