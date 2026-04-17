@@ -34,23 +34,31 @@ class UIScene extends Phaser.Scene {
   }
 
   create() {
-    this.gameOverText = this.add.text(this.scale.width / 2, 40, 'Game Over!', {
-      fontSize: '45px',
+    const dpr = window.devicePixelRatio || 1
+
+    const scale = this.scale.width / 400
+    const gameOverSize = Math.round(30 * scale)
+    const xpSize = Math.round(30 * scale)
+
+    this.gameOverText = this.add.text(this.scale.width / 2, this.scale.height / 3, 'Game Over!', {
+      fontSize: `${gameOverSize}px`,
       color: '#ffffff',
       fontFamily: '"Jersey 15"',
+      resolution: dpr,
     }).setOrigin(0.5).setVisible(false)
 
-    this.xpText = this.add.text(this.scale.width / 2, 90, '', {
-      fontSize: '30px',
+    this.xpText = this.add.text(10,0, '', {
+      fontSize: `${xpSize}px`,
       color: '#ffffff',
       fontFamily: '"Jersey 15"',
-    }).setOrigin(0.5).setVisible(false)
+      resolution: dpr,
+    }).setVisible(false)
 
-    this.debugText = this.add.text(10,10, '', {
-      fontSize: `30px`,
+    this.debugText = this.add.text(10,40, '', {
+      fontSize: `${xpSize}px`,
       color: '#ffffff',
       fontFamily: '"Jersey 15"',
-      // resolution: 1,
+      resolution: dpr,
     }).setVisible(false)
 
     // listen for game over event from GameScene
@@ -64,7 +72,11 @@ class UIScene extends Phaser.Scene {
 
   update() {
     const game = this.scene.get('GameScene')
-    this.debugText.setText(`${this.scale.width}x${this.scale.height} blocks:${game.blockCount}`)
+    const fps = Math.round(this.game.loop.actualFps)
+    this.debugText.setText(`${this.scale.width}x${this.scale.height} blocks:${game.blockCount} fps:${fps}`)
+    this.debugText.setVisible(false)
+    // this.xpText.setText(`XP earned: ${game.calculateXP()}`)
+    // this.xpText.setVisible(true)
   }
 }
 
@@ -159,7 +171,7 @@ class GameScene extends Phaser.Scene {
     this.movingBlock = this.add.rectangle(W / 4, H - 90, 100, 20, 0xffffff)
 
     this.blockSpeed = BASE_SPEED
-    this.perfectPlaceThreshold = 1
+    this.perfectPlaceThreshold = 0.05
     this.shakyPlaceThreshold = 0.4
     this.topBlock = this.platform
     this.blockCount = 0
@@ -286,6 +298,7 @@ const ForumGame = ({totalFuel, itemsPerTap, anchorChance, onGameEnd}) => {
       parent: containerRef.current,
       // backgroundColor: '#1a1a2e',
       pixelArt: true,
+      resolution: window.devicePixelRatio,
       physics: {
         default: 'arcade',
         arcade: { gravity: { y: 400 }, debug: false },

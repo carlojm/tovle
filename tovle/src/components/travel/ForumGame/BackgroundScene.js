@@ -27,7 +27,7 @@ export default class BackgroundScene extends Phaser.Scene {
     this.anims.create({
       key: 'kelp_sway',
       frames: this.anims.generateFrameNumbers('kelp', { start: 0, end: 19 }),
-      frameRate: 6,
+      frameRate: 10,
       repeat: -1
     })
 
@@ -90,14 +90,17 @@ export default class BackgroundScene extends Phaser.Scene {
       }
       return stalks.sort((a, b) => a - b)
     }
+    
+    const t = Math.max(0, Math.min(1, (W - 300) / (600 - 300)))
+    const foregroundFloorY = 0.85 + t * (0.70 - 0.85)
     const layers = [
-      { depth: 0.19, tint: 0x333333, floorY: 0.55, bumpH: 0.03, bumps: 1.2, kelp: true, kelpScale: 1.8,
+      { depth: 0.19, tint: 0x333333, floorY: 0.60, bumpH: 0.03, bumps: 1.2, kelp: true, kelpScale: 1.8,
         stalks: generateStalks(5 + Math.floor(this.seededRandom(this.randomSeed + 1) * 4), 1)   // 5-8 stalks
       },
-      { depth: 0.3,  tint: 0x777777, floorY: 0.68, bumpH: 0.03, bumps: 1.7, kelp: true, kelpScale: 2.2,
+      { depth: 0.3,  tint: 0x777777, floorY: 0.72, bumpH: 0.03, bumps: 1.7, kelp: true, kelpScale: 2.2,
         stalks: generateStalks(6 + Math.floor(this.seededRandom(this.randomSeed + 2) * 4), 50)  // 6-9 stalks
       },
-      { depth: 1,    tint: 0xffffff, floorY: 0.70, bumpH: 0.04, bumps: 1.4, kelp: false, kelpScale: 1,
+      { depth: 1,    tint: 0xffffff, floorY: foregroundFloorY, bumpH: 0.04, bumps: 1.4, kelp: false, kelpScale: 1,
         stalks: []
       },
     ]
