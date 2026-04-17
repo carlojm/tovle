@@ -33,6 +33,52 @@ class UIScene extends Phaser.Scene {
     super({ key: 'UIScene' })
   }
 
+  playOutro(xp) {
+    const W = this.scale.width
+    const H = this.scale.height
+
+    const wave = this.add.graphics()
+    wave.setDepth(999)
+
+    const progress = { y: H + 40, time: 0 }
+
+    this.tweens.add({
+      targets: progress,
+      y: -40,
+      time: 3, // time advances alongside y
+      duration: 1200,
+      ease: 'Sine.InOut',
+      onUpdate: () => {
+        wave.clear()
+        wave.fillStyle(0x0a1628, 1)
+
+        const steps = 40
+        const amplitude = 20
+
+        wave.beginPath()
+        wave.moveTo(0, progress.y)
+
+        for (let i = 0; i <= steps; i++) {
+          const x = (i / steps) * W
+          const y = progress.y
+            + Math.sin((i / steps) * Math.PI * 4 - progress.time * 6) * amplitude
+            + Math.sin((i / steps) * Math.PI * 2 - progress.time * 4) * amplitude * 0.5
+          wave.lineTo(x, y)
+        }
+
+        wave.lineTo(W, H + 40)
+        wave.lineTo(0, H + 40)
+        wave.closePath()
+        wave.fillPath()
+      },
+      onComplete: () => {
+        this.time.delayedCall(400, () => {
+          this.scene.get('GameScene').onGameEnd(xp, this.scene.get('GameScene').blockCount)
+        })
+      }
+    })
+  }
+
   create() {
     const dpr = window.devicePixelRatio || 1
 
@@ -67,6 +113,10 @@ class UIScene extends Phaser.Scene {
       this.gameOverText.setVisible(true)
       this.xpText.setText(`XP earned: ${xp}`)
       this.xpText.setVisible(true)
+    })
+
+    this.scene.get('GameScene').events.on('outro', ({ xp }) => {
+      this.playOutro(xp)
     })
   }
 
@@ -150,11 +200,12 @@ class GameScene extends Phaser.Scene {
   handleGameOver(message = "Game Over!") {
     this.isGameOver = true
     this.blockSpeed = 0
+    const xp = this.calculateXP()
 
-    this.events.emit('gameover', { message, xp: this.calculateXP() })
+    this.events.emit('gameover', { message, xp })
 
-    this.time.delayedCall(2000, () => {
-      this.onGameEnd(this.calculateXP(), this.blockCount)
+    this.time.delayedCall(500, () => {
+      this.events.emit('outro', { xp })
     })
   }
 
