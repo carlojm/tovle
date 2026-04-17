@@ -23,6 +23,7 @@ const App = () => {
   const { uid, playerData, save, ready } = usePlayer()
 
   const [dailyCaches, setDailyCaches] = useState([])
+  const [gameDate, setGameDate] = useState(null) //current date according to api/daily fetch
   const [currentCacheIndex, setCurrentCacheIndex] = useState(0) //0-3
   const [cacheResults, setCacheResults] = useState([]) //accumulates each completed cache for end summary
   const [allComplete, setAllComplete] = useState(false) //flips to true when all 4 caches done
@@ -66,12 +67,14 @@ const App = () => {
 
     fetch('/api/daily').then(res => res.json()).then(data => {
       setDailyCaches(data.caches)
+      setGameDate(data.date)
+      const todayStr = data.date //use date from server
 
-      // ── streak break detection ──────────────────────────────────────────
-      const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
-      const yesterday = new Date()
+      // == streak break detection =========================
+      const yesterday = new Date(todayStr + 'T12:00:00')
       yesterday.setDate(yesterday.getDate() - 1)
       const yesterdayStr = yesterday.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+
       const lastPlayed = playerData?.stats?.lastPlayedDate
       const currentStreak = playerData?.stats?.currentStreak ?? 0
       const alreadyFlagged = (playerData?.upgrades?.unlocked ?? []).includes('streakRedeemable')
@@ -79,8 +82,6 @@ const App = () => {
       const missedDay = new Date(lastPlayed + 'T12:00:00')
       missedDay.setDate(missedDay.getDate() + 1)
       const streakBrokeDate = missedDay.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
-
-
 
       if (
         lastPlayed &&
@@ -103,23 +104,24 @@ const App = () => {
           }
         })
       }
+      // ==================
 
       //the following lines handle game state storage.
       //if the player has played today, we reload their data from where they left off.
       //prevents stuff like save scumming for example, or losing data from a page refresh
-      // const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
       const savedToday = playerData.today
+      const todayCacheIds = new Set(data.caches.map(c => c.id))
 
-      if (savedToday?.date === todayStr && savedToday.caches?.length > 0) {
+      //does the saved date actually match today's date?
+      const savedMatchesToday =
+        savedToday?.date === todayStr &&
+        savedToday.caches?.length > 0 &&
+        savedToday.caches.every(c => todayCacheIds.has(c.cacheId)) //check cache ids
+
+      if (savedMatchesToday) {
 
         //edge case: cache is solved but hasnt pressed "next cache" and reloads the page
-        //fixed now
-        //the solution is to always go back to the last "win" screen if the saved data says
-        //the last cache the player interacted with was solved but wasn't the final cache.
-        //aka if the player's last interacted with cache is cache 1/4, and they havent
-        //made any guesses on 2/4, and we're reloading game state, jump back to 1/4's result screen.
-        //ok that actually didnt work either it caused other problems
-        //the solution is to use a third state 'advanced' to track if next button was pressed.
+        //use a third state 'advanced' to track if next button was pressed.
 
         const savedCaches = savedToday.caches
 
@@ -203,8 +205,8 @@ const App = () => {
   }
 
   const calculateUpdatedStats = (currentStats, currentUpgrades, results) => {
-    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
-    const yesterday = new Date()
+    const todayStr = gameDate
+    const yesterday = new Date(todayStr + 'T12:00:00')
     yesterday.setDate(yesterday.getDate() - 1)
     const yesterdayStr = yesterday.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     const lastPlayed = currentStats?.lastPlayedDate ?? null
@@ -308,7 +310,7 @@ const App = () => {
     const updatedResults = [...cacheResults, currentResult]
     setCacheResults(updatedResults)
 
-    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const todayStr = gameDate
     const newUnopenedCache = {
       cacheId: currentCache.id,
       date: todayStr,
@@ -360,7 +362,7 @@ const App = () => {
   const handleComplete = () => {
     if (allComplete) return
 
-    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const todayStr = gameDate
     //edge case fix: if the game was started on a different day, don't complete it
     const savedDate = playerData?.today?.date
     if (savedDate && savedDate !== todayStr) {
@@ -436,6 +438,7 @@ const App = () => {
           <PlayTab
             // cache data
             dailyCaches={dailyCaches}
+            gameDate={gameDate}
             currentCacheIndex={currentCacheIndex}
             currentCache={currentCache}
             cacheImage={cacheImage}

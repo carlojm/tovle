@@ -10,7 +10,7 @@ import twistedStrand from '../assets/items/twisted_strand.png'
 
 import { IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM } from '../data/constants.js'
 
-import { getEasternDateStr, getPuzzleNumber, getDisplayDate } from '../utils/dates.js'
+import { getPuzzleNumber, getDisplayDate } from '../utils/dates.js'
 import DayTimer from './DayTimer.jsx'
 
 function getCacheImage(cache) {
@@ -23,6 +23,7 @@ function getCacheImage(cache) {
 const PlayTab = ({
   // cache data
   dailyCaches,
+  gameDate,
   currentCacheIndex,
   currentCache,
   cacheImage,
@@ -97,20 +98,17 @@ const PlayTab = ({
     if (!hasDelve) return true
     if (!currentCache) return false
     const savedToday = playerData?.today
-    if (savedToday?.date !== getEasternDateStr()) return false
+    if (savedToday?.date !== gameDate) return false
     const savedCache = savedToday?.caches?.find(c => c.cacheId === currentCache.id)
     return savedCache?.overlayDismissed ?? false
   })()
-
-  //the date at time of loading the game
-  const loadedDate = useRef(getEasternDateStr())
 
   const updateDelvePoints = (newPoints) => {
     setDelvePoints(newPoints)
     save({
       today: {
         ...playerData.today,
-        date: loadedDate.current,
+        date: gameDate,
         delvePoints: newPoints,
       }
     })
@@ -202,7 +200,7 @@ const PlayTab = ({
 
     save({
       today: {
-        date: loadedDate.current,
+        date: gameDate,
         caches: [...existingCaches, inProgressCache],
       }
     })
@@ -443,7 +441,7 @@ const PlayTab = ({
                         }
                         save({
                           today: {
-                            date: loadedDate.current,
+                            date: gameDate,
                             caches: [...existingCaches, inProgressCache],
                             delvePoints: delvePoints,
                           }
@@ -501,7 +499,7 @@ const PlayTab = ({
           currentCacheIndex={currentCacheIndex}
           allComplete={allComplete}
           distancePrecision={distancePrecision}
-          gameDate={loadedDate.current}
+          gameDate={gameDate}
         />
       </>}
 
