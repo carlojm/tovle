@@ -151,6 +151,31 @@ class GameScene extends Phaser.Scene {
     })
   }
 
+  triggerAnchor(block, targetWidth, color) {
+    // const growAmount = Math.max(10, block.width * 0.1) // 10% or 10px minimum
+    // const targetWidth = block.width + growAmount
+
+    // tint it to signal anchor
+    // darken the color by 30%
+    const r = Math.round(((color >> 16) & 0xff) * 0.8)
+    const g = Math.round(((color >> 8)  & 0xff) * 0.95)
+    const b = Math.round(((color)       & 0xff) * 0.8)
+    const darkColor = Phaser.Display.Color.GetColor(r, g, b)
+    block.setFillStyle(darkColor)
+
+    const proxy = { width: block.width }
+    this.tweens.add({
+      targets: proxy,
+      width: targetWidth,
+      duration: 500,
+      ease: 'Back.Out', // slight overshoot feels satisfying
+      onUpdate: () => {
+        block.setSize(proxy.width, 20)
+        block.setPosition(block.x, block.y) // keep centered
+      }
+    })
+  }
+
   preload() {
     const g = this.make.graphics({ x: 0, y: 0, add: false })
     g.fillStyle(0xffffff)
@@ -173,6 +198,7 @@ class GameScene extends Phaser.Scene {
     this.blockSpeed = BASE_SPEED
     this.perfectPlaceThreshold = 0.05
     this.shakyPlaceThreshold = 0.4
+    this.anchorChance = 0.1
     this.topBlock = this.platform
     this.blockCount = 0
     this.isGameOver = false
@@ -251,8 +277,19 @@ class GameScene extends Phaser.Scene {
       
       //move to next block
       this.topBlock = this.movingBlock
-      const newY = this.movingBlock.y - 20
-      this.movingBlock = this.add.rectangle(-this.topBlock.width/2, newY, this.topBlock.width, 20, this.getBlockColor())
+
+      //use nextWidth to handle changes andhoring make to width
+      let nextWidth = this.topBlock.width
+      if (Math.random() < this.anchorChance) {
+        const growAmount = Math.max(10, this.topBlock.width * 0.2)
+        nextWidth = this.topBlock.width + growAmount
+        this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
+      }
+
+      //limit width to max 300
+      nextWidth = Math.min(300, nextWidth)
+      const newY = this.topBlock.y - 20
+      this.movingBlock = this.add.rectangle(-nextWidth/2, newY, nextWidth, 20, this.getBlockColor())
       const direction = this.blockSpeed > 0 ? 1 : -1
       this.blockSpeed = direction * Math.min(BASE_SPEED + this.blockCount * SPEED_INCREMENT, MAX_SPEED)
 
