@@ -182,8 +182,8 @@ class GameScene extends Phaser.Scene {
     // tint it to signal anchor
     // darken the color by 30%
     const r = Math.round(((color >> 16) & 0xff) * 0.8)
-    const g = Math.round(((color >> 8)  & 0xff) * 0.95)
-    const b = Math.round(((color)       & 0xff) * 0.8)
+    const g = Math.round(((color >> 8)  & 0xff) * 0.8)
+    const b = Math.round(((color)       & 0xff) * 0.95)
     const darkColor = Phaser.Display.Color.GetColor(r, g, b)
     block.setFillStyle(darkColor)
 
@@ -226,7 +226,7 @@ class GameScene extends Phaser.Scene {
     this.blockSpeed = BASE_SPEED
     this.perfectPlaceThreshold = 0.05
     this.shakyPlaceThreshold = 0.4
-    this.anchorChance = 1
+    this.anchorChance = 0.1
     this.topBlock = this.platform
     this.blockCount = 0
     this.isGameOver = false
@@ -316,8 +316,15 @@ class GameScene extends Phaser.Scene {
 
       //limit width to max 300
       nextWidth = Math.min(300, nextWidth)
+
+      //calculate where to start block based on zoom
+      const currentZoom = this.cameras.main.zoom
+      const visibleHalfW = (this.scale.width / currentZoom) / 2
+      const spawnX = (200 - visibleHalfW) - nextWidth / 2 // just off the left edge
+
+      //spawn new block
       const newY = this.topBlock.y - 20
-      this.movingBlock = this.add.rectangle(-nextWidth/2, newY, nextWidth, 20, this.getBlockColor())
+      this.movingBlock = this.add.rectangle(spawnX, newY, nextWidth, 20, this.getBlockColor())
       const direction = this.blockSpeed > 0 ? 1 : -1
       this.blockSpeed = direction * Math.min(BASE_SPEED + this.blockCount * SPEED_INCREMENT, MAX_SPEED)
 
