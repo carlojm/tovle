@@ -198,7 +198,7 @@ class GameScene extends Phaser.Scene {
     this.blockSpeed = BASE_SPEED
     this.perfectPlaceThreshold = 0.05
     this.shakyPlaceThreshold = 0.4
-    this.anchorChance = 0.1
+    this.anchorChance = 1
     this.topBlock = this.platform
     this.blockCount = 0
     this.isGameOver = false
@@ -306,16 +306,35 @@ class GameScene extends Phaser.Scene {
   }
 
   update(time, delta) {
+    //moving block back and forth
+    const currentZoom = this.cameras.main.zoom
+    const visibleHalfW = (this.scale.width / currentZoom) / 2
+    const worldLeft  = 200 - visibleHalfW
+    const worldRight = 200 + visibleHalfW
+
     this.movingBlock.x += this.blockSpeed * (delta / 1000)
     const halfWidth = this.movingBlock.width / 2
-    if (this.movingBlock.x >= 400 - halfWidth) {
-      this.movingBlock.x = 400 - halfWidth
+    if (this.movingBlock.x >= worldRight - halfWidth) {
+      this.movingBlock.x = worldRight - halfWidth
       this.blockSpeed *= -1
-    } else if (this.movingBlock.x <= halfWidth) {
-      this.movingBlock.x = halfWidth
+    } else if (this.movingBlock.x <= worldLeft + halfWidth) {
+      this.movingBlock.x = worldLeft + halfWidth
       this.blockSpeed *= -1
     }
+
+    //move camera up as tower grows
     this.cameras.main.scrollY += (this.cameraTargetY - this.cameras.main.scrollY) * 0.1
+
+    //camera zoom out if blocks get larger than standard
+    const centerX = 200 // fixed world center, never changes
+    const blockLeft  = this.topBlock.x - this.topBlock.width / 2
+    const blockRight = this.topBlock.x + this.topBlock.width / 2
+    const farthestEdge = Math.max(Math.abs(blockLeft - centerX), Math.abs(blockRight - centerX))
+
+    const baseZoom = this.scale.width / 400
+    const targetZoom = baseZoom * (100 / Math.max(farthestEdge, 100))
+    const clampedZoom = Math.min(targetZoom, baseZoom)
+    this.cameras.main.setZoom(this.cameras.main.zoom + (clampedZoom - this.cameras.main.zoom) * 0.05)
   }
 }
 
