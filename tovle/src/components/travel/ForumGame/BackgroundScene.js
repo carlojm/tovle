@@ -1,8 +1,16 @@
 import * as Phaser from 'phaser'
+import kelpUrl from './kelp_plant_white.png'
 
 export default class BackgroundScene extends Phaser.Scene {
   constructor() {
     super({ key: 'BackgroundScene' })
+  }
+
+  preload() {
+    this.load.spritesheet('kelp', kelpUrl, {
+      frameWidth: 16,
+      frameHeight: 16
+    })
   }
 
   create() {
@@ -13,6 +21,15 @@ export default class BackgroundScene extends Phaser.Scene {
     this.graphics.setScrollFactor(0)
     this.progress = 0
     this.elapsed = 0
+
+    this.randomSeed = this.getRandomSeed(this.scene.get('GameScene').totalFuel)
+
+    this.anims.create({
+      key: 'kelp_sway',
+      frames: this.anims.generateFrameNumbers('kelp', { start: 0, end: 19 }),
+      frameRate: 6,
+      repeat: -1
+    })
 
     this.createSeafloor()
   }
@@ -39,15 +56,53 @@ export default class BackgroundScene extends Phaser.Scene {
 
   }
 
+  seededRandom = (seed) => {
+    const x = Math.sin(seed + 1) * 10000
+    return x - Math.floor(x)
+  }
+
+  getRandomSeed = (totalFuel) => {
+    const today = new Date()
+    const dateInt = today.getFullYear() * 10000 + today.getMonth() * 100 + today.getDate()
+    return dateInt + totalFuel * 17
+  }
+
   createSeafloor() {
     const W = this.scale.width
     const H = this.scale.height
 
+    const generateStalks = (count, seed, minGap = 0.03) => {
+      const stalks = []
+      let attempts = 0
+      while (stalks.length < count && attempts < 200) {
+        const val = this.seededRandom(seed + attempts)
+        // exclude middle 10%
+        if (val >= 0.45 && val <= 0.55) {
+          attempts++
+          continue
+        }
+        // check minimum distance from all existing stalks
+        const tooClose = stalks.some(s => Math.abs(s - val) < minGap)
+        if (!tooClose) {
+          stalks.push(val)
+        }
+        attempts++
+      }
+      return stalks.sort((a, b) => a - b)
+    }
     const layers = [
-      { depth: 0.18, opacity: 0.15, floorY: 0.55, bumpH: 0.03, bumps: 1.2, color: 0xffffff },
-      { depth: 0.3, opacity: 0.35, floorY: 0.68, bumpH: 0.03, bumps: 1.7, color: 0xffffff },
-      { depth: 1, opacity: 1, floorY: 0.67, bumpH: 0.04, bumps: 1.9, color: 0xffffff },
+      { depth: 0.19, tint: 0x333333, floorY: 0.55, bumpH: 0.03, bumps: 1.2, kelp: true, kelpScale: 1.8,
+        stalks: generateStalks(5 + Math.floor(this.seededRandom(this.randomSeed + 1) * 4), 1)   // 5-8 stalks
+      },
+      { depth: 0.3,  tint: 0x777777, floorY: 0.68, bumpH: 0.03, bumps: 1.7, kelp: true, kelpScale: 2.2,
+        stalks: generateStalks(6 + Math.floor(this.seededRandom(this.randomSeed + 2) * 4), 50)  // 6-9 stalks
+      },
+      { depth: 1,    tint: 0xffffff, floorY: 0.70, bumpH: 0.04, bumps: 1.4, kelp: false, kelpScale: 1,
+        stalks: []
+      },
     ]
+
+    this.kelpSprites = []
 
     this.seafloorLayers = layers.map((layer) => {
       const g = this.add.graphics()
@@ -63,7 +118,7 @@ export default class BackgroundScene extends Phaser.Scene {
     const bumpH  = H * layer.bumpH
     const steps  = 80
 
-    g.fillStyle(layer.color, layer.opacity)
+    g.fillStyle(layer.tint, 1)
     g.beginPath()
     g.moveTo(0, H)
 
@@ -79,6 +134,46 @@ export default class BackgroundScene extends Phaser.Scene {
     g.lineTo(W, H)
     g.closePath()
     g.fillPath()
+
+    if (layer.kelp) {
+      for (let si = 0; si < layer.stalks.length; si++) {
+        const xFrac = layer.stalks[si]
+        const cx = W * xFrac
+        const nx = xFrac * Math.PI * 2 * layer.bumps
+        const cy = floorY
+          - Math.sin(nx) * bumpH * 0.6
+          - Math.sin(nx * 1.7 + 1.2) * bumpH * 0.4
+        // random height seeded per stalk position
+        const heightSeed = this.seededRandom(cx * 7.7 + layer.depth * 100 + this.randomSeed)
+        const numSegments = Math.round(1 + heightSeed * 24) // 6 to 24 segments
+        this.drawKelp(cx, cy, numSegments, layer.kelpScale, layer)
+      }
+    }
+  }
+
+  drawKelp(x, baseY, numSegments, scale, layer) {
+    const frameH = 16
+    const displayH = frameH * scale
+
+    for (let i = 0; i < numSegments; i++) {
+      const sprite = this.add.sprite(
+        x,
+        baseY - i * displayH - displayH / 2,
+        'kelp'
+      )
+      sprite.setScale(scale)
+      sprite.setAlpha(1)
+      sprite.setTint(layer.tint)
+      sprite.setScrollFactor(0, 0)
+
+      this.kelpSprites.push({ sprite, layerDepth: layer.depth })
+      sprite._baseY = baseY - i * displayH - displayH / 2
+      sprite._depth = layer.depth
+
+      // offset the animation start so they dont all sway in sync
+      const frameOffset = Math.floor((x * 3 + i) % 20)
+      sprite.play({ key: 'kelp_sway', startFrame: frameOffset })
+    }
   }
 
   update(time) {
@@ -93,6 +188,10 @@ export default class BackgroundScene extends Phaser.Scene {
     // manually apply parallax by shifting each layer's y position
     this.seafloorLayers.forEach(({ g, layer }) => {
       g.y = -cam.scrollY * layer.depth
+    })
+
+    this.kelpSprites.forEach(({ sprite }) => {
+      sprite.y = sprite._baseY + (-cam.scrollY * sprite._depth)
     })
   }
 }
