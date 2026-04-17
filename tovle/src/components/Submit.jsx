@@ -15,33 +15,14 @@ const Submit = ({
   hasWon,
   isLastCache,
   dailyCaches, currentCacheIndex, allComplete,
-  distancePrecision,
-  gameDate
+  distancePrecision
 }) => {
-  const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
-  const isStale = gameDate && gameDate !== todayStr
-
   const hasGuesses = guessHistory.length > 0
 
   const cacheProgress = allComplete
   ? `${dailyCaches.length}/${dailyCaches.length}`
   : `${currentCacheIndex + 1}/${dailyCaches.length}`
 
-  //set timeout for midnight to stop submit button from working
-  //in a futile attempt to stop today data from overwriting
-  const [, setTick] = useState(0)
-  useEffect(() => {
-    const now = new Date()
-    const midnight = new Date()
-    midnight.setHours(24, 0, 0, 0)
-    const msUntilMidnight = midnight - now
-
-    const timeout = setTimeout(() => {
-      setTick(t => t + 1) // forces re-render so todayStr is recomputed
-    }, msUntilMidnight)
-
-    return () => clearTimeout(timeout)
-  }, [])
 
   const handlePrimaryAction = () => {
     if (!hasWon) {
@@ -53,12 +34,11 @@ const Submit = ({
     }
   }
 
-  const buttonLabel = isStale ? 'Day Expired. Reload'
-    : !hasWon ? 'Search Area'
+  const buttonLabel = !hasWon ? 'Search Area'
     : isLastCache ? 'Complete'
     : 'Next Cache'
 
-  const isDisabled = isStale || (buttonLabel === 'Search Area' && !selectedCoords)
+  const isDisabled = buttonLabel === 'Search Area' && !selectedCoords
 
   const getDisplayDistance = (distance, precision) => {
     if (distance <= 50) return `${distance} blocks away`

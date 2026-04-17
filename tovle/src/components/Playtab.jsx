@@ -499,7 +499,6 @@ const PlayTab = ({
           currentCacheIndex={currentCacheIndex}
           allComplete={allComplete}
           distancePrecision={distancePrecision}
-          gameDate={gameDate}
         />
       </>}
 
