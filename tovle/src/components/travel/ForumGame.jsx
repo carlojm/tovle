@@ -108,11 +108,35 @@ class GameScene extends Phaser.Scene {
   }
 
   getBlockColor() {
-    const t = Math.min(this.blockCount / 30, 1) // 0 to 1 over 30 blocks
-    const r = Math.round(255 * (1 - t * 0.8))
-    const g = Math.round(255 * (1 - t * 0.6))
-    const b = 255
+    this.colorProgress = Math.min(this.colorProgress + 1/15, 1)
+    
+    if (this.colorProgress >= 1) {
+      // roll new target, old target becomes new start
+      this.blockColorStart = { ...this.blockColorTarget }
+      this.blockColorTarget = this.randomColorTarget()
+      this.colorProgress = 0
+    }
+
+    const t = this.colorProgress
+    const r = Math.round(this.blockColorStart.r + (this.blockColorTarget.r - this.blockColorStart.r) * t)
+    const g = Math.round(this.blockColorStart.g + (this.blockColorTarget.g - this.blockColorStart.g) * t)
+    const b = Math.round(this.blockColorStart.b + (this.blockColorTarget.b - this.blockColorStart.b) * t)
     return Phaser.Display.Color.GetColor(r, g, b)
+  }
+
+  randomColorTarget() {
+    //pastel ish lighter colors
+    const r = 180 + Math.floor(Math.random() * 75)
+    const g = 180 + Math.floor(Math.random() * 75)
+    const b = 180 + Math.floor(Math.random() * 75)
+    // bias one channel higher to give it a hue
+    const channel = Math.floor(Math.random() * 3)
+    const boost = [r, g, b]
+    boost[channel] = 255
+    // and drop one channel to make the hue more distinct
+    const drop = (channel + 1 + Math.floor(Math.random() * 2)) % 3
+    boost[drop] = 120 + Math.floor(Math.random() * 60)
+    return { r: boost[0], g: boost[1], b: boost[2] }
   }
 
   calculateXP() {
@@ -194,6 +218,10 @@ class GameScene extends Phaser.Scene {
     
     this.platform = this.add.rectangle(W / 2, H + 120, 100, 400, 0xffffff)
     this.movingBlock = this.add.rectangle(W / 4, H - 90, 100, 20, 0xffffff)
+
+    this.blockColorStart = { r: 255, g: 255, b: 255 }
+    this.blockColorTarget = this.randomColorTarget()
+    this.colorProgress = 0
 
     this.blockSpeed = BASE_SPEED
     this.perfectPlaceThreshold = 0.05
