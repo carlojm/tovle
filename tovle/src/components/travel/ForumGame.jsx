@@ -4,8 +4,8 @@ import * as Phaser from 'phaser'
 import BackgroundScene from './ForumGame/BackgroundScene'
 
 const BASE_SPEED = 200
-const SPEED_INCREMENT = 15
-const MAX_SPEED = 600
+const SPEED_EXPONENT = 1.15
+const MAX_SPEED = 100000
 
 // if (!document.querySelector('link[href*="Press+Start+2P"]')) {
 //   const link = document.createElement('link')
@@ -178,9 +178,9 @@ class GameScene extends Phaser.Scene {
   triggerAnchor(block, targetWidth, color) {
     // tint it to signal anchor
     // darken the color by 30%
-    const r = Math.round(((color >> 16) & 0xff) * 0.8)
-    const g = Math.round(((color >> 8)  & 0xff) * 0.8)
-    const b = Math.round(((color)       & 0xff) * 0.95)
+    const r = Math.round(((color >> 16) & 0xff) * 0.9)
+    const g = Math.round(((color >> 8)  & 0xff) * 0.9)
+    const b = Math.round(((color)       & 0xff) * 0.9)
     const darkColor = Phaser.Display.Color.GetColor(r, g, b)
     block.setFillStyle(darkColor)
 
@@ -229,7 +229,7 @@ class GameScene extends Phaser.Scene {
     this.blockSpeed = BASE_SPEED
     this.perfectPlaceThreshold = 0.05
     this.shakyPlaceThreshold = 0.4
-    this.anchorChance = 1
+    this.anchorChance = 0.1
     this.topBlock = this.platform
     this.blockCount = 0
     this.isGameOver = false
@@ -324,7 +324,7 @@ class GameScene extends Phaser.Scene {
       //use nextWidth to handle changes andhoring make to width
       let nextWidth = this.topBlock.width
       if (Math.random() < this.anchorChance) {
-        const growAmount = Math.max(10, this.topBlock.width * 0.2)
+        const growAmount = Math.min(50, Math.max(10, this.topBlock.width * 0.2)) // clamped between 10-50px
         nextWidth = this.topBlock.width + growAmount
         this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
       }
@@ -341,7 +341,7 @@ class GameScene extends Phaser.Scene {
       const newY = this.topBlock.y - 20
       this.movingBlock = this.add.rectangle(spawnX, newY, nextWidth, 20, this.getBlockColor())
       const direction = this.blockSpeed > 0 ? 1 : -1
-      this.blockSpeed = direction * Math.min(BASE_SPEED + this.blockCount * SPEED_INCREMENT, MAX_SPEED)
+      this.blockSpeed = direction * Math.min(BASE_SPEED * Math.pow(SPEED_EXPONENT, this.blockCount), MAX_SPEED)
 
       this.blockCount = this.blockCount + 1
       if (this.blockCount > 5) {
