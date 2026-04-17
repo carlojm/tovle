@@ -175,28 +175,36 @@ const TravelForum = ({ playerData, save }) => {
       )}
       
       {gameConfig && (
-        <ForumGame
-          totalFuel={gameConfig.totalFuel}
-          itemsPerTap={gameConfig.itemsPerTap}
-          anchorChance={gameConfig.anchorChance}
-          onGameEnd={(xpEarned, blocksBuilt) => {
-            setGameConfig(null)
-
-            const fuelUsed = blocksBuilt * gameConfig.itemsPerTap
-            const fuelRemaining = Math.max(0, (forum?.fuel ?? 0) - fuelUsed)
-
-            save({ 
-              travel: { 
-                ...playerData?.travel,
-                forum: {
-                  ...forum,
-                  xp: (forum?.xp ?? 0) + xpEarned,
-                  fuel: fuelRemaining
-                }
-              }
-            })
-          }}
-        />
+        <div className="forum-game-overlay">
+          <div className="forum-game-modal">
+            <div className="forum-game-header">
+              <span className="forum-game-title">Stats here</span>
+              <button className="forum-game-close" onClick={() => setGameConfig(null)}>×</button>
+            </div>
+            <div className="forum-game-canvas-wrap">
+              <ForumGame
+                totalFuel={gameConfig.totalFuel}
+                itemsPerTap={gameConfig.itemsPerTap}
+                anchorChance={gameConfig.anchorChance}
+                onGameEnd={(xpEarned, blocksBuilt) => {
+                  setGameConfig(null)
+                  const fuelUsed = blocksBuilt * gameConfig.itemsPerTap
+                  const fuelRemaining = Math.max(0, (forum?.fuel ?? 0) - fuelUsed)
+                  save({ 
+                    travel: { 
+                      ...playerData?.travel,
+                      forum: {
+                        ...forum,
+                        xp: (forum?.xp ?? 0) + xpEarned,
+                        fuel: fuelRemaining
+                      }
+                    }
+                  })
+                }}
+              />
+            </div>
+          </div>
+        </div>
       )}
 
     </>
