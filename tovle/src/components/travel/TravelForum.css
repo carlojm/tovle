@@ -297,7 +297,7 @@
 .forum-game-modal {
   position: relative;
   width: min(90vw, 600px);
-  background: var(--color-background);
+  background: var(--color-background-modal);
   border: 2px solid var(--color-coords-border);
   border-radius: 16px;
   overflow: hidden;

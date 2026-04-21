@@ -80,6 +80,7 @@
 
 
   --color-background-modal: var(--deepest-ocean);
+  --color-background-modal-inset: var(--void-navy);
 
 
 }
@@ -142,7 +143,8 @@
   --color-text-loot-display: var(--deepest-ocean);
   --color-text-shadow-loot-display: var(--white-smoke);
   
-  --color-background-modal: rgb(198, 227, 253);
+  --color-background-modal: rgb(190, 223, 252);
+  --color-background-modal-inset: rgb(159, 206, 247);
 
 
 }
