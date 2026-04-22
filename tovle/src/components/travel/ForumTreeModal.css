@@ -140,6 +140,7 @@
 .ftm-node--available {
   /* background: var(--color-background-modal); */
   border-color: var(--color-coords-border);
+  /* opacity: 1; */
 }
 
 .ftm-node--partial {
@@ -161,8 +162,10 @@
 }
 
 .ftm-node-icon {
-  width: 24px;
-  height: 24px;
+  /* width: 24px; */
+  /* height: 24px; */
+  width: 40px;
+  height:40px;
   display: flex;
   align-items: center;
   justify-content: center;

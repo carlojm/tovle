@@ -3,7 +3,68 @@ import { X } from 'lucide-react'
 import { FORUM_NODES } from './forumNodes'
 import './ForumTreeModal.css'
 
-const NODE_SIZE = 48
+import spritesheetUrl from './ForumGame/Tovle16.png'
+const COLS = 14
+const SPRITE_SIZE = 16
+const DISPLAY_SIZE = 40 // rendered size in the node
+// const NODE_FRAME = {}
+// FORUM_NODES.forEach((node, i) => {
+//   NODE_FRAME[node.id] = i
+// })
+
+const NODE_FRAME = {
+  // Row 0 (frames 0-10)
+  forum_core:          0,
+  blocks_per_tap_1:    1,
+  daily_runs_1:        2,
+  fuel_cap_1:          3,
+  revive:              4,
+  fuel_efficiency_1:   5,
+  forum_tier_1:        6,
+  alnera_unlock:       7,
+  axolotl_3:           8,
+  auto_feed:           9,
+  bulk_cache_open:     10,
+  // 11, 12, 13 are empty
+
+  // Row 1 (frames 14-27)
+  speed_curb_1:              14,
+  speed_curb_2:              15,
+  speed_curb_3:              16,
+  speed_curb_4:              17,
+  starting_width:            18,
+  perfect_placement:         19,
+  perfect_threshold_1:       20,
+  crystal_active_gain_1:     21,
+  crystal_active_gain_2:     22,
+  anchor_unlock:             23,
+  anchor_chance_1:           24,
+  perfect_anchor:            25,
+  perfect_anchor_chance_1:   26,
+  perfect_anchor_growth_1:   27,
+
+  // Row 2 (frames 28-35)
+  crystal_gain_1:        28,
+  crystal_gain_2:        29,
+  crystal_gain_3:        30,
+  shards_unlock:         31,
+  shard_active_gain_1:   32,
+  shard_active_gain_2:   33,
+  shard_passive_gain_1:  34,
+  hearts_unlock:         35,
+  // 36-41 are empty
+
+  // Row 3 (frames 42-48)
+  bubble_unlock:         42,
+  bubble_chance_1:       43,
+  bubble_amount_1:       44,
+  crit_chain_1:          45,
+  crit_anchor_unlock:    46,
+  crit_anchor_chance_1:  47,
+  crit_anchor_growth_1:  48,
+}
+
+const NODE_SIZE = 64
 const STEP = 130       // distance between parent and child
 const SIBLING_GAP = 90 // gap between siblings at same depth
 
@@ -133,7 +194,15 @@ const TreeNode = memo(function TreeNode({ node, state, isSelected, onClick }) {
       onClick={() => onClick(node)}
     >
       <div className="ftm-node-icon">
-        <span className="ftm-node-placeholder">{node.label[0]}</span>
+        {/* <span className="ftm-node-placeholder">{node.label[0]}</span> */}
+        <div style={{
+          width: DISPLAY_SIZE,
+          height: DISPLAY_SIZE,
+          backgroundImage: `url(${spritesheetUrl})`,
+          backgroundSize: `${COLS * DISPLAY_SIZE}px auto`,
+          backgroundPosition: `-${(NODE_FRAME[node.id] % COLS) * DISPLAY_SIZE}px -${Math.floor(NODE_FRAME[node.id] / COLS) * DISPLAY_SIZE}px`,
+          imageRendering: 'pixelated',
+        }} />
       </div>
       {node.maxLevel > 1 && (
         <div className="ftm-node-pips">
