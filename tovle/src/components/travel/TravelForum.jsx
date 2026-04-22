@@ -5,6 +5,8 @@ import './TravelForum.css'
 import ForumBuildModal from './ForumBuildModal'
 import ForumGame from './ForumGame'
 
+import ForumTreeModal from './ForumTreeModal'
+
 // derive tier and stats from xp
 // thresholds and values are placeholders — easy to tune later
 const FORUM_TIERS = [
@@ -38,6 +40,7 @@ const TravelForum = ({ playerData, save }) => {
   // const [showModal, setShowModal] = useState(false)
   const [showBuildModal, setShowBuildModal] = useState(false)
   const [gameConfig, setGameConfig] = useState(null)
+  const [showTreeModal, setShowTreeModal] = useState(false)
 
   const handleSaveName = () => {
     const trimmed = nameInput.trim() || 'The Fallen Forum'
@@ -163,6 +166,10 @@ const TravelForum = ({ playerData, save }) => {
           Rebuild Forum
         </button>
 
+        <button className="forum-upgrade-btn" onClick={() => setShowTreeModal(true)}>
+          Upgrade Tree
+        </button>
+
       </div>
 
       {showBuildModal && (
@@ -205,6 +212,16 @@ const TravelForum = ({ playerData, save }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {showTreeModal && (
+        <ForumTreeModal
+          onClose={() => setShowTreeModal(false)}
+          upgrades={forum?.upgrades ?? {}}
+          currencies={forum?.currencies ?? { crystals: 0, shards: 0, hearts: 0 }}
+          save={save}
+          playerData={playerData}
+        />
       )}
 
     </>
