@@ -4,7 +4,7 @@ import * as Phaser from 'phaser'
 import BackgroundScene from './ForumGame/BackgroundScene'
 
 const BASE_SPEED = 200
-const SPEED_EXPONENT = 1.15
+// const SPEED_EXPONENT = 1.15
 const MAX_SPEED = 100000
 
 // if (!document.querySelector('link[href*="Press+Start+2P"]')) {
@@ -111,7 +111,7 @@ class UIScene extends Phaser.Scene {
     this.scene.get('GameScene').events.on('gameover', ({ message, xp }) => {
       this.gameOverText.setText(message)
       this.gameOverText.setVisible(true)
-      this.xpText.setText(`XP earned: ${xp}`)
+      this.xpText.setText(`Crystals earned: ${xp}`)
       this.xpText.setVisible(true)
     })
 
@@ -142,6 +142,15 @@ class GameScene extends Phaser.Scene {
     this.totalFuel = data.totalFuel
     this.onGameEnd = data.onGameEnd
     this.maxTaps = Math.floor(data.totalFuel / data.itemsPerTap)
+
+    //skill tree
+    this.anchorChance = data.anchorChance
+    this.speedExponent = data.speedExponent ?? 1.15
+    this.perfectPlacementUnlocked = data.perfectPlacementUnlocked ?? false
+    this.perfectThreshold = data.perfectThreshold ?? 0.05
+    this.startingWidth = data.startingWidth ?? 100
+    this.crystalMultiplier = data.crystalMultiplier ?? 1
+    this.anchorUnlocked = data.anchorUnlocked ?? false
   }
 
   getOverlap(blockA, blockB) {
@@ -193,7 +202,7 @@ class GameScene extends Phaser.Scene {
     const blocksSpent = this.blockCount * this.itemsPerTap
     const heightMultiplier = Math.pow(1 + this.blockCount * 0.15, 2)
     const limiter = 100
-    const xp = blocksSpent * heightMultiplier / limiter
+    const xp = blocksSpent * heightMultiplier * this.crystalMultiplier / limiter
     return Math.round(xp * 10) / 10 //nearest tens place
   }
 
@@ -270,17 +279,19 @@ class GameScene extends Phaser.Scene {
     this.cameras.main.centerOn(W / 2, H / 2)
     this.cameraTargetY = this.cameras.main.scrollY - (40 / zoom)
     
-    this.platform = this.add.rectangle(W / 2, H + 120, 100, 400, 0xffffff)
-    this.movingBlock = this.add.rectangle(W / 4, H - 90, 100, 20, 0xffffff)
+    this.platform = this.add.rectangle(W / 2, H + 120, this.startingWidth, 400, 0xffffff)
+    this.movingBlock = this.add.rectangle(W / 4, H - 90, this.startingWidth, 20, 0xffffff)
 
     this.blockColorStart = { r: 255, g: 255, b: 255 }
     this.blockColorTarget = this.randomColorTarget()
     this.colorProgress = 0
 
     this.blockSpeed = BASE_SPEED
-    this.perfectPlaceThreshold = 0.05
+    this.perfectPlaceThreshold = this.perfectThreshold //from skill tree
     this.shakyPlaceThreshold = 0.4
-    this.anchorChance = 0.1
+    if (this.anchorUnlocked === false) {
+      this.anchorChance = 0
+    }
     this.topBlock = this.platform
     this.blockCount = 0
     this.isGameOver = false
@@ -350,6 +361,7 @@ class GameScene extends Phaser.Scene {
       if (cutRatio > this.shakyPlaceThreshold) {
         this.cameras.main.shake(500, 0.0025, true)
       }
+
       //particles on a good cut
       if (cutRatio < this.perfectPlaceThreshold ) {
         // this.particles.emitParticleAt(newX, this.movingBlock.y, 12)
@@ -358,11 +370,10 @@ class GameScene extends Phaser.Scene {
         this.particlesLeft.emitParticleAt(leftEdge, this.movingBlock.y, 1)
         this.particlesRight.emitParticleAt(rightEdge, this.movingBlock.y, 1)
       }
-      
-      //resize placed block
-      //on a perfect cut, keep size
-      if (cutRatio < this.perfectPlaceThreshold ) {
-        // this.movingBlock.setSize(overlap, 20)
+
+      if (cutRatio < this.perfectPlaceThreshold && this.perfectPlacementUnlocked) {
+        //check if perfect place is unlocked in skill tree
+        //if unlocked, platform doesn't shrink on perfect place
         this.movingBlock.setPosition(this.topBlock.x, this.movingBlock.y)
       } else {
         this.movingBlock.setSize(overlap, 20)
@@ -392,7 +403,7 @@ class GameScene extends Phaser.Scene {
       const newY = this.topBlock.y - 20
       this.movingBlock = this.add.rectangle(spawnX, newY, nextWidth, 20, this.getBlockColor())
       const direction = this.blockSpeed > 0 ? 1 : -1
-      this.blockSpeed = direction * Math.min(BASE_SPEED * Math.pow(SPEED_EXPONENT, this.blockCount), MAX_SPEED)
+      this.blockSpeed = direction * Math.min(BASE_SPEED * Math.pow(this.speedExponent, this.blockCount), MAX_SPEED)
 
       this.blockCount = this.blockCount + 1
       if (this.blockCount > 5) {
@@ -439,11 +450,26 @@ class GameScene extends Phaser.Scene {
   }
 }
 
-const ForumGame = ({totalFuel, itemsPerTap, anchorChance, onGameEnd}) => {
+const ForumGame = ({
+  totalFuel, itemsPerTap, anchorChance, onGameEnd,
+  speedExponent,
+  perfectPlacementUnlocked,
+  perfectThreshold,
+  startingWidth,
+  crystalMultiplier,
+  anchorUnlocked
+}) => {
   const containerRef = useRef(null)
 
   useEffect(() => {
-    console.log('Game starting with:', { totalFuel, itemsPerTap, anchorChance, onGameEnd })
+    console.log('Game starting with:', { totalFuel, itemsPerTap, anchorChance, onGameEnd,
+      speedExponent,
+      perfectPlacementUnlocked,
+      perfectThreshold,
+      startingWidth,
+      crystalMultiplier,
+      anchorUnlocked
+    })
 
     const width = containerRef.current.offsetWidth
     const height = containerRef.current.offsetHeight
@@ -467,7 +493,15 @@ const ForumGame = ({totalFuel, itemsPerTap, anchorChance, onGameEnd}) => {
       'GameScene', //key
       GameScene, //scene class
       true, //start immediately
-      {totalFuel, itemsPerTap, anchorChance, onGameEnd} //data
+      {
+        totalFuel, itemsPerTap, anchorChance, onGameEnd,
+        speedExponent,
+        perfectPlacementUnlocked,
+        perfectThreshold,
+        startingWidth,
+        crystalMultiplier,
+        anchorUnlocked,
+      } //data
     )
     game.scene.add('UIScene', UIScene, true)
 

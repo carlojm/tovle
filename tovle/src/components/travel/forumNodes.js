@@ -137,10 +137,10 @@ export const FORUM_NODES = [
     maxLevel: 5,
     costs: [
       { crystals: 3 },
-      { crystals: 16 },
-      { crystals: 28 },
-      { crystals: 45 },
-      { crystals: 70 },
+      { crystals: 6 },
+      { crystals: 12 },
+      { crystals: 18 },
+      { crystals: 25 },
     ],
   },
   {
@@ -354,9 +354,9 @@ export const FORUM_NODES = [
     costs: [
       { crystals: 2 },
       { crystals: 5 },
-      { crystals: 10 },
-      { crystals: 35 },
-      { crystals: 80 },
+      { crystals: 8 },
+      { crystals: 15 },
+      { crystals: 20 },
     ],
     x: 0,
     y: 0,

@@ -7,6 +7,8 @@ import ForumGame from './ForumGame'
 
 import ForumTreeModal from './ForumTreeModal'
 
+import { computeForumUnlocks } from './forumUnlocks'
+
 // derive tier and stats from xp
 // thresholds and values are placeholders — easy to tune later
 const FORUM_TIERS = [
@@ -41,6 +43,10 @@ const TravelForum = ({ playerData, save }) => {
   const [showBuildModal, setShowBuildModal] = useState(false)
   const [gameConfig, setGameConfig] = useState(null)
   const [showTreeModal, setShowTreeModal] = useState(false)
+
+  //skill tree values to pass into the game
+  const upgrades = forum?.upgrades ?? {}
+  const forumUnlocks = computeForumUnlocks(upgrades)
 
   const handleSaveName = () => {
     const trimmed = nameInput.trim() || 'The Fallen Forum'
@@ -226,6 +232,12 @@ const TravelForum = ({ playerData, save }) => {
                     }
                   })
                 }}
+                speedExponent={forumUnlocks.speedExponent}
+                perfectPlacementUnlocked={forumUnlocks.perfectPlacementUnlocked}
+                perfectThreshold={forumUnlocks.perfectThreshold}
+                startingWidth={forumUnlocks.startingWidth}
+                crystalMultiplier={forumUnlocks.crystalMultiplier}
+                anchorUnlocked={forumUnlocks.anchorUnlocked}
               />
             </div>
           </div>
