@@ -3,13 +3,13 @@ export const FORUM_NODES = [
   // CENTER
   {
     id: 'forum_core',
-    label: 'Forum Core',
-    description: 'The heart of the fallen forum. All upgrades stem from here.',
+    label: 'Forum Tier 0',
+    description: 'This place needs some renovating. Unlocks the skill tree.',
     icon: 'forum_core',
     direction: null,
     parent: [],
     maxLevel: 1,
-    costs: [],
+    costs: [{ crystals: 1 }],
     x: 0,
     y: 0,
   },
@@ -136,7 +136,7 @@ export const FORUM_NODES = [
     parent: ['forum_core'],
     maxLevel: 5,
     costs: [
-      { crystals: 8 },
+      { crystals: 3 },
       { crystals: 16 },
       { crystals: 28 },
       { crystals: 45 },
@@ -352,10 +352,10 @@ export const FORUM_NODES = [
     parent: ['forum_core'],
     maxLevel: 5,
     costs: [
+      { crystals: 2 },
+      { crystals: 5 },
       { crystals: 10 },
-      { crystals: 20 },
       { crystals: 35 },
-      { crystals: 55 },
       { crystals: 80 },
     ],
     x: 0,

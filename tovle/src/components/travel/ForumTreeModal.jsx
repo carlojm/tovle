@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect, memo } from 'react'
 import { X } from 'lucide-react'
 import { FORUM_NODES } from './forumNodes'
 import './ForumTreeModal.css'
+import { usePlayer } from '../../context/PlayerContext'
 
 import spritesheetUrl from './ForumGame/Tovle16.png'
 const COLS = 14
@@ -180,11 +181,11 @@ function CurrencyCost({ cost }) {
   )
 }
 
-const TreeNode = memo(function TreeNode({ node, state, isSelected, onClick }) {
-  const level = 0 // will come from upgrades later
+const TreeNode = memo(function TreeNode({ node, state, isSelected, onClick, level, affordable}) {
+  // const level = 0 // will come from upgrades later
   return (
     <div
-      className={`ftm-node ftm-node--${state} ${isSelected ? 'ftm-node--selected' : ''}`}
+      className={`ftm-node ftm-node--${state} ${isSelected ? 'ftm-node--selected' : '' } ${!affordable && state === 'available' ? 'ftm-node--unaffordable' : ''}`}
       style={{
         left: node.cx - NODE_SIZE / 2,
         top:  node.cy - NODE_SIZE / 2,
@@ -194,15 +195,19 @@ const TreeNode = memo(function TreeNode({ node, state, isSelected, onClick }) {
       onClick={() => onClick(node)}
     >
       <div className="ftm-node-icon">
-        {/* <span className="ftm-node-placeholder">{node.label[0]}</span> */}
-        <div style={{
-          width: DISPLAY_SIZE,
-          height: DISPLAY_SIZE,
-          backgroundImage: `url(${spritesheetUrl})`,
-          backgroundSize: `${COLS * DISPLAY_SIZE}px auto`,
-          backgroundPosition: `-${(NODE_FRAME[node.id] % COLS) * DISPLAY_SIZE}px -${Math.floor(NODE_FRAME[node.id] / COLS) * DISPLAY_SIZE}px`,
-          imageRendering: 'pixelated',
-        }} />
+        {state === 'locked' ? (
+          <span className="ftm-node-placeholder">?</span>
+        ) : (
+          <div style={{
+            width: DISPLAY_SIZE,
+            height: DISPLAY_SIZE,
+            backgroundImage: `url(${spritesheetUrl})`,
+            backgroundSize: `${COLS * DISPLAY_SIZE}px auto`,
+            backgroundPosition: `-${(NODE_FRAME[node.id] % COLS) * DISPLAY_SIZE}px -${Math.floor(NODE_FRAME[node.id] / COLS) * DISPLAY_SIZE}px`,
+            imageRendering: 'pixelated',
+            filter: 'drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.9))',
+          }} />
+        )}
       </div>
       {node.maxLevel > 1 && (
         <div className="ftm-node-pips">
@@ -239,9 +244,18 @@ const ConnectionLines = memo(function ConnectionLines({ nodeMap, nodes }) {
   return <>{lines}</>
 })
 
+const canAfford = (cost, currencies) => {
+  if (!cost) return false
+  if ((cost.crystals ?? 0) > (currencies.crystals ?? 0)) return false
+  if ((cost.shards   ?? 0) > (currencies.shards   ?? 0)) return false
+  if ((cost.hearts   ?? 0) > (currencies.hearts   ?? 0)) return false
+  return true
+}
+
 const NODE_MAP = computeLayout(FORUM_NODES)
 
-export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {} }) {
+export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}}) {
+  const { playerData, save } = usePlayer()
   const [selectedNode, setSelectedNode] = useState(null)
   const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 })
   const isPanning = useRef(false)
@@ -316,6 +330,43 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
     }))
   }, [])
 
+  const handlePurchase = () => {
+    if (!selectedNode) return
+
+    const currentLevel = upgrades[selectedNode.id] ?? 0
+    if (currentLevel >= selectedNode.maxLevel) return
+
+    const cost = selectedNode.costs[currentLevel]
+    if (!cost) return
+
+    // check affordability
+    if ((cost.crystals ?? 0) > (currencies.crystals ?? 0)) return
+    if ((cost.shards ?? 0) > (currencies.shards ?? 0)) return
+    if ((cost.hearts ?? 0) > (currencies.hearts ?? 0)) return
+
+    const newUpgrades = {
+      ...upgrades,
+      [selectedNode.id]: currentLevel + 1,
+    }
+
+    const newCurrencies = {
+      crystals: Math.round(((currencies.crystals ?? 0) - (cost.crystals ?? 0)) * 10) / 10,
+      shards:   Math.round(((currencies.shards   ?? 0) - (cost.shards   ?? 0)) * 10) / 10,
+      hearts:   Math.round(((currencies.hearts   ?? 0) - (cost.hearts   ?? 0)) * 10) / 10,
+    }
+
+    save({
+      travel: {
+        ...playerData?.travel,
+        forum: {
+          ...playerData?.travel?.forum,
+          upgrades: newUpgrades,
+          currencies: newCurrencies,
+        }
+      }
+    })
+  }
+
   // compute SVG bounds to fit all nodes
   const allNodes = Object.values(nodeMap)
   const xs = allNodes.map(n => n.cx)
@@ -330,6 +381,8 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
   const nextCost = selectedNode
     ? selectedNode.costs[(upgrades[selectedNode.id] ?? 0)]
     : null
+
+  const nodeState = selectedNode ? getNodeState(selectedNode, upgrades) : null
 
   return (
     <div className="ftm-overlay">
@@ -392,6 +445,8 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
                 state={getNodeState(node, upgrades)}
                 isSelected={selectedNode?.id === node.id}
                 onClick={setSelectedNode}
+                level={upgrades[node.id] ?? 0}
+                affordable={canAfford(node.costs[upgrades[node.id] ?? 0], currencies)}
               />
             ))}
           </div>
@@ -402,13 +457,25 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
           {selectedNode ? (
             <>
               <div className="ftm-info-text">
-                <span className="ftm-info-label">{selectedNode.label}</span>
-                <span className="ftm-info-desc">{selectedNode.description}</span>
+                {nodeState === 'locked' ? (
+                  <span className="ftm-info-desc">Unlock a parent node first</span>
+                ) : (
+                  <>
+                    <span className="ftm-info-label">{selectedNode.label}</span>
+                    <span className="ftm-info-desc">{selectedNode.description}</span>
+                  </>
+                )}
               </div>
               {nextCost && (
                 <div className="ftm-info-action">
-                  <CurrencyCost cost={nextCost} />
-                  <button className="ftm-buy-btn">
+                  {nodeState !== 'locked' && (
+                    <CurrencyCost cost={nextCost} />
+                  )}
+                  <button
+                    className={`ftm-buy-btn ${!canAfford(nextCost, currencies) || nodeState === 'locked' ? 'ftm-buy-btn--disabled' : ''}`}
+                    onClick={handlePurchase}
+                    disabled={!canAfford(nextCost, currencies) || nodeState === 'locked'}
+                  >
                     {(upgrades[selectedNode.id] ?? 0) === 0 ? 'Unlock' : 'Upgrade'}
                   </button>
                 </div>

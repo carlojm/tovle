@@ -339,3 +339,22 @@
   width: 100%;
   aspect-ratio: 4/3;
 }
+
+
+.forum-currencies-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.forum-currency {
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.forum-currency--crystal { color: #7dd3e8; }
+.forum-currency--shard   { color: #a0d4b0; }
+.forum-currency--heart   { color: #e87d7d; }

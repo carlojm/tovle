@@ -112,7 +112,7 @@ const TravelForum = ({ playerData, save }) => {
             </div>
 
             {/* xp progress bar */}
-            <div className="forum-xp-row">
+            {/* <div className="forum-xp-row">
               <span className="forum-label">XP</span>
               <div className="forum-xp-track">
                 <div
@@ -123,7 +123,21 @@ const TravelForum = ({ playerData, save }) => {
               <span className="forum-xp-num">
                 {nextTier ? `${xp} / ${nextTier.minXp}` : `${xp} (max)`}
               </span>
+            </div> */}
+
+            {/* currencies */}
+            <div className="forum-currencies-row">
+              <span className="forum-currency forum-currency--crystal">
+                ◆ {forum?.currencies?.crystals ?? 0}
+              </span>
+              <span className="forum-currency forum-currency--shard">
+                ◈ {forum?.currencies?.shards ?? 0}
+              </span>
+              <span className="forum-currency forum-currency--heart">
+                ♥ {forum?.currencies?.hearts ?? 0}
+              </span>
             </div>
+
           </div>
         </div>
 
@@ -197,13 +211,17 @@ const TravelForum = ({ playerData, save }) => {
                   setGameConfig(null)
                   const fuelUsed = blocksBuilt * gameConfig.itemsPerTap
                   const fuelRemaining = Math.max(0, (forum?.fuel ?? 0) - fuelUsed)
+                  const currentCurrencies = forum?.currencies ?? { crystals: 0, shards: 0, hearts: 0 }
                   save({ 
                     travel: { 
                       ...playerData?.travel,
                       forum: {
                         ...forum,
-                        xp: (forum?.xp ?? 0) + xpEarned,
-                        fuel: fuelRemaining
+                        fuel: fuelRemaining,
+                        currencies: {
+                          ...currentCurrencies,
+                          crystals: (currentCurrencies.crystals ?? 0) + xpEarned,
+                        }
                       }
                     }
                   })
