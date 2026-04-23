@@ -220,7 +220,7 @@ const TravelForum = ({ playerData, save }) => {
                         fuel: fuelRemaining,
                         currencies: {
                           ...currentCurrencies,
-                          crystals: (currentCurrencies.crystals ?? 0) + xpEarned,
+                          crystals: Math.round(((currentCurrencies.crystals ?? 0) + xpEarned) * 10) / 10,
                         }
                       }
                     }
