@@ -27,6 +27,10 @@ import tropicalFish from '../assets/fish/tropical_fish.png'
 
 import tornCanvas from '../assets/items/torn_canvas.png'
 
+import prismarineCrystals from '../assets/items/prismarine_crystals.png'
+import prismarineShard from '../assets/items/prismarine_shard.png'
+import heartOfTheSea from '../assets/items/heart_of_the_sea.png'
+
 export const ITEM_MAP = {
   den_piece_100:          { img: denPiece100 },
   eye_of_viridia:         { img: eyeOfViridia },
@@ -55,4 +59,8 @@ export const ITEM_MAP = {
   arcane_fish:     { img: arcanefish },
 
   torn_canvas: { img: tornCanvas },
+
+  prismarine_crystals: { img: prismarineCrystals },
+  prismarine_shard:    { img: prismarineShard },
+  heart_of_the_sea:    { img: heartOfTheSea },
 }
