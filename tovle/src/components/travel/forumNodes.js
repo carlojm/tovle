@@ -309,7 +309,7 @@ export const FORUM_NODES = [
     icon: 'perfect_anchor',
     direction: 'E',
     parent: ['anchor_unlock', 'perfect_placement'],
-    hidden_requirements: ['anchor_unlock', 'perfect_placement'],
+    hidden_requirement: ['anchor_unlock', 'perfect_placement'],
     maxLevel: 1, 
     costs: [{ shards: 5 }],
     y: 50,

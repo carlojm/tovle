@@ -26,17 +26,14 @@ export const computeForumUnlocks = (upgrades = {}) => {
   // perfect placement
   const perfectPlacementUnlocked = level('perfect_placement') >= 1
   const perfectThreshold = perfectPlacementUnlocked
-    ? 0.05 + level('perfect_threshold_1') * 0.02  // 0.05 to 0.15 over 5 levels
+    ? 0.05 + level('perfect_threshold_1') * 0.01  // 0.05 to 0.10 over 5 levels
     : 0.05 // default threshold even without unlock, just no width preservation
 
   // perfect anchor
+  // triggers on perfect placement, grows the block
   const perfectAnchorUnlocked = level('perfect_anchor') >= 1
-  const perfectAnchorChance = perfectAnchorUnlocked
-    ? 0.1 + level('perfect_anchor_chance_1') * 0.1
-    : 0
-  const perfectAnchorGrowth = perfectAnchorUnlocked
-    ? 10 + level('perfect_anchor_growth_1') * 5  // px growth
-    : 0
+  const perfectAnchorChance = perfectAnchorUnlocked ? 0.2 + level('perfect_anchor_chance_1') * 0.2 : 0
+  const perfectAnchorGrowthFactor = 0.1 + level('perfect_anchor_growth_1') * 0.05 // 0.1 to 0.35
 
   // bubbles / crits
   const bubblesUnlocked = level('bubble_unlock') >= 1
@@ -102,7 +99,7 @@ export const computeForumUnlocks = (upgrades = {}) => {
     // perfect anchor
     perfectAnchorUnlocked,
     perfectAnchorChance,
-    perfectAnchorGrowth,
+    perfectAnchorGrowthFactor,
 
     // bubbles
     bubblesUnlocked,

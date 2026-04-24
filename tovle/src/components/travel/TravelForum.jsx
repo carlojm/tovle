@@ -248,6 +248,9 @@ const TravelForum = ({ playerData, save }) => {
                 crystalMultiplier={forumUnlocks.crystalMultiplier}
                 anchorUnlocked={forumUnlocks.anchorUnlocked}
                 reviveUnlocked={forumUnlocks.reviveUnlocked}
+                perfectAnchorUnlocked={forumUnlocks.perfectAnchorUnlocked}
+                perfectAnchorChance={forumUnlocks.perfectAnchorChance}
+                perfectAnchorGrowthFactor={forumUnlocks.perfectAnchorGrowthFactor}
               />
             </div>
           </div>

@@ -152,6 +152,9 @@ class GameScene extends Phaser.Scene {
     this.crystalMultiplier = data.crystalMultiplier ?? 1
     this.anchorUnlocked = data.anchorUnlocked ?? false
     this.reviveUnlocked = data.reviveUnlocked ?? false
+    this.perfectAnchorUnlocked = data.perfectAnchorUnlocked ?? false
+    this.perfectAnchorChance = data.perfectAnchorChance ?? 0
+    this.perfectAnchorGrowthFactor = data.perfectAnchorGrowthFactor ?? 0.1
   }
 
   getOverlap(blockA, blockB) {
@@ -208,8 +211,6 @@ class GameScene extends Phaser.Scene {
   }
 
   handleGameOver(message = "Game Over!") {
-    console.log("revive?", this.reviveUnlocked)
-
     if (this.reviveUnlocked && !this.hasRevived) {
       this.triggerRevive()
       return
@@ -272,7 +273,6 @@ class GameScene extends Phaser.Scene {
   }
 
   triggerRevive() {
-    console.log("revive")
     this.hasRevived = true
     const reviveWidth = Math.max(this.topBlock.width, this.startingWidth * 0.5)
 
@@ -299,6 +299,7 @@ class GameScene extends Phaser.Scene {
     const newY = this.topBlock.y - 20
 
     //destroy mid air block that caused miss
+    this.spawnDebris(this.movingBlock.x, this.movingBlock.y, this.movingBlock.width, this.movingBlock.fillColor, 1)
     this.movingBlock.destroy()
 
     this.movingBlock = this.add.rectangle(spawnX, newY, reviveWidth, 20, this.getBlockColor())
@@ -434,8 +435,17 @@ class GameScene extends Phaser.Scene {
 
       //use nextWidth to handle changes andhoring make to width
       let nextWidth = this.topBlock.width
-      if (Math.random() < this.anchorChance) {
-        const growAmount = Math.min(50, Math.max(10, this.topBlock.width * 0.2)) // clamped between 10-50px
+
+      const isPerfect = cutRatio < this.perfectPlaceThreshold
+
+      //normal anchor: preserves width, does not grow
+      if (!isPerfect && Math.random() < this.anchorChance) {
+        this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
+      }
+
+      // perfect anchor: only triggers on a perfect placement, grows
+      if (isPerfect && this.perfectAnchorUnlocked && Math.random() < this.perfectAnchorChance) {
+        const growAmount = Math.min(50, Math.max(10, this.topBlock.width * this.perfectAnchorGrowthFactor))
         nextWidth = this.topBlock.width + growAmount
         this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
       }
@@ -511,6 +521,9 @@ const ForumGame = ({
   crystalMultiplier,
   anchorUnlocked,
   reviveUnlocked,
+  perfectAnchorUnlocked,
+  perfectAnchorChance,
+  perfectAnchorGrowthFactor,
 }) => {
   const containerRef = useRef(null)
 
@@ -523,6 +536,9 @@ const ForumGame = ({
       crystalMultiplier,
       anchorUnlocked,
       reviveUnlocked,
+      perfectAnchorUnlocked,
+      perfectAnchorChance,
+      perfectAnchorGrowthFactor,
     })
 
     const width = containerRef.current.offsetWidth
@@ -556,6 +572,9 @@ const ForumGame = ({
         crystalMultiplier,
         anchorUnlocked,
         reviveUnlocked,
+        perfectAnchorUnlocked,
+        perfectAnchorChance,
+        perfectAnchorGrowthFactor,
       } //data
     )
     game.scene.add('UIScene', UIScene, true)
