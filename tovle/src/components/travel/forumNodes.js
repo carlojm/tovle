@@ -54,7 +54,7 @@ export const FORUM_NODES = [
   {
     id: 'revive',
     label: 'Revive',
-    description: 'Totem of undying: revive once per game with 50% platform size.',
+    description: 'Revive once per game.',
     icon: 'revive',
     direction: 'W',
     parent: ['blocks_per_tap_1'],

@@ -151,6 +151,7 @@ class GameScene extends Phaser.Scene {
     this.startingWidth = data.startingWidth ?? 100
     this.crystalMultiplier = data.crystalMultiplier ?? 1
     this.anchorUnlocked = data.anchorUnlocked ?? false
+    this.reviveUnlocked = data.reviveUnlocked ?? false
   }
 
   getOverlap(blockA, blockB) {
@@ -207,6 +208,13 @@ class GameScene extends Phaser.Scene {
   }
 
   handleGameOver(message = "Game Over!") {
+    console.log("revive?", this.reviveUnlocked)
+
+    if (this.reviveUnlocked && !this.hasRevived) {
+      this.triggerRevive()
+      return
+    }
+
     this.isGameOver = true
     this.blockSpeed = 0
     const xp = this.calculateXP()
@@ -263,6 +271,45 @@ class GameScene extends Phaser.Scene {
     })
   }
 
+  triggerRevive() {
+    console.log("revive")
+    this.hasRevived = true
+    const reviveWidth = Math.max(this.topBlock.width, this.startingWidth * 0.5)
+
+    //grow/shrink last block
+    const proxy = { width: this.topBlock.width }
+    this.tweens.add({
+      targets: proxy,
+      width: reviveWidth,
+      duration: 400,
+      ease: 'Sine.Out',
+      onUpdate: () => {
+        this.topBlock.setSize(proxy.width, 20)
+        this.topBlock.setPosition(this.topBlock.x, this.topBlock.y)
+      }
+    })
+
+    // flash the top block white to signal the revival
+    this.topBlock.setFillStyle(0xffffff)
+
+    // spawn new moving block at revive width
+    const currentZoom = this.cameras.main.zoom
+    const visibleHalfW = (this.scale.width / currentZoom) / 2
+    const spawnX = (200 - visibleHalfW) - reviveWidth / 2
+    const newY = this.topBlock.y - 20
+
+    //destroy mid air block that caused miss
+    this.movingBlock.destroy()
+
+    this.movingBlock = this.add.rectangle(spawnX, newY, reviveWidth, 20, this.getBlockColor())
+
+    this.reviveSpeedDampen = 8 //drop speed back to what it was, like, 6 blocks ago
+    this.blockSpeed = Math.min(
+      BASE_SPEED * Math.pow(this.speedExponent, Math.max(0, this.blockCount - this.reviveSpeedDampen)),
+      MAX_SPEED
+    )
+  }
+
   preload() {
     const g = this.make.graphics({ x: 0, y: 0, add: false })
     g.fillStyle(0xffffff)
@@ -295,6 +342,8 @@ class GameScene extends Phaser.Scene {
     this.topBlock = this.platform
     this.blockCount = 0
     this.isGameOver = false
+    this.hasRevived = false
+    this.reviveSpeedDampen = 0
     
     this.particlesLeft = this.add.particles(0, 0, 'particle', {
       speed: { start: 120, end: 40 },
@@ -403,7 +452,10 @@ class GameScene extends Phaser.Scene {
       const newY = this.topBlock.y - 20
       this.movingBlock = this.add.rectangle(spawnX, newY, nextWidth, 20, this.getBlockColor())
       const direction = this.blockSpeed > 0 ? 1 : -1
-      this.blockSpeed = direction * Math.min(BASE_SPEED * Math.pow(this.speedExponent, this.blockCount), MAX_SPEED)
+      this.blockSpeed = direction * Math.min(
+        BASE_SPEED * Math.pow(this.speedExponent, Math.max(0, this.blockCount - this.reviveSpeedDampen)),
+        MAX_SPEED
+      )
 
       this.blockCount = this.blockCount + 1
       if (this.blockCount > 5) {
@@ -457,7 +509,8 @@ const ForumGame = ({
   perfectThreshold,
   startingWidth,
   crystalMultiplier,
-  anchorUnlocked
+  anchorUnlocked,
+  reviveUnlocked,
 }) => {
   const containerRef = useRef(null)
 
@@ -468,7 +521,8 @@ const ForumGame = ({
       perfectThreshold,
       startingWidth,
       crystalMultiplier,
-      anchorUnlocked
+      anchorUnlocked,
+      reviveUnlocked,
     })
 
     const width = containerRef.current.offsetWidth
@@ -501,6 +555,7 @@ const ForumGame = ({
         startingWidth,
         crystalMultiplier,
         anchorUnlocked,
+        reviveUnlocked,
       } //data
     )
     game.scene.add('UIScene', UIScene, true)

@@ -247,6 +247,7 @@ const TravelForum = ({ playerData, save }) => {
                 startingWidth={forumUnlocks.startingWidth}
                 crystalMultiplier={forumUnlocks.crystalMultiplier}
                 anchorUnlocked={forumUnlocks.anchorUnlocked}
+                reviveUnlocked={forumUnlocks.reviveUnlocked}
               />
             </div>
           </div>
