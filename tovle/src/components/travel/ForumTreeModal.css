@@ -50,10 +50,9 @@
   align-items: center;
   gap: 4px;
 }
-
-.ftm-currency--crystal { color: #7dd3e8; }
-.ftm-currency--shard   { color: #a0d4b0; }
-.ftm-currency--heart   { color: #e87d7d; }
+.ftm-currency--crystal { color: var(--text-currency-crystal); }
+.ftm-currency--shard   { color: var(--text-currency-shard); }
+.ftm-currency--heart   { color: var(--text-currency-heart); }
 
 .ftm-close {
   background: none;
@@ -271,12 +270,14 @@
   font-weight: 600;
 }
 
-.ftm-cost--crystal { color: #7dd3e8; }
-.ftm-cost--shard   { color: #a0d4b0; }
-.ftm-cost--heart   { color: #e87d7d; }
 
-.ftm-cost-icon {
+/* .ftm-cost-icon {
   font-size: 10px;
+} */
+.ftm-cost-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
 }
 
 .ftm-buy-btn {

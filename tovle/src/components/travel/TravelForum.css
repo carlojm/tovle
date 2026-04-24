@@ -355,6 +355,12 @@
   gap: 4px;
 }
 
-.forum-currency--crystal { color: #7dd3e8; }
-.forum-currency--shard   { color: #a0d4b0; }
-.forum-currency--heart   { color: #e87d7d; }
+.forum-currency-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+}
+
+.forum-currency--crystal { color: var(--text-currency-crystal); }
+.forum-currency--shard   { color: var(--text-currency-shard); }
+.forum-currency--heart   { color: var(--text-currency-heart); }

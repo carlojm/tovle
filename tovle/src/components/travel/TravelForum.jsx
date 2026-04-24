@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { Pencil, Check } from 'lucide-react'
+import { ITEM_MAP } from '../../data/itemMap'
 import forumIcon from '../../assets/icon_forum.png'
 import './TravelForum.css'
+
 import ForumBuildModal from './ForumBuildModal'
 import ForumGame from './ForumGame'
-
 import ForumTreeModal from './ForumTreeModal'
-
 import { computeForumUnlocks } from './forumUnlocks'
 
 // derive tier and stats from xp
@@ -134,13 +134,16 @@ const TravelForum = ({ playerData, save }) => {
             {/* currencies */}
             <div className="forum-currencies-row">
               <span className="forum-currency forum-currency--crystal">
-                ◆ {forum?.currencies?.crystals ?? 0}
+                <img src={ITEM_MAP.prismarine_crystals.img} className="forum-currency-icon" />
+                {forum?.currencies?.crystals ?? 0}
               </span>
               <span className="forum-currency forum-currency--shard">
-                ◈ {forum?.currencies?.shards ?? 0}
+                <img src={ITEM_MAP.prismarine_shard.img} className="forum-currency-icon" />
+                {forum?.currencies?.shards ?? 0}
               </span>
               <span className="forum-currency forum-currency--heart">
-                ♥ {forum?.currencies?.hearts ?? 0}
+                <img src={ITEM_MAP.heart_of_the_sea.img} className="forum-currency-icon" />
+                {forum?.currencies?.hearts ?? 0}
               </span>
             </div>
 

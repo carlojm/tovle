@@ -3,7 +3,7 @@ import { X } from 'lucide-react'
 import { FORUM_NODES } from './forumNodes'
 import './ForumTreeModal.css'
 import { usePlayer } from '../../context/PlayerContext'
-
+import { ITEM_MAP } from '../../data/itemMap'
 import spritesheetUrl from './ForumGame/Tovle16.png'
 const COLS = 14
 const SPRITE_SIZE = 16
@@ -160,20 +160,20 @@ function CurrencyCost({ cost }) {
   return (
     <div className="ftm-cost-row">
       {cost.crystals > 0 && (
-        <span className="ftm-cost ftm-cost--crystal">
-          <span className="ftm-cost-icon">◆</span>
+        <span className="ftm-cost ftm-currency--crystal">
+          <img src={ITEM_MAP.prismarine_crystals.img} className="ftm-cost-icon" />
           {cost.crystals}
         </span>
       )}
       {cost.shards > 0 && (
-        <span className="ftm-cost ftm-cost--shard">
-          <span className="ftm-cost-icon">◈</span>
+        <span className="ftm-cost ftm-currency--shard">
+          <img src={ITEM_MAP.prismarine_shard.img} className="ftm-cost-icon" />
           {cost.shards}
         </span>
       )}
       {cost.hearts > 0 && (
-        <span className="ftm-cost ftm-cost--heart">
-          <span className="ftm-cost-icon">♥</span>
+        <span className="ftm-cost ftm-currency--heart">
+          <img src={ITEM_MAP.heart_of_the_sea.img} className="ftm-cost-icon" />
           {cost.hearts}
         </span>
       )}
@@ -393,13 +393,16 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
           <span className="ftm-title">Forum Upgrades</span>
           <div className="ftm-currencies">
             <span className="ftm-currency ftm-currency--crystal">
-              ◆ {currencies.crystals ?? 0}
+              <img src={ITEM_MAP.prismarine_crystals.img} className="ftm-currency-icon" />
+              {currencies.crystals ?? 0}
             </span>
             <span className="ftm-currency ftm-currency--shard">
-              ◈ {currencies.shards ?? 0}
+              <img src={ITEM_MAP.prismarine_shard.img} className="ftm-currency-icon" />
+              {currencies.shards ?? 0}
             </span>
             <span className="ftm-currency ftm-currency--heart">
-              ♥ {currencies.hearts ?? 0}
+              <img src={ITEM_MAP.heart_of_the_sea.img} className="ftm-currency-icon" />
+              {currencies.hearts ?? 0}
             </span>
           </div>
           <button className="ftm-close" onClick={onClose}>

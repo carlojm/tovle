@@ -83,6 +83,10 @@
   --color-background-modal-inset: var(--void-navy);
   --color-background-node: var(--deepest-ocean);
 
+  --text-currency-crystal: #9fd7e6;
+  --text-currency-shard: #a0d4b0;
+  --text-currency-heart: #a37de8;
+
 
 }
 
@@ -147,6 +151,10 @@
   --color-background-modal: rgb(190, 223, 252);
   --color-background-modal-inset: rgb(97, 181, 255);
   --color-background-node: rgb(181, 222, 255);
+
+  --text-currency-crystal: #2d7285;
+  --text-currency-shard: #347448;
+  --text-currency-heart: #4f2799;
 
 
 }
