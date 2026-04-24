@@ -62,7 +62,10 @@ export const computeForumUnlocks = (upgrades = {}) => {
 
   // meta unlocks
   const reviveUnlocked = level('revive') >= 1
-  const blocksPerTapUnlocked = level('blocks_per_tap_1') >= 1
+  // maxBlocksPerTap: 1 = locked (default), 2-5 = unlocked tiers
+  // level 0 = not bought = max 1 block per tap (hidden in modal)
+  // level 1 = max 2 blocks per tap, level 2 = max 3, etc.
+  const maxBlocksPerTap = 1 + level('blocks_per_tap_1')
   const dailyRefundUnlocked = level('daily_runs_1') >= 1
 
   // travel unlocks
@@ -121,7 +124,7 @@ export const computeForumUnlocks = (upgrades = {}) => {
 
     // meta
     reviveUnlocked,
-    blocksPerTapUnlocked,
+    maxBlocksPerTap,
     dailyRefundUnlocked,
 
     // travel

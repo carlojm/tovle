@@ -10,14 +10,14 @@ import ForumTreeModal from './ForumTreeModal'
 import { computeForumUnlocks } from './forumUnlocks'
 
 // derive tier and stats from xp
-// thresholds and values are placeholders — easy to tune later
+//TODO redo all this
 const FORUM_TIERS = [
-  { minXp: 0,    tier: 0, label: 'Tier 0',       tradeQuality: 0,   tradeLuck: 0   },
-  { minXp: 100,  tier: 1, label: 'Tier 1',       tradeQuality: 0,   tradeLuck: 0   },
-  { minXp: 250,  tier: 2, label: 'Tier 2',       tradeQuality: 10,  tradeLuck: 0   },
-  { minXp: 500,  tier: 3, label: 'Tier 3',       tradeQuality: 20,  tradeLuck: 1   },
-  { minXp: 900,  tier: 4, label: 'Tier 4',       tradeQuality: 30,  tradeLuck: 1   },
-  { minXp: 1400, tier: 5, label: 'Tier 5',       tradeQuality: 50,  tradeLuck: 2   },
+  { minXp: 0,    tier: 0, label: 'Tier 0', tradeQuality: 0,  tradeLuck: 0 },
+  { minXp: 100,  tier: 1, label: 'Tier 1', tradeQuality: 0,  tradeLuck: 0 },
+  { minXp: 250,  tier: 2, label: 'Tier 2', tradeQuality: 10, tradeLuck: 0 },
+  { minXp: 500,  tier: 3, label: 'Tier 3', tradeQuality: 20, tradeLuck: 1 },
+  { minXp: 900,  tier: 4, label: 'Tier 4', tradeQuality: 30, tradeLuck: 1 },
+  { minXp: 1400, tier: 5, label: 'Tier 5', tradeQuality: 50, tradeLuck: 2 },
 ]
 
 const getForumTierData = (xp) => {
@@ -57,7 +57,9 @@ const TravelForum = ({ playerData, save }) => {
 
   const handlePlay = (config) => {
     setShowBuildModal(false)
-    setGameConfig(config)
+
+    // gameConfig.totalFuel is the single source of truth for the session
+    setGameConfig({ ...config })
 
     //remove selected blocks from inv
     const updatedItems = (playerData?.inventory?.items ?? []).map(item => {
@@ -65,7 +67,7 @@ const TravelForum = ({ playerData, save }) => {
       return spent > 0 ? { ...item, quantity: item.quantity - spent } : item
     }).filter(item => item.quantity > 0)
 
-    //update inventory and update fuel count
+    //save inventory and raw fuel to firestore
     save({ 
       inventory: {
         ...playerData?.inventory,
@@ -156,14 +158,13 @@ const TravelForum = ({ playerData, save }) => {
             This used to be a nexus of research and trade, and now it's abandoned.
             You could probably fix it up and use it as a new headquarters for your trading empire...
           </p>
-        ) :
+        ) : (
           <p className="forum-desc">
             Level up the forum to unlock trade with different towns.
             Trading lets you spend items to build reputation.
             In exchange, towns reward you with item shipments you can collect daily.
           </p>
-        }
-        
+        )}
 
         {/* stats */}
         <div className="forum-stats">
@@ -201,6 +202,8 @@ const TravelForum = ({ playerData, save }) => {
           existingFuel={forum?.fuel ?? 0}
           onClose={() => setShowBuildModal(false)}
           onPlay={handlePlay}
+          fuelCapacity={forumUnlocks.fuelCapacity}
+          maxBlocksPerTap={forumUnlocks.maxBlocksPerTap}
         />
       )}
       
@@ -218,8 +221,11 @@ const TravelForum = ({ playerData, save }) => {
                 anchorChance={gameConfig.anchorChance}
                 onGameEnd={(xpEarned, blocksBuilt) => {
                   setGameConfig(null)
+                  // fuelUsed = actual taps * blocks per tap
                   const fuelUsed = blocksBuilt * gameConfig.itemsPerTap
-                  const fuelRemaining = Math.max(0, (forum?.fuel ?? 0) - fuelUsed)
+                  // fuelRemaining uses gameConfig.totalFuel as the starting point
+                  // never forum?.fuel which could be stale from firestore
+                  const fuelRemaining = Math.max(0, Math.round((gameConfig.totalFuel - fuelUsed) * 10) / 10)
                   const currentCurrencies = forum?.currencies ?? { crystals: 0, shards: 0, hearts: 0 }
                   save({ 
                     travel: { 

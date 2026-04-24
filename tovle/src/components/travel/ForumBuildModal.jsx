@@ -12,11 +12,14 @@ const FILLER_BLOCKS = [
 ]
 
 const MIN_ITEMS_PER_TAP = 1
-const MAX_ITEMS_PER_TAP = 10
-const MAX_FUEL = 100 // increases with forum upgrades later
 
-const ForumBuildModal = ({ playerData, existingFuel, onClose, onPlay }) => {
-  console.log("existing:",existingFuel)
+const ForumBuildModal = ({ playerData, existingFuel, onClose, onPlay, fuelCapacity, maxBlocksPerTap = 1 }) => {
+  // fuelCapacity comes from skill tree upgrades
+  const MAX_FUEL = fuelCapacity ?? 20
+  // maxBlocksPerTap is the tier of the blocks per tap upgrade (1-5)
+  // if 1, the setting is hidden since thats the default and no upgrade has been bought
+  const blocksPerTapUnlocked = maxBlocksPerTap > 1
+
   const items = playerData?.inventory?.items ?? []
 
   const getItemQuantity = (itemId) => {
@@ -24,9 +27,9 @@ const ForumBuildModal = ({ playerData, existingFuel, onClose, onPlay }) => {
   }
 
   // fuel: { prismarine_block: 3, warped_hyphae: 5, ... }
+  // _existing is leftover fuel from a previous game, we treat it like its own item
   const [fuel, setFuel] = useState(
-    //treat existing fuel like its own item in the list
-    existingFuel > 0 ? {_existing: existingFuel} : {}
+    existingFuel > 0 ? { _existing: existingFuel } : {}
   )
   const [itemsPerTap, setItemsPerTap] = useState(1)
 
@@ -53,7 +56,7 @@ const ForumBuildModal = ({ playerData, existingFuel, onClose, onPlay }) => {
 
   const handlePlay = () => {
     if (totalFuel === 0) return
-    const {_existing, ...itemFuel} = fuel
+    const { _existing, ...itemFuel } = fuel
     onPlay({ fuel: itemFuel, totalFuel, itemsPerTap, anchorChance })
   }
 
@@ -70,8 +73,6 @@ const ForumBuildModal = ({ playerData, existingFuel, onClose, onPlay }) => {
             <X size={20} />
           </button>
         </div>
-
-        
 
         {/* block buttons */}
         <div className="fbm-blocks-section">
@@ -121,7 +122,6 @@ const ForumBuildModal = ({ playerData, existingFuel, onClose, onPlay }) => {
           <span className="fbm-section-label">Unused building blocks are kept between games.</span>
         </div>
 
-
         {/* fuel counter */}
         <div className="fbm-fuel-section">
           <div className="fbm-fuel-row">
@@ -136,40 +136,43 @@ const ForumBuildModal = ({ playerData, existingFuel, onClose, onPlay }) => {
           </div>
         </div>
 
-
-        {/* items per tap */}
-        <div className="fbm-setting-section">
-          <div className="fbm-setting-row">
-            <div className="fbm-setting-info">
-              <span className="fbm-setting-label">Blocks per tap</span>
+        {/* blocks per tap only shown if upgrade has been purchased (maxBlocksPerTap > 1) */}
+        {blocksPerTapUnlocked && (
+          <div className="fbm-setting-section">
+            <div className="fbm-setting-row">
+              <div className="fbm-setting-info">
+                <span className="fbm-setting-label">Blocks per tap</span>
+                <span className="fbm-setting-desc">
+                  {/* More blocks per tap = better luck and score (~{Math.round(anchorChance * 100)}%) */}
+                  Play multiple games at once if you have lots of blocks to burn through.
+                  Using {itemsPerTap}x blocks to gain {itemsPerTap}x currency.
+                </span>
+              </div>
+              <div className="fbm-setting-controls">
+                <button
+                  className="fbm-ctrl-btn"
+                  onClick={() => setItemsPerTap(p => Math.max(MIN_ITEMS_PER_TAP, p - 1))}
+                  disabled={itemsPerTap <= MIN_ITEMS_PER_TAP}
+                >
+                  <ChevronDown size={16} />
+                </button>
+                <span className="fbm-ctrl-val">{itemsPerTap}</span>
+                <button
+                  className="fbm-ctrl-btn"
+                  onClick={() => setItemsPerTap(p => Math.min(maxBlocksPerTap, p + 1))}
+                  disabled={itemsPerTap >= maxBlocksPerTap}
+                >
+                  <ChevronUp size={16} />
+                </button>
+              </div>
+            </div>
+            <div className="fbm-setting-row fbm-setting-row--muted">
               <span className="fbm-setting-desc">
-                More blocks per tap = better luck and score (~{Math.round(anchorChance * 100)}%)
+                Max taps with current building blocks: <strong>{itemsPerTap > 0 ? Math.floor(totalFuel / itemsPerTap) : '—'}</strong>
               </span>
             </div>
-            <div className="fbm-setting-controls">
-              <button
-                className="fbm-ctrl-btn"
-                onClick={() => setItemsPerTap(p => Math.max(MIN_ITEMS_PER_TAP, p - 1))}
-                disabled={itemsPerTap <= MIN_ITEMS_PER_TAP}
-              >
-                <ChevronDown size={16} />
-              </button>
-              <span className="fbm-ctrl-val">{itemsPerTap}</span>
-              <button
-                className="fbm-ctrl-btn"
-                onClick={() => setItemsPerTap(p => Math.min(MAX_ITEMS_PER_TAP, p + 1))}
-                disabled={itemsPerTap >= MAX_ITEMS_PER_TAP}
-              >
-                <ChevronUp size={16} />
-              </button>
-            </div>
           </div>
-          <div className="fbm-setting-row fbm-setting-row--muted">
-            <span className="fbm-setting-desc">
-              Max taps with current building blocks: <strong>{itemsPerTap > 0 ? Math.floor(totalFuel / itemsPerTap) : '—'}</strong>
-            </span>
-          </div>
-        </div>
+        )}
 
         <div className="fbm-footer">
           <button className="fbm-cancel-btn" onClick={onClose}>Cancel</button>
@@ -178,7 +181,7 @@ const ForumBuildModal = ({ playerData, existingFuel, onClose, onPlay }) => {
             onClick={handlePlay}
             disabled={totalFuel === 0}
           >
-            Play ({totalFuel} blocks)
+            Play ({Math.floor(totalFuel)} blocks)
           </button>
         </div>
 

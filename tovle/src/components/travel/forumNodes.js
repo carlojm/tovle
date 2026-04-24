@@ -18,12 +18,17 @@ export const FORUM_NODES = [
   {
     id: 'blocks_per_tap_1',
     label: 'Blocks Per Tap I',
-    description: 'Unlock the blocks per tap setting in the pre-game modal.',
+    description: 'Have lots of blocks to burn through? Unlock the blocks per tap setting.',
     icon: 'blocks_per_tap',
     direction: 'W',
     parent: ['fuel_cap_1'],
-    maxLevel: 1,
-    costs: [{ crystals: 20 }],
+    maxLevel: 4,
+    costs: [
+      { crystals: 20 },
+      { crystals: 40 },
+      { crystals: 70 },
+      { crystals: 110 },
+    ],
     x: 0,
   },
   {
