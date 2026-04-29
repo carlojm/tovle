@@ -230,9 +230,9 @@ class GameScene extends Phaser.Scene {
     this.activeShardGain = data.activeShardGain ?? 0
     this.shardPassiveGain = data.shardPassiveGain ?? 0
 
-    this.bubblesUnlocked = data.bubblesUnlocked ?? true
-    this.bubbleChance = data.bubbleChance ?? 0.9
-    this.maxBubbles = data.maxBubbles ?? 4
+    this.bubblesUnlocked = data.bubblesUnlocked ?? false
+    this.bubbleChance = data.bubbleChance ?? 0
+    this.bubbleAmount = data.bubbleAmount ?? 1
     this.critChainChance = data.critChainChance ?? 0
     this.critAnchorUnlocked = data.critAnchorUnlocked ?? false
     this.critAnchorChance = data.critAnchorChance ?? 0
@@ -492,20 +492,15 @@ class GameScene extends Phaser.Scene {
       const uiScene = this.scene.get('UIScene')
       const ptr = this.input.activePointer
       const HIT_RADIUS = 36
+      let isCrit = false
       uiScene.activeBubbles.slice().forEach(bubble => {
         const dx = ptr.x - bubble.screenX
         const dy = ptr.y - bubble.screenY
         if (Math.sqrt(dx * dx + dy * dy) < HIT_RADIUS) {
           uiScene.popBubble(bubble)
           this.featCount++
-          this.critChainActive = true //TODO figure out this logic, maybe a number that ticks down?
-
-          //crit anchor roll
-          if (this.critAnchorUnlocked && Math.random() < this.critAnchorChance) {
-            const growAmount = Math.min(50, Math.max(10, this.topBlock.width * (this.critAnchorGrowth / 100)))
-            const nextWidth = Math.min(300, this.topBlock.width + growAmount)
-            this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
-          }
+          this.critChainActive = true
+          isCrit = true //dont do logic for crit anchor yet, handle it later
         }
       })
       
@@ -566,23 +561,40 @@ class GameScene extends Phaser.Scene {
       let nextWidth = this.topBlock.width
 
       const isPerfect = cutRatio < this.perfectPlaceThreshold
+      let anchorTriggered = false
 
       //normal anchor: preserves width, does not grow
       if (!isPerfect && Math.random() < this.anchorChance) {
-        this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
+        anchorTriggered = true
+        // this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
         this.featCount++
       }
 
       // perfect anchor: only triggers on a perfect placement, grows
-      if (isPerfect && this.perfectAnchorUnlocked && Math.random() < this.perfectAnchorChance) {
+      if (isPerfect && this.perfectAnchorUnlocked && Math.random() < this.perfectAnchorChance + this.anchorChance) {
         const growAmount = Math.min(50, Math.max(10, this.topBlock.width * this.perfectAnchorGrowthFactor))
         nextWidth = this.topBlock.width + growAmount
-        this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
+        anchorTriggered = true
+        // this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
+        this.featCount++
+      }
+
+      //crit anchor
+      if (isCrit && this.critAnchorUnlocked && Math.random() < this.critAnchorChance + this.anchorChance) {
+        const growAmount = Math.min(50, Math.max(10, this.topBlock.width * this.critAnchorGrowth))
+        nextWidth = this.topBlock.width + growAmount
+        anchorTriggered = true
+        // this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
         this.featCount++
       }
 
       //limit width to max 300
       nextWidth = Math.min(300, nextWidth)
+
+      //perform anchor
+      if (anchorTriggered) {
+        this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
+      }
 
       //calculate where to start block based on zoom
       const currentZoom = this.cameras.main.zoom
@@ -633,7 +645,7 @@ class GameScene extends Phaser.Scene {
         this.critChainActive = false //TODO is this how i should keep the chain chance
 
         //spawn in one of four spots on screen
-        if (Math.random() < spawnChance && uiScene.activeBubbles.length < this.maxBubbles) {
+        if (Math.random() < spawnChance && uiScene.activeBubbles.length < this.bubbleAmount) {
           const W = this.scale.width
           const H = this.scale.height
           const quadrants = [
@@ -704,6 +716,8 @@ const ForumGame = ({
   perfectAnchorChance,
   perfectAnchorGrowthFactor,
   activeCrystalGain, activeShardGain, shardPassiveGain,
+  bubblesUnlocked, bubbleChance, bubbleAmount,
+  critChainChance, critAnchorUnlocked, critAnchorChance, critAnchorGrowth,
 }) => {
   const containerRef = useRef(null)
 
@@ -720,6 +734,8 @@ const ForumGame = ({
       perfectAnchorChance,
       perfectAnchorGrowthFactor,
       activeCrystalGain, activeShardGain, shardPassiveGain,
+      bubblesUnlocked, bubbleChance, bubbleAmount,
+      critChainChance, critAnchorUnlocked, critAnchorChance, critAnchorGrowth,
     })
 
     const width = containerRef.current.offsetWidth
@@ -759,6 +775,8 @@ const ForumGame = ({
         activeCrystalGain,
         activeShardGain, 
         shardPassiveGain,
+        bubblesUnlocked, bubbleChance, bubbleAmount,
+        critChainChance, critAnchorUnlocked, critAnchorChance, critAnchorGrowth,
       } //data
     )
     game.scene.add('UIScene', UIScene, true)

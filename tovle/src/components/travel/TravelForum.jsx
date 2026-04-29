@@ -253,6 +253,13 @@ const TravelForum = ({ playerData, save }) => {
                 activeCrystalGain={forumUnlocks.activeCrystalGain}
                 activeShardGain={forumUnlocks.activeShardGain}
                 shardPassiveGain={forumUnlocks.shardPassiveGain}
+                bubblesUnlocked={forumUnlocks.bubblesUnlocked}
+                bubbleChance={forumUnlocks.bubbleChance}
+                bubbleAmount={forumUnlocks.bubbleAmount}
+                critChainChance={forumUnlocks.critChainChance}
+                critAnchorUnlocked={forumUnlocks.critAnchorUnlocked}
+                critAnchorChance={forumUnlocks.critAnchorChance}
+                critAnchorGrowth={forumUnlocks.critAnchorGrowth}
               />
             </div>
           </div>
