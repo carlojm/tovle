@@ -131,6 +131,13 @@ class UIScene extends Phaser.Scene {
     const gameOverSize = Math.round(30 * scale)
     const xpSize = Math.round(30 * scale)
 
+    // font primer — forces Jersey 15 to load before any visible text renders
+    const primer = this.add.text(0, 0, ' ', {
+      fontSize: '1px',
+      fontFamily: '"Jersey 15"',
+    }).setAlpha(0)
+    this.time.delayedCall(100, () => primer.destroy())
+
     this.gameOverText = this.add.text(this.scale.width / 2, this.scale.height / 3, 'Game Over!', {
       fontSize: `${gameOverSize}px`,
       color: '#ffffff',
@@ -498,7 +505,7 @@ class GameScene extends Phaser.Scene {
         const dy = ptr.y - bubble.screenY
         if (Math.sqrt(dx * dx + dy * dy) < HIT_RADIUS) {
           uiScene.popBubble(bubble)
-          this.featCount++
+          this.featCount += 2 //2 instead of 1 to encourage popping bubbles
           this.critChainActive = true
           isCrit = true //dont do logic for crit anchor yet, handle it later
         }
