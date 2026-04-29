@@ -101,7 +101,7 @@
 .ftm-node {
   position: absolute;
   border-radius: 10px;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -127,7 +127,7 @@
 
 .ftm-node--locked {
   background: var(--color-background-modal);
-  border-color: var(--color-coords-border);
+  border-color: var(--color-button);
   opacity: 0.5;
 }
 
@@ -138,7 +138,7 @@
 
 .ftm-node--available {
   /* background: var(--color-background-modal); */
-  border-color: var(--color-coords-border);
+  border-color: var(--color-button);
   /* opacity: 1; */
 }
 
@@ -148,8 +148,8 @@
 }
 
 .ftm-node--maxed {
-  /* background: var(--color-background-coords-display); */
-  border-color: var(--color-button);
+  background: var(--color-background-node-maxed);
+  border-color: var(--color-border-node-maxed);
   /* opacity: 0.85; */
   /* opacity: 1; */
 }
@@ -160,7 +160,7 @@
 }
 
 .ftm-node--selected {
-  border-color: var(--color-text) !important;
+  border-color: var(--color-border-node-selected) !important;
   transform: scale(1.12);
   z-index: 10;
 }

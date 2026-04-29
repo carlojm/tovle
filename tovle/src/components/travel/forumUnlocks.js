@@ -77,8 +77,10 @@ export const computeForumUnlocks = (upgrades = {}) => {
   // shard unlocks
   const shardsUnlocked = level('shards_unlock') >= 1
   const heartsUnlocked = level('hearts_unlock') >= 1
-  const shardActiveGain = level('shard_active_gain_1') + level('shard_active_gain_2')
-  const shardPassiveGain = level('shard_passive_gain_1')
+  const activeShardGain = shardsUnlocked ? (1 + level('shard_active_gain_1') + level('shard_active_gain_2')) : 0
+  // const shardPassiveGain = level('shard_passive_gain_1')
+  const shardPassiveGainUnlocked = level('shard_passive_gain_1') >= 1
+  const shardPassiveGain = shardPassiveGainUnlocked ? Math.pow(1.5, level('shard_passive_gain_1')) : 0
 
   return {
     // speed
@@ -134,7 +136,7 @@ export const computeForumUnlocks = (upgrades = {}) => {
     // currencies
     shardsUnlocked,
     heartsUnlocked,
-    shardActiveGain,
+    activeShardGain,
     shardPassiveGain,
   }
 }

@@ -185,7 +185,7 @@ const TreeNode = memo(function TreeNode({ node, state, isSelected, onClick, leve
   // const level = 0 // will come from upgrades later
   return (
     <div
-      className={`ftm-node ftm-node--${state} ${isSelected ? 'ftm-node--selected' : '' } ${!affordable && state === 'available' ? 'ftm-node--unaffordable' : ''}`}
+      className={`ftm-node ftm-node--${state} ${isSelected ? 'ftm-node--selected' : '' } ${!affordable && state !== 'maxed' ? 'ftm-node--unaffordable' : ''}`}
       style={{
         left: node.cx - NODE_SIZE / 2,
         top:  node.cy - NODE_SIZE / 2,
@@ -273,7 +273,7 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
     if (!el) return
 
     const { width, height } = el.getBoundingClientRect()
-    setTransform({ x: width / 2, y: height / 2, scale: 1 })
+    setTransform({ x: width / 2, y: height / 2, scale: 0.65 }) //start at 0.65
 
     const prevent = (e) => e.preventDefault()
     el.addEventListener('wheel', prevent, { passive: false })

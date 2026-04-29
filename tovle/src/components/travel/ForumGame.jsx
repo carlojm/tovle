@@ -33,7 +33,7 @@ class UIScene extends Phaser.Scene {
     super({ key: 'UIScene' })
   }
 
-  playOutro(xp) {
+  playOutro(currency) {
     const W = this.scale.width
     const H = this.scale.height
 
@@ -73,7 +73,7 @@ class UIScene extends Phaser.Scene {
       },
       onComplete: () => {
         this.time.delayedCall(400, () => {
-          this.scene.get('GameScene').onGameEnd(xp, this.scene.get('GameScene').blockCount)
+          this.scene.get('GameScene').onGameEnd(currency, this.scene.get('GameScene').blockCount)
         })
       }
     })
@@ -93,7 +93,14 @@ class UIScene extends Phaser.Scene {
       resolution: dpr,
     }).setOrigin(0.5).setVisible(false)
 
-    this.xpText = this.add.text(10,0, '', {
+    this.crystalText = this.add.text(10,0, '', {
+      fontSize: `${xpSize}px`,
+      color: '#ffffff',
+      fontFamily: '"Jersey 15"',
+      resolution: dpr,
+    }).setVisible(false)
+
+    this.shardText = this.add.text(10, xpSize + 5, '', {
       fontSize: `${xpSize}px`,
       color: '#ffffff',
       fontFamily: '"Jersey 15"',
@@ -108,15 +115,31 @@ class UIScene extends Phaser.Scene {
     }).setVisible(false)
 
     // listen for game over event from GameScene
-    this.scene.get('GameScene').events.on('gameover', ({ message, xp }) => {
+    this.scene.get('GameScene').events.on('gameover', ({ message, currency }) => {
       this.gameOverText.setText(message)
       this.gameOverText.setVisible(true)
-      this.xpText.setText(`Crystals earned: ${xp}`)
-      this.xpText.setVisible(true)
+
+      const {crystals, featCrystals, shards, featShards} = currency
+      const totalCrystals = Math.round((crystals + featCrystals) * 10) / 10
+      const totalShards = Math.round((shards + featShards) * 10) / 10
+
+      const crystalLine = featCrystals > 0
+        ? `Crystals earned ${crystals} + ${featCrystals}`
+        : `Crystals earned ${crystals}`
+      this.crystalText.setText(crystalLine)
+      this.crystalText.setVisible(true)
+
+      if (totalShards > 0) {
+        const shardLine = featShards > 0
+          ? `Shards earned ${shards} + ${featShards}`
+          : `Shards earned ${totalShards}`
+        this.shardText.setText(shardLine)
+        this.shardText.setVisible(true)
+      }
     })
 
-    this.scene.get('GameScene').events.on('outro', ({ xp }) => {
-      this.playOutro(xp)
+    this.scene.get('GameScene').events.on('outro', ({ currency }) => {
+      this.playOutro(currency)
     })
   }
 
@@ -144,6 +167,8 @@ class GameScene extends Phaser.Scene {
     this.maxTaps = Math.floor(data.totalFuel / data.itemsPerTap)
 
     //skill tree
+    //theres gotta be a better way to do this... but.. this is fine
+    //doing them one by one like this is at least helping me keep track of what's implemented
     this.anchorChance = data.anchorChance
     this.speedExponent = data.speedExponent ?? 1.15
     this.perfectPlacementUnlocked = data.perfectPlacementUnlocked ?? false
@@ -155,6 +180,10 @@ class GameScene extends Phaser.Scene {
     this.perfectAnchorUnlocked = data.perfectAnchorUnlocked ?? false
     this.perfectAnchorChance = data.perfectAnchorChance ?? 0
     this.perfectAnchorGrowthFactor = data.perfectAnchorGrowthFactor ?? 0.1
+
+    this.activeCrystalGain = data.activeCrystalGain ?? 0
+    this.activeShardGain = data.activeShardGain ?? 0
+    this.shardPassiveGain = data.shardPassiveGain ?? 0
   }
 
   getOverlap(blockA, blockB) {
@@ -202,12 +231,35 @@ class GameScene extends Phaser.Scene {
     return { r: boost[0], g: boost[1], b: boost[2] }
   }
 
-  calculateXP() {
+  // calculateXP() {
+  //   const blocksSpent = this.blockCount * this.itemsPerTap
+  //   const heightMultiplier = Math.pow(1 + this.blockCount * 0.15, 2)
+  //   const limiter = 100
+  //   const xp = blocksSpent * heightMultiplier * this.crystalMultiplier / limiter
+  //   return Math.round(xp * 10) / 10 //nearest tens place
+  // }
+
+  calculateCurrency() {
+    //height based (passive) crystal/shard gain
     const blocksSpent = this.blockCount * this.itemsPerTap
     const heightMultiplier = Math.pow(1 + this.blockCount * 0.15, 2)
     const limiter = 100
-    const xp = blocksSpent * heightMultiplier * this.crystalMultiplier / limiter
-    return Math.round(xp * 10) / 10 //nearest tens place
+    const crystals = Math.round(blocksSpent * heightMultiplier * this.crystalMultiplier / limiter * 10) / 10
+    const shards = Math.round(blocksSpent * heightMultiplier * this.shardPassiveGain / limiter * 10) / 10
+
+    //feat based (active) crystal/shard gain
+    let featCrystals = 0
+    let featShards = 0
+    for (let i=0; i < this.featCount; i++) {
+      const roll = 0.5 + Math.random() //0.5 to 1.5 random multiplier
+      const roll2 = 0.5 + Math.random()
+      featCrystals += this.activeCrystalGain * roll / 2 //rate limits for balancing
+      featShards += this.activeShardGain * roll2 / 8 //ill keep messing with these til it feels right...
+    }
+    featCrystals = Math.round(featCrystals * 10) / 10
+    featShards = Math.round(featShards * 10) / 10
+
+    return { crystals, featCrystals, shards, featShards }
   }
 
   handleGameOver(message = "Game Over!") {
@@ -218,12 +270,12 @@ class GameScene extends Phaser.Scene {
 
     this.isGameOver = true
     this.blockSpeed = 0
-    const xp = this.calculateXP()
+    const currency = this.calculateCurrency()
 
-    this.events.emit('gameover', { message, xp })
+    this.events.emit('gameover', { message, currency })
 
     this.time.delayedCall(500, () => {
-      this.events.emit('outro', { xp })
+      this.events.emit('outro', { currency })
     })
   }
 
@@ -345,6 +397,7 @@ class GameScene extends Phaser.Scene {
     this.isGameOver = false
     this.hasRevived = false
     this.reviveSpeedDampen = 0
+    this.featCount = 0 //"feats" = anchors, perfects, crits..
     
     this.particlesLeft = this.add.particles(0, 0, 'particle', {
       speed: { start: 120, end: 40 },
@@ -425,6 +478,7 @@ class GameScene extends Phaser.Scene {
         //check if perfect place is unlocked in skill tree
         //if unlocked, platform doesn't shrink on perfect place
         this.movingBlock.setPosition(this.topBlock.x, this.movingBlock.y)
+        this.featCount++
       } else {
         this.movingBlock.setSize(overlap, 20)
         this.movingBlock.setPosition(newX, this.movingBlock.y)
@@ -441,6 +495,7 @@ class GameScene extends Phaser.Scene {
       //normal anchor: preserves width, does not grow
       if (!isPerfect && Math.random() < this.anchorChance) {
         this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
+        this.featCount++
       }
 
       // perfect anchor: only triggers on a perfect placement, grows
@@ -448,6 +503,7 @@ class GameScene extends Phaser.Scene {
         const growAmount = Math.min(50, Math.max(10, this.topBlock.width * this.perfectAnchorGrowthFactor))
         nextWidth = this.topBlock.width + growAmount
         this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
+        this.featCount++
       }
 
       //limit width to max 300
@@ -524,6 +580,7 @@ const ForumGame = ({
   perfectAnchorUnlocked,
   perfectAnchorChance,
   perfectAnchorGrowthFactor,
+  activeCrystalGain, activeShardGain, shardPassiveGain,
 }) => {
   const containerRef = useRef(null)
 
@@ -539,6 +596,7 @@ const ForumGame = ({
       perfectAnchorUnlocked,
       perfectAnchorChance,
       perfectAnchorGrowthFactor,
+      activeCrystalGain, activeShardGain, shardPassiveGain,
     })
 
     const width = containerRef.current.offsetWidth
@@ -575,6 +633,9 @@ const ForumGame = ({
         perfectAnchorUnlocked,
         perfectAnchorChance,
         perfectAnchorGrowthFactor,
+        activeCrystalGain,
+        activeShardGain, 
+        shardPassiveGain,
       } //data
     )
     game.scene.add('UIScene', UIScene, true)

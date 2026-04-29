@@ -219,14 +219,12 @@ const TravelForum = ({ playerData, save }) => {
                 totalFuel={gameConfig.totalFuel}
                 itemsPerTap={gameConfig.itemsPerTap}
                 anchorChance={gameConfig.anchorChance}
-                onGameEnd={(xpEarned, blocksBuilt) => {
+                onGameEnd={(currency, blocksBuilt) => {
                   setGameConfig(null)
-                  // fuelUsed = actual taps * blocks per tap
                   const fuelUsed = blocksBuilt * gameConfig.itemsPerTap
-                  // fuelRemaining uses gameConfig.totalFuel as the starting point
-                  // never forum?.fuel which could be stale from firestore
                   const fuelRemaining = Math.max(0, Math.round((gameConfig.totalFuel - fuelUsed) * 10) / 10)
                   const currentCurrencies = forum?.currencies ?? { crystals: 0, shards: 0, hearts: 0 }
+                  const { crystals, featCrystals, shards, featShards } = currency
                   save({ 
                     travel: { 
                       ...playerData?.travel,
@@ -235,7 +233,8 @@ const TravelForum = ({ playerData, save }) => {
                         fuel: fuelRemaining,
                         currencies: {
                           ...currentCurrencies,
-                          crystals: Math.round(((currentCurrencies.crystals ?? 0) + xpEarned) * 10) / 10,
+                          crystals: Math.round(((currentCurrencies.crystals ?? 0) + crystals + featCrystals) * 10) / 10,
+                          shards: Math.round(((currentCurrencies.shards ?? 0) + shards + featShards) * 10) / 10,
                         }
                       }
                     }
@@ -251,6 +250,9 @@ const TravelForum = ({ playerData, save }) => {
                 perfectAnchorUnlocked={forumUnlocks.perfectAnchorUnlocked}
                 perfectAnchorChance={forumUnlocks.perfectAnchorChance}
                 perfectAnchorGrowthFactor={forumUnlocks.perfectAnchorGrowthFactor}
+                activeCrystalGain={forumUnlocks.activeCrystalGain}
+                activeShardGain={forumUnlocks.activeShardGain}
+                shardPassiveGain={forumUnlocks.shardPassiveGain}
               />
             </div>
           </div>

@@ -81,7 +81,10 @@
 
   --color-background-modal: var(--deepest-ocean);
   --color-background-modal-inset: var(--void-navy);
-  --color-background-node: var(--deepest-ocean);
+  --color-background-node: #092125;
+  --color-background-node-maxed: #03181b;
+  --color-border-node-selected: var(--lighterer-teal);
+  --color-border-node-maxed: var(--darker-teal);
 
   --text-currency-crystal: #9fd7e6;
   --text-currency-shard: #a0d4b0;
@@ -151,6 +154,9 @@
   --color-background-modal: rgb(190, 223, 252);
   --color-background-modal-inset: rgb(97, 181, 255);
   --color-background-node: rgb(181, 222, 255);
+  --color-background-node-maxed: rgb(141, 200, 248);
+  --color-border-node-selected: var(--darker-teal);
+  --color-border-node-maxed: var(--dark-teal);
 
   --text-currency-crystal: #2d7285;
   --text-currency-shard: #347448;
