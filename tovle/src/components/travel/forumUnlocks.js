@@ -50,8 +50,9 @@ export const computeForumUnlocks = (upgrades = {}) => {
   const startingWidth = 100 + level('starting_width') * 10  // 100 to 150
 
   // fuel
-  const fuelCapacity = level('fuel_cap_1') >= 1
-    ? 50 + (level('fuel_cap_1') - 1) * 0  // fuel_cap_1 is a single unlock to 50
+  const fuelCapacity = level('fuel_cap_3') >= 1 ? 250
+    : level('fuel_cap_2') >= 1 ? 100
+    : level('fuel_cap_1') >= 1 ? 50
     : 20
   // note: we only have fuel_cap_1 as one node right now, expand as we add more
 

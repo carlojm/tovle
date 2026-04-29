@@ -19,6 +19,8 @@ const NODE_FRAME = {
   blocks_per_tap_1:    1,
   daily_runs_1:        2,
   fuel_cap_1:          3,
+  fuel_cap_2:          3,
+  fuel_cap_3:          3,
   revive:              4,
   fuel_efficiency_1:   5,
   forum_tier_1:        6,
