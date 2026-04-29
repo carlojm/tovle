@@ -2,6 +2,9 @@ import { useEffect, useRef } from 'react'
 import * as Phaser from 'phaser'
 
 import BackgroundScene from './ForumGame/BackgroundScene'
+import bubbleUrl from './ForumGame/bubble.png'
+import bubblepopUrl from './ForumGame/bubblepop.png'
+
 
 const BASE_SPEED = 200
 // const SPEED_EXPONENT = 1.15
@@ -79,7 +82,49 @@ class UIScene extends Phaser.Scene {
     })
   }
 
+  spawnBubble(screenX, screenY, quadrant) {
+    const image = this.add.image(screenX, screenY, 'bubble')
+    image.setDisplaySize(56, 56)
+
+    const bubble = {image, screenX, screenY, tapsRemaining: 3, quadrant}
+    this.activeBubbles.push(bubble)
+
+    image.setScale(0)
+      this.tweens.add({
+      targets: image,
+      scaleX: 56 / image.width,
+      scaleY: 56 / image.height,
+      duration: 250,
+      ease: 'Back.Out',
+    })
+
+    return bubble
+  }
+
+  popBubble (bubble) {
+    this.activeBubbles = this.activeBubbles.filter(b => b !== bubble)
+    bubble.image.setTexture('bubblepop')
+    bubble.image.setDisplaySize(72,72)
+
+    this.tweens.add({
+      targets: bubble.image,
+      scaleX: 0,
+      scaleY: 0,
+      alpha: 0,
+      duration: 200,
+      ease: 'Sine.In',
+      onComplete: () => bubble.image.destroy()
+    })
+  }
+
+  preload() {
+    this.load.image('bubble', bubbleUrl)
+    this.load.image('bubblepop', bubblepopUrl)
+  }
+
   create() {
+    this.activeBubbles = []
+
     const dpr = window.devicePixelRatio || 1
 
     const scale = this.scale.width / 400
@@ -184,6 +229,14 @@ class GameScene extends Phaser.Scene {
     this.activeCrystalGain = data.activeCrystalGain ?? 0
     this.activeShardGain = data.activeShardGain ?? 0
     this.shardPassiveGain = data.shardPassiveGain ?? 0
+
+    this.bubblesUnlocked = data.bubblesUnlocked ?? true
+    this.bubbleChance = data.bubbleChance ?? 0.9
+    this.maxBubbles = data.maxBubbles ?? 4
+    this.critChainChance = data.critChainChance ?? 0
+    this.critAnchorUnlocked = data.critAnchorUnlocked ?? false
+    this.critAnchorChance = data.critAnchorChance ?? 0
+    this.critAnchorGrowth = data.critAnchorGrowth ?? 0
   }
 
   getOverlap(blockA, blockB) {
@@ -398,6 +451,7 @@ class GameScene extends Phaser.Scene {
     this.hasRevived = false
     this.reviveSpeedDampen = 0
     this.featCount = 0 //"feats" = anchors, perfects, crits..
+    this.critChainActive = false
     
     this.particlesLeft = this.add.particles(0, 0, 'particle', {
       speed: { start: 120, end: 40 },
@@ -433,6 +487,27 @@ class GameScene extends Phaser.Scene {
     this.input.on('pointerdown', () => {
       if (this.isGameOver) return
       this.blockSpeed = 0
+
+      //crit detection, check if tap overlapped an active bubble
+      const uiScene = this.scene.get('UIScene')
+      const ptr = this.input.activePointer
+      const HIT_RADIUS = 36
+      uiScene.activeBubbles.slice().forEach(bubble => {
+        const dx = ptr.x - bubble.screenX
+        const dy = ptr.y - bubble.screenY
+        if (Math.sqrt(dx * dx + dy * dy) < HIT_RADIUS) {
+          uiScene.popBubble(bubble)
+          this.featCount++
+          this.critChainActive = true //TODO figure out this logic, maybe a number that ticks down?
+
+          //crit anchor roll
+          if (this.critAnchorUnlocked && Math.random() < this.critAnchorChance) {
+            const growAmount = Math.min(50, Math.max(10, this.topBlock.width * (this.critAnchorGrowth / 100)))
+            const nextWidth = Math.min(300, this.topBlock.width + growAmount)
+            this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
+          }
+        }
+      })
       
       const result = this.getOverlap(this.movingBlock, this.topBlock)
       if (result === null) {
@@ -532,6 +607,54 @@ class GameScene extends Phaser.Scene {
         this.handleGameOver('Out of blocks!')
       }
 
+
+      //tick down time on all active bubbles
+      uiScene.activeBubbles.slice().forEach(bubble => {
+        bubble.tapsRemaining--
+        //shrink slightly
+        const scale = (bubble.tapsRemaining / 3) * (56 / bubble.image.width)
+        this.tweens.add({
+          targets: bubble.image,
+          scaleX: scale,
+          scaleY: scale,
+          duration: 150,
+          ease: 'Sine.Out',
+        })
+        if (bubble.tapsRemaining <= 0) {
+          uiScene.popBubble(bubble)
+        }
+      })
+
+      //spawn new bubbles
+      if (this.bubblesUnlocked) {
+        const spawnChance = this.critChainActive
+          ? this.bubbleChance + this.critChainChance
+          : this.bubbleChance
+        this.critChainActive = false //TODO is this how i should keep the chain chance
+
+        //spawn in one of four spots on screen
+        if (Math.random() < spawnChance && uiScene.activeBubbles.length < this.maxBubbles) {
+          const W = this.scale.width
+          const H = this.scale.height
+          const quadrants = [
+            { x: W * 0.25, y: H * 0.25 },
+            { x: W * 0.75, y: H * 0.25 },
+            { x: W * 0.25, y: H * 0.75 },
+            { x: W * 0.75, y: H * 0.75 },
+          ]
+          // filter out quadrants already occupied
+          const occupied = uiScene.activeBubbles.map(b => b.quadrant)
+          const available = quadrants.filter((_, i) => !occupied.includes(i))
+          if (available.length > 0) {
+            const pick = available[Math.floor(Math.random() * available.length)]
+            const quadrantIndex = quadrants.indexOf(pick)
+            const randomX = (Math.random() - 0.5) * W * 0.2
+            const randomY = (Math.random() - 0.5) * H * 0.2
+            uiScene.spawnBubble(pick.x + randomX, pick.y + randomY, quadrantIndex)
+            // uiScene.spawnBubble(pick.x, pick.y)
+          }
+        }
+      }
     })
   }
 
