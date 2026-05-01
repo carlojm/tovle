@@ -1,13 +1,15 @@
 const LAUNCH = { y: 2026, m: 4, d: 1 }
+const LAUNCH_STR = '2026-04-01'
 
-export const getEasternDateStr = () =>
-  new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+export const getEasternDateStr = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 
-const toDayNumber = ({ y, m, d }) => y * 365 + m * 31 + d
+// const toDayNumber = ({ y, m, d }) => y * 365 + m * 31 + d
 
 export const getPuzzleNumber = (dateStr = getEasternDateStr()) => {
-  const [y, m, d] = dateStr.split('-').map(Number)
-  return toDayNumber({ y, m, d }) - toDayNumber(LAUNCH) + 1
+  const toNoon = (dateStr) => new Date(`${dateStr}T12:00:00`)
+  const msPerDay = 1000 * 60 * 60 * 24
+  const diff = toNoon(dateStr) - toNoon(LAUNCH_STR)
+  return Math.round(diff / msPerDay) + 1
 }
 
 export const getDisplayDate = (dateStr = getEasternDateStr()) =>
