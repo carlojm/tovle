@@ -7,6 +7,7 @@ import './TownCard.css'
 import TradeModal from './TradeModal'
 
 import { getTownLevel, getRepForNextLevel } from '../../utils/townUtils'
+import { getEasternDateStr, formatCountdown } from '../../utils/dates'
 
 const TownCard = ({ townId, children }) => {
   const { uid, playerData } = usePlayer()
@@ -110,13 +111,27 @@ const TownCard = ({ townId, children }) => {
       setReputation(data.reputation)
 
       //close modal
-      if (trades.timesCompleted + 1 >= trade.limit) {
+      if (trade.timesCompleted + 1 >= trade.limit) {
         setSelectedTrade(null)
+      } else {
+        setSelectedTrade(prev => ({
+          ...prev,
+          trade: {
+            ...prev.trade,
+            timesCompleted: newTimesCompleted,
+            canTrade: newTimesCompleted < trade.limit
+          }
+        }))
       }
 
     } catch (err) {
       console.error('Failed to execute trade:', err)
     }
+  }
+
+  const alreadyCollected = (townData?.lastShipment ?? null) === getEasternDateStr()
+  const handleCollectShipment = () => {
+    console.log('collect shipment', townId)
   }
 
 
@@ -204,6 +219,13 @@ const TownCard = ({ townId, children }) => {
       </div>
 
       {children}
+
+      <button
+        className={`upgrade-button ${alreadyCollected ? 'disable-button' : ''}`}
+        onClick={handleCollectShipment}
+      >
+        {alreadyCollected ? 'Shipment collected today' : "Collect today's shipment"}
+      </button>
 
 
       <TradeModal

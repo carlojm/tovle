@@ -2,9 +2,14 @@ import { ITEM_MAP } from '../../data/itemMap'
 import { formatCountdown } from '../../utils/dates'
 import './TownCard.css'
 import './TradeModal.css'
+import { usePlayer } from '../../context/PlayerContext'
 
 const TradeModal = ({ trade, tradeIndex, config, nextWindowIn, onClose, onExecute }) => {
   if (!trade) return null
+
+  const { playerData } = usePlayer()
+  const playerQty = playerData?.inventory?.items?.find(i => i.itemId === trade.want.itemId)?.quantity ?? 0
+  const canAfford = playerQty >= trade.want.quantity
 
   return (
     <div className="town-backdrop" onClick={onClose}>
@@ -85,7 +90,7 @@ const TradeModal = ({ trade, tradeIndex, config, nextWindowIn, onClose, onExecut
           <button
             className={`town-footer-btn town-footer-btn--primary ${!trade.canTrade ? 'town-footer-btn--disabled' : ''}`}
             onClick={() => onExecute(trade, tradeIndex)}
-            disabled={!trade.canTrade}
+            disabled={!trade.canTrade || !canAfford}
           >
             Trade
           </button>
