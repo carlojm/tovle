@@ -111,6 +111,8 @@ function buildOfferSide(rng, wantValue, wantItemId) {
   return {reputation, items}
 }
 
+// EXPORTED HELPER FUNCTIONS BELOW ==========================================
+
 function generateTrades(townId, townLevel, numSlots = 2) {
   const seed = getTradeSeed(townId)
   const rng = makeRng(seed)
@@ -121,14 +123,62 @@ function generateTrades(townId, townLevel, numSlots = 2) {
     const wantValue = calcWantValue(want.itemId, want.quantity)
     const offer = buildOfferSide(rng, wantValue, want.itemId)
 
-    trades.push({ want, offer, multiplier: want.multiplier })
+    trades.push({ want, offer })
   }
 
   return trades
 }
 
-module.exports = { generateTrades }
+//total reputation needed to reach a given level
+//could be memoized later but prob fine for now
+function getRepForLevel(level) {
+  let total = 0
+  for (let i = 1; i <= level; i++) {
+    total += Math.round(100 * Math.pow(i, 1.3))
+  }
+  return total
+}
 
+//derive towl level by total reputation
+function getTownLevel(reputation) {
+  let level = 0
+  while (reputation >= getRepForLevel(level + 1)) {
+    level++
+  }
+  return level
+}
+
+//derive number of trade slots a town has based on its level
+function getNumSlots(townLevel) {
+  const base = 2
+  const bonus = Math.floor(townLevel / 3)
+  return base + bonus
+}
+
+//derive number of times a trade can be repeated based on forum level
+function getTradeLimit(playerData) {
+  const forumTier = playerData.travel?.forum?.tier ?? 1
+  //for now tier 1 = 1 trade, tier 2 = 2 trades, ...
+  return forumTier
+}
+
+//seconds until next 4-hour window boundary
+//so frontend knows when to refresh
+function getSecondsUntilNextWindow() {
+  const nowET = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+  const d = new Date(nowET)
+  const secondsIntoWindow = ((d.getHours() % 4) * 3600) + (d.getMinutes() * 60) + d.getSeconds()
+  return (4 * 3600) - secondsIntoWindow
+}
+
+module.exports = { 
+  generateTrades, 
+  getCurrentWindowIndex,
+  getTownLevel,
+  getNumSlots,
+  getTradeLimit,
+  getSecondsUntilNextWindow,
+}
 
 // Run with: node server/trades.js
 if (require.main === module) {

@@ -7,6 +7,16 @@ const {createAxolotl, generateLevelRequirements} = require('./axolotl')
 const { rollLoot, scoreToLuckMultiplier} = require('./loot')
 const { admin, db } = require('./firebase')
 
+const { 
+  generateTrades, 
+  getCurrentWindowIndex,
+  getTownLevel,
+  getNumSlots,
+  getTradeLimit,
+  getSecondsUntilNextWindow
+} = require('./trades')
+
+
 //env
 const PORT = process.env.PORT || 3001
 const REQUIRED_ENV = [] //todo keys for firebase and whatev
@@ -289,6 +299,72 @@ app.post('/api/level-axolotl', async (req, res) => {
     res.json({ nextLevel, requirements: newRequirements })
   } catch (err) {
     console.error('Error leveling axolotl:', err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+app.get('/api/trades/:townId', async (req, res) => {
+  const {townId} = req.params
+  const {uid} = req.query
+
+  const VALID_TOWNS = ['alnera', 'frostgate', 'mistport', 'steelmeld']
+  if (!VALID_TOWNS.includes(townId)) {
+    return res.status(400).json({ error: 'Invalid town ID' })
+  }
+  if (!uid) {
+    return res.status(400).json({ error: 'Missing uid' })
+  }
+
+  try {
+    //verify player exists
+    const playerRef = db.collection('players').doc(uid)
+    const playerSnap = await playerRef.get()
+    if (!playerSnap.exists) {
+      return res.status(404).json({ error: 'Player not found' })
+    }
+
+    const playerData = playerSnap.data()
+    const townData = playerData.travel?.towns?.[townId] ?? {}
+
+    //derive town level from reputation
+    const reputation = townData.reputation ?? 0
+    const townLevel = getTownLevel(reputation)
+
+    //figure out number of trade slots player has unlocked
+    const numSlots = getNumSlots(townLevel)
+
+    console.log({ reputation, townLevel, numSlots }) // add this temporarily
+
+    //generate the trades
+    const trades = generateTrades(townId, townLevel, numSlots)
+
+    //figure out how many times each trade has been done already in this window
+    //from player's townData
+    const currentWindow = getCurrentWindowIndex()
+    const storedWindow = townData.tradeWindow
+    const tradeCounts = storedWindow?.windowIndex === currentWindow
+      ? storedWindow.tradeCounts
+      : new Array(numSlots).fill(0) //new trade set = reset history
+
+    // how many times can each trade be done per window?
+    const tradeLimit = getTradeLimit(playerData)
+
+    res.json({
+      townId,
+      reputation,
+      townLevel,
+      trades: trades.map((trade, i) => ({
+        ...trade,
+        timesCompleted: tradeCounts[i] ?? 0,
+        limit: tradeLimit,
+        canTrade: (tradeCounts[i] ?? 0) < tradeLimit
+      })),
+      windowIndex: currentWindow,
+      nextWindowIn: getSecondsUntilNextWindow()
+    })
+
+  } catch (err) {
+    console.error('Error fetching trades:', err)
     res.status(500).json({ error: 'Internal server error' })
   }
 })
