@@ -33,7 +33,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  image-rendering: pixelated;
+  /* image-rendering: pixelated; */
 }
 
 .forum-header-info {

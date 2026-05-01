@@ -4,6 +4,8 @@ import TravelMap from './TravelMap'
 import TravelForum from './TravelForum'
 import './Travel.css'
 
+import TownCard from './TownCard'
+
 const Travel = () => {
   const { playerData, save } = usePlayer()
 
@@ -42,6 +44,8 @@ const Travel = () => {
 
       <button onClick={handleDebugCurrencies}>Debug: 999 currencies</button>
       <button onClick={handleDebugResetTree}>Debug: Reset tree</button>
+
+      <TownCard townId="alnera" />
 
     </div>
   )
