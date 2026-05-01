@@ -10,7 +10,7 @@ import { getTownLevel, getRepForNextLevel } from '../../utils/townUtils'
 import { getEasternDateStr } from '../../utils/dates'
 
 const TownCard = ({ townId, children }) => {
-  const { uid, playerData } = usePlayer()
+  const { uid, playerData, save } = usePlayer()
   const config = TOWN_CONFIG[townId]
 
   //town data from firestore
@@ -110,7 +110,7 @@ const TownCard = ({ townId, children }) => {
       //update reputation in local state
       setReputation(data.reputation)
 
-      //close modal
+      //close modal qol
       if (trade.timesCompleted + 1 >= trade.limit) {
         setSelectedTrade(null)
       } else {
@@ -123,6 +123,33 @@ const TownCard = ({ townId, children }) => {
           }
         }))
       }
+
+      //finally, update inventory ===
+
+      // deduct items locally to match what the server did
+      const updatedItems = (playerData?.inventory?.items ?? []).map(item => {
+        if (item.itemId !== trade.want.itemId) return item
+        return { ...item, quantity: item.quantity - trade.want.quantity }
+      }).filter(item => item.quantity > 0)
+
+      // add offered items locally
+      const itemsWithOffers = [...updatedItems]
+      for (const offered of trade.offer.items) {
+        const existing = itemsWithOffers.find(i => i.itemId === offered.itemId)
+        if (existing) {
+          existing.quantity += offered.quantity
+        } else {
+          itemsWithOffers.push({ itemId: offered.itemId, quantity: offered.quantity })
+        }
+      }
+
+      //local update the inventory since we already update firebase on the serverside
+      save({
+        inventory: {
+          ...playerData?.inventory,
+          items: itemsWithOffers
+        }
+      }, { localOnly: true })
 
     } catch (err) {
       console.error('Failed to execute trade:', err)
