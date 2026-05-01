@@ -34,6 +34,8 @@
   height: 100%;
   object-fit: cover;
   /* image-rendering: pixelated; */
+
+  object-position: 62% center; /*this img is off a little bit*/
 }
 
 .forum-header-info {

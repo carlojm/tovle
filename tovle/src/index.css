@@ -80,7 +80,7 @@
 
 
   --color-background-modal: var(--deepest-ocean);
-  --color-background-modal-inset: var(--void-navy);
+  --color-background-modal-inset: #181c2c;
   --color-background-modal-inset-tree: var(--void-navy);
   --color-background-node: #092125;
   --color-background-node-maxed: #03181b;

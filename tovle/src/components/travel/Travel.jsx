@@ -44,6 +44,21 @@ const Travel = () => {
     })
   }
 
+  const handleDebugResetTrades = () => {
+    save({
+      travel: {
+        ...playerData?.travel,
+        towns: {
+          ...playerData?.travel?.towns,
+          alnera: {
+            ...playerData?.travel?.towns?.alnera,
+            tradeWindow: null
+          }
+        }
+      }
+    })
+  }
+
   return (
     <div className="travel-container">
 
@@ -53,6 +68,7 @@ const Travel = () => {
 
       <button onClick={handleDebugCurrencies}>Debug: 999 currencies</button>
       <button onClick={handleDebugResetTree}>Debug: Reset tree</button>
+      <button onClick={handleDebugResetTrades}>Debug: Reset trade window</button>
 
 
       <div className="travel-section-header">

@@ -188,7 +188,7 @@ const TownCard = ({ townId, children }) => {
             </div>
             <span className="town-trade-arrow">→</span>
             <div className="town-trade-offer">
-              <span className="town-trade-qty">{trade.offer.reputation} rep,</span>
+              <span className="town-trade-qty">{trade.offer.reputation} rep +</span>
               {/* <span className="town-trade-arrow">+</span> */}
               {trade.offer.items.length > 0 && (
                 <>
