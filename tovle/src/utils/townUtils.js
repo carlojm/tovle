@@ -5,7 +5,7 @@
 export function getRepForLevel(level) {
   let total = 0
   for (let i = 1; i <= level; i++) {
-    total += Math.round(100 * Math.pow(i, 1.3))
+    total += Math.round(100 * Math.pow(i, 1.2))
   }
   return total
 }
