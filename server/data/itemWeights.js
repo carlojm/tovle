@@ -8,7 +8,7 @@
 // Items excluded: den_piece_100 (unique score token), prismarine_crystals,
 //   prismarine_shard, heart_of_the_sea (separate currency system).
 
-export const ITEM_WEIGHTS = {
+const ITEM_WEIGHTS = {
 
   // ── Core drops ───────────────────────────────────────────────────────────
   // iron_nugget: 4 × 0.5825 ≈ 2.33 avg/cache → baseline weight 1
@@ -75,7 +75,7 @@ export const ITEM_WEIGHTS = {
 
 // Items that should only appear on the WANT side of trades (not given as rewards).
 // Getting filler blocks back from a trade feels unrewarding.
-export const WANT_ONLY_ITEMS = new Set([
+const WANT_ONLY_ITEMS = new Set([
   'prismarine_block',
   'prismarine_brick',
   'prismarine_wall',
@@ -84,4 +84,6 @@ export const WANT_ONLY_ITEMS = new Set([
 ])
 
 // Convenience: all tradeable item IDs
-export const TRADEABLE_ITEMS = Object.keys(ITEM_WEIGHTS)
+const TRADEABLE_ITEMS = Object.keys(ITEM_WEIGHTS)
+
+module.exports = { ITEM_WEIGHTS, WANT_ONLY_ITEMS, TRADEABLE_ITEMS }
