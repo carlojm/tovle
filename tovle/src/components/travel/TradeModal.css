@@ -10,7 +10,8 @@
 }
 
 .town-modal {
-  background: var(--color-background);
+  background: var(--color-background-modal);
+  /* background: color-mix(in srgb, var(--color-background-modal) 95%, blue); */
   border: 2px solid var(--color-coords-border);
   border-radius: 16px;
   width: min(90vw, 440px);
@@ -47,6 +48,8 @@
 .town-close-btn:hover { opacity: 1; }
 
 .town-modal-body {
+  background: var(--color-background-modal-inset);
+  /* background: color-mix(in srgb, var(--color-background-modal) 50%, rgb(239, 246, 255)); */
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -68,7 +71,7 @@
 
 .town-modal-side-label {
   font-size: 11px;
-  opacity: 0.5;
+  /* opacity: 0.5; */
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }

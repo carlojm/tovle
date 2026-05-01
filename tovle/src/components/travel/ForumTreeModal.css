@@ -72,7 +72,7 @@
   overflow: hidden;
   cursor: grab;
   position: relative;
-  background: var(--color-background-modal-inset);
+  background: var(--color-background-modal-inset-tree);
   touch-action: none;
 }
 .ftm-canvas:active { cursor: grabbing; }

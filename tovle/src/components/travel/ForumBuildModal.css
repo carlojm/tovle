@@ -10,7 +10,7 @@
 }
 
 .fbm-modal {
-  background: var(--color-background-modal);
+  background: var(--color-background-modal-inset);
   border: 2px solid var(--color-coords-border);
   border-radius: 16px;
   width: min(90vw, 480px);
@@ -21,6 +21,8 @@
 }
 
 .fbm-header {
+  background: var(--color-background-modal);
+
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -254,6 +256,7 @@
 
 /* footer */
 .fbm-footer {
+  background: var(--color-background-modal);
   display: flex;
   justify-content: flex-end;
   gap: 10px;
