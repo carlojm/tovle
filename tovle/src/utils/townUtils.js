@@ -1,5 +1,7 @@
 //functions needed by the frontend and the backend
 
+//total reputation needed to reach a given level
+//could be memoized later but prob fine for now
 export function getRepForLevel(level) {
   let total = 0
   for (let i = 1; i <= level; i++) {
@@ -8,6 +10,7 @@ export function getRepForLevel(level) {
   return total
 }
 
+//derive town level by total reputation
 export function getTownLevel(reputation) {
   let level = 0
   while (reputation >= getRepForLevel(level + 1)) {

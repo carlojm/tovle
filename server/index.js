@@ -10,11 +10,11 @@ const { admin, db } = require('./firebase')
 const { 
   generateTrades, 
   getCurrentWindowIndex,
-  getTownLevel,
   getNumSlots,
   getTradeLimit,
   getSecondsUntilNextWindow
 } = require('./trades')
+const { getTownLevel } = require('../tovle/src/utils/townUtils.js')
 
 
 //env

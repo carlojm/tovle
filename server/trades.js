@@ -129,24 +129,24 @@ function generateTrades(townId, townLevel, numSlots = 2) {
   return trades
 }
 
-//total reputation needed to reach a given level
-//could be memoized later but prob fine for now
-function getRepForLevel(level) {
-  let total = 0
-  for (let i = 1; i <= level; i++) {
-    total += Math.round(100 * Math.pow(i, 1.3))
-  }
-  return total
-}
+// //total reputation needed to reach a given level
+// //could be memoized later but prob fine for now
+// function getRepForLevel(level) {
+//   let total = 0
+//   for (let i = 1; i <= level; i++) {
+//     total += Math.round(100 * Math.pow(i, 1.3))
+//   }
+//   return total
+// }
 
-//derive towl level by total reputation
-function getTownLevel(reputation) {
-  let level = 0
-  while (reputation >= getRepForLevel(level + 1)) {
-    level++
-  }
-  return level
-}
+// //derive town level by total reputation
+// function getTownLevel(reputation) {
+//   let level = 0
+//   while (reputation >= getRepForLevel(level + 1)) {
+//     level++
+//   }
+//   return level
+// }
 
 //derive number of trade slots a town has based on its level
 function getNumSlots(townLevel) {
@@ -174,7 +174,6 @@ function getSecondsUntilNextWindow() {
 module.exports = { 
   generateTrades, 
   getCurrentWindowIndex,
-  getTownLevel,
   getNumSlots,
   getTradeLimit,
   getSecondsUntilNextWindow,
