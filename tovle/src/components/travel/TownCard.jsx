@@ -14,7 +14,7 @@ const TownCard = ({ townId, children }) => {
 
   //town data from firestore
   const townData = playerData?.travel?.towns?.[townId] ?? {}
-  const reputation = townData.reputation ?? 0
+  const [reputation, setReputation] = useState(townData.reputation ?? 0)
   const townLevel = getTownLevel(reputation)
 
   //trade logic
@@ -69,8 +69,54 @@ const TownCard = ({ townId, children }) => {
     return () => clearInterval(interval)
   }, [nextWindowIn === null ? null : 'active'])
 
-  const handleExecuteTrade = async () => {
+  const handleExecuteTrade = async (trade, tradeIndex) => {
     console.log('execute trade', selectedTrade)
+
+    try {
+      const res = await fetch('/api/execute-trade', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          uid,
+          townId,
+          tradeIndex,
+          executionNumber: trade.timesCompleted
+        })
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        if (data.alreadyExecuted) {
+          console.warn('Trade already executed')
+        } else {
+          console.error(data.error)
+        }
+        return
+      }
+
+      //update trades locally dont need to fetch again
+      setTrades(prev => prev.map((t,i) => {
+        if (i !== tradeIndex) return t
+        const newTimesCompleted = t.timesCompleted + 1
+        return {
+          ...t,
+          timesCompleted: newTimesCompleted,
+          canTrade: newTimesCompleted < t.limit
+        }
+      }))
+
+      //update reputation in local state
+      setReputation(data.reputation)
+
+      //close modal
+      if (trades.timesCompleted + 1 >= trade.limit) {
+        setSelectedTrade(null)
+      }
+
+    } catch (err) {
+      console.error('Failed to execute trade:', err)
+    }
   }
 
 
