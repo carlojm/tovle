@@ -38,3 +38,10 @@ export const formatCountdown = (seconds) => {
   const s = seconds % 60
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
+
+export const getSecondsUntilNextTradeWindow = () => {
+  const nowET = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+  const d = new Date(nowET)
+  const secondsIntoWindow = ((d.getHours() % 4) * 3600) + (d.getMinutes() * 60) + d.getSeconds()
+  return (4 * 3600) - secondsIntoWindow
+}

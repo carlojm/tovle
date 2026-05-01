@@ -12,3 +12,23 @@
   font-weight: 600;
   align-self: flex-start;
 }
+
+
+.travel-section-header {
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.travel-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.travel-section-caption {
+  font-size: 12px;
+  opacity: 0.5;
+  margin: 0;
+}

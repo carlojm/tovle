@@ -7,7 +7,7 @@ import './TownCard.css'
 import TradeModal from './TradeModal'
 
 import { getTownLevel, getRepForNextLevel } from '../../utils/townUtils'
-import { getEasternDateStr, formatCountdown } from '../../utils/dates'
+import { getEasternDateStr } from '../../utils/dates'
 
 const TownCard = ({ townId, children }) => {
   const { uid, playerData } = usePlayer()
