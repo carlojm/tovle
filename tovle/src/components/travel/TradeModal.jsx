@@ -56,10 +56,24 @@ const TradeModal = ({ trade, tradeIndex, config, nextWindowIn, onClose, onExecut
 
           <div className="town-modal-info">
             <p className="town-modal-info-line">
-              Performed {trade.timesCompleted} / {trade.limit} times this window.
+              Performed {trade.timesCompleted} / {trade.limit} times this cycle
             </p>
+            {/* <p className="town-modal-info-line">
+              Quantity multiplied by {trade.want.multiplier.toFixed(2)}x
+            </p> */}
+            {/* <p className="town-modal-info-line">
+              Quantity multiplier: {trade.want.multiplier.toFixed(2)}x
+              {trade.want.multiplier >= 4 && <span style={{ color: '#ff9f43', marginLeft: 6 }}>Incredible deal!</span>}
+              {trade.want.multiplier >= 3 && trade.want.multiplier < 4 && <span style={{ color: '#4caf82', marginLeft: 6 }}>Great deal!</span>}
+              {trade.want.multiplier >= 2 && trade.want.multiplier < 3 && <span style={{ color: '#4caf82', marginLeft: 6 }}>Good deal!</span>}
+            </p> */}
+            {trade.want.multiplier >= 2 && (
+              <p className="town-modal-info-line">
+                Your rep increased this trade's quantity by ~{trade.want.multiplier.toFixed(1)}x
+              </p>
+            )}
             <p className="town-modal-info-line">
-              Trades refresh in {formatCountdown(nextWindowIn)}.
+              Trades refresh in {formatCountdown(nextWindowIn)}
             </p>
           </div>
         </div>

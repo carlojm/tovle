@@ -105,47 +105,56 @@ const TownCard = ({ townId, children }) => {
             <p className="town-refresh-notice">Trades have refreshed!</p>
           )}
 
-          <div className="town-trades-row">
-            {loading ? (
-              <p className="town-label">Loading trades...</p>
-            ) : trades.map((trade, i) => (
-              <button
-                key={i}
-                className="town-trade-slot"
-                onClick={() => setSelectedTrade({ trade, index: i })}
-              >
-                <div className="town-trade-want">
+        </div>
+      </div>
+
+      <div className="town-trades-row">
+        {loading ? (
+          <p className="town-label">Loading trades...</p>
+        ) : trades.map((trade, i) => (
+          <button
+            key={i}
+            className="town-trade-slot"
+            onClick={() => setSelectedTrade({ trade, index: i })}
+          >
+            <div className="town-trade-want">
+              <img
+                src={ITEM_MAP[trade.want.itemId]?.img}
+                className="town-trade-icon"
+                style={{ imageRendering: 'pixelated' }}
+              />
+              <span className="town-trade-qty">{trade.want.quantity}</span>
+            </div>
+            <span className="town-trade-arrow">→</span>
+            <div className="town-trade-offer">
+              <span className="town-trade-qty">{trade.offer.reputation} rep</span>
+              <span className="town-trade-arrow">+</span>
+              {trade.offer.items.length > 0 && (
+                <>
                   <img
-                    src={ITEM_MAP[trade.want.itemId]?.img}
+                    src={ITEM_MAP[trade.offer.items[0].itemId]?.img}
                     className="town-trade-icon"
                     style={{ imageRendering: 'pixelated' }}
                   />
-                  <span className="town-trade-qty">{trade.want.quantity}</span>
-                </div>
-                <span className="town-trade-arrow">→</span>
-                <div className="town-trade-offer">
-                  <span className="town-trade-qty">{trade.offer.reputation} rep</span>
-                  <span className="town-trade-arrow">+</span>
-                  {trade.offer.items.length > 0 && (
-                    <>
-                      <img
-                        src={ITEM_MAP[trade.offer.items[0].itemId]?.img}
-                        className="town-trade-icon"
-                        style={{ imageRendering: 'pixelated' }}
-                      />
-                      <span className="town-trade-qty">{trade.offer.items[0].quantity}</span>
-                    </>
-                  )}
-                  
-                </div>
-                {!trade.canTrade && (
-                  <span className="town-trade-done">✓</span>
-                )}
-              </button>
-            ))}
-          </div>
+                  <span className="town-trade-qty">{trade.offer.items[0].quantity}</span>
+                </>
+              )}
+              
+            </div>
+            {!trade.canTrade && (
+              <span className="town-trade-done">✓</span>
+            )}
+          </button>
+        ))}
 
-        </div>
+        {(() => {
+          const nextSlotLevel = trades.length * 3 - 3
+          return (
+            <button className="town-trade-slot town-trade-slot--locked" disabled>
+              <span className="town-trade-locked-label">Next slot at level {nextSlotLevel}</span>
+            </button>
+          )
+        })()}
       </div>
 
       {children}

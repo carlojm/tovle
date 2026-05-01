@@ -184,3 +184,15 @@
   color: var(--color-button);
   margin-left: 2px;
 }
+
+
+.town-trade-slot--locked {
+  opacity: 0.4;
+  cursor: default;
+  border-style: dashed;
+}
+
+.town-trade-locked-label {
+  /* font-size: 12px; */
+  opacity: 0.8;
+}
