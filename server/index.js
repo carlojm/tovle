@@ -333,7 +333,7 @@ app.get('/api/trades/:townId', async (req, res) => {
     //figure out number of trade slots player has unlocked
     const numSlots = getNumSlots(townLevel)
 
-    console.log({ reputation, townLevel, numSlots }) // add this temporarily
+    // console.log({ reputation, townLevel, numSlots }) 
 
     //generate the trades
     const trades = generateTrades(townId, townLevel, numSlots)
@@ -365,6 +365,114 @@ app.get('/api/trades/:townId', async (req, res) => {
 
   } catch (err) {
     console.error('Error fetching trades:', err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+app.post('/api/execute-trade', async (req, res) => {
+  const {uid, townId, tradeIndex, executionNumber} = req.body
+
+  //validate request
+  const VALID_TOWNS = ['alnera', 'frostgate', 'mistport', 'steelmeld']
+  if (!uid || !townId || tradeIndex === undefined || executionNumber === undefined) {
+    return res.status(400).json({ error: 'Missing uid, townId, tradeIndex, or executionNumber' })
+  }
+  if (!VALID_TOWNS.includes(townId)) {
+    return res.status(400).json({ error: 'Invalid town ID' })
+  }
+
+  try {
+    let result = null
+
+    await db.runTransaction(async (t) => {
+      //read player data
+      const playerRef = db.collection('players').doc(uid)
+      const playerSnap = await t.get(playerRef)
+      if (!playerSnap.exists) {
+        throw Object.assign(new Error('Player not found'), { status: 404 })
+      }
+
+      const playerData = playerSnap.data()
+      const townData = playerData.travel?.towns?.[townId] ?? {}
+
+      //derive level and regenerate trades server-side
+      const reputation = townData.reputation ?? 0
+      const townLevel = getTownLevel(reputation)
+      const numSlots = getNumSlots(townLevel)
+      const tradeLimit = getTradeLimit(playerData)
+      const trades = generateTrades(townId, townLevel, numSlots)
+
+      //validate tradeIndex
+      if (tradeIndex < 0 || tradeIndex >= trades.length) {
+        throw Object.assign(new Error('Invalid trade index'), { status: 400 })
+      }
+      const trade = trades[tradeIndex]
+
+      //check trade limit for this window
+      const currentWindow = getCurrentWindowIndex()
+      const storedWindow = townData.tradeWindow
+      const tradeCounts = storedWindow?.windowIndex === currentWindow
+        ? [...storedWindow.tradeCounts]
+        : new Array(numSlots).fill(0)
+      
+      //for idempotency, make sure currentCount === executionNumber
+      const currentCount = tradeCounts[tradeIndex] ?? 0
+      if (executionNumber !== currentCount) {
+        throw Object.assign(new Error('Trade already executed or invalid execution number'), {
+          status: 409,
+          alreadyExecuted: true
+        })
+      }
+      if (currentCount >= tradeLimit) {
+        throw Object.assign(new Error('Trade limit reached for this window'), { status: 409 })
+      }
+
+      //check player has enough of wanted item
+      const playerItems = playerData.inventory?.items ?? []
+      const playerItem = playerItems.find(i => i.itemId === trade.want.itemId)
+      const playerQty = playerItem?.quantity ?? 0
+      if (playerQty < trade.want.quantity) {
+        throw Object.assign(new Error('Not enough items'), { status: 400, notEnoughItems: true })
+      }
+
+      //deduct wanted items
+      const updatedItems = playerItems.map(item => {
+        if (item.itemId !== trade.want.itemId) return item
+        return { ...item, quantity: item.quantity - trade.want.quantity }
+      }).filter(item => item.quantity > 0)
+
+      //add the offered items and reputation
+      const itemsWithOffers = mergeItems(updatedItems, trade.offer.items)
+      const newReputation = reputation + trade.offer.reputation
+
+      //increment trade count for this slot
+      tradeCounts[tradeIndex] = (tradeCounts[tradeIndex] ?? 0) + 1
+
+      t.update(playerRef, {
+        'inventory.items': itemsWithOffers,
+        [`travel.towns.${townId}.reputation`]: newReputation,
+        [`travel.towns.${townId}.tradeWindow`]: {
+          windowIndex: currentWindow,
+          tradeCounts
+        }
+      })
+
+      result = {
+        reputation: newReputation,
+        townLevel: getTownLevel(newReputation),
+        reputationGained: trade.offer.reputation,
+        itemsGained: trade.offer.items,
+        itemsSpent: [{ itemId: trade.want.itemId, quantity: trade.want.quantity }]
+      }
+    })
+
+    res.json(result)
+
+  } catch (err) {
+    if (err.status === 404) return res.status(404).json({ error: err.message })
+    if (err.status === 400) return res.status(400).json({ error: err.message, notEnoughItems: err.notEnoughItems })
+    if (err.status === 409) return res.status(409).json({ error: err.message, alreadyExecuted: err.alreadyExecuted ?? false })
+    console.error('Error executing trade:', err)
     res.status(500).json({ error: 'Internal server error' })
   }
 })
