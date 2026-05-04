@@ -1,5 +1,5 @@
 // src/components/travel/TownCard.jsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePlayer } from '../../context/PlayerContext'
 import { ITEM_MAP } from '../../data/itemMap'
 import { TOWN_CONFIG } from '../../data/townConfig'
@@ -7,7 +7,7 @@ import './TownCard.css'
 import TradeModal from './TradeModal'
 
 import { getTownLevel, getRepForNextLevel } from '../../utils/townUtils'
-import { getEasternDateStr } from '../../utils/dates'
+import { getEasternDateStr, getCurrentWindowIndex } from '../../utils/dates'
 
 const TownCard = ({ townId, children }) => {
   const { uid, playerData, save } = usePlayer()
@@ -22,8 +22,10 @@ const TownCard = ({ townId, children }) => {
   const [trades, setTrades] = useState([])
   const [loading, setLoading] = useState(false)
   const [windowIndex, setWindowIndex] = useState(null)
-  const [nextWindowIn, setNextWindowIn] = useState(null)
   const [selectedTrade, setSelectedTrade] = useState(null)
+  const [refreshNotice, setRefreshNotice] = useState(false)
+
+  const refreshTimeout = useRef(null)
 
   const fetchTrades = async () => {
     if (!uid) return
@@ -34,7 +36,17 @@ const TownCard = ({ townId, children }) => {
       if (!res.ok) { console.error(data.error); return }
       setTrades(data.trades)
       setWindowIndex(data.windowIndex)
-      setNextWindowIn(data.nextWindowIn)
+      
+      //schedule a refetch at the moment this trade window ends
+      clearTimeout(refreshTimeout.current)
+      refreshTimeout.current = setTimeout(() => {
+        setSelectedTrade(null)
+        setRefreshNotice(true)
+        fetchTrades().then(() => {
+          setTimeout(() => setRefreshNotice(false), 3000)
+        })
+      }, data.nextWindowIn * 1000)
+
     } catch (err) {
       console.error('Failed to fetch trades:', err)
     } finally {
@@ -42,33 +54,27 @@ const TownCard = ({ townId, children }) => {
     }
   }
 
-  //awesome useeffect
-  useEffect(() => { fetchTrades() }, [uid])
-
-  //reload trades every 4 hours
-  const [refreshNotice, setRefreshNotice] = useState(false)
-  //another awesome useeffect
+  //initial fetch
   useEffect(() => {
-    if (nextWindowIn === null) return
+    fetchTrades()
+    return () => clearTimeout(refreshTimeout.current)
+  }, [uid])
 
-    const interval = setInterval(() => {
-      setNextWindowIn(prev => {
-        if (prev <= 1) {
-          clearInterval(interval)
-          // close modal and refetch
+  //another awesome useeffect
+  //refetch on visibilty change if window has rolled over while player was away
+  useEffect(() => {
+    const handleVisibilty = () => {
+      if(document.visbilityState === 'visible' && windowIndex !== null) {
+        if (getCurrentWindowIndex() !== windowIndex) {
           setSelectedTrade(null)
-          setRefreshNotice(true)
-          fetchTrades().then(() => {
-            setTimeout(() => setRefreshNotice(false), 3000)
-          })
-          return 0
+          fetchTrades()
         }
-        return prev - 1
-      })
-    }, 1000)
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilty)
+    return () => document.removeEventListener('visibilitychange', handleVisibilty)
+  }, [windowIndex])
 
-    return () => clearInterval(interval)
-  }, [nextWindowIn === null ? null : 'active'])
 
   const handleExecuteTrade = async (trade, tradeIndex) => {
     console.log('execute trade', selectedTrade)
@@ -267,7 +273,7 @@ const TownCard = ({ townId, children }) => {
         trade={selectedTrade?.trade}
         tradeIndex={selectedTrade?.index}
         config={config}
-        nextWindowIn={nextWindowIn}
+        // nextWindowIn={nextWindowIn}
         onClose={() => setSelectedTrade(null)}
         onExecute={handleExecuteTrade}
       />

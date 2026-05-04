@@ -1,13 +1,23 @@
 import { ITEM_MAP } from '../../data/itemMap'
-import { formatCountdown } from '../../utils/dates'
+import { formatCountdown, getSecondsUntilNextTradeWindow} from '../../utils/dates'
 import './TownCard.css'
 import './TradeModal.css'
 import { usePlayer } from '../../context/PlayerContext'
+import { useState, useEffect } from 'react'
 
-const TradeModal = ({ trade, tradeIndex, config, nextWindowIn, onClose, onExecute }) => {
-  if (!trade) return null
-
+const TradeModal = ({ trade, tradeIndex, config, onClose, onExecute }) => {
   const { playerData } = usePlayer()
+  
+
+  const [countdown, setCountdown] = useState(getSecondsUntilNextTradeWindow)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdown(prev => prev <= 1 ? getSecondsUntilNextTradeWindow() : prev - 1)
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  if (!trade) return null
   const playerQty = playerData?.inventory?.items?.find(i => i.itemId === trade.want.itemId)?.quantity ?? 0
   const canAfford = playerQty >= trade.want.quantity
 
@@ -61,7 +71,10 @@ const TradeModal = ({ trade, tradeIndex, config, nextWindowIn, onClose, onExecut
 
           <div className="town-modal-info">
             <p className="town-modal-info-line">
-              Performed {trade.timesCompleted} / {trade.limit} times this cycle
+              Performed {trade.timesCompleted} / {trade.limit} times this cycle. Limit increases with forum tiers.
+            </p>
+            <p className="town-modal-info-line">
+              Trades refresh in {formatCountdown(countdown)}
             </p>
             {/* <p className="town-modal-info-line">
               Quantity multiplied by {trade.want.multiplier.toFixed(2)}x
@@ -74,12 +87,10 @@ const TradeModal = ({ trade, tradeIndex, config, nextWindowIn, onClose, onExecut
             </p> */}
             {trade.want.multiplier >= 2 && (
               <p className="town-modal-info-line">
-                Your rep increased this trade's quantity by ~{trade.want.multiplier.toFixed(1)}x
+                <strong>Lucky!</strong> This trade's quantity increased by ~{trade.want.multiplier.toFixed(1)}x.
+                Gain reputation to increase value and chance of quantity bonuses.
               </p>
             )}
-            <p className="town-modal-info-line">
-              Trades refresh in {formatCountdown(nextWindowIn)}
-            </p>
           </div>
         </div>
 
