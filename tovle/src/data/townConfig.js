@@ -1,8 +1,8 @@
 // src/data/townConfig.js
 import alnera from '../assets/alnera.png'
-import frostgate from '../assets/alnera.png'
-import mistport from '../assets/alnera.png'
-import steelmeld from '../assets/alnera.png'
+import frostgate from '../assets/frostgate.png'
+import mistport from '../assets/mistport.png'
+import steelmeld from '../assets/steelmeld.png'
 
 export const TOWN_CONFIG = {
   alnera: {

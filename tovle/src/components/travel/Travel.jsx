@@ -77,6 +77,11 @@ const Travel = () => {
       </div>
 
       <TownCard townId="alnera" />
+      <TownCard townId="frostgate" />
+      <TownCard townId="mistport" />
+      <TownCard townId="steelmeld" />
+
+
 
     </div>
   )
