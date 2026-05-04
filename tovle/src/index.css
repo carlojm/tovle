@@ -91,6 +91,9 @@
   --text-currency-shard: #a0d4b0;
   --text-currency-heart: #a37de8;
 
+  --color-bar-background: var(--dark-teal);
+  --color-bar-fill: var(--lighterer-teal);
+
 
 }
 
@@ -163,6 +166,9 @@
   --text-currency-crystal: #2d7285;
   --text-currency-shard: #347448;
   --text-currency-heart: #4f2799;
+
+  --color-bar-background: var(--darker-cyan);
+  --color-bar-fill: var(--dark-cyan);
 
 
 }

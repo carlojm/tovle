@@ -116,14 +116,14 @@
 .axolotl-hunger-track {
   flex: 1;
   height: 8px;
-  background: var(--color-coords-border);
+  background: var(--color-bar-background);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .axolotl-hunger-fill {
   height: 100%;
-  background: var(--color-button);
+  background: var(--color-bar-fill);
   border-radius: 4px;
   transition: width 0.3s ease;
 }
