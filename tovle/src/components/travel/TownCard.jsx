@@ -87,6 +87,7 @@ const TownCard = ({ townId, children }) => {
           uid,
           townId,
           tradeIndex,
+          windowIndex,
           executionNumber: trade.timesCompleted
         })
       })
@@ -94,7 +95,13 @@ const TownCard = ({ townId, children }) => {
       const data = await res.json()
 
       if (!res.ok) {
-        if (data.alreadyExecuted) {
+        if (data.windowExpired) {
+          setSelectedTrade(null)
+          setRefreshNotice(true)
+          fetchTrades().then(() => {
+            setTimeout(() => setRefreshNotice(false), 3000)
+          })
+        } else if (data.alreadyExecuted) {
           console.warn('Trade already executed')
         } else {
           console.error(data.error)

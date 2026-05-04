@@ -410,6 +410,14 @@ app.post('/api/execute-trade', async (req, res) => {
 
       //check trade limit for this window
       const currentWindow = getCurrentWindowIndex()
+
+      if (req.body.windowIndex !== currentWindow) {
+        throw Object.assign(new Error('Trade window has expired'), {
+          status: 409,
+          windowExpired: true
+        })
+      }
+      
       const storedWindow = townData.tradeWindow
       const tradeCounts = storedWindow?.windowIndex === currentWindow
         ? [...storedWindow.tradeCounts]
@@ -471,7 +479,11 @@ app.post('/api/execute-trade', async (req, res) => {
   } catch (err) {
     if (err.status === 404) return res.status(404).json({ error: err.message })
     if (err.status === 400) return res.status(400).json({ error: err.message, notEnoughItems: err.notEnoughItems })
-    if (err.status === 409) return res.status(409).json({ error: err.message, alreadyExecuted: err.alreadyExecuted ?? false })
+    if (err.status === 409) return res.status(409).json({ 
+      error: err.message, 
+      alreadyExecuted: err.alreadyExecuted ?? false,
+      windowExpired: err.windowExpired ?? false
+    })
     console.error('Error executing trade:', err)
     res.status(500).json({ error: 'Internal server error' })
   }
