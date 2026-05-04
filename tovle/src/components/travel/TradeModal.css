@@ -80,6 +80,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  /* margin-bottom:0px; */
 }
 
 .town-modal-item-icon {
@@ -97,6 +98,12 @@
   font-size: 13px;
   opacity: 0.8;
   text-transform: capitalize;
+}
+
+
+.town-modal-inventory-qty {
+  font-size: 11px;
+  opacity: 0.5;
 }
 
 .town-modal-arrow {

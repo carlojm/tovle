@@ -20,6 +20,9 @@ const TradeModal = ({ trade, tradeIndex, config, onClose, onExecute }) => {
   if (!trade) return null
   const playerQty = playerData?.inventory?.items?.find(i => i.itemId === trade.want.itemId)?.quantity ?? 0
   const canAfford = playerQty >= trade.want.quantity
+  const offeredQtys = trade.offer.items.map(item =>
+    playerData?.inventory?.items?.find(i => i.itemId === item.itemId)?.quantity ?? 0
+  )
 
   return (
     <div className="town-backdrop" onClick={onClose}>
@@ -44,6 +47,7 @@ const TradeModal = ({ trade, tradeIndex, config, onClose, onExecute }) => {
                 <span className="town-modal-item-qty">{trade.want.quantity}×</span>
                 <span className="town-modal-item-name">{trade.want.itemId.replace(/_/g, ' ')}</span>
               </div>
+              <span className="town-modal-inventory-qty">You have: {playerQty}</span>
             </div>
 
             <span className="town-modal-arrow">→</span>
@@ -61,6 +65,11 @@ const TradeModal = ({ trade, tradeIndex, config, onClose, onExecute }) => {
                   <span className="town-modal-item-name">{item.itemId.replace(/_/g, ' ')}</span>
                 </div>
               ))}
+              {trade.offer.items.length > 0 && (
+                <span className="town-modal-inventory-qty">
+                  You have: {offeredQtys.join(', ')}
+                </span>
+              )}
               <div className="town-modal-item">
                 <span className="town-modal-item-qty">{trade.offer.reputation}</span>
                 <span className="town-modal-item-name">reputation</span>
@@ -71,7 +80,7 @@ const TradeModal = ({ trade, tradeIndex, config, onClose, onExecute }) => {
 
           <div className="town-modal-info">
             <p className="town-modal-info-line">
-              Performed {trade.timesCompleted} / {trade.limit} times this cycle. Limit increases with forum tiers.
+              Performed <strong>{trade.timesCompleted} / {trade.limit}</strong> times this cycle.
             </p>
             <p className="town-modal-info-line">
               Trades refresh in {formatCountdown(countdown)}
