@@ -303,6 +303,58 @@ app.post('/api/level-axolotl', async (req, res) => {
   }
 })
 
+app.get('/api/trades/all', async (req, res) => {
+  const { uid } = req.query
+  if (!uid) return res.status(400).json({ error: 'Missing uid' })
+
+  const VALID_TOWNS = ['alnera', 'frostgate', 'mistport', 'steelmeld']
+
+  try {
+    const playerRef = db.collection('players').doc(uid)
+    const playerSnap = await playerRef.get()
+    if (!playerSnap.exists) return res.status(404).json({ error: 'Player not found' })
+
+    const playerData = playerSnap.data()
+    const currentWindow = getCurrentWindowIndex()
+    const tradeLimit = getTradeLimit(playerData)
+
+    const towns = {}
+    for (const townId of VALID_TOWNS) {
+      const townData = playerData.travel?.towns?.[townId] ?? {}
+      const reputation = townData.reputation ?? 0
+      const townLevel = getTownLevel(reputation)
+      const numSlots = getNumSlots(townLevel)
+      const trades = generateTrades(townId, townLevel, numSlots)
+
+      const storedWindow = townData.tradeWindow
+      const tradeCounts = storedWindow?.windowIndex === currentWindow
+        ? storedWindow.tradeCounts
+        : new Array(numSlots).fill(0)
+
+      towns[townId] = {
+        reputation,
+        townLevel,
+        trades: trades.map((trade, i) => ({
+          ...trade,
+          timesCompleted: tradeCounts[i] ?? 0,
+          limit: tradeLimit,
+          canTrade: (tradeCounts[i] ?? 0) < tradeLimit
+        }))
+      }
+    }
+
+    res.json({
+      towns,
+      windowIndex: currentWindow,
+      nextWindowIn: getSecondsUntilNextWindow()
+    })
+
+  } catch (err) {
+    console.error('Error fetching all trades:', err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
 app.get('/api/trades/:townId', async (req, res) => {
   const {townId} = req.params
   const {uid} = req.query

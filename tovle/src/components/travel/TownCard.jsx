@@ -1,5 +1,5 @@
 // src/components/travel/TownCard.jsx
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { usePlayer } from '../../context/PlayerContext'
 import { ITEM_MAP } from '../../data/itemMap'
 import { TOWN_CONFIG } from '../../data/townConfig'
@@ -7,74 +7,24 @@ import './TownCard.css'
 import TradeModal from './TradeModal'
 
 import { getTownLevel, getRepForNextLevel } from '../../utils/townUtils'
-import { getEasternDateStr, getCurrentWindowIndex } from '../../utils/dates'
+import { getEasternDateStr } from '../../utils/dates'
 
-const TownCard = ({ townId, children }) => {
+const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecuted, children }) => {
   const { uid, playerData, save } = usePlayer()
   const config = TOWN_CONFIG[townId]
 
   //town data from firestore
   const townData = playerData?.travel?.towns?.[townId] ?? {}
-  const [reputation, setReputation] = useState(townData.reputation ?? 0)
+  const alreadyCollected = (townData?.lastShipment ?? null) === getEasternDateStr()
+  const reputation = tradesData?.reputation ?? townData.reputation ?? 0
   const townLevel = getTownLevel(reputation)
 
-  //trade logic
-  const [trades, setTrades] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [windowIndex, setWindowIndex] = useState(null)
+  //comes from parent
+  const trades = tradesData?.trades ?? []
+
+  //ui state
   const [selectedTrade, setSelectedTrade] = useState(null)
   const [refreshNotice, setRefreshNotice] = useState(false)
-
-  const refreshTimeout = useRef(null)
-
-  const fetchTrades = async () => {
-    if (!uid) return
-    setLoading(true)
-    try {
-      const res = await fetch(`/api/trades/${townId}?uid=${uid}`)
-      const data = await res.json()
-      if (!res.ok) { console.error(data.error); return }
-      setTrades(data.trades)
-      setWindowIndex(data.windowIndex)
-      
-      //schedule a refetch at the moment this trade window ends
-      clearTimeout(refreshTimeout.current)
-      refreshTimeout.current = setTimeout(() => {
-        setSelectedTrade(null)
-        setRefreshNotice(true)
-        fetchTrades().then(() => {
-          setTimeout(() => setRefreshNotice(false), 3000)
-        })
-      }, data.nextWindowIn * 1000)
-
-    } catch (err) {
-      console.error('Failed to fetch trades:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  //initial fetch
-  useEffect(() => {
-    fetchTrades()
-    return () => clearTimeout(refreshTimeout.current)
-  }, [uid])
-
-  //another awesome useeffect
-  //refetch on visibilty change if window has rolled over while player was away
-  useEffect(() => {
-    const handleVisibilty = () => {
-      if(document.visbilityState === 'visible' && windowIndex !== null) {
-        if (getCurrentWindowIndex() !== windowIndex) {
-          setSelectedTrade(null)
-          fetchTrades()
-        }
-      }
-    }
-    document.addEventListener('visibilitychange', handleVisibilty)
-    return () => document.removeEventListener('visibilitychange', handleVisibilty)
-  }, [windowIndex])
-
 
   const handleExecuteTrade = async (trade, tradeIndex) => {
     console.log('execute trade', selectedTrade)
@@ -98,9 +48,7 @@ const TownCard = ({ townId, children }) => {
         if (data.windowExpired) {
           setSelectedTrade(null)
           setRefreshNotice(true)
-          fetchTrades().then(() => {
-            setTimeout(() => setRefreshNotice(false), 3000)
-          })
+          setTimeout(() => setRefreshNotice(false), 3000)
         } else if (data.alreadyExecuted) {
           console.warn('Trade already executed')
         } else {
@@ -110,21 +58,21 @@ const TownCard = ({ townId, children }) => {
       }
 
       //update trades locally dont need to fetch again
-      setTrades(prev => prev.map((t,i) => {
+      const newTimesCompleted = trade.timesCompleted + 1
+      const updatedTrades = trades.map((t,i) => {
         if (i !== tradeIndex) return t
-        const newTimesCompleted = t.timesCompleted + 1
         return {
           ...t,
           timesCompleted: newTimesCompleted,
           canTrade: newTimesCompleted < t.limit
         }
-      }))
+      })
 
-      //update reputation in local state
-      setReputation(data.reputation)
+      //tell parent (Travel) to update its state
+      onTradeExecuted(townId, updatedTrades, data.reputation)
 
-      //close modal qol
-      if (trade.timesCompleted + 1 >= trade.limit) {
+      //close modal if limit reached, otherwise update selected trade
+      if (newTimesCompleted >= trade.limit) {
         setSelectedTrade(null)
       } else {
         setSelectedTrade(prev => ({
@@ -169,7 +117,6 @@ const TownCard = ({ townId, children }) => {
     }
   }
 
-  const alreadyCollected = (townData?.lastShipment ?? null) === getEasternDateStr()
   const handleCollectShipment = () => {
     console.log('collect shipment', townId)
   }
@@ -210,7 +157,7 @@ const TownCard = ({ townId, children }) => {
       </div>
 
       <div className="town-trades-row">
-        {loading ? (
+        {tradesLoading ? (
           <p className="town-label">Loading trades...</p>
         ) : trades.map((trade, i) => (
           <button
