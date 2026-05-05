@@ -27,7 +27,7 @@ export const FORUM_TIERS = [
     label: 'Tier 2',
     description: 'Your reputation with Alnera grows. A Frostgate ambassador arrives to set up a trade route.',
     required: [
-      { type: 'town_level', townId: 'alnera', target: 10, label: 'Reach Alnera level 10' },
+      { type: 'town_level', townId: 'alnera', target: 2, label: 'Reach Alnera level 2' },
     ],
     optional: [
       { type: 'caches_opened', target: 50, label: 'Open 50 caches' },

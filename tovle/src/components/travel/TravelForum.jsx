@@ -10,7 +10,7 @@ import ForumGame from './ForumGame'
 import ForumTreeModal from './ForumTreeModal'
 import { computeForumUnlocks } from './forumUnlocks'
 
-import { getForumTier, isMilestoneUnlocked, checkGoal } from '../../utils/forumUtils'
+import { isMilestoneUnlocked, checkGoal } from '../../utils/forumUtils'
 import { FORUM_TIERS, TOWN_UNLOCKS } from '../../data/forumConfig'
 
 const TravelForum = () => {
@@ -19,7 +19,8 @@ const TravelForum = () => {
   const savedName = forum?.name ?? 'The Fallen Forum'
 
   //tier unlock progress
-  const currentTier = getForumTier(playerData)
+  // const currentTier = getForumTier(playerData)
+  const currentTier = forum?.tier ?? 0
   const currentTierDef = FORUM_TIERS.find(t => t.tier === currentTier) ?? FORUM_TIERS[0]
   const nextTierDef = FORUM_TIERS.find(t => t.tier === currentTier + 1) ?? null
   // console.log(currentTier, nextTierDef)
@@ -70,6 +71,39 @@ const TravelForum = () => {
         forum: {
           ...forum,
           fuel: config.totalFuel
+        }
+      }
+    })
+  }
+
+  const handleClaimTier = () => {
+    if (!nextTierDef) return
+    if (!isMilestoneUnlocked(nextTierDef, playerData)) return
+
+    save({
+      travel: {
+        ...playerData?.travel,
+        forum: {
+          ...forum,
+          tier: (forum?.tier ?? 0) + 1
+        }
+      }
+    })
+  }
+
+  const handleUnlockTown = (townId) => {
+    const unlock = TOWN_UNLOCKS.find(t => t.townId === townId)
+    if (!unlock || !isMilestoneUnlocked(unlock, playerData)) return
+
+    save({
+      travel: {
+        ...playerData?.travel,
+        towns: {
+          ...(playerData?.travel?.towns ?? {}),
+          [townId]: {
+            ...(playerData?.travel?.towns?.[townId] ?? {}),
+            unlocked: true
+          }
         }
       }
     })
@@ -187,6 +221,17 @@ const TravelForum = () => {
                 })}
               </>
             )}
+
+            {/* next tier unlock button */}
+            {isMilestoneUnlocked(nextTierDef, playerData) && (
+              <button
+                className="forum-upgrade-btn"
+                onClick={handleClaimTier}
+                style={{ marginTop: 8 }}
+              >
+                Upgrade to Tier {currentTier + 1}
+              </button>
+            )}
           </div>
         )}
 
@@ -226,6 +271,16 @@ const TravelForum = () => {
                   )
                 })}
               </>
+            )}
+
+            {isMilestoneUnlocked(nextTownUnlock, playerData) && (
+              <button
+                className="forum-upgrade-btn"
+                onClick={() => handleUnlockTown(nextTownUnlock.townId)}
+                style={{ marginTop: 8 }}
+              >
+                Open Trade with {nextTownUnlock.label}
+              </button>
             )}
           </div>
         )}

@@ -157,9 +157,9 @@ function getNumSlots(townLevel) {
 
 //derive number of times a trade can be repeated based on forum level
 function getTradeLimit(playerData) {
-  const forumTier = playerData.travel?.forum?.tier ?? 1
+  const forumTier = playerData.travel?.forum?.tier ?? 0
   //for now tier 1 = 1 trade, tier 2 = 2 trades, ...
-  return forumTier
+  return Math.max(1, forumTier)
 }
 
 //seconds until next 4-hour window boundary

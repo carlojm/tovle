@@ -13,8 +13,10 @@ const Travel = () => {
   const [tradeCountdown, setTradeCountdown] = useState(getSecondsUntilNextTradeWindow())
 
   //derive which towns are unlocked
+  // const unlockedTowns = ['alnera', 'frostgate', 'mistport', 'steelmeld']
+  //   .filter(townId => isTownUnlocked(townId, playerData))
   const unlockedTowns = ['alnera', 'frostgate', 'mistport', 'steelmeld']
-    .filter(townId => isTownUnlocked(townId, playerData))
+    .filter(townId => playerData?.travel?.towns?.[townId]?.unlocked === true)
 
   //fetching trades
   const [tradesData, setTradesData] = useState(null) //{towns: {}, windowIndex}

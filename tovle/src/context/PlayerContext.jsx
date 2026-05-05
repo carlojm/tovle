@@ -105,12 +105,13 @@ function buildFreshPlayerData() {
         xp: 0,
         fuel: 0,
         name: 'The Fallen Forum',
+        tier: 0,
       },
       towns: {
-        alnera:    { reputation: 0, lastShipment: null },
-        frostgate: { reputation: 0, lastShipment: null },
-        mistport:  { reputation: 0, lastShipment: null },
-        steelmeld: { reputation: 0, lastShipment: null },
+        alnera:    { reputation: 0, lastShipment: null, unlocked: false },
+        frostgate: { reputation: 0, lastShipment: null, unlocked: false },
+        mistport:  { reputation: 0, lastShipment: null, unlocked: false },
+        steelmeld: { reputation: 0, lastShipment: null, unlocked: false },
       }
     }
   }
