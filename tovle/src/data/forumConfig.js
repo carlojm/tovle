@@ -104,7 +104,7 @@ export const TOWN_UNLOCKS = [
     ],
     optional: [
       { type: 'trades_executed_town', townId: 'alnera', target: 20, label: 'Execute 20 Alnera trades' },
-      { type: 'caches_opened', target: 75, label: 'Open 75 caches' },
+      { type: 'caches_opened', target: 50, label: 'Open 50 caches' },
     ],
     minOptional: 1,
   },

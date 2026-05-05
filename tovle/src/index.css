@@ -47,6 +47,10 @@
   --muted-slate: #4a4a6a;
   --light-slate: #5a5a7a;
 
+  --golden: #bd9831;
+  --light-golden: #bd9f4c;
+
+
   --color-background-loot-grid: var(--void-navy);
   --color-border-loot-grid: var(--muted-slate);
   --color-background-loot-slot: var(--dark-slate);

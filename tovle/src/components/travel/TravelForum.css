@@ -191,6 +191,14 @@
   transform: translateY(2px);
 }
 
+.golden {
+  background: var(--golden);
+}
+
+.golden:hover {
+  background: var(--light-golden);
+}
+
 /* modal */
 .forum-backdrop {
   position: fixed;

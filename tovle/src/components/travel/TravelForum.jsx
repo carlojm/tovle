@@ -286,7 +286,7 @@ const TravelForum = () => {
 
             {isMilestoneUnlocked(nextTownUnlock, playerData) && (
               <button
-                className="forum-upgrade-btn"
+                className="forum-upgrade-btn golden"
                 onClick={() => handleUnlockTown(nextTownUnlock.townId)}
                 style={{ marginTop: 8 }}
               >
