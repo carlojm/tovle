@@ -319,7 +319,13 @@ class GameScene extends Phaser.Scene {
     featCrystals = Math.round(featCrystals * 10) / 10
     featShards = Math.round(featShards * 10) / 10
 
-    return { crystals, featCrystals, shards, featShards }
+    return {
+      crystals, featCrystals, shards, featShards,
+      //more returns for stat tracking
+      anchors: this.anchorCount,
+      perfects: this.perfectCount,
+      crits: this.critCount,
+     }
   }
 
   handleGameOver(message = "Game Over!") {
@@ -459,7 +465,12 @@ class GameScene extends Phaser.Scene {
     this.reviveSpeedDampen = 0
     this.featCount = 0 //"feats" = anchors, perfects, crits..
     this.critChainActive = false
-    
+
+    //stat trackers
+    this.anchorCount = 0
+    this.perfectCount = 0
+    this.critCount = 0
+
     this.particlesLeft = this.add.particles(0, 0, 'particle', {
       speed: { start: 120, end: 40 },
       angle: { min: 180, max: 180 },
@@ -508,6 +519,7 @@ class GameScene extends Phaser.Scene {
           this.featCount += 2 //2 instead of 1 to encourage popping bubbles
           this.critChainActive = true
           isCrit = true //dont do logic for crit anchor yet, handle it later
+          this.critCount++
         }
       })
       
@@ -556,6 +568,7 @@ class GameScene extends Phaser.Scene {
         //if unlocked, platform doesn't shrink on perfect place
         this.movingBlock.setPosition(this.topBlock.x, this.movingBlock.y)
         this.featCount++
+        this.perfectCount++
       } else {
         this.movingBlock.setSize(overlap, 20)
         this.movingBlock.setPosition(newX, this.movingBlock.y)
@@ -575,6 +588,7 @@ class GameScene extends Phaser.Scene {
         anchorTriggered = true
         // this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
         this.featCount++
+        this.anchorCount++
       }
 
       // perfect anchor: only triggers on a perfect placement, grows
@@ -584,6 +598,7 @@ class GameScene extends Phaser.Scene {
         anchorTriggered = true
         // this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
         this.featCount++
+        this.anchorCount++
       }
 
       //crit anchor
@@ -593,6 +608,7 @@ class GameScene extends Phaser.Scene {
         anchorTriggered = true
         // this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
         this.featCount++
+        this.anchorCount++
       }
 
       //limit width to max 300

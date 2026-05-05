@@ -3,6 +3,7 @@ import './Stats.css'
 import { TOWN_CONFIG } from '../data/townConfig'
 import { getTownLevel } from '../utils/townUtils'
 import { useEffect } from 'react'
+import { ITEM_MAP } from '../data/itemMap'
 
 const DISTRIBUTION_BUCKETS = ['1', '2', '3', '4', '5', '6+']
 
@@ -110,11 +111,12 @@ const Stats = () => {
         })}
       </div>
 
+      
       {/* travel stats */}
       <h2>Travel Stats</h2>
       <div className="stats-list selectable">
         <div className="stats-list-row">
-          <span>Total Trades Executed</span>
+          <span>Trades Made</span>
           <span>{stats.totalTradesExecuted ?? 0}</span>
         </div>
         <div className="stats-list-row">
@@ -122,8 +124,42 @@ const Stats = () => {
           <span>{stats.totalShipmentsOpened ?? 0}</span>
         </div>
         <div className="stats-list-row">
+          <span>Construction Runs</span>
+          <span>{stats.totalForumRuns ?? 0}</span>
+        </div>
+        <div className="stats-list-row">
           <span>Best Tower Height</span>
           <span>{stats.bestTowerHeight ?? 0}</span>
+        </div>
+        <div className="stats-list-row">
+          <span>Tower Blocks Placed</span>
+          <span>{stats.totalTowerBlocks ?? 0}</span>
+        </div>
+        <div className="stats-list-row">
+          <span>Total Crystals Earned</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <img src={ITEM_MAP.prismarine_crystals.img} style={{ width: 14, height: 14, imageRendering: 'pixelated' }} />
+            {stats.totalCrystalsEarned ?? 0}
+          </span>
+        </div>
+        <div className="stats-list-row">
+          <span>Total Shards Earned</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <img src={ITEM_MAP.prismarine_shard.img} style={{ width: 14, height: 14, imageRendering: 'pixelated' }} />
+            {stats.totalShardsEarned ?? 0}
+          </span>
+        </div>
+        <div className="stats-list-row">
+          <span>Total Perfect Placements</span>
+          <span>{stats.totalPerfects ?? 0}</span>
+        </div>
+        <div className="stats-list-row">
+          <span>Total Anchors</span>
+          <span>{stats.totalAnchors ?? 0}</span>
+        </div>
+        <div className="stats-list-row">
+          <span>Total Bubbles Popped</span>
+          <span>{stats.totalCrits ?? 0}</span>
         </div>
       </div>
 

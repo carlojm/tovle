@@ -62,7 +62,7 @@
   justify-content: center;
   gap: 8px;
 }
-.stats-list-row--towns span:not(:first-child) {
+.stats-list-row--towns span:nth-child(n+3) { /*n+3 means third child and beyond*/
   text-align: right;
 }
 

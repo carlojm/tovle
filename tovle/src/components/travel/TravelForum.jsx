@@ -224,7 +224,12 @@ const TravelForum = ({ playerData, save }) => {
                   const fuelUsed = blocksBuilt * gameConfig.itemsPerTap
                   const fuelRemaining = Math.max(0, Math.round((gameConfig.totalFuel - fuelUsed) * 10) / 10)
                   const currentCurrencies = forum?.currencies ?? { crystals: 0, shards: 0, hearts: 0 }
-                  const { crystals, featCrystals, shards, featShards } = currency
+                  const { crystals, featCrystals, shards, featShards, anchors, perfects, crits } = currency
+
+                  //update besttowerheight if this run beats the record
+                  const currentBest = playerData?.stats.bestTowerHeight ?? 0
+                  const newBest = Math.max(currentBest, blocksBuilt)
+
                   save({ 
                     travel: { 
                       ...playerData?.travel,
@@ -237,6 +242,17 @@ const TravelForum = ({ playerData, save }) => {
                           shards: Math.round(((currentCurrencies.shards ?? 0) + shards + featShards) * 10) / 10,
                         }
                       }
+                    },
+                    stats: {
+                      ...playerData?.stats,
+                      bestTowerHeight: newBest,
+                      totalTowerBlocks: (playerData?.stats?.totalTowerBlocks ?? 0) + blocksBuilt,
+                      totalForumRuns: (playerData?.stats?.totalForumRuns ?? 0) + 1,
+                      totalCrystalsEarned: Math.round(((playerData?.stats?.totalCrystalsEarned ?? 0) + crystals + featCrystals) * 10) / 10,
+                      totalShardsEarned: Math.round(((playerData?.stats?.totalShardsEarned ?? 0) + shards + featShards) * 10) / 10,
+                      totalAnchors: (playerData?.stats?.totalAnchors ?? 0) + anchors,
+                      totalPerfects: (playerData?.stats?.totalPerfects ?? 0) + perfects,
+                      totalCrits: (playerData?.stats?.totalCrits ?? 0) + crits,
                     }
                   })
                 }}
