@@ -13,6 +13,8 @@ import { computeForumUnlocks } from './forumUnlocks'
 import { isMilestoneUnlocked, checkGoal } from '../../utils/forumUtils'
 import { FORUM_TIERS, TOWN_UNLOCKS } from '../../data/forumConfig'
 
+import ItemConfetti from '../ItemConfetti'
+
 const TravelForum = () => {
   const { playerData, save } = usePlayer()
   const forum = playerData?.travel?.forum
@@ -29,6 +31,7 @@ const TravelForum = () => {
   const unlockedTownCount = TOWN_UNLOCKS.filter(t => isMilestoneUnlocked(t, playerData)).length
   const nextTownUnlock = TOWN_UNLOCKS.find(t => !isMilestoneUnlocked(t, playerData)) ?? null
 
+  const [showConfetti, setShowConfetti] = useState(false)
 
   const [isEditing, setIsEditing] = useState(false)
   const [nameInput, setNameInput] = useState(savedName)
@@ -89,6 +92,7 @@ const TravelForum = () => {
         }
       }
     })
+    setShowConfetti(true)
   }
 
   const handleUnlockTown = (townId) => {
@@ -107,6 +111,7 @@ const TravelForum = () => {
         }
       }
     })
+    setShowConfetti(true)
   }
 
   return (
@@ -391,6 +396,10 @@ const TravelForum = () => {
         />
       )}
 
+
+      {showConfetti && (
+        <ItemConfetti onComplete={() => setShowConfetti(false)} />
+      )}
     </>
   )
 }
