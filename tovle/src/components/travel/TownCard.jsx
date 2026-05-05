@@ -6,6 +6,9 @@ import { TOWN_CONFIG } from '../../data/townConfig'
 import './TownCard.css'
 import TradeModal from './TradeModal'
 
+import VisitModal from './VisitModal'
+import TravelMap from './TravelMap'
+
 import { getTownLevel, getRepForNextLevel, getRepForCurrentLevel } from '../../utils/townUtils'
 import { getEasternDateStr } from '../../utils/dates'
 
@@ -24,6 +27,7 @@ const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecu
 
   //ui state
   const [selectedTrade, setSelectedTrade] = useState(null)
+  const [activeModal, setActiveModal] = useState(null)
   const [refreshNotice, setRefreshNotice] = useState(false)
 
   const handleExecuteTrade = async (trade, tradeIndex) => {
@@ -166,7 +170,10 @@ const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecu
           <button
             key={i}
             className="town-trade-slot"
-            onClick={() => setSelectedTrade({ trade, index: i })}
+            onClick={() => {
+              setSelectedTrade({ trade, index: i })
+              setActiveModal('trade')
+            }}
           >
             <div className="town-trade-want">
               <img
@@ -218,22 +225,48 @@ const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecu
 
       {children}
 
-      <button
-        className={`upgrade-button ${alreadyCollected ? 'disable-button' : ''}`}
-        onClick={handleCollectShipment}
-      >
-        {alreadyCollected ? 'Shipment collected today' : "Collect today's shipment"}
-      </button>
+      <div className="town-card-actions">
+        <button className="town-action-btn town-action-btn--primary" onClick={() => setActiveModal('visit')}>
+          Visit
+        </button>
+        <button
+          className={`town-action-btn town-action-btn--primary ${alreadyCollected ? 'town-action-btn--disabled' : ''}`}
+          onClick={handleCollectShipment}
+          disabled={alreadyCollected}
+        >
+          {alreadyCollected ? 'Shipment collected' : "Collect shipment"}
+        </button>
+      </div>
 
 
-      <TradeModal
-        trade={selectedTrade?.trade}
-        tradeIndex={selectedTrade?.index}
-        config={config}
-        // nextWindowIn={nextWindowIn}
-        onClose={() => setSelectedTrade(null)}
-        onExecute={handleExecuteTrade}
-      />
+      {activeModal === 'trade' && selectedTrade && (
+        <TradeModal
+          trade={selectedTrade?.trade}
+          tradeIndex={selectedTrade?.index}
+          config={config}
+          // nextWindowIn={nextWindowIn}
+          onClose={() => {
+            setSelectedTrade(null)
+            setActiveModal(null)
+          }}
+          onExecute={handleExecuteTrade}
+        />
+      )}
+
+      {activeModal === 'visit' && (
+        <VisitModal
+          townId={townId}
+          onClose={() => setActiveModal(null)}
+          onViewMap={() => setActiveModal('map')}
+        />
+      )}
+
+      {activeModal === 'map' && (
+        <TravelMap
+          onClose={() => setActiveModal(null)}
+          onBack={() => setActiveModal('visit')}
+        />
+      )}
     </div>
   )
 }

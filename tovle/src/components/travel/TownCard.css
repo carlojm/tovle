@@ -196,3 +196,51 @@
   /* font-size: 12px; */
   opacity: 0.8;
 }
+
+
+
+
+
+.town-card-actions {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.town-action-btn {
+  flex: 1;
+  padding: 10px 8px;
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 0; /* allows shrinking */
+}
+
+.town-action-btn--primary {
+  background: var(--color-button);
+  color: var(--color-text-button);
+  border: 2px solid var(--color-button);
+}
+
+.town-action-btn--primary:hover:not(:disabled) {
+  background: var(--color-button-hover);
+  border-color: var(--color-button-hover);
+}
+
+.town-action-btn--secondary {
+  background: none;
+  color: var(--color-text);
+  border: 2px solid var(--color-coords-border);
+}
+
+.town-action-btn--secondary:hover {
+  border-color: var(--color-button);
+}
+
+.town-action-btn--disabled {
+  opacity: 0.5;
+  cursor: default;
+}

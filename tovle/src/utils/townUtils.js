@@ -43,3 +43,8 @@ export function getRepForCurrentLevel(reputation) {
   const currentLevel = getTownLevel(reputation)
   return getRepForLevel(currentLevel)
 }
+
+// formula for cache bonus percents
+export function getTownBonus(reputation) {
+  return Math.round(Math.sqrt(reputation))
+}

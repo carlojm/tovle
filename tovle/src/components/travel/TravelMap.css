@@ -134,3 +134,10 @@
 .travel-map-toggle input {
   cursor: pointer;
 }
+
+
+.travel-map-desc {
+  font-size: 12px;
+  opacity: 0.6;
+  margin: 0;
+}
