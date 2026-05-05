@@ -3,7 +3,7 @@
   flex-direction: column;
   width: min(90vw, 500px);
   margin: 16px;
-  padding: 4px 25px 24px 25px;
+  padding: 4px 24px 24px 24px;
   background: var(--color-background-coords-display);
   border: 2px solid var(--color-coords-border);
   border-radius: 10px;
@@ -22,7 +22,7 @@
   text-align: center;
   font-size: 1rem;
   font-weight: 600;
-  opacity: 0.8;
+  opacity: 0.95;
 }
 
 .stats-empty {
@@ -37,24 +37,33 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 0 8px;
+  /* padding: 0 0px; */
   align-items: center;
 }
 
 .stats-list-row {
   display: flex;
   justify-content: space-between;
-  width:70%;
+  width:85%;
   align-items: center;
-  padding: 6px 8px;
+  padding: 6px 0px;
   border-radius: 6px;
   font-size: clamp(12px, 3vw, 14px);
 }
-
-.stats-list-row span:last-child {
+.stats-list-row:not(.stats-list-row--towns) span:last-child {
   font-weight: 700;
   color: var(--color-text);
   opacity: 85%
+}
+
+.stats-list-row--towns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  justify-content: center;
+  gap: 8px;
+}
+.stats-list-row--towns span:not(:first-child) {
+  text-align: right;
 }
 
 /* distribution chart */
@@ -81,14 +90,14 @@
 
 .stats-bar-track {
   height: 20px;
-  background: var(--color-coords-border);
+  background: var(--color-bar-background);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .stats-bar-fill {
   height: 100%;
-  background: var(--color-button);
+  background: var(--color-bar-fill);
   border-radius: 4px;
   transition: width 0.6s ease-out;
   min-width: 4px;
