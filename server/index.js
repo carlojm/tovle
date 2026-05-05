@@ -514,7 +514,13 @@ app.post('/api/execute-trade', async (req, res) => {
         [`travel.towns.${townId}.tradeWindow`]: {
           windowIndex: currentWindow,
           tradeCounts
-        }
+        },
+        'stats.totalTradesExecuted': admin.firestore.FieldValue.increment(1),
+        [`stats.tradesByTown.${townId}`]: admin.firestore.FieldValue.increment(1),
+        'stats.totalItemsTraded': admin.firestore.FieldValue.increment(trade.want.quantity),
+        [`stats.itemsTradedByTown.${townId}`]: admin.firestore.FieldValue.increment(trade.want.quantity),
+        'stats.totalItemsReceived': admin.firestore.FieldValue.increment(trade.offer.items.reduce((sum, i) => sum + i.quantity, 0)),
+        [`stats.itemsReceivedByTown.${townId}`]: admin.firestore.FieldValue.increment(trade.offer.items.reduce((sum, i) => sum + i.quantity, 0)),
       })
 
       result = {
