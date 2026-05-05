@@ -2,12 +2,18 @@ import { usePlayer } from '../context/PlayerContext'
 import './Stats.css'
 import { TOWN_CONFIG } from '../data/townConfig'
 import { getTownLevel } from '../utils/townUtils'
+import { useEffect } from 'react'
 
 const DISTRIBUTION_BUCKETS = ['1', '2', '3', '4', '5', '6+']
 
 const Stats = () => {
-  const { playerData } = usePlayer()
+  const { playerData, refreshPlayer } = usePlayer()
   const stats = playerData?.stats
+
+  //attempt to fetch from firestore on mount
+  useEffect(() => {
+    refreshPlayer()
+  }, [])
 
   if (!stats || (stats.totalCachesSolved === 0)) {
     return (

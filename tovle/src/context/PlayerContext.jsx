@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext, useState, useEffect, useRef } from "react"
 import { initAuth } from "../firebase/auth"
 import { loadPlayerData, savePlayerData } from "../firebase/db"
 
@@ -14,6 +14,8 @@ export function PlayerProvider({ children }) {
   const [uid, setUid] = useState(null)
   const [playerData, setPlayerData] = useState(null)
   const [ready, setReady] = useState(false) //flips to true once auth and data loading are done
+
+  const lastRefresh = useRef(0)
 
   useEffect(() => {
     initAuth(async (user) => {
@@ -39,8 +41,19 @@ export function PlayerProvider({ children }) {
     if (!localOnly) await savePlayerData(uid, updates)
   }
 
+  async function refreshPlayer() {
+    if (!uid) return
+    const now = Date.now()
+    if (now - lastRefresh.current < 60000) return // don't refresh if within 60 seconds
+    //do i need to rate limit this? idk but might as well
+    //currently only used when stats component loads to try and get a up to date version.
+    lastRefresh.current = now
+    const data = await loadPlayerData(uid)
+    if (data) setPlayerData(data)
+  }
+
   return (
-    <PlayerContext.Provider value={{uid, playerData, save, ready}}>
+    <PlayerContext.Provider value={{uid, playerData, save, ready, refreshPlayer}}>
       {children}
     </PlayerContext.Provider>
   )
