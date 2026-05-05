@@ -1,4 +1,3 @@
-
 export const FORUM_TIERS = [
   {
     tier: 1,
@@ -46,5 +45,55 @@ export const FORUM_TIERS = [
     required: [],
     optional: [],
     minOptional: 0,
+  },
+]
+
+export const TOWN_UNLOCKS = [
+  {
+    townId: 'alnera',
+    label: 'Alnera',
+    required: [
+      { type: 'skill_tree_node', nodeId: 'alnera_trades_1', target: 1, label: 'Unlock the Alnera trade route in the skill tree' },
+    ],
+    optional: [],
+    minOptional: 0,
+  },
+  {
+    townId: 'frostgate',
+    label: 'Frostgate',
+    required: [
+      { type: 'town_level', townId: 'alnera', target: 3, label: 'Reach Alnera level 3' },
+    ],
+    optional: [
+      { type: 'trades_executed_town', townId: 'alnera', target: 20, label: 'Execute 20 Alnera trades' },
+      { type: 'caches_opened', target: 75, label: 'Open 75 caches' },
+    ],
+    minOptional: 1,
+  },
+  {
+    townId: 'mistport',
+    label: 'Mistport',
+    required: [
+      { type: 'town_level', townId: 'frostgate', target: 3, label: 'Reach Frostgate level 3' },
+    ],
+    optional: [
+      { type: 'trades_executed_total', target: 75, label: 'Execute 75 total trades' },
+      { type: 'town_level', townId: 'alnera', target: 6, label: 'Reach Alnera level 6' },
+      { type: 'shipments_opened', target: 20, label: 'Open 20 shipments' },
+    ],
+    minOptional: 1,
+  },
+  {
+    townId: 'steelmeld',
+    label: 'Steelmeld',
+    required: [
+      { type: 'town_level', townId: 'mistport', target: 3, label: 'Reach Mistport level 3' },
+    ],
+    optional: [
+      { type: 'trades_executed_total', target: 150, label: 'Execute 150 total trades' },
+      { type: 'town_level', townId: 'frostgate', target: 6, label: 'Reach Frostgate level 6' },
+      { type: 'shipments_opened', target: 40, label: 'Open 40 shipments' },
+    ],
+    minOptional: 1,
   },
 ]
