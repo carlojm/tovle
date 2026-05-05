@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Pencil, Check } from 'lucide-react'
 import { ITEM_MAP } from '../../data/itemMap'
+import { usePlayer } from '../../context/PlayerContext'
 import forumIcon from '../../assets/icon_forum.png'
 import './TravelForum.css'
 
@@ -9,33 +10,24 @@ import ForumGame from './ForumGame'
 import ForumTreeModal from './ForumTreeModal'
 import { computeForumUnlocks } from './forumUnlocks'
 
-// derive tier and stats from xp
-//TODO redo all this
-const FORUM_TIERS = [
-  { minXp: 0,    tier: 0, label: 'Tier 0', tradeQuality: 0,  tradeLuck: 0 },
-  { minXp: 100,  tier: 1, label: 'Tier 1', tradeQuality: 0,  tradeLuck: 0 },
-  { minXp: 250,  tier: 2, label: 'Tier 2', tradeQuality: 10, tradeLuck: 0 },
-  { minXp: 500,  tier: 3, label: 'Tier 3', tradeQuality: 20, tradeLuck: 1 },
-  { minXp: 900,  tier: 4, label: 'Tier 4', tradeQuality: 30, tradeLuck: 1 },
-  { minXp: 1400, tier: 5, label: 'Tier 5', tradeQuality: 50, tradeLuck: 2 },
-]
+import { getForumTier, isMilestoneUnlocked, checkGoal } from '../../utils/forumUtils'
+import { FORUM_TIERS, TOWN_UNLOCKS } from '../../data/forumConfig'
 
-const getForumTierData = (xp) => {
-  const tier = [...FORUM_TIERS].reverse().find(t => xp >= t.minXp)
-  return tier ?? FORUM_TIERS[0]
-}
-
-const getNextTier = (xp) => {
-  return FORUM_TIERS.find(t => t.minXp > xp) ?? null
-}
-
-const TravelForum = ({ playerData, save }) => {
+const TravelForum = () => {
+  const { playerData, save } = usePlayer()
   const forum = playerData?.travel?.forum
-  const xp = forum?.xp ?? 0
   const savedName = forum?.name ?? 'The Fallen Forum'
 
-  const tierData = getForumTierData(xp)
-  const nextTier = getNextTier(xp)
+  //tier unlock progress
+  const currentTier = getForumTier(playerData)
+  const currentTierDef = FORUM_TIERS.find(t => t.tier === currentTier) ?? FORUM_TIERS[0]
+  const nextTierDef = FORUM_TIERS.find(t => t.tier === currentTier + 1) ?? null
+  // console.log(currentTier, nextTierDef)
+
+  //town unlock progress
+  const unlockedTownCount = TOWN_UNLOCKS.filter(t => isMilestoneUnlocked(t, playerData)).length
+  const nextTownUnlock = TOWN_UNLOCKS.find(t => !isMilestoneUnlocked(t, playerData)) ?? null
+
 
   const [isEditing, setIsEditing] = useState(false)
   const [nameInput, setNameInput] = useState(savedName)
@@ -116,22 +108,8 @@ const TravelForum = ({ playerData, save }) => {
                   </button>
                 </>
               )}
-              <span className="forum-tier-label">{tierData.label}</span>
+              <span className="forum-tier-label">Tier {currentTier}</span>
             </div>
-
-            {/* xp progress bar */}
-            {/* <div className="forum-xp-row">
-              <span className="forum-label">XP</span>
-              <div className="forum-xp-track">
-                <div
-                  className="forum-xp-fill"
-                  style={{ width: nextTier ? `${Math.min(((xp - tierData.minXp) / (nextTier.minXp - tierData.minXp)) * 100, 100)}%` : '100%' }}
-                />
-              </div>
-              <span className="forum-xp-num">
-                {nextTier ? `${xp} / ${nextTier.minXp}` : `${xp} (max)`}
-              </span>
-            </div> */}
 
             {/* currencies */}
             <div className="forum-currencies-row">
@@ -153,7 +131,7 @@ const TravelForum = ({ playerData, save }) => {
         </div>
 
         {/* description */}
-        {tierData.label === "Tier 0" ? (
+        {/* {currentTier === 0 ? (
           <p className="forum-desc">
             This used to be a nexus of research and trade, and now it's abandoned.
             You could probably fix it up and use it as a new headquarters for your trading empire...
@@ -164,27 +142,93 @@ const TravelForum = ({ playerData, save }) => {
             Trading lets you spend items to build reputation.
             In exchange, towns reward you with item shipments you can collect daily.
           </p>
-        )}
+        )} */}
+
+        <p className="forum-desc">
+          {currentTierDef.description}
+        </p>
 
         {/* stats */}
-        <div className="forum-stats">
-          <div className="forum-stat-row">
-            <span className="forum-stat-label">Trade tier</span>
-            <span className="forum-stat-val">{tierData.label}</span>
+        {/* forum tier progress */}
+        {nextTierDef && (
+          <div className="forum-stats">
+            <div className="forum-milestone-header">
+              <span className="forum-milestone-title">Forum Tier {currentTier + 1} Goals</span>
+              <span className="forum-milestone-progress">Tier {currentTier} → {currentTier + 1}</span>
+            </div>
+
+            <p className="forum-milestone-subheader">Required goals:</p>
+
+            {nextTierDef.required.map((goal, i) => {
+              const result = checkGoal(goal, playerData)
+              return (
+                <div key={i} className={`forum-milestone-goal ${result.met ? 'forum-milestone-goal--met' : ''}`}>
+                  <span className="forum-milestone-dot">{result.met ? '●' : '○'}</span>
+                  <span className="forum-milestone-label">{goal.label}</span>
+                  <span className="forum-milestone-val">{result.current} / {result.target}</span>
+                </div>
+              )
+            })}
+
+            {nextTierDef.optional.length > 0 && (
+              <>
+                <p className="forum-milestone-subheader-optional">
+                  Optional goals: {nextTierDef.optional.filter(g => checkGoal(g, playerData).met).length} / {nextTierDef.minOptional} needed
+                </p>
+                {nextTierDef.optional.map((goal, i) => {
+                  const result = checkGoal(goal, playerData)
+                  return (
+                    <div key={i} className={`forum-milestone-goal ${result.met ? 'forum-milestone-goal--met' : ''}`}>
+                      <span className="forum-milestone-dot">{result.met ? '●' : '○'}</span>
+                      <span className="forum-milestone-label">{goal.label}</span>
+                      <span className="forum-milestone-val">{result.current} / {result.target}</span>
+                    </div>
+                  )
+                })}
+              </>
+            )}
           </div>
-          {tierData.tradeQuality > 0 && (
-            <div className="forum-stat-row">
-              <span className="forum-stat-label">Trade quality bonus</span>
-              <span className="forum-stat-val">+{tierData.tradeQuality}%</span>
+        )}
+
+        {/* trade route progress */}
+        {nextTownUnlock && (
+          <div className="forum-stats">
+            <div className="forum-milestone-header">
+              <span className="forum-milestone-title">Open {nextTownUnlock.label} Trade Route</span>
+              <span className="forum-milestone-progress">{unlockedTownCount} / {TOWN_UNLOCKS.length} trade routes</span>
             </div>
-          )}
-          {tierData.tradeLuck > 0 && (
-            <div className="forum-stat-row">
-              <span className="forum-stat-label">Trade luck</span>
-              <span className="forum-stat-val">+{tierData.tradeLuck}</span>
-            </div>
-          )}
-        </div>
+
+            <p className="forum-milestone-subheader">Required goals:</p>
+            {nextTownUnlock.required.map((goal, i) => {
+              const result = checkGoal(goal, playerData)
+              return (
+                <div key={i} className={`forum-milestone-goal ${result.met ? 'forum-milestone-goal--met' : ''}`}>
+                  <span className="forum-milestone-dot">{result.met ? '●' : '○'}</span>
+                  <span className="forum-milestone-label">{goal.label}</span>
+                  <span className="forum-milestone-val">{result.current} / {result.target}</span>
+                </div>
+              )
+            })}
+
+            {nextTownUnlock.optional.length > 0 && (
+              <>
+                <p className="forum-milestone-subheader-optional">
+                  Optional goals: {nextTownUnlock.optional.filter(g => checkGoal(g, playerData).met).length} / {nextTownUnlock.minOptional} needed
+                </p>
+                {nextTownUnlock.optional.map((goal, i) => {
+                  const result = checkGoal(goal, playerData)
+                  return (
+                    <div key={i} className={`forum-milestone-goal ${result.met ? 'forum-milestone-goal--met' : ''}`}>
+                      <span className="forum-milestone-dot">{result.met ? '●' : '○'}</span>
+                      <span className="forum-milestone-label">{goal.label}</span>
+                      <span className="forum-milestone-val">{result.current} / {result.target}</span>
+                    </div>
+                  )
+                })}
+              </>
+            )}
+          </div>
+        )}
 
         <button className="forum-upgrade-btn" onClick={() => setShowBuildModal(true)}>
           Rebuild Forum

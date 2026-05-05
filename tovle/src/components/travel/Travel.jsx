@@ -5,11 +5,16 @@ import TravelMap from './TravelMap'
 import TravelForum from './TravelForum'
 import './Travel.css'
 import TownCard from './TownCard'
+import { isTownUnlocked } from '../../utils/forumUtils'
 
 const Travel = () => {
   const { uid, playerData, save } = usePlayer()
   const [showTree, setShowTree] = useState(false)
   const [tradeCountdown, setTradeCountdown] = useState(getSecondsUntilNextTradeWindow())
+
+  //derive which towns are unlocked
+  const unlockedTowns = ['alnera', 'frostgate', 'mistport', 'steelmeld']
+    .filter(townId => isTownUnlocked(townId, playerData))
 
   //fetching trades
   const [tradesData, setTradesData] = useState(null) //{towns: {}, windowIndex}
@@ -125,7 +130,7 @@ const Travel = () => {
     <div className="travel-container">
 
       {/* <TravelMap /> */}
-      <TravelForum playerData={playerData} save={save} />
+      <TravelForum/>
       {/* <ForumGame /> */}
 
       <button onClick={handleDebugCurrencies}>Debug: 999 currencies</button>
@@ -133,12 +138,20 @@ const Travel = () => {
       <button onClick={handleDebugResetTrades}>Debug: Reset trade window</button>
 
 
-      <div className="travel-section-header">
-        <h2 className="travel-section-title">Towns</h2>
-        <span className="travel-section-caption">Trades refresh in {formatCountdown(tradeCountdown)}</span>
-      </div>
+      {unlockedTowns.length === 0 && (
+        <p className="travel-section-caption" style={{ textAlign: 'center', marginTop: 8 }}>
+          No trade routes unlocked yet.
+        </p>
+      )}
 
-      {['alnera', 'frostgate', 'mistport', 'steelmeld'].map(townId => (
+      {unlockedTowns.length !== 0 && (
+        <div className="travel-section-header">
+          <h2 className="travel-section-title">Towns</h2>
+          <span className="travel-section-caption">Trades refresh in {formatCountdown(tradeCountdown)}</span>
+        </div>
+      )}
+
+      {unlockedTowns.map(townId => (
         <TownCard
           key={townId}
           townId={townId}
@@ -148,6 +161,16 @@ const Travel = () => {
           onTradeExecuted={updateTownTrades}
         />
       ))}
+      {/* {['alnera', 'frostgate', 'mistport', 'steelmeld'].map(townId => (
+        <TownCard
+          key={townId}
+          townId={townId}
+          tradesData={tradesData?.towns?.[townId]}
+          tradesLoading={tradesLoading}
+          windowIndex={tradesData?.windowIndex}
+          onTradeExecuted={updateTownTrades}
+        />
+      ))} */}
 {/* 
       <TownCard townId="alnera" />
       <TownCard townId="frostgate" />
