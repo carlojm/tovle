@@ -2,11 +2,9 @@ export const FORUM_TIERS = [
   {
     tier: 0,
     label: 'Tier 0',
-    description: 'This used to be a nexus of \
-    research and trade, and now it\'s abandoned. Seems like an adventurer recently \
-    cleared out any monsters that might have lived here. \
-    You could probably fix it up and \
-    use it as a new headquarters.',
+    description: `This used to be a nexus of research and trade, and now it's abandoned.
+    Seems like an adventurer recently cleared out any monsters that might have lived here.
+    You could probably fix it up and use it as a new headquarters.`,
     required: [],
     optional: [],
     minOptional: 0,

@@ -15,6 +15,15 @@ import { FORUM_TIERS, TOWN_UNLOCKS } from '../../data/forumConfig'
 
 import ItemConfetti from '../ItemConfetti'
 
+const TIER_BONUSES = {
+  0: [],
+  1: ['Tier 1 equipment can be found in shipments'],
+  2: ['Tier 2 equipment can be found in shipments', 'Trades can be performed 2 times per cycle.'],
+  3: ['Tier 3 equipment can be found in shipments', 'Trades can be performed 3 times per cycle.'],
+  4: ['Tier 4 equipment can be found in shipments', 'Trades can be performed 4 times per cycle.'],
+  5: ['Tier 5 equipment can be found in shipments', 'Trades can be performed 5 times per cycle.'],
+}
+
 const TravelForum = () => {
   const { playerData, save } = usePlayer()
   const forum = playerData?.travel?.forum
@@ -192,6 +201,13 @@ const TravelForum = () => {
         <p className="forum-desc">
           {currentTierDef.description}
         </p>
+
+        {TIER_BONUSES[currentTier]?.length > 0 && (
+          <p className="forum-desc">
+            <span style={{ opacity: 0.5 }}>Bonuses: </span>
+            {TIER_BONUSES[currentTier].join('. ')}
+          </p>
+        )}
 
         {/* stats */}
         {/* forum tier progress */}
