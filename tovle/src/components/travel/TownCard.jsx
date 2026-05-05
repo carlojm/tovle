@@ -6,7 +6,7 @@ import { TOWN_CONFIG } from '../../data/townConfig'
 import './TownCard.css'
 import TradeModal from './TradeModal'
 
-import { getTownLevel, getRepForNextLevel } from '../../utils/townUtils'
+import { getTownLevel, getRepForNextLevel, getRepForCurrentLevel } from '../../utils/townUtils'
 import { getEasternDateStr } from '../../utils/dates'
 
 const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecuted, children }) => {
@@ -139,14 +139,17 @@ const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecu
           </div>
           <p className="town-description">{config.description}</p>
           <div className="town-rep-row">
-            <span className="town-label">Reputation</span>
+            <span className="town-label">{reputation} Reputation</span>
             <div className="town-rep-track">
               <div
                 className="town-rep-fill"
-                style={{ width: `${Math.min((reputation / getRepForNextLevel(reputation)) * 100, 100)}%` }}
+                style={{ width: `${Math.min(((reputation - getRepForCurrentLevel(reputation)) / (getRepForNextLevel(reputation) - getRepForCurrentLevel(reputation))) * 100, 100)}%` }}
               />
             </div>
-            <span className="town-rep-num">{reputation} / {getRepForNextLevel(reputation)}</span>
+            <span className="town-rep-num">
+              {reputation - getRepForCurrentLevel(reputation)} / {getRepForNextLevel(reputation) - getRepForCurrentLevel(reputation)} to lvl {townLevel + 1}
+            </span>
+            
           </div>
 
           {refreshNotice && (
