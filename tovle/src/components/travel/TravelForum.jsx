@@ -28,8 +28,14 @@ const TravelForum = () => {
   // console.log(currentTier, nextTierDef)
 
   //town unlock progress
-  const unlockedTownCount = TOWN_UNLOCKS.filter(t => isMilestoneUnlocked(t, playerData)).length
-  const nextTownUnlock = TOWN_UNLOCKS.find(t => !isMilestoneUnlocked(t, playerData)) ?? null
+  // const unlockedTownCount = TOWN_UNLOCKS.filter(t => isMilestoneUnlocked(t, playerData)).length
+  // const nextTownUnlock = TOWN_UNLOCKS.find(t => !isMilestoneUnlocked(t, playerData)) ?? null
+  const unlockedTownCount = TOWN_UNLOCKS.filter(t => 
+    playerData?.travel?.towns?.[t.townId]?.unlocked === true
+  ).length
+  const nextTownUnlock = TOWN_UNLOCKS.find(t => 
+    playerData?.travel?.towns?.[t.townId]?.unlocked !== true
+  ) ?? null
 
   const [showConfetti, setShowConfetti] = useState(false)
 

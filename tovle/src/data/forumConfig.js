@@ -91,7 +91,7 @@ export const TOWN_UNLOCKS = [
     townId: 'alnera',
     label: 'Alnera',
     required: [
-      { type: 'skill_tree_node', nodeId: 'alnera_trades_1', target: 1, label: 'Unlock the Alnera trade route in the skill tree' },
+      { type: 'skill_tree_node', nodeId: 'alnera_unlock', target: 1, label: 'Unlock the Alnera trade route in the skill tree' },
     ],
     optional: [],
     minOptional: 0,
