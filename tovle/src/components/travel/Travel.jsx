@@ -61,7 +61,7 @@ const Travel = () => {
   //countdown ticker
   useEffect(() => {
     const interval = setInterval(() => {
-      setTradeCountdown(prev => Math.max(0, prev - 1))
+      setTradeCountdown(getSecondsUntilNextTradeWindow())
     }, 1000)
     return () => clearInterval(interval)
   }, [])
