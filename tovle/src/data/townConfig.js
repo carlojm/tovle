@@ -7,6 +7,8 @@ import steelmeld from '../assets/steelmeld.png'
 import alneraBgDark from '../assets/bgs/alnera_bg_dark.png'
 import alneraBgLight from '../assets/bgs/alnera_bg_light.png'
 import alneraBgLibrary from '../assets/bgs/alnera_bg_library.png'
+import alneraBgTreasury from '../assets/bgs/alnera_bg_treasury.png'
+
 
 export const TOWN_CONFIG = {
   alnera: {
@@ -32,7 +34,19 @@ export const TOWN_CONFIG = {
           { id: 'talk', label: 'Talk' },
           { id: 'view_map', label: 'View Map' },
         ]
-      }
+      },
+      {
+        id: 'dina',
+        name: 'Treasurer Dina',
+        title: 'Head of the Treasury',
+        banner: alneraBgTreasury,
+        description: `Dina serves as Head of the Treasury of the Pharoah in Alnera.
+        She oversees trade and shipment distribution in the capital.`,
+        actions: [
+          { id: 'talk', label: 'Talk' },
+          // { id: 'view_map', label: 'View Map' },
+        ]
+      },
     ]
   },
   frostgate: {

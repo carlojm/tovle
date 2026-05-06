@@ -4,11 +4,19 @@ import { usePlayer } from '../../context/PlayerContext'
 import { TOWN_CONFIG } from '../../data/townConfig'
 import { resolveEntryNode, resolveText } from '../../utils/dialogueUtils'
 import { NYRA_DIALOGUE, NYRA_CONDITIONS } from '../../data/dialogue/nyra'
-import npcPlaceholder from '../../assets/npcs/nyra.png'
+import { DINA_DIALOGUE, DINA_CONDITIONS } from '../../data/dialogue/dina'
+import nyraImage from '../../assets/npcs/nyra.png'
+import dinaImage from '../../assets/npcs/dina.png'
+
 import './VisitModal.css'
 
 const NPC_DIALOGUE = {
-  nyra: { dialogue: NYRA_DIALOGUE, conditions: NYRA_CONDITIONS }
+  nyra: { dialogue: NYRA_DIALOGUE, conditions: NYRA_CONDITIONS },
+  dina: { dialogue: DINA_DIALOGUE, conditions: DINA_CONDITIONS },
+}
+const NPC_IMAGES = {
+  nyra: nyraImage,
+  dina: dinaImage,
 }
 
 const VisitModal = ({ townId, onClose, onViewMap }) => {
@@ -96,7 +104,7 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
         <AnimatePresence>
           {mode === 'talk' && (
             <motion.img
-              src={npcPlaceholder}
+              src={NPC_IMAGES[activeNpc?.id] ?? nyraImage}
               className="visit-npc-image"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
