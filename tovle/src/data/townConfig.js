@@ -4,6 +4,10 @@ import frostgate from '../assets/frostgate.png'
 import mistport from '../assets/mistport.png'
 import steelmeld from '../assets/steelmeld.png'
 
+import alneraBgDark from '../assets/bgs/alnera_bg_dark.png'
+import alneraBgLight from '../assets/bgs/alnera_bg_light.png'
+import alneraBgLibrary from '../assets/bgs/alnera_bg_library.png'
+
 export const TOWN_CONFIG = {
   alnera: {
     id: 'alnera',
@@ -13,13 +17,17 @@ export const TOWN_CONFIG = {
     hemisphere: 'east',
     image: alnera,
     favoriteItems: [], // fill in later
-    bannerGradient: 'linear-gradient(135deg, #c2956a 0%, #e8c07a 40%, #a0724a 100%)',
+    bannerGradient: 'linear-gradient(135deg, #c2956a 0%, #e8c07a 40%, #a0724a 100%)', //placeholder
+    bannerDark: alneraBgDark,
+    bannerLight: alneraBgLight,
     npcs: [
       {
         id: 'nyra',
         name: 'Archivist Nyra',
-        title: 'Imperial Archivist',
-        description: 'Nyra maintains the records of all trade flowing through Alnera. She keeps a detailed map of the empire\'s trade routes and their influence.',
+        title: 'Royal Archivist',
+        banner: alneraBgLibrary,
+        description: `Nyra's duty under the Pharoah is to maintain records of the world.
+        She keeps a detailed map of the empire's trade routes and their influence.`,
         actions: [
           { id: 'talk', label: 'Talk' },
           { id: 'view_map', label: 'View Map' },

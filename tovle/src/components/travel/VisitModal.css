@@ -14,25 +14,32 @@
   border: 2px solid var(--color-coords-border);
   border-radius: 16px;
   width: min(92vw, 480px);
+  /* height: 350px; */
   max-height: 85vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative; /* make sure this is set */
 }
 
 .visit-banner {
   position: relative;
   height: 120px;
   flex-shrink: 0;
-  display: flex;
-  align-items: flex-end;
-  padding: 16px;
+  overflow: hidden;
+}
+
+.visit-banner-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
 }
 
 .visit-close-btn {
-  position: absolute;
+  /* position: absolute;
   top: 12px;
-  right: 12px;
+  right: 12px; */
   background: rgba(0, 0, 0, 0.3);
   border: none;
   color: white;
@@ -56,6 +63,12 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+
+  z-index: 3;
+}
+
+.visit-banner-btns {
+  z-index: 3;
 }
 
 .visit-town-name {
@@ -78,6 +91,7 @@
   flex-direction: column;
   gap: 12px;
   overflow-y: auto;
+  flex: 1;
 }
 
 .visit-description {
@@ -137,4 +151,129 @@
 
 .visit-npc-btn:hover {
   border-color: var(--color-button);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.visit-banner {
+  position: relative;
+  height: 120px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+  overflow: hidden; /* allow npc image to bleed out */
+}
+
+.visit-banner-btns {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+  z-index: 3;
+}
+
+.visit-back-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  color: white;
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.visit-back-btn:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.visit-npc-image {
+  position: absolute;
+  top: 10%;
+  left: 0%;
+  transform: translateX(-50%);
+  height: 180px; /* bleeds above the banner */
+  width: auto;
+  z-index: 1;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.visit-dialogue-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: color-mix(in srgb, var(--color-background) 90%, var(--color-button));
+  border: 1px solid var(--color-coords-border);
+  border-radius: 12px;
+  /* push down enough to leave npc visible above */
+  /* margin-top: 60px; */
+  position: relative;
+  z-index: 2;
+}
+
+.visit-dialogue-speaker {
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.visit-dialogue-text {
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.visit-dialogue-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.visit-dialogue-option {
+  text-align: left;
+  background: none;
+  border: none;
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--color-button);
+  cursor: pointer;
+  padding: 4px 0;
+  transition: opacity 0.15s;
+  font-weight: 600;
+  width: 100%;
+  display: block;
+}
+
+.visit-dialogue-option:hover {
+  opacity: 0.7;
+}
+
+.visit-browse {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
