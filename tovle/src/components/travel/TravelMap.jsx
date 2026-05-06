@@ -66,7 +66,9 @@ const TravelMap = ({ onClose, onBack }) => {
                     <div className="travel-map-tooltip">
                       <span className="travel-map-tooltip-title">{q.label}</span>
                       {visibleTowns.length === 0 ? (
-                        <span className="travel-map-town-name">No trade routes active</span>
+                        <div className="travel-map-bonus-row">
+                          <span className="travel-map-town-name">No trade routes active</span>
+                        </div>
                       ) : (
                         visibleTowns.map(townId => {
                           const bonus = getTownBonusForId(townId)

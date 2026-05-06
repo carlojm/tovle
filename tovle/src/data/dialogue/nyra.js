@@ -101,7 +101,7 @@ export const NYRA_DIALOGUE = {
 
     trade_routes: {
       speaker: 'Archivist Nyra',
-      text: `It seems that adventurers have found more loot in waters around more active trade routes.
+      text: `It seems that adventurers have found better loot in waters around active trade routes.
       There is a map of these effects on my desk that may help in your adventuring.`,
       options: [
         { label: 'Thank you. Goodbye.', next: null },

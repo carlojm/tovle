@@ -45,7 +45,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  width: clamp(140px, 80%, 400px);
+  width: clamp(80%, 80%, 400px);
   pointer-events: none;
   opacity: 1;
   transition: opacity 0.15s;
@@ -93,7 +93,7 @@
 }
 
 .travel-map-tooltip-title {
-  font-size: 12px;
+  font-size: clamp(7px, 2.5vw, 12px);
   font-weight: 700;
   opacity: 0.9;
   margin-bottom: 2px;
@@ -103,8 +103,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  font-size: clamp(10px, 2.5vw, 12px);
+  gap: auto;
+  font-size: clamp(7px, 2.5vw, 12px);
 }
 
 .travel-map-town-name {
