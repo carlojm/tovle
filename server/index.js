@@ -10,11 +10,11 @@ const { admin, db } = require('./firebase')
 const { 
   generateTrades, 
   getCurrentWindowIndex,
+  getTownLevel,
   getNumSlots,
   getTradeLimit,
   getSecondsUntilNextWindow
 } = require('./trades')
-const { getTownLevel } = require('../tovle/src/utils/townUtils.js')
 
 
 //env
@@ -181,6 +181,38 @@ const mergeItems = (existing, incoming) => {
   return Object.values(map)
 }
 
+
+// same formula as frontend getTownBonus in townUtils.js
+const getTownBonus = (reputation) => Math.round(Math.sqrt(reputation))
+
+// returns a loot multiplier from >= 1.0 based on hemisphere bonuses
+// a cache can be in up to two hemispheres (a quadrant)
+const getHemisphereMultiplier = (tov, playerData) => {
+  if (!tov?.x || !tov?.z) return 1.0
+
+  const MAP_MID_X = -680
+  const MAP_MID_Z = 623
+
+  const isEast = tov.x > MAP_MID_X
+  const isWest = tov.x <= MAP_MID_X
+  const isSouth = tov.z > MAP_MID_Z
+  const isNorth = tov.z <= MAP_MID_Z
+
+  const towns = playerData?.travel?.towns ?? {}
+
+  // each hemisphere maps to a town
+  const bonuses = []
+  if (isEast)  bonuses.push(getTownBonus(towns.alnera?.reputation ?? 0))
+  if (isWest)  bonuses.push(getTownBonus(towns.frostgate?.reputation ?? 0))
+  if (isSouth) bonuses.push(getTownBonus(towns.mistport?.reputation ?? 0))
+  if (isNorth) bonuses.push(getTownBonus(towns.steelmeld?.reputation ?? 0))
+
+  // multiply bonuses together
+  // e.g. 10% + 5% bonus = 1.10 * 1.05 = 1.155x
+  const multiplier = bonuses.reduce((product, b) => product * (1 + b / 100), 1)
+  return multiplier
+}
+
 // --- routes -------------------------------------------
 app.get('/api/daily', (request, response) => {
   const today = getEasternDateString()
@@ -231,8 +263,10 @@ app.post('/api/open-cache', async(req, res) => {
 
       //get player's luck multipliers TODO figure out exactly what these look like
       const cacheScore = cacheEntry.score ?? 25
+      const tov = tovs.find(t => t.id === Number(cacheId) || t.id === cacheId)
+      const hemisphereMultiplier = getHemisphereMultiplier(tov, playerData)
       const multipliers = {
-        global: 1.0 + (playerData.upgrades?.luckTier ?? 0),
+        global: (1.0 + (playerData.upgrades?.luckTier ?? 0)) * hemisphereMultiplier,
         cache: scoreToLuckMultiplier(cacheScore),
         items: {} //item specific multipliers TODO
       }
@@ -422,7 +456,7 @@ app.get('/api/trades/:townId', async (req, res) => {
 })
 
 app.post('/api/execute-trade', async (req, res) => {
-  const {uid, townId, tradeIndex, executionNumber} = req.body
+  const {uid, townId, tradeIndex, windowIndex, executionNumber} = req.body
 
   //validate request
   const VALID_TOWNS = ['alnera', 'frostgate', 'mistport', 'steelmeld']
@@ -463,7 +497,7 @@ app.post('/api/execute-trade', async (req, res) => {
       //check trade limit for this window
       const currentWindow = getCurrentWindowIndex()
 
-      if (req.body.windowIndex !== currentWindow) {
+      if (windowIndex !== currentWindow) {
         throw Object.assign(new Error('Trade window has expired'), {
           status: 409,
           windowExpired: true
