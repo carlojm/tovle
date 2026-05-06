@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useRef, useLayoutEffect } from 'react'
+import { motion, AnimatePresence, useAnimate } from 'framer-motion'
 import { usePlayer } from '../../context/PlayerContext'
 import { TOWN_CONFIG } from '../../data/townConfig'
 import { resolveEntryNode, resolveText } from '../../utils/dialogueUtils'
@@ -7,27 +7,30 @@ import { NYRA_DIALOGUE, NYRA_CONDITIONS } from '../../data/dialogue/nyra'
 import npcPlaceholder from '../../assets/npcs/nyra.png'
 import './VisitModal.css'
 
-// map npc id to dialogue data and conditions
 const NPC_DIALOGUE = {
   nyra: { dialogue: NYRA_DIALOGUE, conditions: NYRA_CONDITIONS }
 }
-
 
 const VisitModal = ({ townId, onClose, onViewMap }) => {
   const { playerData, save } = usePlayer()
   const config = TOWN_CONFIG[townId]
   const flags = playerData?.travel?.dialogueFlags ?? {}
 
-  const [mode, setMode] = useState('browse') //switch between browse and talk
+  const [mode, setMode] = useState('browse')
   const [activeNpc, setActiveNpc] = useState(null)
   const [currentNode, setCurrentNode] = useState(null)
-  
-  const isDark = !document.documentElement.classList.contains('light')
 
-  const activeBanner = (() => {
-    if (mode === 'talk' && activeNpc?.banner) return activeNpc.banner
-    return isDark ? config.bannerDark : config.bannerLight
-  })()
+  const [bodyScope, animateBody] = useAnimate()
+  const contentRef = useRef(null)
+
+  // After each render, measure the content and animate the body to match
+  useLayoutEffect(() => {
+    if (!contentRef.current || !bodyScope.current) return
+    const contentHeight = contentRef.current.scrollHeight
+    animateBody(bodyScope.current, { height: contentHeight }, { duration: 0.3, ease: 'easeInOut' })
+  })
+
+  const isDark = !document.documentElement.classList.contains('light')
 
   if (!config) return null
 
@@ -38,7 +41,6 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
     const entryNode = resolveEntryNode(dialogue, conditions, playerData, flags)
     const node = dialogue.nodes[entryNode]
 
-    // set flag if needed
     if (node.setsFlag) {
       save({
         travel: {
@@ -62,7 +64,6 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
     const node = activeNpc.dialogue.nodes[option.next]
     if (!node) return
 
-    // set flag if needed
     if (node.setsFlag) {
       save({
         travel: {
@@ -87,13 +88,11 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
 
   return (
     <div className="visit-backdrop" onClick={onClose}>
-      <motion.div
+      <div
         className="visit-modal"
-        layout
-        // transition={{ layout: { duration: 0.25, ease: 'easeInOut' } }} //transition when resizing
         onClick={e => e.stopPropagation()}
       >
-        
+
         <AnimatePresence>
           {mode === 'talk' && (
             <motion.img
@@ -102,21 +101,13 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.2 }}
             />
           )}
         </AnimatePresence>
 
         {/* banner */}
-        <motion.div
-          className="visit-banner"
-          layout
-          // style={{
-          //   backgroundImage: `url(${activeBanner})`,
-          //   backgroundSize: 'cover',
-          //   backgroundPosition: 'center',
-          // }}
-        >
+        <div className="visit-banner">
           {/* base banner — always rendered */}
           <div
             className="visit-banner-bg"
@@ -134,7 +125,7 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
               />
             )}
           </AnimatePresence>
@@ -165,21 +156,19 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
               >
                 <h2 className="visit-town-name">{config.name}</h2>
                 <p className="visit-town-coords">x: {config.coordinates.x}, z: {config.coordinates.z}</p>
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
+        </div>
 
-        {/* body */}
-        <motion.div
-          className="visit-body"
-          layout
-          
-        >
+        {/* body — height is animated explicitly via useAnimate; overflow hidden so it clips during transition */}
+        <motion.div ref={bodyScope} className="visit-body" style={{ overflow: 'hidden' }}>
+          {/* inner wrapper is what we measure — padding lives here so scrollHeight is accurate */}
+          <div ref={contentRef} className="visit-body-inner">
           <AnimatePresence mode="wait">
 
             {/* browse mode */}
@@ -189,7 +178,7 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
                 className="visit-browse"
               >
                 <p className="visit-description">{config.description}</p>
@@ -224,12 +213,10 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
             {mode === 'talk' && currentNodeData && (
               <motion.div
                 key="talk"
-                layoutId="dialogue-card"
-                layout
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ layout: { duration: 0.3, ease: 'easeInOut' } }}
+                transition={{ duration: 0.2 }}
                 className="visit-dialogue-card"
               >
                 <span className="visit-dialogue-speaker">{currentNodeData.speaker}</span>
@@ -237,12 +224,11 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={currentNode}
-                    layout
                     className="visit-dialogue-text"
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.2, exit: { duration: 0.12 } }}
                   >
                     {resolveText(currentNodeData.text, playerData)}
                   </motion.p>
@@ -255,7 +241,7 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.2, exit: { duration: 0.12 } }}
                     >
                       {currentNodeData.options.map((option, i) => (
                         <button
@@ -273,9 +259,10 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
             )}
 
           </AnimatePresence>
+          </div>
         </motion.div>
 
-      </motion.div>
+      </div>
     </div>
   )
 }

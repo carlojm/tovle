@@ -14,18 +14,20 @@
   border: 2px solid var(--color-coords-border);
   border-radius: 16px;
   width: min(92vw, 480px);
-  /* height: 350px; */
   max-height: 85vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  position: relative; /* make sure this is set */
+  position: relative;
 }
 
 .visit-banner {
   position: relative;
   height: 120px;
   flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
   overflow: hidden;
 }
 
@@ -36,10 +38,18 @@
   background-position: center;
 }
 
-.visit-close-btn {
-  /* position: absolute;
+.visit-banner-btns {
+  position: absolute;
   top: 12px;
-  right: 12px; */
+  right: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+  z-index: 3;
+}
+
+.visit-close-btn {
   background: rgba(0, 0, 0, 0.3);
   border: none;
   color: white;
@@ -59,15 +69,29 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
+.visit-back-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  color: white;
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.visit-back-btn:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
 .visit-banner-text {
   display: flex;
   flex-direction: column;
   gap: 2px;
-
-  z-index: 3;
-}
-
-.visit-banner-btns {
   z-index: 3;
 }
 
@@ -86,12 +110,16 @@
 }
 
 .visit-body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.visit-body-inner {
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow-y: auto;
-  flex: 1;
 }
 
 .visit-description {
@@ -153,65 +181,12 @@
   border-color: var(--color-button);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-.visit-banner {
-  position: relative;
-  height: 120px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: flex-end;
-  padding: 16px;
-  overflow: hidden; /* allow npc image to bleed out */
-}
-
-.visit-banner-btns {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  display: flex;
-  flex-direction: row;
-  gap: 6px;
-  align-items: center;
-  z-index: 3;
-}
-
-.visit-back-btn {
-  background: rgba(0, 0, 0, 0.3);
-  border: none;
-  color: white;
-  font-size: 16px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-}
-
-.visit-back-btn:hover {
-  background: rgba(0, 0, 0, 0.5);
-}
-
 .visit-npc-image {
   position: absolute;
   top: 10%;
   left: 0%;
   transform: translateX(-50%);
-  height: 180px; /* bleeds above the banner */
+  height: 180px;
   width: auto;
   z-index: 1;
   image-rendering: pixelated;
@@ -226,10 +201,11 @@
   background: color-mix(in srgb, var(--color-background) 90%, var(--color-button));
   border: 1px solid var(--color-coords-border);
   border-radius: 12px;
-  /* push down enough to leave npc visible above */
-  /* margin-top: 60px; */
   position: relative;
   z-index: 2;
+
+  min-height: 13rem; /* ~3 lines at 1.6 line-height */
+
 }
 
 .visit-dialogue-speaker {
@@ -250,7 +226,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-top: 4px;
+  margin-top: auto;
 }
 
 .visit-dialogue-option {
@@ -269,7 +245,7 @@
 }
 
 .visit-dialogue-option:hover {
-  opacity: 0.7;
+  opacity: 0.85;
 }
 
 .visit-browse {
