@@ -145,7 +145,7 @@ function getRepForLevel(level) {
 }
 
 //derive town level by total reputation
-export function getTownLevel(reputation) {
+function getTownLevel(reputation) {
   let level = 0
   while (reputation >= getRepForLevel(level + 1)) {
     level++

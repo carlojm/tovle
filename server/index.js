@@ -16,6 +16,8 @@ const {
   getSecondsUntilNextWindow
 } = require('./trades')
 
+const { rollShipment } = require('./shipments')
+
 
 //env
 const PORT = process.env.PORT || 3001
@@ -577,6 +579,87 @@ app.post('/api/execute-trade', async (req, res) => {
       windowExpired: err.windowExpired ?? false
     })
     console.error('Error executing trade:', err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+app.post('/api/collect-shipment', async (req, res) => {
+  const { uid, townId } = req.body
+
+  const VALID_TOWNS = ['alnera', 'frostgate', 'mistport', 'steelmeld']
+  if (!uid || !townId) {
+    return res.status(400).json({ error: 'Missing uid or townId' })
+  }
+  if (!VALID_TOWNS.includes(townId)) {
+    return res.status(400).json({ error: 'Invalid town ID' })
+  }
+
+  try {
+    let rolledItems = null
+
+    await db.runTransaction(async (t) => {
+      const playerRef = db.collection('players').doc(uid)
+      const playerSnap = await t.get(playerRef)
+
+      if (!playerSnap.exists) {
+        throw Object.assign(new Error('Player not found'), { status: 404 })
+      }
+
+      const playerData = playerSnap.data()
+      const todayStr = getEasternDateString()
+      const townData = playerData.travel?.towns?.[townId] ?? {}
+
+      // check town is unlocked
+      if (!townData.unlocked) {
+        throw Object.assign(new Error('Town not unlocked'), { status: 403 })
+      }
+
+      // check hasn't already collected today
+      if (townData.lastShipment === todayStr) {
+        throw Object.assign(
+          new Error('Shipment already collected today'),
+          { status: 409, alreadyCollected: true }
+        )
+      }
+
+      // derive forum tier and reputation for rolling
+      const forumTier = playerData.travel?.forum?.tier ?? 1
+      const reputation = townData.reputation ?? 0
+      const existingEquipment = playerData.equipment ?? []
+
+      // roll the shipment
+      rolledItems = rollShipment(reputation, forumTier, townId, existingEquipment, todayStr)
+
+      // build updated equipment array
+      const updatedEquipment = [...existingEquipment, ...rolledItems]
+
+      // update equipmentCollection stats — one entry per unique item key
+      const collectionUpdates = {}
+      for (const item of rolledItems) {
+        const existing = playerData.stats?.equipmentCollection?.[item.itemKey] ?? null
+        collectionUpdates[`stats.equipmentCollection.${item.itemKey}`] = {
+          totalFound: (existing?.totalFound ?? 0) + 1,
+          firstFoundDate: existing?.firstFoundDate ?? todayStr,
+          lowestFloat: Math.min(existing?.lowestFloat ?? 1, item.float),
+          highestFloat: Math.max(existing?.highestFloat ?? 0, item.float),
+        }
+      }
+
+      t.update(playerRef, {
+        equipment: updatedEquipment,
+        [`travel.towns.${townId}.lastShipment`]: todayStr,
+        'stats.totalShipmentsOpened': admin.firestore.FieldValue.increment(1),
+        ...collectionUpdates,
+      })
+    })
+
+    res.json({ items: rolledItems })
+
+  } catch (err) {
+    if (err.alreadyCollected) return res.status(409).json({ alreadyCollected: true })
+    if (err.status === 404) return res.status(404).json({ error: err.message })
+    if (err.status === 403) return res.status(403).json({ error: err.message })
+    console.error('Error collecting shipment:', err)
     res.status(500).json({ error: 'Internal server error' })
   }
 })
