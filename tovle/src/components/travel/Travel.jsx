@@ -163,7 +163,7 @@ const Travel = () => {
           onTradeExecuted={updateTownTrades}
         />
       ))}
-      {/* {['alnera', 'frostgate', 'mistport', 'steelmeld'].map(townId => (
+      {['alnera', 'frostgate', 'mistport', 'steelmeld'].map(townId => (
         <TownCard
           key={townId}
           townId={townId}
@@ -172,7 +172,7 @@ const Travel = () => {
           windowIndex={tradesData?.windowIndex}
           onTradeExecuted={updateTownTrades}
         />
-      ))} */}
+      ))}
 {/* 
       <TownCard townId="alnera" />
       <TownCard townId="frostgate" />

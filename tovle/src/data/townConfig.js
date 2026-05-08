@@ -9,6 +9,13 @@ import alneraBgLight from '../assets/bgs/alnera_bg_light.png'
 import alneraBgLibrary from '../assets/bgs/alnera_bg_library.png'
 import alneraBgTreasury from '../assets/bgs/alnera_bg_treasury.png'
 
+import frostgateBgDark from '../assets/bgs/frostgate_bg_dark.png'
+import frostgateBgLight from '../assets/bgs/frostgate_bg_light.png'
+import mistportBgDark from '../assets/bgs/mistport_bg_dark.png'
+import mistportBgLight from '../assets/bgs/mistport_bg_light.png'
+import steelmeldBgDark from '../assets/bgs/steelmeld_bg_dark.png'
+import steelmeldBgLight from '../assets/bgs/steelmeld_bg_light.png'
+
 
 export const TOWN_CONFIG = {
   alnera: {
@@ -57,6 +64,8 @@ export const TOWN_CONFIG = {
     hemisphere: 'west',
     image: frostgate,
     favoriteItems: [],
+    bannerDark: frostgateBgDark,
+    bannerLight: frostgateBgLight,
   },
   mistport: {
     id: 'mistport',
@@ -66,6 +75,8 @@ export const TOWN_CONFIG = {
     hemisphere: 'south',
     image: mistport,
     favoriteItems: [],
+    bannerDark: mistportBgDark,
+    bannerLight: mistportBgLight,
   },
   steelmeld: {
     id: 'steelmeld',
@@ -75,6 +86,8 @@ export const TOWN_CONFIG = {
     hemisphere: 'north',
     image: steelmeld,
     favoriteItems: [],
+    bannerDark: steelmeldBgDark,
+    bannerLight: steelmeldBgLight,
   },
 }
 

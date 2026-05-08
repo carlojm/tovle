@@ -86,7 +86,7 @@
   --color-background-modal: var(--deepest-ocean);
   --color-background-modal-inset: #181c2c;
   --color-background-modal-inset-tree: var(--void-navy);
-  --color-border-modal-visit: var(--lighterer-teal);
+  --color-border-modal-visit: var(--lighter-teal);
   --color-background-node: #092125;
   --color-background-node-maxed: #03181b;
   --color-border-node-selected: var(--lighterer-teal);
@@ -163,7 +163,7 @@
   --color-background-modal: rgb(198, 217, 255);
   --color-background-modal-inset: rgb(222, 232, 255);
   --color-background-modal-inset-tree: rgb(110, 185, 252);
-  --color-border-modal-visit: var(--color-background-modal-inset-tree);
+  --color-border-modal-visit: none;
   --color-background-node: rgb(181, 222, 255);
   --color-background-node-maxed: rgb(141, 200, 248);
   --color-border-node-selected: var(--darker-teal);
