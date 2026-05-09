@@ -107,3 +107,50 @@
   /* font-style: italic; */
   opacity: 0.8;
 }
+
+
+
+
+.tormented-arrow {
+  display: inline-block;
+}
+
+
+/* Level 1: slight pull. Overshoots in both directions but keeps returning toward truth.
+   The easing on each keyframe gives it that weighted, magnetic feel. */
+@keyframes tormented-slight {
+  0%   { transform: rotate(20deg); }
+  15%  { transform: rotate(66deg); }
+  30%  { transform: rotate(-32deg); }
+  37%  { transform: rotate(40deg); }
+  45%  { transform: rotate(120deg); }
+  60%  { transform: rotate(60deg); }
+  75%  { transform: rotate(-30deg); }
+  90%  { transform: rotate(-90deg); }
+  100% { transform: rotate(20deg); }
+}
+ 
+/* Level 2: heavy pull. Fully chaotic, never settles, like a nether compass.
+   Long duration so it feels like it's perpetually lost rather than looping obviously. */
+@keyframes tormented-heavy {
+  0%   { transform: rotate(0deg); }
+  8%   { transform: rotate(120deg); }
+  18%  { transform: rotate(-80deg); }
+  28%  { transform: rotate(200deg); }
+  38%  { transform: rotate(60deg); }
+  50%  { transform: rotate(-150deg); }
+  60%  { transform: rotate(310deg); }
+  70%  { transform: rotate(-40deg); }
+  82%  { transform: rotate(180deg); }
+  92%  { transform: rotate(-220deg); }
+  100% { transform: rotate(0deg); }
+}
+
+
+.tormented-arrow--slight {
+  animation: tormented-slight 3s ease-in-out infinite;
+}
+ 
+.tormented-arrow--heavy {
+  animation: tormented-heavy 6s ease-in-out infinite;
+}

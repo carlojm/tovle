@@ -5,6 +5,26 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 const placeholder_message = "The cache is ... blocks away."
 
+const PERNICIOUS_SYMBOLS = ['X', '?', '!', '#']
+const applyPernicious = (str, level) => {
+  if (!level) return str
+  const chance = level === 1 ? 0.3 : 0.75
+  return str.split('').map(char => {
+    if (/\d/.test(char) && Math.random() < chance) {
+      return PERNICIOUS_SYMBOLS[Math.floor(Math.random() * PERNICIOUS_SYMBOLS.length)]
+    }
+    return char
+  }).join('')
+}
+
+const TormentedArrow = ({ arrow, level }) => {
+  if (!level) return <>{arrow}</>
+  const className = level === 1 ? 'tormented-arrow--slight' : 'tormented-arrow--heavy'
+  const duration = level === 1 ? 3 : 6
+  const delay = -(Math.random() * duration)
+  return <span className={`tormented-arrow ${className}`} style={{ animationDelay: `${delay}s` }}>{arrow}</span>
+}
+
 const Submit = ({
   selectedCoords,
   handleSubmitGuess,
@@ -15,9 +35,13 @@ const Submit = ({
   hasWon,
   isLastCache,
   dailyCaches, currentCacheIndex, allComplete,
-  distancePrecision
+  distancePrecision,
+  delvePoints
 }) => {
   const hasGuesses = guessHistory.length > 0
+
+  const tormentedLevel = delvePoints?.tormented ?? 0
+  const perniciousLevel = delvePoints?.pernicious ?? 0
 
   const cacheProgress = allComplete
   ? `${dailyCaches.length}/${dailyCaches.length}`
@@ -83,7 +107,9 @@ const Submit = ({
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.25 }}
             >
-              {getDisplayDistance(guessHistory.at(-1).distance, distancePrecision)} {guessHistory.at(-1).arrow}
+              {/* {getDisplayDistance(guessHistory.at(-1).distance, distancePrecision)} {guessHistory.at(-1).arrow} */}
+              {applyPernicious(getDisplayDistance(guessHistory.at(-1).distance, distancePrecision), perniciousLevel)}{' '}
+              <TormentedArrow arrow={guessHistory.at(-1).arrow} level={tormentedLevel} />
             </motion.p>
           )}
         </AnimatePresence>
@@ -103,9 +129,9 @@ const Submit = ({
           {[...guessHistory].slice(-10).reverse().map((guess) => (
             <Fragment key={guess.guessNumber}>
               <p><strong>#{guess.guessNumber}</strong></p>
-              <p>{getDisplayDistance(guess.distance, distancePrecision)}</p>
+              <p>{applyPernicious(getDisplayDistance(guess.distance, distancePrecision), perniciousLevel)}</p>
               <p>{guess.message}</p>
-              <p>{guess.arrow}</p>
+              <p><TormentedArrow arrow={guess.arrow} level={tormentedLevel} /></p>
             </Fragment>
           ))}
         </div>
