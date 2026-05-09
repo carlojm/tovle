@@ -172,6 +172,27 @@ const Crafting = ({hideMaxed = false, flushSave}) => {
     return cost.every(c => getItemQuantity(c.itemId) >= c.quantity)
   }
 
+  //streak restore check: we want it to disappear if it cant be used
+  //right now it tends to stick around as a stale button that doesnt do anything
+  const unlocked = upgrades?.unlocked ?? []
+  if (playerData && unlocked.includes('streakRedeemable')) {
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const streakBrokeDate = playerData?.stats?.streakBrokeDate
+
+    const windowPassed = !streakBrokeDate || (() => {
+      const brokeDate = new Date(streakBrokeDate + 'T12:00:00')
+      brokeDate.setDate(brokeDate.getDate() + 1)
+      const dayAfterBroke = brokeDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+      return todayStr !== dayAfterBroke
+    })()
+
+    if (windowPassed) {
+      save({ upgrades: { ...upgrades, unlocked: unlocked.filter(f => f !== 'streakRedeemable') } })
+      console.log("removing streakrestore, window passed")
+    }
+  }
+
+
   const handleCraft = async (upgrade) => {
     const currentTier = upgrades[upgrade.id] ?? 0
     if (currentTier >= upgrade.maxTier) return
