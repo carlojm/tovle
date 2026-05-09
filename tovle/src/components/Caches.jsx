@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import AxolotlTooltip from './AxolotlTooltip'
 
 import ItemIcon from './ItemIcon'
+import EquipmentGrid from './EquipmentGrid'
 
 import debounce from 'lodash.debounce'
 
@@ -388,6 +389,11 @@ const Caches = ({ }) => {
       </motion.section>
 
       <motion.section layout className="caches-section">
+        <h2>Equipment</h2>
+        <EquipmentGrid onSelectItem={(item) => console.log(item)} />
+      </motion.section>
+
+      <motion.section layout className="caches-section">
         <div className="caches-section-header">
           <motion.h2 layout="position">Crafting</motion.h2>
           <motion.button
@@ -458,6 +464,8 @@ const Caches = ({ }) => {
         <ItemIcon itemKey="Crusader's Phalanx" />
       </div>
 
+      
+      
     </div>
   )
 }
