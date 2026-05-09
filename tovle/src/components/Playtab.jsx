@@ -499,6 +499,7 @@ const PlayTab = ({
           currentCacheIndex={currentCacheIndex}
           allComplete={allComplete}
           distancePrecision={distancePrecision}
+          delvePoints={delvePoints}
         />
       </>}
 

@@ -24,7 +24,7 @@ const DELVE_MODS = [
     description: 'A shadow vignette obscures the cache',
     maxLevel: 1,
     pointsPerLevel: 1,
-    levels: ['Vignette obscures the cache'],
+    levels: ['A shadow vignette obscures the cache'],
   },
   {
     id: 'astral',
@@ -32,7 +32,7 @@ const DELVE_MODS = [
     description: 'The image is flipped upside down',
     maxLevel: 1,
     pointsPerLevel: 1,
-    levels: ['Image is upside down'],
+    levels: ['The image is flipped upside down'],
   },
   {
     id: 'twisted',
@@ -40,7 +40,7 @@ const DELVE_MODS = [
     description: 'The image colors are inverted',
     maxLevel: 1,
     pointsPerLevel: 1,
-    levels: ['Colors inverted'],
+    levels: ['The image colors are inverted'],
   },
   {
     id: 'colossal',
@@ -57,6 +57,22 @@ const DELVE_MODS = [
     maxLevel: 1,
     pointsPerLevel: 2,
     levels: ['2x2 fragment'],
+  },
+  {
+    id: 'tormented',
+    name: 'Tormented',
+    description: 'Sea spirits pull at your compass',
+    maxLevel: 2,
+    pointsPerLevel: 1,
+    levels: ['Slight pull', 'Heavy pull'],
+  },
+  {
+    id: 'pernicious',
+    name: 'Pernicious',
+    description: 'Hints can become obscured',
+    maxLevel: 2,
+    pointsPerLevel: 1,
+    levels: ['Slight obscuring', 'Heavy obscuring'],
   },
 ]
 
@@ -103,7 +119,7 @@ const DelveModal = ({ delvePoints, setDelvePoints, onClose, onSaveDefaults }) =>
               <button className="delve-quick-btn" onClick={handleMax}>Max</button>
             </div>
             <p className="delve-total-pts" style={{marginTop:"4px"}}>More pts = more loot!</p>
-            <p className="delve-total-pts">WIP: More added soon!</p>
+            {/* <p className="delve-total-pts">WIP: More added soon!</p> */}
           </div>
           <button className="delve-close-btn" onClick={onClose}>
             <X size={20} />
