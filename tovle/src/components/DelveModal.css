@@ -1,6 +1,3 @@
-/* TODO all this is straight copilot generated based on my description */
-/* TODO take the time to actually go through it and make it nice the way i want it */
-
 .delve-backdrop {
   position: fixed;
   inset: 0;
@@ -17,7 +14,7 @@
   border: 2px solid var(--color-coords-border);
   border-radius: 16px;
   width: min(90vw, 520px);
-  max-height: 80vh;
+  max-height: min(65vh, 800px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
