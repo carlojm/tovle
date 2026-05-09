@@ -183,6 +183,9 @@ const App = () => {
         } else {
           setDelvePoints(playerData.upgrades?.delveDefaults ?? {})
         }
+      } else {
+        //apply default delve points
+        setDelvePoints(playerData.upgrades?.delveDefaults ?? {})
       }
     }).catch(err => console.error('Failed to fetch daily caches:', err))
 
