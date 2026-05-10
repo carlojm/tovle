@@ -1,0 +1,51 @@
+.eq-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.eq-controls-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.eq-control-btn {
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--slate);
+  background: var(--dark-slate);
+  color: var(--color-text);
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.eq-control-btn:hover {
+  border-color: var(--color-button);
+}
+
+.eq-control-btn--active {
+  background: var(--color-button);
+  border-color: var(--color-button);
+  color: var(--color-text);
+}
+
+.eq-control-select {
+  padding: 5px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--slate);
+  background: var(--dark-slate);
+  color: var(--color-text);
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.eq-control-select:focus {
+  outline: none;
+  border-color: var(--color-button);
+}

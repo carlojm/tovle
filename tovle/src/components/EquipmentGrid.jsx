@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { usePlayer } from '../context/PlayerContext'
 import islesItems from '../data/islesItems.json'
 import ItemIcon from './ItemIcon'
 import './LootGrid.css'
 import './EquipmentGrid.css'
 import EquipmentCard from './EquipmentCard'
+import EquipmentControls, { TIER_ORDER } from './EquipmentControls'
 
 const TIER_BADGE = {
   'Tier 1': 'I',
@@ -26,13 +27,16 @@ export default function EquipmentGrid() {
   const [selectedId, setSelectedId] = useState(null)
   const [tooltip, setTooltip] = useState(null)
 
-  const selectedInstance = selectedId
-  ? (playerData.equipment ?? []).find(item => item.id === selectedId) ?? null
-  : null
+  //settings
+  const [sortAxis, setSortAxis] = useState(null)
+  const [sortDir, setSortDir] = useState('asc')
+  const [filterStarred, setFilterStarred] = useState(false)
+  const [filterType, setFilterType] = useState('')
+  const [filterTier, setFilterTier] = useState('')
 
-  const count = Math.ceil(Math.max(instances.length, 9) / 9) * 9
-  const slots = Array(count).fill(null)
-  instances.forEach((instance, i) => { slots[i] = instance })
+  const selectedInstance = selectedId
+    ? (instances.find(i => i.id === selectedId) ?? null)
+    : null
 
   const handleMouseEnter = (e, slot) => {
     const itemDef = islesItems[slot.itemKey]
@@ -54,9 +58,68 @@ export default function EquipmentGrid() {
     save({ equipment: updatedEquipment })
   }
 
+  const sortedFiltered = useMemo(() => {
+    let result = [...instances]
+
+    // apply filters
+    if (filterStarred) result = result.filter(i => i.starred)
+    if (filterType) result = result.filter(i => {
+      const def = islesItems[i.itemKey]
+      return def?.type === filterType
+    })
+    if (filterTier) result = result.filter(i => i.tier === filterTier)
+
+    // sort helper: alphabetical by item name as tiebreaker
+    const alpha = (a, b) => {
+      const nameA = islesItems[a.itemKey]?.name ?? a.itemKey
+      const nameB = islesItems[b.itemKey]?.name ?? b.itemKey
+      return nameA.localeCompare(nameB)
+    }
+
+    const dir = sortDir === 'asc' ? 1 : -1
+
+    result.sort((a, b) => {
+      // starred always first within their group
+      if (a.starred && !b.starred) return -1
+      if (!a.starred && b.starred) return 1
+
+      if (!sortAxis) return alpha(a, b)
+
+      if (sortAxis === 'date') {
+        const diff = (a.obtainedDate ?? '').localeCompare(b.obtainedDate ?? '')
+        return diff !== 0 ? diff * dir : alpha(a, b)
+      }
+      if (sortAxis === 'tier') {
+        const diff = (TIER_ORDER[a.tier] ?? 99) - (TIER_ORDER[b.tier] ?? 99)
+        return diff !== 0 ? diff * dir : alpha(a, b)
+      }
+      if (sortAxis === 'float') {
+        const diff = (a.float ?? 0) - (b.float ?? 0)
+        return diff !== 0 ? diff * dir : alpha(a, b)
+      }
+
+      return alpha(a, b)
+    })
+
+    return result
+  }, [instances, sortAxis, sortDir, filterStarred, filterType, filterTier])
+
+  const count = Math.ceil(Math.max(instances.length, 9) / 9) * 9
+  const slots = Array(count).fill(null)
+  // instances.forEach((instance, i) => { slots[i] = instance })
+  sortedFiltered.forEach((instance, i) => { slots[i] = instance })
 
   return (
     <>
+      <EquipmentControls
+        instances={instances}
+        sortAxis={sortAxis} setSortAxis={setSortAxis}
+        sortDir={sortDir} setSortDir={setSortDir}
+        filterStarred={filterStarred} setFilterStarred={setFilterStarred}
+        filterType={filterType} setFilterType={setFilterType}
+        filterTier={filterTier} setFilterTier={setFilterTier}
+      />
+
       <div className="loot-grid">
         {slots.map((slot, i) => {
           const itemDef = slot ? islesItems[slot.itemKey] : null
