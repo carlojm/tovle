@@ -35,8 +35,10 @@ export default function EquipmentGrid() {
   const [filterTier, setFilterTier] = useState('')
 
   const selectedInstance = selectedId
-    ? (instances.find(i => i.id === selectedId) ?? null)
-    : null
+  ? (instances.find(i => i.id === selectedId) ?? null)
+  : null
+
+  const isTouchDevice = window.matchMedia('(hover: none)').matches
 
   const handleMouseEnter = (e, slot) => {
     const itemDef = islesItems[slot.itemKey]
@@ -129,8 +131,8 @@ export default function EquipmentGrid() {
               key={slot ? slot.id : `empty-${i}`}
               className={`loot-slot ${slot ? 'loot-slot--filled' : ''}`}
               onClick={slot ? () => setSelectedId(slot.id) : undefined}
-              onMouseEnter={slot ? (e) => handleMouseEnter(e, slot) : undefined}
-              onMouseLeave={slot ? handleMouseLeave : undefined}
+              onMouseEnter={slot && !isTouchDevice ? (e) => handleMouseEnter(e, slot) : undefined}
+              onMouseLeave={slot && !isTouchDevice ? handleMouseLeave : undefined}
             >
               {slot && itemDef && (
                 <>

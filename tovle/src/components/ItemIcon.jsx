@@ -37,5 +37,5 @@ export default function ItemIcon({ itemKey }) {
   const baseClass = monumentaExists ? 'monumenta-items' : 'minecraft'
   const iconClass = monumentaExists ? monumentaClass : getMinecraftClass(item.base_item)
 
-  return <div className={`${baseClass} ${iconClass}`} title={item.name} />
+  return <div className={`${baseClass} ${iconClass}`}/>
 }
