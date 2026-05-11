@@ -12,6 +12,8 @@ import TravelMap from './TravelMap'
 import { getTownLevel, getRepForNextLevel, getRepForCurrentLevel } from '../../utils/townUtils'
 import { getEasternDateStr } from '../../utils/dates'
 
+import ShipmentModal from '../ShipmentModal'
+
 const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecuted, children }) => {
   const { uid, playerData, save } = usePlayer()
   const config = TOWN_CONFIG[townId]
@@ -122,7 +124,8 @@ const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecu
   }
 
   const handleCollectShipment = () => {
-    console.log('collect shipment', townId)
+    // console.log('collect shipment', townId)
+    setActiveModal('shipment')
   }
 
 
@@ -265,6 +268,13 @@ const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecu
         <TravelMap
           onClose={() => setActiveModal(null)}
           onBack={() => setActiveModal('visit')}
+        />
+      )}
+
+      {activeModal === 'shipment' && (
+        <ShipmentModal
+          townId={townId}
+          onClose={() => setActiveModal(null)}
         />
       )}
     </div>

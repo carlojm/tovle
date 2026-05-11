@@ -128,6 +128,20 @@ const Travel = () => {
     })
   }
 
+  const handleDebugResetShipments = () => {
+    save({
+      travel: {
+        ...playerData.travel,
+        towns: {
+          alnera:    { ...playerData.travel?.towns?.alnera,    lastShipment: null },
+          frostgate: { ...playerData.travel?.towns?.frostgate, lastShipment: null },
+          mistport:  { ...playerData.travel?.towns?.mistport,  lastShipment: null },
+          steelmeld: { ...playerData.travel?.towns?.steelmeld, lastShipment: null },
+        }
+      }
+    })
+  }
+
   return (
     <div className="travel-container">
 
@@ -138,6 +152,7 @@ const Travel = () => {
       <button onClick={handleDebugCurrencies}>Debug: 999 currencies</button>
       <button onClick={handleDebugResetTree}>Debug: Reset tree</button>
       <button onClick={handleDebugResetTrades}>Debug: Reset trade window</button>
+      <button onClick={handleDebugResetShipments}>Debug: Reset All Shipments</button>
 
 
       {unlockedTowns.length === 0 && (

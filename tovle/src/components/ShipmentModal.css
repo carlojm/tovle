@@ -1,0 +1,322 @@
+/* ── Layout ───────────────────────────────────────────────────────────────── */
+
+.sm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.sm-modal {
+  width: min(480px, 92vw);
+  height: min(600px, 68vh);
+  background: var(--color-background-modal);
+  border: 2px solid var(--color-border-modal-visit);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.sm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px 12px 20px;
+  border-bottom: 1px solid var(--color-coords-border);
+  flex-shrink: 0;
+}
+
+.sm-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.sm-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+  opacity: 0.6;
+  font-size: 20px;
+  line-height: 1;
+  /* padding: 4px; */
+  transition: opacity 0.2s;
+}
+
+.sm-close-btn:hover { opacity: 1; }
+
+/* ── Phase: preroll ──────────────────────────────────────────────────────── */
+
+.sm-preroll {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sm-preroll-info {
+  flex: 1;
+  padding: 20px 20px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.sm-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.sm-subtitle {
+  font-size: 12px;
+  color: var(--color-text);
+  opacity: 0.5;
+  margin: 0;
+}
+
+.sm-tier-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sm-tier-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sm-tier-label {
+  font-size: 12px;
+  width: 80px;
+  flex-shrink: 0;
+  color: var(--color-text);
+  opacity: 0.7;
+}
+
+.sm-tier-bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.sm-tier-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+.sm-tier-pct {
+  font-size: 11px;
+  width: 36px;
+  text-align: right;
+  color: var(--color-text);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+
+.sm-jackpot-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--color-background-modal-inset);
+  border: 1px solid var(--color-coords-border);
+  border-radius: 8px;
+}
+
+.sm-jackpot-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sm-jackpot-row {
+  font-size: 12px;
+  color: var(--color-text);
+  opacity: 0.7;
+}
+
+.sm-chest-preview {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 12px;
+  flex-shrink: 0;
+}
+
+.sm-chest-preview img {
+  image-rendering: pixelated;
+  width: 64px;
+  height: 64px;
+  opacity: 0.8;
+  animation: sm-idle-sway 3s ease-in-out infinite;
+}
+
+@keyframes sm-idle-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50%       { transform: rotate(2deg); }
+}
+
+.sm-roll-btn {
+  margin: 0 20px 20px;
+  padding: 12px;
+  border-radius: 999px;
+  border: 2px solid var(--color-coords-border);
+  background: none;
+  color: var(--color-text);
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.sm-roll-btn:hover:not(:disabled) {
+  background: var(--color-button);
+  border-color: var(--color-button);
+}
+
+.sm-roll-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Phase: animating + inspect ──────────────────────────────────────────── */
+
+.sm-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* cloud area — top 67% */
+.sm-cloud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* height set inline as % */
+}
+
+/* chest area — bottom 33% */
+.sm-chest-area {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sm-chest {
+  image-rendering: pixelated;
+  width: 80px;
+  height: 80px;
+  position: relative;
+  z-index: 2;
+}
+
+.sm-chest-glow {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  filter: blur(18px);
+  pointer-events: none;
+  z-index: 1;
+  transition: background 0.3s ease;
+}
+
+/* floating items */
+.sm-item {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  /* transform set inline for initial position */
+}
+
+.sm-item-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sm-item-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  filter: blur(10px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.sm-item-bob {
+  animation: sm-bob 2.4s ease-in-out infinite;
+}
+
+@keyframes sm-bob {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-5px); }
+}
+
+/* collect button (inspect phase) */
+.sm-collect-btn {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 32px;
+  border-radius: 999px;
+  border: 2px solid var(--color-coords-border);
+  background: none;
+  color: var(--color-text);
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  z-index: 20;
+}
+
+.sm-collect-btn:hover {
+  background: var(--color-button);
+  border-color: var(--color-button);
+}
+
+/* current batch label during animation */
+.sm-batch-label {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: var(--color-text);
+  opacity: 0.6;
+  white-space: nowrap;
+  z-index: 20;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
