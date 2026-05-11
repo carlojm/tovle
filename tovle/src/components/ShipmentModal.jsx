@@ -226,45 +226,87 @@ function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onC
 
         if (JACKPOT_TIERS.has(tier)) onJackpot()
 
-        chestEl.src = chestGif + '?t=' + Date.now()
-        await new Promise(r => setTimeout(r, OPEN_CHEST_DUR))
-
-        await Promise.all(step.items.map(async (item) => {
-          const pos = itemPositions.get(item.id)
-          if (!pos) return
-          const el = spawnItemEl(item)
-
-          // items start at chest center — we set left/top once, then animate transform
-          const startX = chestCenterX - ITEM_SIZE / 2
-          const startY = chestCenterY - ITEM_SIZE / 2
-
-          // in spawnItemEl, set initial position:
-          el.style.left = `${startX}px`
-          el.style.top  = `${startY}px`
-
-          // then animate with transform offset to target:
-          await animate(el, {
-            translateX: pos.x - ITEM_SIZE / 2 - startX,
-            translateY: pos.y - ITEM_SIZE / 2 - startY,
-            opacity: [0, 1],
-            duration: FLOAT_UP_DUR,
-            ease: 'outCubic',
-          }).finished
-
-          const bobDelay = Math.random() * 2.4
-
-          const inner = el.querySelector('.sm-item-inner')
-          if (inner) {
-            inner.classList.add('sm-item-bob')
-            inner.style.animationDelay = `${bobDelay}s`
-          }
-        }))
-
-        chestEl.src = chestPng
+        // clear glow before opening
         if (chestGlowEl) {
           animate(chestGlowEl, { opacity: 0, duration: 300, ease: 'outSine' })
         }
-        await new Promise(r => setTimeout(r, 400))
+
+        chestEl.src = chestGif + '?t=' + Date.now()
+
+        // start throw in parallel with gif and item floats
+        const throwX = (Math.random() - 0.5) * 160
+        const throwDir = throwX > 0 ? 1 : -1
+        const throwRot = throwDir * 30
+        const THROW_DELAY = 300  // ms into gif before throw starts
+        const THROW_DUR = 1200   // keep in sync with css animation duration
+
+        const throwPromise = new Promise(r => setTimeout(r, THROW_DELAY)).then(() => {
+          chestEl.style.setProperty('--throw-x', `${throwX}px`)
+          chestEl.style.setProperty('--throw-x-half', `${throwX * 0.3}px`)
+          chestEl.style.setProperty('--throw-rot', `${throwRot}deg`)
+          chestEl.style.setProperty('--throw-rot-half', `${throwDir * 8}deg`)
+          chestEl.style.animation = `sm-chest-throw ${THROW_DUR}ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`
+          return new Promise(r => setTimeout(r, THROW_DUR))
+        })
+
+        await new Promise(r => setTimeout(r, OPEN_CHEST_DUR))
+
+        await Promise.all([
+          throwPromise,
+          ...step.items.map(async (item) => {
+            const pos = itemPositions.get(item.id)
+            if (!pos) return
+            const el = spawnItemEl(item)
+
+            const startX = chestCenterX - ITEM_SIZE / 2
+            const startY = chestCenterY - ITEM_SIZE / 2
+
+            el.style.left = `${startX}px`
+            el.style.top  = `${startY}px`
+
+            await animate(el, {
+              translateX: pos.x - ITEM_SIZE / 2 - startX,
+              translateY: pos.y - ITEM_SIZE / 2 - startY,
+              opacity: [0, 1],
+              duration: FLOAT_UP_DUR,
+              ease: 'outCubic',
+            }).finished
+
+            const bobDelay = Math.random() * 2.4
+            const inner = el.querySelector('.sm-item-inner')
+            if (inner) {
+              inner.classList.add('sm-item-bob')
+              inner.style.animationDelay = `${bobDelay}s`
+            }
+          })
+        ])
+
+        // reset chest for next batch
+        // but skip on last step
+        if (s < sequence.length - 1) {
+          chestEl.style.animation = ''
+          chestEl.style.transition = 'none'
+          chestEl.style.transform = ''
+          chestEl.style.opacity = '0'
+          chestEl.src = chestPng
+
+          chestEl.getBoundingClientRect()
+
+          chestEl.style.transition = 'opacity 0.3s ease'
+          chestEl.style.opacity = '1'
+
+          await new Promise(r => setTimeout(r, 350))
+          chestEl.style.transition = ''
+
+          await new Promise(r => setTimeout(r, 150))
+        } else {
+          // last batch — just fade the glow and leave chest gone
+          if (chestGlowEl) {
+            chestGlowEl.style.transition = 'opacity 0.3s ease'
+            chestGlowEl.style.opacity = '0'
+          }
+          await new Promise(r => setTimeout(r, 350))
+        }
       }
 
       setBatchLabel('')
