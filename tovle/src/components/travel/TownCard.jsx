@@ -275,6 +275,22 @@ const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecu
         <ShipmentModal
           townId={townId}
           onClose={() => setActiveModal(null)}
+          onCollected={() => {
+            const todayStr = getEasternDateStr()
+            save({
+              travel: {
+                ...playerData.travel,
+                towns: {
+                  ...playerData.travel?.towns,
+                  [townId]: {
+                    ...playerData.travel?.towns?.[townId],
+                    lastShipment: todayStr,
+                  }
+                }
+              }
+            })
+            setActiveModal(null)
+          }}
         />
       )}
     </div>

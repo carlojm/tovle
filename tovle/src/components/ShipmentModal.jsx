@@ -252,7 +252,7 @@ function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onC
           }).finished
 
           const bobDelay = Math.random() * 2.4
-          
+
           const inner = el.querySelector('.sm-item-inner')
           if (inner) {
             inner.classList.add('sm-item-bob')
@@ -329,7 +329,7 @@ function InspectCloud({ items, positions, onItemSelect }) {
 }
 // ── Main modal ────────────────────────────────────────────────────────────────
 
-export default function ShipmentModal({ townId, onClose }) {
+export default function ShipmentModal({ townId, onClose, onCollected}) {
   const { playerData, uid, save } = usePlayer()
 
   const forumTier  = playerData?.travel?.forum?.tier ?? 1
@@ -406,7 +406,10 @@ export default function ShipmentModal({ townId, onClose }) {
 
   const handleButtonClick = () => {
     if (phase === 'preroll' && !rolling) handleRoll()
-    if (phase === 'inspect') onClose()
+    if (phase === 'inspect') {
+      onCollected?.()
+      onClose()
+    }
   }
 
   return (
