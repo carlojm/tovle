@@ -297,36 +297,31 @@ function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onC
 // ── Inspect cloud ─────────────────────────────────────────────────────────────
 
 function InspectCloud({ items, positions, onItemSelect }) {
-  const delays = useRef(items.map(() => Math.random() * 2.4))
-
   return (
-    <div className="sm-cloud">
-      {items.map((item, i) => {
+    <div className="sm-cloud" style={{ pointerEvents: 'none' }}>
+      {items.map((item) => {
         const pos = positions[item.id]
         if (!pos) return null
         return (
           <div
             key={item.id}
-            className="sm-item"
-            style={{ left: pos.x - ITEM_SIZE / 2, top: pos.y - ITEM_SIZE / 2, opacity: 1 }}
+            style={{
+              position: 'absolute',
+              left: pos.x - ITEM_SIZE / 2,
+              top: pos.y - ITEM_SIZE / 2,
+              width: ITEM_SIZE,
+              height: ITEM_SIZE,
+              cursor: 'pointer',
+              pointerEvents: 'all',
+            }}
             onClick={() => onItemSelect(item)}
-          >
-            <div
-              className="sm-item-inner sm-item-bob"
-              style={{ animationDelay: `${delays.current[i]}s` }}
-            >
-              <div
-                className="sm-item-glow"
-                style={{ background: TIER_GLOW[item.tier] ?? 'transparent' }}
-              />
-              <ItemIcon itemKey={item.itemKey} />
-            </div>
-          </div>
+          />
         )
       })}
     </div>
   )
 }
+
 // ── Main modal ────────────────────────────────────────────────────────────────
 
 export default function ShipmentModal({ townId, onClose, onCollected}) {
@@ -474,7 +469,7 @@ export default function ShipmentModal({ townId, onClose, onCollected}) {
               )}
 
               {/* animation cloud — mounts when animating */}
-              {phase === 'animating' && (
+              {(phase === 'animating' || phase === 'inspect') && (
                 <AnimationStage
                   items={rolledItems}
                   forumTier={forumTier}
