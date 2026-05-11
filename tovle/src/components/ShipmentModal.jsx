@@ -16,6 +16,7 @@ import {
   TIER_ORDER,
 } from '../utils/tierWeights'
 import './ShipmentModal.css'
+import islesItems from '../data/islesItems.json'
 
 // ── Tweakable globals ─────────────────────────────────────────────────────────
 
@@ -42,7 +43,7 @@ const JACKPOT_TIERS = new Set(['Rare', 'Artifact', 'Epic'])
 // The chest ref is passed in from the parent so it animates the real chest
 // that is always mounted in sm-bottom.
 
-function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onComplete, onJackpot, onItemSelect }) {
+function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onComplete, onJackpot, onItemSelect, onPositionsCalculated }) {
   const cloudRef = useRef(null)
   const [batchLabel, setBatchLabel] = useState('')
 
@@ -59,6 +60,7 @@ function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onC
 
     const sequence    = buildSequence(items, forumTier)
     const allPositions = calcItemPositions(items.length, cloudH, bodyW, ITEM_SIZE, MIN_ITEM_GAP)
+    onPositionsCalculated(allPositions)
 
     let posIndex = 0
     const itemPositions = new Map()
@@ -72,16 +74,30 @@ function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onC
     const chestCenterX = bodyW / 2
     const chestCenterY = cloudH + (bodyH * (1 - CLOUD_FRACTION)) / 2
 
+    const getMonumentaClass = (itemName) =>
+      `monumenta-${itemName
+        .replaceAll('-', '').replaceAll('.', '').replaceAll("'", '')
+        .replace(/\(.*\)/g, '').trim()
+        .replaceAll(' ', '-').replaceAll('_', '-')
+        .toLowerCase()
+        .replace(/(^|-)([a-z])/g, (_, sep, c) => `${sep}${c.toUpperCase()}`)
+      }`
+
     const spawnItemEl = (item) => {
+      const itemDef = islesItems[item.itemKey]
       const el = document.createElement('div')
       el.className = 'sm-item'
+      // start at chest center using transform instead of left/top
       el.style.cssText = `
         width: ${ITEM_SIZE}px;
         height: ${ITEM_SIZE}px;
+        position: absolute;
         left: ${chestCenterX - ITEM_SIZE / 2}px;
         top: ${chestCenterY - ITEM_SIZE / 2}px;
         opacity: 0;
+        will-change: transform, opacity;
       `
+
       const inner = document.createElement('div')
       inner.className = 'sm-item-inner'
       inner.style.cssText = `
@@ -91,28 +107,66 @@ function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onC
         align-items: center;
         justify-content: center;
         position: relative;
+        will-change: transform;
       `
+
+      // glow
       const glow = document.createElement('div')
       glow.className = 'sm-item-glow'
-      glow.style.background = TIER_GLOW[item.tier] ?? 'transparent'
+      glow.style.cssText = `
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        filter: blur(10px);
+        pointer-events: none;
+        z-index: -1;
+        background: ${TIER_GLOW[item.tier] ?? 'transparent'};
+        will-change: transform;
+      `
       inner.appendChild(glow)
 
-      const placeholder = document.createElement('div')
-      placeholder.style.cssText = `
-        width: ${ITEM_SIZE}px;
-        height: ${ITEM_SIZE}px;
-        background: rgba(255,255,255,0.1);
-        border-radius: 6px;
-      `
-      inner.appendChild(placeholder)
+      // icon — build spritesheet div imperatively
+      if (itemDef) {
+        const monumentaClass = getMonumentaClass(itemDef.name)
+        // check if class exists in stylesheets
+        const hasSprite = Array.from(document.styleSheets).some(sheet => {
+          try {
+            return Array.from(sheet.cssRules).some(r => r.selectorText === `.${monumentaClass}`)
+          } catch { return false }
+        })
+
+        const iconEl = document.createElement('div')
+        if (hasSprite) {
+          iconEl.className = `monumenta-items ${monumentaClass}`
+        } else {
+          const minecraftClass = `minecraft-${(itemDef.base_item ?? '')
+            .replaceAll(' ', '-').replaceAll('_', '-').toLowerCase()}`
+          iconEl.className = `minecraft ${minecraftClass}`
+        }
+        // scale to fit ITEM_SIZE — same logic as EquipmentGrid
+        iconEl.style.cssText = `
+          width: 64px;
+          height: 64px;
+          transform: scale(${ITEM_SIZE / 64 * 0.9});
+          transform-origin: center;
+          margin: calc((64px * (1 - ${ITEM_SIZE / 64 * 0.9})) / -2);
+          flex-shrink: 0;
+        `
+        inner.appendChild(iconEl)
+      }
+
+
+      const startX = chestCenterX - ITEM_SIZE / 2
+      const startY = chestCenterY - ITEM_SIZE / 2
+
+      el.style.left = `${startX}px`
+      el.style.top  = `${startY}px`
+      
+
       el.appendChild(inner)
-
-      el.addEventListener('click', (e) => {
-        e.stopPropagation()
-        onItemSelect(item)
-      })
-
+      el.addEventListener('click', (e) => { e.stopPropagation(); onItemSelect(item) })
       cloud.appendChild(el)
+
       return el
     }
 
@@ -170,9 +224,18 @@ function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onC
         if (!pos) return
         const el = spawnItemEl(item)
 
+        // items start at chest center — we set left/top once, then animate transform
+        const startX = chestCenterX - ITEM_SIZE / 2
+        const startY = chestCenterY - ITEM_SIZE / 2
+
+        // in spawnItemEl, set initial position:
+        el.style.left = `${startX}px`
+        el.style.top  = `${startY}px`
+
+        // then animate with transform offset to target:
         await animate(el, {
-          left:    pos.x - ITEM_SIZE / 2,
-          top:     pos.y - ITEM_SIZE / 2,
+          translateX: pos.x - ITEM_SIZE / 2 - startX,
+          translateY: pos.y - ITEM_SIZE / 2 - startY,
           opacity: [0, 1],
           duration: FLOAT_UP_DUR,
           ease: 'outCubic',
@@ -217,18 +280,7 @@ function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onC
 
 // ── Inspect cloud ─────────────────────────────────────────────────────────────
 
-function InspectCloud({ items, bodyRef, onItemSelect }) {
-  const [positions, setPositions] = useState([])
-
-  useEffect(() => {
-    const body = bodyRef.current
-    if (!body) return
-    const bodyW  = body.clientWidth
-    const bodyH  = body.clientHeight
-    const cloudH = bodyH * CLOUD_FRACTION
-    setPositions(calcItemPositions(items.length, cloudH, bodyW, ITEM_SIZE, MIN_ITEM_GAP))
-  }, [items, bodyRef])
-
+function InspectCloud({ items, positions, onItemSelect }) {
   return (
     <div className="sm-cloud">
       {items.map((item, i) => {
@@ -282,6 +334,8 @@ export default function ShipmentModal({ townId, onClose }) {
   const jackpots     = JACKPOT_CHANCE[forumTier] ?? {}
   const displayTiers = TIER_ORDER.slice(0, maxTierIndex + 1)
   const maxPct       = Math.max(...displayTiers.map(t => effective[t] ?? 0))
+
+  const [itemPositions, setItemPositions] = useState([])
 
   const handleRoll = async () => {
     setRolling(true)
@@ -409,6 +463,7 @@ export default function ShipmentModal({ townId, onClose }) {
                   onComplete={handleAnimationComplete}
                   onJackpot={handleJackpot}
                   onItemSelect={setSelectedItem}
+                  onPositionsCalculated={setItemPositions}
                 />
               )}
 
@@ -416,7 +471,7 @@ export default function ShipmentModal({ townId, onClose }) {
               {phase === 'inspect' && (
                 <InspectCloud
                   items={rolledItems}
-                  bodyRef={bodyRef}
+                  positions={itemPositions}
                   onItemSelect={setSelectedItem}
                 />
               )}
