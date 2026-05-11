@@ -30,8 +30,8 @@ const TIER_BADGE = {
   'Tier 3': 'III',
   'Tier 4': 'IV',
   'Tier 5': 'V',
-  'Uncommon': 'Unc',
-  'Unique': 'Unq',
+  'Uncommon': 'Uc',
+  'Unique': 'Uq',
   'Rare': 'R',
   'Artifact': 'A',
   'Epic': 'E',
@@ -207,7 +207,7 @@ export default function EquipmentGrid() {
             ‹
           </button>
           <span className="eq-page-label">
-            Page {currentPage + 1} of {totalPages}
+            Page {currentPage + 1} of {totalPages} ({sortedFiltered.length} items)
           </span>
           <button
             className="eq-page-btn"
