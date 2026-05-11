@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { usePlayer } from '../context/PlayerContext'
 import islesItems from '../data/islesItems.json'
 import ItemIcon from './ItemIcon'
@@ -6,6 +6,23 @@ import './LootGrid.css'
 import './EquipmentGrid.css'
 import EquipmentCard from './EquipmentCard'
 import EquipmentControls, { TIER_ORDER } from './EquipmentControls'
+
+function EquipmentTooltip({ tooltip }) {
+  if (!tooltip) return null
+  return (
+    <div
+      className="loot-tooltip"
+      style={{
+        left: tooltip.x,
+        top: tooltip.y,
+        transform: 'translate(-50%, -100%)',
+        position: 'fixed',
+      }}
+    >
+      {tooltip.text}
+    </div>
+  )
+}
 
 const TIER_BADGE = {
   'Tier 1': 'I',
@@ -15,24 +32,36 @@ const TIER_BADGE = {
   'Tier 5': 'V',
   'Uncommon': 'Unc',
   'Unique': 'Unq',
-  'Rare': 'Rare',
-  'Artifact': 'Arti',
-  'Epic': 'Epic',
+  'Rare': 'R',
+  'Artifact': 'A',
+  'Epic': 'E',
 }
+
+const ROWS_PER_PAGE = 6
+const ITEMS_PER_PAGE = ROWS_PER_PAGE * 9
 
 export default function EquipmentGrid() {
   const { playerData, save } = usePlayer()
   const instances = playerData?.equipment ?? []
 
   const [selectedId, setSelectedId] = useState(null)
-  const [tooltip, setTooltip] = useState(null)
+  const tooltipRef = useRef(null)
+  const tooltipElRef = useRef(null)
 
   //settings
-  const [sortAxis, setSortAxis] = useState(null)
-  const [sortDir, setSortDir] = useState('asc')
+  const [sortAxis, setSortAxis] = useState('tier')
+  const [sortDir, setSortDir] = useState('desc')
   const [filterStarred, setFilterStarred] = useState(false)
   const [filterType, setFilterType] = useState('')
   const [filterTier, setFilterTier] = useState('')
+
+  const [currentPage, setCurrentPage] = useState(0)
+
+  const handleSetSortAxis = (v) => { setSortAxis(v); setCurrentPage(0) }
+  const handleSetSortDir = (v) => { setSortDir(v); setCurrentPage(0) }
+  const handleSetFilterStarred = (v) => { setFilterStarred(v); setCurrentPage(0) }
+  const handleSetFilterType = (v) => { setFilterType(v); setCurrentPage(0) }
+  const handleSetFilterTier = (v) => { setFilterTier(v); setCurrentPage(0) }
 
   const selectedInstance = selectedId
   ? (instances.find(i => i.id === selectedId) ?? null)
@@ -44,14 +73,20 @@ export default function EquipmentGrid() {
     const itemDef = islesItems[slot.itemKey]
     if (!itemDef) return
     const rect = e.currentTarget.getBoundingClientRect()
-    setTooltip({
-      text: itemDef.name,
-      x: rect.left + rect.width / 2,
-      y: rect.top - 8,
-    })
+    if (tooltipElRef.current) {
+      tooltipElRef.current.style.left = `${rect.left + rect.width / 2}px`
+      tooltipElRef.current.style.top = `${rect.top - 8}px`
+      tooltipElRef.current.style.display = 'block'
+      tooltipElRef.current.textContent = itemDef.name
+    }
   }
 
-  const handleMouseLeave = () => setTooltip(null)
+
+  const handleMouseLeave = () => {
+    if (tooltipElRef.current) {
+      tooltipElRef.current.style.display = 'none'
+    }
+  }
 
   const handleStar = (instance) => {
     const updatedEquipment = (playerData.equipment ?? []).map(item =>
@@ -105,21 +140,30 @@ export default function EquipmentGrid() {
 
     return result
   }, [instances, sortAxis, sortDir, filterStarred, filterType, filterTier])
+  
+  
+  const totalPages = Math.ceil(sortedFiltered.length / ITEMS_PER_PAGE) || 1
+  const pageItems = sortedFiltered.slice(
+    currentPage * ITEMS_PER_PAGE,
+    (currentPage + 1) * ITEMS_PER_PAGE
+  )
+  // on last page, size dynamically (1-6 rows). on other pages, always full 6 rows
+  const slotCount = totalPages === 1
+    ? Math.ceil(Math.max(pageItems.length, 9) / 9) * 9
+    : ITEMS_PER_PAGE
 
-  const count = Math.ceil(Math.max(instances.length, 9) / 9) * 9
-  const slots = Array(count).fill(null)
-  // instances.forEach((instance, i) => { slots[i] = instance })
-  sortedFiltered.forEach((instance, i) => { slots[i] = instance })
+  const slots = Array(slotCount).fill(null)
+  pageItems.forEach((instance, i) => { slots[i] = instance })
 
   return (
     <>
       <EquipmentControls
-        instances={instances}
-        sortAxis={sortAxis} setSortAxis={setSortAxis}
-        sortDir={sortDir} setSortDir={setSortDir}
-        filterStarred={filterStarred} setFilterStarred={setFilterStarred}
-        filterType={filterType} setFilterType={setFilterType}
-        filterTier={filterTier} setFilterTier={setFilterTier}
+        instances={instances} 
+        sortAxis={sortAxis} setSortAxis={handleSetSortAxis}
+        sortDir={sortDir} setSortDir={handleSetSortDir}
+        filterStarred={filterStarred} setFilterStarred={handleSetFilterStarred}
+        filterType={filterType} setFilterType={handleSetFilterType}
+        filterTier={filterTier} setFilterTier={handleSetFilterTier}
       />
 
       <div className="loot-grid">
@@ -153,19 +197,37 @@ export default function EquipmentGrid() {
         })}
       </div>
 
-      {tooltip && (
-        <div
-          className="loot-tooltip"
-          style={{
-            left: tooltip.x,
-            top: tooltip.y,
-            transform: 'translate(-50%, -100%)',
-            position: 'fixed',
-          }}
-        >
-          {tooltip.text}
+      {totalPages > 1 && (
+        <div className="eq-pagination">
+          <button
+            className="eq-page-btn"
+            onClick={() => setCurrentPage(p => p - 1)}
+            disabled={currentPage === 0}
+          >
+            ‹
+          </button>
+          <span className="eq-page-label">
+            Page {currentPage + 1} of {totalPages}
+          </span>
+          <button
+            className="eq-page-btn"
+            onClick={() => setCurrentPage(p => p + 1)}
+            disabled={currentPage === totalPages - 1}
+          >
+            ›
+          </button>
         </div>
       )}
+
+      <div
+        ref={tooltipElRef}
+        className="loot-tooltip"
+        style={{
+          display: 'none',
+          position: 'fixed',
+          transform: 'translate(-50%, -100%)',
+        }}
+      />
 
       {selectedInstance && (
         <EquipmentCard

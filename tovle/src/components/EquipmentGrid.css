@@ -46,3 +46,45 @@
     margin: calc((64px * (1 - 0.37)) / -2);
   }
 }
+
+
+
+.eq-pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.eq-page-btn {
+  background: var(--color-background-loot-slot);
+  border: 1px solid var(--color-border-loot-grid);
+  color: var(--color-text);
+  border-radius: 6px;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s;
+
+  line-height: 1;
+  padding-bottom: 2px;
+}
+
+.eq-page-btn:hover:not(:disabled) {
+  border-color: var(--color-button);
+}
+
+.eq-page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.eq-page-label {
+  font-size: 12px;
+  opacity: 0.6;
+  color: var(--color-text);
+}
