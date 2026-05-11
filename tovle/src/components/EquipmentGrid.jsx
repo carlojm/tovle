@@ -88,13 +88,6 @@ export default function EquipmentGrid() {
     }
   }
 
-  const handleStar = (instance) => {
-    const updatedEquipment = (playerData.equipment ?? []).map(item =>
-      item.id === instance.id ? { ...item, starred: !item.starred } : item
-    )
-    save({ equipment: updatedEquipment })
-  }
-
   const sortedFiltered = useMemo(() => {
     let result = [...instances]
 
@@ -233,9 +226,6 @@ export default function EquipmentGrid() {
         <EquipmentCard
           instance={selectedInstance}
           onClose={() => setSelectedId(null)}
-          onStar={handleStar}
-          onEquip={(instance) => console.log('equip', instance)}
-          onRecycle={(instance) => console.log('recycle', instance)}
         />
       )}
     </>

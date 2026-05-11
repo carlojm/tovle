@@ -429,13 +429,6 @@ export default function ShipmentModal({ townId, onClose, onCollected}) {
   const handleAnimationComplete = useCallback(() => setPhase('inspect'), [])
   const handleJackpot = useCallback(() => setShowConfetti(true), [])
 
-  const handleStar = (instance) => {
-    const updated = (playerData?.equipment ?? []).map(i =>
-      i.id === instance.id ? { ...i, starred: !i.starred } : i
-    )
-    save({ equipment: updated })
-  }
-
   const buttonLabel = phase === 'inspect' ? 'Collect'
     : rolling ? 'Rolling...'
     : phase === 'animating' ? '···'
@@ -568,15 +561,15 @@ export default function ShipmentModal({ townId, onClose, onCollected}) {
         <ItemConfetti onComplete={() => setShowConfetti(false)} />
       )}
 
-      {selectedItem && (
-        <EquipmentCard
-          instance={selectedItem}
-          onClose={() => setSelectedItem(null)}
-          onStar={handleStar}
-          onEquip={() => {}}
-          onRecycle={() => {}}
-        />
-      )}
+      {selectedItem && (() => {
+        const liveInstance = (playerData?.equipment ?? []).find(i => i.id === selectedItem.id) ?? selectedItem
+        return (
+          <EquipmentCard
+            instance={liveInstance}
+            onClose={() => setSelectedItem(null)}
+          />
+        )
+      })()}
     </>
   )
 }

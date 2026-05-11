@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { usePlayer } from '../context/PlayerContext'
 import { motion, AnimatePresence } from 'framer-motion'
 
 import ItemIcon from './ItemIcon'
@@ -31,7 +32,8 @@ const flipVariants = {
   },
 }
 
-export default function EquipmentCard({ instance, onClose, onStar, onEquip, onRecycle }) {
+export default function EquipmentCard({ instance, onClose }) {
+  const { playerData, uid, save } = usePlayer()
   const [metaView, setMetaView] = useState('info') // 'info' | 'recycle' | 'equip'
 
   if (!instance) return null
@@ -50,9 +52,43 @@ export default function EquipmentCard({ instance, onClose, onStar, onEquip, onRe
     onClose()
   }
  
-  const handleRecycleConfirm = () => {
-    onRecycle(instance)
-    handleClose()
+  const handleStar = () => {
+    const updatedEquipment = (playerData.equipment ?? []).map(item =>
+      item.id === instance.id ? { ...item, starred: !item.starred } : item
+    )
+    save({ equipment: updatedEquipment })
+  }
+
+  const handleRecycle = async () => {
+    try {
+      const res = await fetch('/api/recycle-equipment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uid, itemId: instance.id }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        console.error('Recycle failed:', data.error)
+        return
+      }
+
+      const updatedEquipment = (playerData.equipment ?? []).filter(i => i.id !== instance.id)
+      const currentDen = playerData.inventory?.currencies?.denPieces ?? 0
+      save({
+        equipment: updatedEquipment,
+        inventory: {
+          ...playerData.inventory,
+          currencies: {
+            ...playerData.inventory?.currencies,
+            denPieces: currentDen + data.payout,
+          }
+        }
+      })
+
+      handleClose()
+    } catch (err) {
+      console.error('Recycle error:', err)
+    }
   }
 
 
@@ -110,7 +146,7 @@ export default function EquipmentCard({ instance, onClose, onStar, onEquip, onRe
         <div className="eq-card-actions" onClick={e => e.stopPropagation()}>
           <button
             className="eq-action-btn"
-            onClick={(e) => { e.stopPropagation(); onStar(instance) }}
+            onClick={(e) => { e.stopPropagation(); handleStar() }}
           >
             {instance.starred ? '★ Unstar' : '☆ Star'}
           </button>
@@ -169,7 +205,7 @@ export default function EquipmentCard({ instance, onClose, onStar, onEquip, onRe
                   <button className="eq-meta-btn eq-meta-btn--cancel" onClick={() => setMetaView('info')}>
                     Cancel
                   </button>
-                  <button className="eq-meta-btn eq-meta-btn--confirm" onClick={handleRecycleConfirm}>
+                  <button className="eq-meta-btn eq-meta-btn--confirm" onClick={handleRecycle}>
                     Confirm
                   </button>
                 </div>
