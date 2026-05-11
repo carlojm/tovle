@@ -136,12 +136,12 @@ function getBatchGroups(forumTier) {
 // each step: { type: 'batch'|'individual', items: [...], tier: string, shakeConfig }
 export function buildSequence(items, forumTier) {
   const SHAKE = {
-    batch_low:       { shakes: 2, shakeDur: 220, pauseDur: 120 },
-    batch_mid:       { shakes: 3, shakeDur: 260, pauseDur: 180 },
-    batch_high:      { shakes: 4, shakeDur: 290, pauseDur: 240 },
-    individual_rare: { shakes: 5, shakeDur: 310, pauseDur: 380 },
-    individual_arti: { shakes: 6, shakeDur: 330, pauseDur: 500 },
-    individual_epic: { shakes: 7, shakeDur: 350, pauseDur: 620 },
+    batch_low:       { shakes: 3, shakeDur: 420, pauseDur: 500 },
+    batch_mid:       { shakes: 4, shakeDur: 460, pauseDur: 550 },
+    batch_high:      { shakes: 5, shakeDur: 490, pauseDur: 600 },
+    individual_rare: { shakes: 6, shakeDur: 510, pauseDur: 650 },
+    individual_arti: { shakes: 7, shakeDur: 630, pauseDur: 800 },
+    individual_epic: { shakes: 8, shakeDur: 650, pauseDur: 1000 },
   }
 
   // all individual if 3 or fewer items

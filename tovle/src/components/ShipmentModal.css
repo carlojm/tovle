@@ -254,6 +254,7 @@
   transition: opacity 0.2s;
   position:relative;
   z-index: 2;
+  transform-origin: center 78%;
 }
 
 .sm-chest-static--sway {
