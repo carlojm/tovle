@@ -1,4 +1,4 @@
-/* ── Layout ───────────────────────────────────────────────────────────────── */
+/* ── Backdrop + modal shell ───────────────────────────────────────────────── */
 
 .sm-backdrop {
   position: fixed;
@@ -13,15 +13,16 @@
 
 .sm-modal {
   width: min(480px, 92vw);
-  height: min(600px, 68vh);
+  height: min(600px, 70vh);
   background: var(--color-background-modal);
   border: 2px solid var(--color-border-modal-visit);
   border-radius: 16px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  position: relative;
 }
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
 
 .sm-header {
   display: flex;
@@ -46,34 +47,31 @@
   opacity: 0.6;
   font-size: 20px;
   line-height: 1;
-  /* padding: 4px; */
   transition: opacity 0.2s;
 }
 
 .sm-close-btn:hover { opacity: 1; }
 
-/* ── Phase: preroll ──────────────────────────────────────────────────────── */
+/* ── Body ────────────────────────────────────────────────────────────────── */
 
-.sm-preroll {
+.sm-body {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 0;
+  position: relative;
 }
+
+/* ── Preroll info ────────────────────────────────────────────────────────── */
 
 .sm-preroll-info {
   flex: 1;
-  padding: 20px 20px 8px;
+  padding: 16px 20px 8px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   overflow-y: auto;
-}
-
-.sm-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-text);
-  margin: 0;
+  min-height: 0;
 }
 
 .sm-subtitle {
@@ -126,7 +124,6 @@
   flex-shrink: 0;
 }
 
-
 .sm-jackpot-info {
   display: flex;
   flex-direction: column;
@@ -148,104 +145,41 @@
 
 .sm-jackpot-row {
   font-size: 12px;
-  color: var(--color-text);
-  opacity: 0.7;
 }
 
-.sm-chest-preview {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  padding: 12px;
-  flex-shrink: 0;
-}
+/* ── Cloud — animation and inspect items float here ──────────────────────── */
 
-.sm-chest-preview img {
-  image-rendering: pixelated;
-  width: 64px;
-  height: 64px;
-  opacity: 0.8;
-  animation: sm-idle-sway 3s ease-in-out infinite;
-}
-
-@keyframes sm-idle-sway {
-  0%, 100% { transform: rotate(-2deg); }
-  50%       { transform: rotate(2deg); }
-}
-
-.sm-roll-btn {
-  margin: 0 20px 20px;
-  padding: 12px;
-  border-radius: 999px;
-  border: 2px solid var(--color-coords-border);
-  background: none;
-  color: var(--color-text);
-  font-family: "Open Runde", system-ui, sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-
-.sm-roll-btn:hover:not(:disabled) {
-  background: var(--color-button);
-  border-color: var(--color-button);
-}
-
-.sm-roll-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* ── Phase: animating + inspect ──────────────────────────────────────────── */
-
-.sm-stage {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-/* cloud area — top 67% */
 .sm-cloud {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  /* height set inline as % */
+  /* height is CLOUD_FRACTION of sm-body — set via inline style or here as % */
+  /* height: 67%; */
+  pointer-events: none; /* items inside have their own pointer-events */
 }
 
-/* chest area — bottom 33% */
-.sm-chest-area {
+.sm-cloud .sm-item {
+  pointer-events: all;
+}
+
+/* ── Batch label ─────────────────────────────────────────────────────────── */
+
+.sm-batch-label {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sm-chest {
-  image-rendering: pixelated;
-  width: 80px;
-  height: 80px;
-  position: relative;
-  z-index: 2;
-}
-
-.sm-chest-glow {
-  position: absolute;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  filter: blur(18px);
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: var(--color-text);
+  opacity: 0.6;
+  white-space: nowrap;
+  z-index: 20;
   pointer-events: none;
-  z-index: 1;
-  transition: background 0.3s ease;
 }
 
-/* floating items */
+/* ── Floating items ──────────────────────────────────────────────────────── */
+
 .sm-item {
   position: absolute;
   display: flex;
@@ -253,7 +187,6 @@
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  /* transform set inline for initial position */
 }
 
 .sm-item-inner {
@@ -281,42 +214,93 @@
   50%       { transform: translateY(-5px); }
 }
 
-/* collect button (inspect phase) */
-.sm-collect-btn {
+
+/* top */
+
+.sm-top-zone {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+/* ── Bottom — chest + button, always mounted, never moves ────────────────── */
+
+.sm-bottom {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px 20px;
+  /* height matches 1 - CLOUD_FRACTION of body */
+  height: 33%;
+  justify-content: center;
+}
+
+.sm-chest-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sm-chest-static {
+  image-rendering: pixelated;
+  width: 72px;
+  height: 72px;
+  transition: opacity 0.2s;
+}
+
+.sm-chest-static--sway {
+  animation: sm-idle-sway 3s ease-in-out infinite;
+}
+
+@keyframes sm-idle-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50%       { transform: rotate(2deg); }
+}
+
+.sm-chest-glow {
   position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 10px 32px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  filter: blur(18px);
+  pointer-events: none;
+  z-index: 1;
+  transition: background 0.3s ease;
+}
+
+/* ── Roll / collect button ───────────────────────────────────────────────── */
+
+.sm-roll-btn {
+  width: 100%;
+  padding: 11px;
   border-radius: 999px;
   border: 2px solid var(--color-coords-border);
   background: none;
   color: var(--color-text);
   font-family: "Open Runde", system-ui, sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  white-space: nowrap;
-  z-index: 20;
 }
 
-.sm-collect-btn:hover {
+.sm-roll-btn:hover:not(:disabled) {
   background: var(--color-button);
   border-color: var(--color-button);
 }
 
-/* current batch label during animation */
-.sm-batch-label {
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  color: var(--color-text);
-  opacity: 0.6;
-  white-space: nowrap;
-  z-index: 20;
-  pointer-events: none;
-  transition: opacity 0.3s;
+.sm-roll-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Error ───────────────────────────────────────────────────────────────── */
+
+.sm-error {
+  color: #fc5454;
+  font-size: 13px;
+  padding: 4px 20px;
+  margin: 0;
 }

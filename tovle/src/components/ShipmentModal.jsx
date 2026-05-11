@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { animate, createTimeline } from 'animejs'
+import { animate } from 'animejs'
 import { usePlayer } from '../context/PlayerContext'
-import islesItems from '../data/islesItems.json'
 import ItemIcon from './ItemIcon'
 import EquipmentCard from './EquipmentCard'
 import ItemConfetti from './ItemConfetti'
@@ -15,28 +14,20 @@ import {
   TIER_GLOW,
   TIER_GLOW_SOLID,
   TIER_ORDER,
-  MAX_TIER_BY_FORUM,
 } from '../utils/tierWeights'
 import './ShipmentModal.css'
 
 // ── Tweakable globals ─────────────────────────────────────────────────────────
 
-const CLOUD_FRACTION  = 0.67   // top portion reserved for item cloud
-const CHEST_FRACTION  = 0.33   // bottom portion for chest
-const ITEM_SIZE       = 48     // px — rendered size of each item icon
-const MIN_ITEM_GAP    = 12     // px — minimum gap between item centers
-const FLOAT_UP_DUR    = 550    // ms — item floats from chest to cloud position
-const OPEN_CHEST_DUR  = 600    // ms — chest open gif plays before items float
+const CLOUD_FRACTION = 0.67  // fraction of sm-body used for the item cloud
+const ITEM_SIZE      = 48
+const MIN_ITEM_GAP   = 12
+const FLOAT_UP_DUR   = 550
+const OPEN_CHEST_DUR = 600
 
-// ── Tier display helpers ──────────────────────────────────────────────────────
-
-const TIER_BADGE = {
-  'Tier 1': 'I', 'Tier 2': 'II', 'Tier 3': 'III', 'Tier 4': 'IV', 'Tier 5': 'V',
-  'Uncommon': 'Unc', 'Unique': 'Unq', 'Rare': 'Rare', 'Artifact': 'Arti', 'Epic': 'Epic',
-}
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 const TIER_LABEL_CLASS = {
-  'Tier 1': '', 'Tier 2': '', 'Tier 3': '', 'Tier 4': '', 'Tier 5': '',
   'Uncommon': 'monumenta-uncommon',
   'Unique':   'monumenta-unique',
   'Rare':     'monumenta-rare',
@@ -46,132 +37,42 @@ const TIER_LABEL_CLASS = {
 
 const JACKPOT_TIERS = new Set(['Rare', 'Artifact', 'Epic'])
 
-// ── Pre-roll: tier probability display ───────────────────────────────────────
-
-function PrerollScreen({ reputation, forumTier, onRoll, rolling, onClose }) {
-  const { effective, display, maxTierIndex } = getTierWeights(reputation, forumTier)
-  const jackpots = JACKPOT_CHANCE[forumTier] ?? {}
-
-  const displayTiers = TIER_ORDER.slice(0, maxTierIndex + 1)
-
-  // highest bar value for scaling
-  const maxPct = Math.max(...displayTiers.map(t => (effective[t] ?? 0)))
-
-  return (
-    <div className="sm-preroll">
-      <div className="sm-preroll-info">
-        <p className="sm-subtitle">
-          Tier distribution based on your reputation ({reputation} rep)
-        </p>
-
-        <div className="sm-tier-table">
-          {displayTiers.map(tier => {
-            const pct = (effective[tier] ?? 0) * 100
-            const barWidth = maxPct > 0 ? (effective[tier] ?? 0) / maxPct * 100 : 0
-            return (
-              <div key={tier} className="sm-tier-row">
-                <span className={`sm-tier-label ${TIER_LABEL_CLASS[tier] ?? ''}`}>
-                  {tier}
-                </span>
-                <div className="sm-tier-bar-track">
-                  <div
-                    className="sm-tier-bar-fill"
-                    style={{
-                      width: `${barWidth}%`,
-                      background: TIER_GLOW_SOLID[tier] ?? '#888',
-                    }}
-                  />
-                </div>
-                <span className="sm-tier-pct">{pct.toFixed(1)}%</span>
-              </div>
-            )
-          })}
-        </div>
-
-        {(jackpots.Rare || jackpots.Artifact) && (
-          <div className="sm-jackpot-info">
-            <span className="sm-jackpot-title">Jackpot Chances</span>
-            {jackpots.Rare && (
-              <span className="sm-jackpot-row monumenta-rare">
-                Rare: {(jackpots.Rare * 100).toFixed(1)}%
-              </span>
-            )}
-            {jackpots.Artifact && (
-              <span className="sm-jackpot-row monumenta-artifact">
-                Artifact: {(jackpots.Artifact * 100).toFixed(2)}%
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* chest preview at bottom of info panel */}
-      <div className="sm-chest-preview">
-        <img src={chestPng} alt="chest" />
-      </div>
-
-      <button
-        className="sm-roll-btn"
-        onClick={onRoll}
-        disabled={rolling}
-      >
-        {rolling ? 'Rolling...' : 'Roll Shipment'}
-      </button>
-    </div>
-  )
-}
-
 // ── Animation stage ───────────────────────────────────────────────────────────
+// Renders imperatively into the cloud div above the chest.
+// The chest ref is passed in from the parent so it animates the real chest
+// that is always mounted in sm-bottom.
 
-function AnimationStage({
-  items,
-  forumTier,
-  modalRef,
-  onComplete,
-  onJackpot,
-  onItemSelect,
-}) {
-  const chestRef      = useRef(null)
-  const chestGlowRef  = useRef(null)
-  const cloudRef      = useRef(null)
-  const stepRef       = useRef(0)
-  const itemEls       = useRef([])   // { el, instance } for inspect phase
+function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onComplete, onJackpot, onItemSelect }) {
+  const cloudRef = useRef(null)
   const [batchLabel, setBatchLabel] = useState('')
-  const [done, setDone]             = useState(false)
 
   const runSequence = useCallback(async () => {
-    const modal = modalRef.current
-    if (!modal) return
+    const body    = bodyRef.current
+    const chestEl = chestRef.current
+    const chestGlowEl = chestGlowRef.current
+    const cloud   = cloudRef.current
+    if (!body || !chestEl || !cloud) return
 
-    const modalW = modal.clientWidth
-    const modalH = modal.clientHeight
-    const cloudH = modalH * CLOUD_FRACTION
+    const bodyW  = body.clientWidth
+    const bodyH  = body.clientHeight
+    const cloudH = bodyH * CLOUD_FRACTION
 
-    const sequence = buildSequence(items, forumTier)
+    const sequence    = buildSequence(items, forumTier)
+    const allPositions = calcItemPositions(items.length, cloudH, bodyW, ITEM_SIZE, MIN_ITEM_GAP)
 
-    // pre-calculate ALL item positions up front
-    const allPositions = calcItemPositions(items.length, cloudH, modalW, ITEM_SIZE, MIN_ITEM_GAP)
-
-    // map each item to its final position (in order they'll appear)
-    // we assign positions as items reveal, in sequence order
     let posIndex = 0
-    const itemPositions = new Map() // item.id → {x, y}
-
-    // flatten sequence to get reveal order
+    const itemPositions = new Map()
     for (const step of sequence) {
       for (const item of step.items) {
         itemPositions.set(item.id, allPositions[posIndex++] ?? allPositions[0])
       }
     }
 
-    const chestEl     = chestRef.current
-    const chestGlowEl = chestGlowRef.current
+    // chest center — chest lives in sm-bottom which starts at CLOUD_FRACTION down the body
+    const chestCenterX = bodyW / 2
+    const chestCenterY = cloudH + (bodyH * (1 - CLOUD_FRACTION)) / 2
 
-    // chest center in modal coords (relative to cloud area bottom = chestArea top)
-    const chestCenterX = modalW / 2
-    const chestCenterY = modalH * CLOUD_FRACTION + (modalH * CHEST_FRACTION) / 2
-
-    const spawnItemEl = (item, position) => {
+    const spawnItemEl = (item) => {
       const el = document.createElement('div')
       el.className = 'sm-item'
       el.style.cssText = `
@@ -181,39 +82,37 @@ function AnimationStage({
         top: ${chestCenterY - ITEM_SIZE / 2}px;
         opacity: 0;
       `
-
-      // inner wrapper for bob animation (added after float completes)
       const inner = document.createElement('div')
       inner.className = 'sm-item-inner'
-      inner.style.cssText = `width:${ITEM_SIZE}px;height:${ITEM_SIZE}px;display:flex;align-items:center;justify-content:center;`
-
-      // glow
+      inner.style.cssText = `
+        width: ${ITEM_SIZE}px;
+        height: ${ITEM_SIZE}px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      `
       const glow = document.createElement('div')
       glow.className = 'sm-item-glow'
       glow.style.background = TIER_GLOW[item.tier] ?? 'transparent'
       inner.appendChild(glow)
 
-      // icon — use a placeholder div we'll replace with React portal later
-      // for now render a colored square as stand-in; real icons added after
-      const iconPlaceholder = document.createElement('div')
-      iconPlaceholder.dataset.itemKey = item.itemKey
-      iconPlaceholder.style.cssText = `
+      const placeholder = document.createElement('div')
+      placeholder.style.cssText = `
         width: ${ITEM_SIZE}px;
         height: ${ITEM_SIZE}px;
-        display: flex; align-items: center; justify-content: center;
-        image-rendering: pixelated;
+        background: rgba(255,255,255,0.1);
+        border-radius: 6px;
       `
-      inner.appendChild(iconPlaceholder)
+      inner.appendChild(placeholder)
       el.appendChild(inner)
 
-      // click to inspect
       el.addEventListener('click', (e) => {
         e.stopPropagation()
         onItemSelect(item)
       })
 
-      cloudRef.current.appendChild(el)
-      itemEls.current.push({ el, item })
+      cloud.appendChild(el)
       return el
     }
 
@@ -222,22 +121,19 @@ function AnimationStage({
       const { shakeConfig, tier, type } = step
       const { shakes, shakeDur, pauseDur } = shakeConfig
 
-      // update batch label
       setBatchLabel(
         type === 'batch'
           ? `${step.items.length} item${step.items.length > 1 ? 's' : ''} · ${tier}`
           : tier
       )
 
-      // shake sequence — build timeline
-      // glow increases each shake
       for (let sh = 0; sh < shakes; sh++) {
-        const progress = (sh + 1) / shakes  // 0→1 over shake count
-        const glowColor = sh < shakes - 1
-          ? `rgba(80,80,80,${0.2 + progress * 0.3})`  // build up gray
-          : (TIER_GLOW_SOLID[tier] ?? '#888')           // final shake = tier color
+        const isLastShake = sh === shakes - 1
+        const progress    = (sh + 1) / shakes
+        const glowColor   = isLastShake
+          ? (TIER_GLOW_SOLID[tier] ?? '#888')
+          : `rgba(80,80,80,${0.2 + progress * 0.3})`
 
-        // shake the chest
         await animate(chestEl, {
           rotate: [
             { to: -8, duration: shakeDur * 0.25 },
@@ -251,7 +147,6 @@ function AnimationStage({
           ease: 'inOutSine',
         }).finished
 
-        // update glow
         if (chestGlowEl) {
           chestGlowEl.style.background = glowColor
           await animate(chestGlowEl, {
@@ -261,25 +156,19 @@ function AnimationStage({
           }).finished
         }
 
-        // pause between shakes — gets longer toward the end for suspense
         const suspensePause = pauseDur * (1 + (sh / shakes) * 0.8)
         await new Promise(r => setTimeout(r, suspensePause))
       }
 
-      // fire confetti for jackpot tiers
-      if (JACKPOT_TIERS.has(tier)) {
-        onJackpot()
-      }
+      if (JACKPOT_TIERS.has(tier)) onJackpot()
 
-      // open chest — swap to gif
       chestEl.src = chestGif + '?t=' + Date.now()
       await new Promise(r => setTimeout(r, OPEN_CHEST_DUR))
 
-      // float items up to their positions
-      const floatPromises = step.items.map(async (item) => {
+      await Promise.all(step.items.map(async (item) => {
         const pos = itemPositions.get(item.id)
         if (!pos) return
-        const el = spawnItemEl(item, pos)
+        const el = spawnItemEl(item)
 
         await animate(el, {
           left:    pos.x - ITEM_SIZE / 2,
@@ -289,16 +178,13 @@ function AnimationStage({
           ease: 'outCubic',
         }).finished
 
-        // add bob after settling
-        el.querySelector('.sm-item-inner').classList.add('sm-item-bob')
-        // stagger bob phase so they don't all move in sync
-        el.querySelector('.sm-item-inner').style.animationDelay =
-          `${Math.random() * 2.4}s`
-      })
+        const inner = el.querySelector('.sm-item-inner')
+        if (inner) {
+          inner.classList.add('sm-item-bob')
+          inner.style.animationDelay = `${Math.random() * 2.4}s`
+        }
+      }))
 
-      await Promise.all(floatPromises)
-
-      // close chest, clear glow, brief pause before next batch
       chestEl.src = chestPng
       if (chestGlowEl) {
         animate(chestGlowEl, { opacity: 0, duration: 300, ease: 'outSine' })
@@ -307,52 +193,67 @@ function AnimationStage({
     }
 
     setBatchLabel('')
-    setDone(true)
     onComplete()
-  }, [items, forumTier, modalRef, onComplete, onJackpot, onItemSelect])
+  }, [items, forumTier, bodyRef, chestRef, chestGlowRef, onComplete, onJackpot, onItemSelect])
 
   useEffect(() => {
-    // small delay so DOM is ready
     const t = setTimeout(runSequence, 200)
     return () => clearTimeout(t)
   }, [runSequence])
 
   return (
-    <div className="sm-stage">
-      {/* cloud layer — items float up here */}
+    <>
+      {/* cloud zone — imperative items float up here */}
       <div
         ref={cloudRef}
         className="sm-cloud"
-        style={{ height: `${CLOUD_FRACTION * 100}%`, position: 'absolute' }}
       />
-
-      {/* batch label */}
-      <div className="sm-batch-label" style={{ opacity: batchLabel ? 1 : 0 }}>
-        {batchLabel}
-      </div>
-
-      {/* chest area */}
-      <div
-        className="sm-chest-area"
-        style={{ height: `${CHEST_FRACTION * 100}%` }}
-      >
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div ref={chestGlowRef} className="sm-chest-glow" style={{ opacity: 0 }} />
-          <img
-            ref={chestRef}
-            src={chestPng}
-            alt="chest"
-            className="sm-chest"
-          />
-        </div>
-      </div>
-
-      {/* collect button appears when done */}
-      {done && (
-        <button className="sm-collect-btn" onClick={onComplete}>
-          Collect
-        </button>
+      {batchLabel && (
+        <div className="sm-batch-label">{batchLabel}</div>
       )}
+    </>
+  )
+}
+
+// ── Inspect cloud ─────────────────────────────────────────────────────────────
+
+function InspectCloud({ items, bodyRef, onItemSelect }) {
+  const [positions, setPositions] = useState([])
+
+  useEffect(() => {
+    const body = bodyRef.current
+    if (!body) return
+    const bodyW  = body.clientWidth
+    const bodyH  = body.clientHeight
+    const cloudH = bodyH * CLOUD_FRACTION
+    setPositions(calcItemPositions(items.length, cloudH, bodyW, ITEM_SIZE, MIN_ITEM_GAP))
+  }, [items, bodyRef])
+
+  return (
+    <div className="sm-cloud">
+      {items.map((item, i) => {
+        const pos = positions[i]
+        if (!pos) return null
+        return (
+          <div
+            key={item.id}
+            className="sm-item"
+            style={{ left: pos.x - ITEM_SIZE / 2, top: pos.y - ITEM_SIZE / 2, opacity: 1 }}
+            onClick={() => onItemSelect(item)}
+          >
+            <div
+              className="sm-item-inner sm-item-bob"
+              style={{ animationDelay: `${i * 0.3}s` }}
+            >
+              <div
+                className="sm-item-glow"
+                style={{ background: TIER_GLOW[item.tier] ?? 'transparent' }}
+              />
+              <ItemIcon itemKey={item.itemKey} />
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -361,18 +262,26 @@ function AnimationStage({
 
 export default function ShipmentModal({ townId, onClose }) {
   const { playerData, uid, save } = usePlayer()
-  const modalRef = useRef(null)
 
-  const travel     = playerData?.travel
-  const forumTier  = travel?.forum?.tier ?? 1
-  const reputation = travel?.towns?.[townId]?.reputation ?? 0
+  const forumTier  = playerData?.travel?.forum?.tier ?? 1
+  const reputation = playerData?.travel?.towns?.[townId]?.reputation ?? 0
 
-  const [phase, setPhase]             = useState('preroll')   // preroll | animating | inspect
-  const [rolling, setRolling]         = useState(false)
-  const [rolledItems, setRolledItems] = useState([])
+  const [phase, setPhase]               = useState('preroll')
+  const [rolling, setRolling]           = useState(false)
+  const [rolledItems, setRolledItems]   = useState([])
   const [showConfetti, setShowConfetti] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
-  const [error, setError]             = useState(null)
+  const [error, setError]               = useState(null)
+
+  // refs shared between main modal and AnimationStage
+  const bodyRef      = useRef(null)
+  const chestRef     = useRef(null)
+  const chestGlowRef = useRef(null)
+
+  const { effective, maxTierIndex } = getTierWeights(reputation, forumTier)
+  const jackpots     = JACKPOT_CHANCE[forumTier] ?? {}
+  const displayTiers = TIER_ORDER.slice(0, maxTierIndex + 1)
+  const maxPct       = Math.max(...displayTiers.map(t => effective[t] ?? 0))
 
   const handleRoll = async () => {
     setRolling(true)
@@ -396,34 +305,20 @@ export default function ShipmentModal({ townId, onClose }) {
         return
       }
 
-      // save immediately — items are safe even if player closes modal
-      const newInstances = data.items  // server returns full instances with id etc
       const existing = playerData?.equipment ?? []
-      save({ equipment: [...existing, ...newInstances] })
-
+      save({ equipment: [...existing, ...data.items] })
       setRolledItems(data.items)
       setPhase('animating')
     } catch (err) {
       setError('Failed to connect. Try again.')
-      console.error(err)
-    } finally {
       setRolling(false)
+      console.error(err)
     }
   }
 
-  const handleAnimationComplete = useCallback(() => {
-    setPhase('inspect')
-  }, [])
+  const handleAnimationComplete = useCallback(() => setPhase('inspect'), [])
+  const handleJackpot = useCallback(() => setShowConfetti(true), [])
 
-  const handleJackpot = useCallback(() => {
-    setShowConfetti(true)
-  }, [])
-
-  const handleCollect = () => {
-    onClose()
-  }
-
-  // star from inspect phase — updates the already-saved equipment
   const handleStar = (instance) => {
     const updated = (playerData?.equipment ?? []).map(i =>
       i.id === instance.id ? { ...i, starred: !i.starred } : i
@@ -431,74 +326,128 @@ export default function ShipmentModal({ townId, onClose }) {
     save({ equipment: updated })
   }
 
+  const buttonLabel = phase === 'inspect' ? 'Collect'
+    : rolling ? 'Rolling...'
+    : phase === 'animating' ? '···'
+    : 'Roll Shipment'
+
+  const handleButtonClick = () => {
+    if (phase === 'preroll' && !rolling) handleRoll()
+    if (phase === 'inspect') onClose()
+  }
+
   return (
     <>
-      <div className="sm-backdrop" onClick={phase === 'inspect' ? handleCollect : undefined}>
-        <div
-          className="sm-modal"
-          ref={modalRef}
-          onClick={e => e.stopPropagation()}
-        >
+      <div className="sm-backdrop">
+        <div className="sm-modal">
+
+          {/* ── Header ── */}
           <div className="sm-header">
             <h2>Incoming Shipment</h2>
             <button className="sm-close-btn" onClick={onClose}>×</button>
           </div>
 
-          {phase === 'preroll' && (
-            <PrerollScreen
-              reputation={reputation}
-              forumTier={forumTier}
-              onRoll={handleRoll}
-              rolling={rolling}
-            />
-          )}
+          {/* ── Body — everything lives here ── */}
+          <div className="sm-body" ref={bodyRef}>
 
-          {phase === 'animating' && (
-            <AnimationStage
-              items={rolledItems}
-              forumTier={forumTier}
-              modalRef={modalRef}
-              onComplete={handleAnimationComplete}
-              onJackpot={handleJackpot}
-              onItemSelect={setSelectedItem}
-            />
-          )}
+            <div className="sm-top-zone">
+              {/* preroll tier info — only shown before rolling */}
+              {phase === 'preroll' && (
+                <div className="sm-preroll-info">
+                  <p className="sm-subtitle">Tier distribution · {reputation} rep</p>
 
-          {phase === 'inspect' && (
-            <div className="sm-stage">
-              {/* re-render items as React elements for full ItemIcon support */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0, left: 0, right: 0,
-                  height: `${CLOUD_FRACTION * 100}%`,
-                }}
-              >
-                {rolledItems.map((item, i) => {
-                  // positions were pre-calculated — we need to store them
-                  // for inspect phase. We'll use the same seed logic.
-                  // For simplicity: re-derive positions from modal size.
-                  // This is called once so performance is fine.
-                  return null // replaced below
-                })}
+                  <div className="sm-tier-table">
+                    {displayTiers.map(tier => {
+                      const pct      = (effective[tier] ?? 0) * 100
+                      const barWidth = maxPct > 0 ? (effective[tier] ?? 0) / maxPct * 100 : 0
+                      return (
+                        <div key={tier} className="sm-tier-row">
+                          <span className={`sm-tier-label ${TIER_LABEL_CLASS[tier] ?? ''}`}>
+                            {tier}
+                          </span>
+                          <div className="sm-tier-bar-track">
+                            <div
+                              className="sm-tier-bar-fill"
+                              style={{
+                                width: `${barWidth}%`,
+                                background: TIER_GLOW_SOLID[tier] ?? '#888',
+                              }}
+                            />
+                          </div>
+                          <span className="sm-tier-pct">{pct.toFixed(1)}%</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  {(jackpots.Rare || jackpots.Artifact) && (
+                    <div className="sm-jackpot-info">
+                      <span className="sm-jackpot-title">Jackpot Chances</span>
+                      {jackpots.Rare && (
+                        <span className="sm-jackpot-row monumenta-rare">
+                          Rare: {(jackpots.Rare * 100).toFixed(1)}%
+                        </span>
+                      )}
+                      {jackpots.Artifact && (
+                        <span className="sm-jackpot-row monumenta-artifact">
+                          Artifact: {(jackpots.Artifact * 100).toFixed(2)}%
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* animation cloud — mounts when animating */}
+              {phase === 'animating' && (
+                <AnimationStage
+                  items={rolledItems}
+                  forumTier={forumTier}
+                  bodyRef={bodyRef}
+                  chestRef={chestRef}
+                  chestGlowRef={chestGlowRef}
+                  onComplete={handleAnimationComplete}
+                  onJackpot={handleJackpot}
+                  onItemSelect={setSelectedItem}
+                />
+              )}
+
+              {/* inspect cloud — mounts when animation done */}
+              {phase === 'inspect' && (
+                <InspectCloud
+                  items={rolledItems}
+                  bodyRef={bodyRef}
+                  onItemSelect={setSelectedItem}
+                />
+              )}
+
+              {error && <p className="sm-error">{error}</p>}
+            </div>
+
+            {/* ── Bottom — chest + button, always here, never moves ── */}
+            <div className="sm-bottom">
+              <div className="sm-chest-wrap">
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div ref={chestGlowRef} className="sm-chest-glow" style={{ opacity: 0 }} />
+                  <img
+                    ref={chestRef}
+                    src={chestPng}
+                    alt="chest"
+                    className={`sm-chest-static ${phase === 'preroll' ? 'sm-chest-static--sway' : ''}`}
+                  />
+                </div>
               </div>
-              {/* inspect phase renders items properly via InspectCloud */}
-              <InspectCloud
-                items={rolledItems}
-                modalRef={modalRef}
-                onItemSelect={setSelectedItem}
-              />
-              <button className="sm-collect-btn" onClick={handleCollect}>
-                Collect
+
+              <button
+                className="sm-roll-btn"
+                onClick={handleButtonClick}
+                disabled={phase === 'animating' || rolling}
+              >
+                {buttonLabel}
               </button>
             </div>
-          )}
 
-          {error && (
-            <p style={{ color: '#fc5454', padding: '8px 20px', margin: 0, fontSize: 13 }}>
-              {error}
-            </p>
-          )}
+          </div>
         </div>
       </div>
 
@@ -516,56 +465,5 @@ export default function ShipmentModal({ townId, onClose }) {
         />
       )}
     </>
-  )
-}
-
-// ── Inspect cloud — React-rendered items with real ItemIcon ───────────────────
-
-function InspectCloud({ items, modalRef, onItemSelect }) {
-  const [positions, setPositions] = useState([])
-
-  useEffect(() => {
-    const modal = modalRef.current
-    if (!modal) return
-    const modalW = modal.clientWidth
-    const modalH = modal.clientHeight
-    const cloudH = modalH * CLOUD_FRACTION
-    const pos = calcItemPositions(items.length, cloudH, modalW, ITEM_SIZE, MIN_ITEM_GAP)
-    setPositions(pos)
-  }, [items, modalRef])
-
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: 0, left: 0, right: 0,
-        height: `${CLOUD_FRACTION * 100}%`,
-      }}
-    >
-      {items.map((item, i) => {
-        const pos = positions[i]
-        if (!pos) return null
-        return (
-          <div
-            key={item.id}
-            className="sm-item"
-            style={{
-              left: pos.x - ITEM_SIZE / 2,
-              top:  pos.y - ITEM_SIZE / 2,
-              opacity: 1,
-            }}
-            onClick={() => onItemSelect(item)}
-          >
-            <div className="sm-item-inner sm-item-bob" style={{ animationDelay: `${i * 0.3}s` }}>
-              <div
-                className="sm-item-glow"
-                style={{ background: TIER_GLOW[item.tier] ?? 'transparent' }}
-              />
-              <ItemIcon itemKey={item.itemKey} />
-            </div>
-          </div>
-        )
-      })}
-    </div>
   )
 }
