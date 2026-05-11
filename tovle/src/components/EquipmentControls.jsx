@@ -33,7 +33,7 @@ export default function EquipmentControls({
       setSortDir(d => d === 'asc' ? 'desc' : 'asc')
     } else {
       setSortAxis(axis)
-      setSortDir('asc')
+      setSortDir('desc')
     }
   }
 

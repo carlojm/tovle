@@ -2,8 +2,8 @@
 // Mirror of server/recycle.js — keep in sync if rates change.
 
 const FLOAT_TIERS = [
-  { name: 'Pristine',  low: 0.00, high: 0.07, multLow: 10.0, multHigh: 5.0 },
-  { name: 'Untouched', low: 0.08, high: 0.15, multLow: 5.0,  multHigh: 2.0 },
+  { name: 'Pristine',  low: 0.00, high: 0.07, multLow: 5.0, multHigh: 3.0 },
+  { name: 'Untouched', low: 0.08, high: 0.15, multLow: 3.0,  multHigh: 2.0 },
   { name: 'Weathered', low: 0.16, high: 0.38, multLow: 2.0,  multHigh: 1.5 },
   { name: 'Rusted',    low: 0.39, high: 0.45, multLow: 1.5,  multHigh: 1.1 },
   { name: 'Decayed',   low: 0.46, high: 1.00, multLow: 1.1,  multHigh: 0.9 },
