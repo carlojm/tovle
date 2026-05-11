@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
-  z-index: 100;
+  z-index: 300;
 }
 
 .eq-card-wrapper {
@@ -10,7 +10,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 101;
+  z-index: 301;
   display: flex;
   flex-direction: column;
   align-items: center;
