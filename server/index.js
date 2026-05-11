@@ -17,6 +17,7 @@ const {
 } = require('./trades')
 
 const { rollShipment } = require('./shipments')
+const { calcRecyclePrice } = require('./recycle')
 
 
 //env
@@ -663,6 +664,60 @@ app.post('/api/collect-shipment', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' })
   }
 })
+
+
+app.post('/api/recycle-equipment', async (req, res) => {
+  const { uid, itemId } = req.body
+
+  if (!uid || !itemId) {
+    return res.status(400).json({ error: 'Missing uid or itemId' })
+  }
+
+  try {
+    let payout = null
+
+    await db.runTransaction(async (t) => {
+      const playerRef = db.collection('players').doc(uid)
+      const playerSnap = await t.get(playerRef)
+
+      if (!playerSnap.exists) {
+        throw Object.assign(new Error('Player not found'), { status: 404 })
+      }
+
+      const playerData = playerSnap.data()
+      const equipment = playerData.equipment ?? []
+
+      const item = equipment.find(e => e.id === itemId)
+      if (!item) {
+        throw Object.assign(new Error('Item not found'), { status: 404 })
+      }
+
+      if (item.starred) {
+        throw Object.assign(new Error('Cannot recycle a starred item'), { status: 403 })
+      }
+
+      payout = calcRecyclePrice(item.tier, item.float)
+
+      const updatedEquipment = equipment.filter(e => e.id !== itemId)
+      const currentDenPieces = playerData.inventory?.currencies?.denPieces ?? 0
+
+      t.update(playerRef, {
+        equipment: updatedEquipment,
+        'inventory.currencies.denPieces': currentDenPieces + payout,
+      })
+    })
+
+    res.json({ payout })
+
+  } catch (err) {
+    if (err.status === 404) return res.status(404).json({ error: err.message })
+    if (err.status === 403) return res.status(403).json({ error: err.message })
+    console.error('Error recycling equipment:', err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+
 
 app.post('/api/auth/token', async (req, res) => {
   //we can use uid to restore account

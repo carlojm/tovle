@@ -56,7 +56,19 @@
   color: #fc5454;
 } */
 
+
+
 .eq-card-meta {
+  position: absolute;
+  top: 100%;
+  margin-top: 8px; /* match the wrapper gap */
+  width: 100%;
+  perspective: 600px;
+}
+
+/* Inner wrapper that Framer Motion animates.
+   transform-style preserve-3d lets the rotateX actually look 3D. */
+.eq-card-meta-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -69,4 +81,34 @@
   padding: 8px 12px;
   width: 100%;
   box-sizing: border-box;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* Confirm/cancel button row inside the meta box */
+.eq-meta-confirm-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.eq-meta-btn {
+  padding: 4px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--color-coords-border);
+  background: none;
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.eq-meta-btn--cancel:hover {
+  border-color: var(--color-button);
+}
+
+.eq-meta-btn--confirm:hover {
+  border-color: #e06c6c;
+  color: #e06c6c;
 }
