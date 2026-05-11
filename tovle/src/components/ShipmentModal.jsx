@@ -251,10 +251,12 @@ function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onC
             ease: 'outCubic',
           }).finished
 
+          const bobDelay = Math.random() * 2.4
+          
           const inner = el.querySelector('.sm-item-inner')
           if (inner) {
             inner.classList.add('sm-item-bob')
-            inner.style.animationDelay = `${Math.random() * 2.4}s`
+            inner.style.animationDelay = `${bobDelay}s`
           }
         }))
 
@@ -295,9 +297,11 @@ function AnimationStage({ items, forumTier, bodyRef, chestRef, chestGlowRef, onC
 // ── Inspect cloud ─────────────────────────────────────────────────────────────
 
 function InspectCloud({ items, positions, onItemSelect }) {
+  const delays = useRef(items.map(() => Math.random() * 2.4))
+
   return (
     <div className="sm-cloud">
-      {items.map((item) => {
+      {items.map((item, i) => {
         const pos = positions[item.id]
         if (!pos) return null
         return (
@@ -309,7 +313,7 @@ function InspectCloud({ items, positions, onItemSelect }) {
           >
             <div
               className="sm-item-inner sm-item-bob"
-              style={{ animationDelay: `${Math.random() * 2.4}s` }}
+              style={{ animationDelay: `${delays.current[i]}s` }}
             >
               <div
                 className="sm-item-glow"
@@ -323,7 +327,6 @@ function InspectCloud({ items, positions, onItemSelect }) {
     </div>
   )
 }
-
 // ── Main modal ────────────────────────────────────────────────────────────────
 
 export default function ShipmentModal({ townId, onClose }) {

@@ -204,7 +204,10 @@
   filter: blur(10px);
   pointer-events: none;
   z-index: -1;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
+
 
 .sm-item-bob {
   animation: sm-bob 2.4s ease-in-out infinite;
@@ -271,7 +274,8 @@
   pointer-events: none;
   z-index: 1;
   transition: background 0.3s ease;
-  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 /* ── Roll / collect button ───────────────────────────────────────────────── */
