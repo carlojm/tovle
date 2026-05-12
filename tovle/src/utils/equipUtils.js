@@ -15,6 +15,8 @@ export const SLOT_ACCEPTS = {
   magic:      ['Wand'],
   ranged:     ['Bow', 'Crossbow', 'Snowball', 'Trident'],
   tool:       ['Pickaxe', 'Shovel', 'Mainhand Shield', 'Mainhand'],
+
+  armor: ['Helmet', 'Chestplate', 'Leggings', 'Boots'],
 }
 
 export const SLOT_LABEL = {
@@ -74,3 +76,10 @@ export const getPlayerSlots = (playerData) => {
 
 export const getMainSlots = (playerData) => getPlayerSlots(playerData).slice(0, 6)
 export const getBonusSlots = (playerData) => getPlayerSlots(playerData).slice(6)
+
+
+
+//for group filtering
+export const getTypesForGroup = (groupKey) => {
+  return SLOT_ACCEPTS[groupKey] ?? []
+}

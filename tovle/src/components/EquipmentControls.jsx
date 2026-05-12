@@ -66,6 +66,10 @@ export default function EquipmentControls({
           onChange={e => setFilterType(e.target.value)}
         >
           <option value="">All Types</option>
+          <option value="group:mainhand">All Mainhand</option>
+          <option value="group:offhand">All Offhand</option>
+          <option value="group:armor">All Armor</option>
+          <option value="" disabled>───</option>
           {types.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
 

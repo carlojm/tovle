@@ -84,10 +84,10 @@ export default function EquipPanel({ onSlotTap }) {
 
   const handleSlotTap = (slot, instance) => {
     if (instance) {
-      // filled slot — open card for the item
+      // filled slot: open card for the item
       setSelectedInstance(instance)
     } else {
-      // empty slot — notify parent to filter equipment grid
+      // empty slot: notify parent to filter equipment grid
       onSlotTap?.(slot)
     }
   }

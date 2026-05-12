@@ -6,6 +6,7 @@ import './LootGrid.css'
 import './EquipmentGrid.css'
 import EquipmentCard from './EquipmentCard'
 import EquipmentControls, { TIER_ORDER } from './EquipmentControls'
+import { getTypesForGroup } from '../utils/equipUtils'
 
 function EquipmentTooltip({ tooltip }) {
   if (!tooltip) return null
@@ -40,7 +41,7 @@ const TIER_BADGE = {
 const ROWS_PER_PAGE = 6
 const ITEMS_PER_PAGE = ROWS_PER_PAGE * 9
 
-export default function EquipmentGrid() {
+export default function EquipmentGrid({filterType, setFilterType}) {
   const { playerData, save } = usePlayer()
   const instances = playerData?.equipment ?? []
 
@@ -52,7 +53,7 @@ export default function EquipmentGrid() {
   const [sortAxis, setSortAxis] = useState('tier')
   const [sortDir, setSortDir] = useState('desc')
   const [filterStarred, setFilterStarred] = useState(false)
-  const [filterType, setFilterType] = useState('')
+  // const [filterType, setFilterType] = useState('') moved up to Caches
   const [filterTier, setFilterTier] = useState('')
 
   const [currentPage, setCurrentPage] = useState(0)
@@ -95,7 +96,11 @@ export default function EquipmentGrid() {
     if (filterStarred) result = result.filter(i => i.starred)
     if (filterType) result = result.filter(i => {
       const def = islesItems[i.itemKey]
-      return def?.type === filterType
+      if (!def) return false
+      if (filterType.startsWith('group:')) {
+        return getTypesForGroup(filterType.replace('group:', '')).includes(def.type)
+      }
+      return def.type === filterType
     })
     if (filterTier) result = result.filter(i => i.tier === filterTier)
 
@@ -125,7 +130,9 @@ export default function EquipmentGrid() {
       }
       if (sortAxis === 'float') {
         const diff = (a.float ?? 0) - (b.float ?? 0)
-        return diff !== 0 ? diff * dir : alpha(a, b)
+        //negate float sorting again so that
+        //by default best (lowest) is first
+        return diff !== 0 ? diff * dir * -1 : alpha(a, b)
       }
 
       return alpha(a, b)

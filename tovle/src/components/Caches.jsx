@@ -15,6 +15,19 @@ import EquipPanel from './EquipPanel'
 
 import debounce from 'lodash.debounce'
 
+const SLOT_TO_FILTER = {
+  helmet: 'Helmet',
+  chestplate: 'Chestplate',
+  leggings: 'Leggings',
+  boots: 'Boots',
+  mainhand: 'group:mainhand',
+  offhand: 'group:offhand',
+  blade: 'group:blade',
+  magic: 'Wand',
+  ranged: 'group:ranged',
+  tool: 'group:tool',
+}
+
 const mergeItems = (existing, incoming) => {
   const merged = {}
 
@@ -50,6 +63,9 @@ const Caches = ({ }) => {
   const [pendingItems, setPendingItems] = useState([]) //items to use in cache animation
   const [openingCacheKey, setOpeningCacheKey] = useState(null) //cache being animated
   const [isRevealing, setIsRevealing] = useState(false)
+
+  //used for equipmentgrid filtering
+  const [filterType, setFilterType] = useState('')
 
   //used to "freeze" the list of unopenedcaches while we are animating one opening
   //we save the list before opening the cache and only go back to real list when done animating
@@ -391,11 +407,8 @@ const Caches = ({ }) => {
 
       <motion.section layout className="caches-section">
         <h2>Equipment</h2>
-        <EquipPanel onSlotTap={(slot) => {
-          // TODO: wire to EquipmentGrid filter
-          console.log('empty slot tapped', slot.type)
-        }} />
-        <EquipmentGrid />
+        <EquipPanel onSlotTap={(slot) => setFilterType(SLOT_TO_FILTER[slot.type] ?? '')} />
+        <EquipmentGrid filterType={filterType} setFilterType={setFilterType} />
       </motion.section>
 
       <motion.section layout className="caches-section">
