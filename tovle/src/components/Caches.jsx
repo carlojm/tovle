@@ -11,6 +11,7 @@ import AxolotlTooltip from './AxolotlTooltip'
 
 import ItemIcon from './ItemIcon'
 import EquipmentGrid from './EquipmentGrid'
+import EquipPanel from './EquipPanel'
 
 import debounce from 'lodash.debounce'
 
@@ -390,7 +391,11 @@ const Caches = ({ }) => {
 
       <motion.section layout className="caches-section">
         <h2>Equipment</h2>
-        <EquipmentGrid onSelectItem={(item) => console.log(item)} />
+        <EquipPanel onSlotTap={(slot) => {
+          // TODO: wire to EquipmentGrid filter
+          console.log('empty slot tapped', slot.type)
+        }} />
+        <EquipmentGrid />
       </motion.section>
 
       <motion.section layout className="caches-section">

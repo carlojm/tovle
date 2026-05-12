@@ -133,6 +133,16 @@ function buildFreshPlayerData() {
         mistport:  { reputation: 0, lastShipment: null, unlocked: false },
         steelmeld: { reputation: 0, lastShipment: null, unlocked: false },
       }
+    },
+    equip: {
+      slots: [
+        { slotId: 'slot_001', type: 'helmet',     itemId: null, infusions: [] },
+        { slotId: 'slot_002', type: 'chestplate', itemId: null, infusions: [] },
+        { slotId: 'slot_003', type: 'leggings',   itemId: null, infusions: [] },
+        { slotId: 'slot_004', type: 'boots',       itemId: null, infusions: [] },
+        { slotId: 'slot_005', type: 'mainhand',   itemId: null, infusions: [] },
+        { slotId: 'slot_006', type: 'offhand',    itemId: null, infusions: [] },
+      ]
     }
   }
 }
