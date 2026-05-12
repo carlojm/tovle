@@ -8,6 +8,7 @@ import { formatStats } from '../utils/statFormatter'
 import './EquipmentCard.css'
 
 import { calcRecyclePrice, getFloatLabel } from '../utils/recycleUtils'
+import { getValidSlotsForItem, getItemInSlot, getSlotLabel, DEFAULT_SLOTS } from '../utils/equipUtils'
 
 function locationToClass(location) {
   if (!location) return ''
@@ -35,6 +36,7 @@ const flipVariants = {
 export default function EquipmentCard({ instance, onClose }) {
   const { playerData, uid, save } = usePlayer()
   const [metaView, setMetaView] = useState('info') // 'info' | 'recycle' | 'equip'
+  const [selectedSlotIndex, setSelectedSlotIndex] = useState(0)
 
   if (!instance) return null
   const itemDef = islesItems[instance.itemKey]
@@ -46,6 +48,13 @@ export default function EquipmentCard({ instance, onClose }) {
 
   const recyclePrice = calcRecyclePrice(instance.tier, instance.float)
   const floatLabel = getFloatLabel(instance.float)
+
+  //for equip view
+  const slots = playerData?.equip?.slots ?? DEFAULT_SLOTS
+  const validSlots = getValidSlotsForItem(itemDef.type, slots)
+  const targetSlot = validSlots[selectedSlotIndex] ?? null
+  const currentlyEquipped = targetSlot ? getItemInSlot(targetSlot, playerData.equipment ?? []) : null
+  const currentItemDef = currentlyEquipped ? islesItems[currentlyEquipped.itemKey] : null
  
   const handleClose = () => {
     setMetaView('info')
@@ -89,6 +98,41 @@ export default function EquipmentCard({ instance, onClose }) {
     } catch (err) {
       console.error('Recycle error:', err)
     }
+  }
+
+  const handleEquip = () => {
+    if (!targetSlot) return
+
+    const currentSlots = playerData?.equip?.slots ?? DEFAULT_SLOTS
+    const updatedSlots = currentSlots.map(s =>
+      s.slotId === targetSlot.slotId ? { ...s, itemId: instance.id } : s
+    )
+    const updatedEquipment = (playerData.equipment ?? []).map(e => {
+      if (e.id === instance.id) return { ...e, equipped: true }
+      if (e.id === targetSlot.itemId) return { ...e, equipped: false }
+      return e
+    })
+
+    save({
+      equip: { slots: updatedSlots },
+      equipment: updatedEquipment,
+    })
+    handleClose()
+  }
+
+  const handleUnequip = () => {
+    const currentSlots = playerData?.equip?.slots ?? DEFAULT_SLOTS
+    const updatedSlots = currentSlots.map(s =>
+      s.itemId === instance.id ? { ...s, itemId: null } : s
+    )
+    const updatedEquipment = (playerData.equipment ?? []).map(e =>
+      e.id === instance.id ? { ...e, equipped: false } : e
+    )
+    save({
+      equip: { slots: updatedSlots },
+      equipment: updatedEquipment,
+    })
+    handleClose()
   }
 
 
@@ -152,16 +196,18 @@ export default function EquipmentCard({ instance, onClose }) {
           </button>
           <button
             className="eq-action-btn"
-            onClick={() => {
-              setMetaView('equip')
+            disabled={validSlots.length === 0}
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedSlotIndex(0)
+              setMetaView(metaView === 'equip' ? 'info' : 'equip')
             }}
-            disabled
           >
-            Equip
+            {instance.equipped ? 'Unequip' : 'Equip'}
           </button>
           <button
             className="eq-action-btn eq-action-btn--danger"
-            disabled={instance.starred}
+            disabled={instance.starred || instance.equipped}
             onClick={(e) => {
               e.stopPropagation()
               setMetaView(metaView === 'recycle' ? 'info' : 'recycle')
@@ -175,9 +221,8 @@ export default function EquipmentCard({ instance, onClose }) {
         <motion.div
           className="eq-card-meta"
           onClick={e => e.stopPropagation()}
-          layout
         >
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence mode="popLayout" initial={false}>
             {metaView === 'info' && (
               <motion.div
                 key="info"
@@ -220,8 +265,68 @@ export default function EquipmentCard({ instance, onClose }) {
                 animate="enter"
                 exit="exit"
               >
-                {/* placeholder — equip UI goes here */}
-                <span>Equip coming soon</span>
+                {validSlots.length === 0 ? (
+                  <span>No valid slots for this item type.</span>
+                ) : instance.equipped ? (
+                  <>
+                    <span>Unequip this item?</span>
+                    <div className="eq-meta-confirm-btns">
+                      <button className="eq-meta-btn eq-meta-btn--cancel" onClick={() => changeMetaView('info')}>
+                        Cancel
+                      </button>
+                      <button className="eq-meta-btn eq-meta-btn--confirm" onClick={handleUnequip}>
+                        Unequip
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* slot selector if multiple valid slots */}
+                    {validSlots.length > 1 && (
+                      <div className="eq-meta-slot-nav">
+                        <button
+                          className="eq-meta-btn"
+                          onClick={() => setSelectedSlotIndex(i => (i - 1 + validSlots.length) % validSlots.length)}
+                        >‹</button>
+                        <span>{getSlotLabel(targetSlot.type)}</span>
+                        <button
+                          className="eq-meta-btn"
+                          onClick={() => setSelectedSlotIndex(i => (i + 1) % validSlots.length)}
+                        >›</button>
+                      </div>
+                    )}
+
+                    {/* slot comparison: current ← new */}
+                    <div className="eq-meta-compare">
+                      <div className="eq-meta-compare-slot">
+                        {currentlyEquipped
+                          ? <ItemIcon itemKey={currentlyEquipped.itemKey} />
+                          : <span className="ep-slot-label">{getSlotLabel(targetSlot.type)}</span>
+                        }
+                      </div>
+                      <span className="eq-meta-compare-arrow">←</span>
+                      <div className="eq-meta-compare-slot eq-meta-compare-slot--new">
+                        <ItemIcon itemKey={instance.itemKey} />
+                      </div>
+                    </div>
+
+                    {/* current item name if something is equipped */}
+                    {currentlyEquipped && currentItemDef && (
+                      <span style={{ opacity: 0.6, fontSize: '10px' }}>
+                        Replaces {currentItemDef.name}
+                      </span>
+                    )}
+
+                    <div className="eq-meta-confirm-btns">
+                      <button className="eq-meta-btn eq-meta-btn--cancel" onClick={() => setMetaView('info')}>
+                        Cancel
+                      </button>
+                      <button className="eq-meta-btn eq-meta-btn--confirm" onClick={handleEquip}>
+                        Equip
+                      </button>
+                    </div>
+                  </>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

@@ -11,6 +11,19 @@ import {
 } from '../utils/equipUtils'
 import './EquipPanel.css'
 
+const TIER_BADGE = {
+  'Tier 1': 'I',
+  'Tier 2': 'II',
+  'Tier 3': 'III',
+  'Tier 4': 'IV',
+  'Tier 5': 'V',
+  'Uncommon': 'Uc',
+  'Unique': 'Uq',
+  'Rare': 'R',
+  'Artifact': 'A',
+  'Epic': 'E',
+}
+
 // ── Stat summary ──────────────────────────────────────────────────────────────
 
 function sumEquippedStat(slots, equipment, statKey) {
@@ -41,7 +54,8 @@ function SlotCell({ slot, instance, onTap }) {
           <ItemIcon itemKey={instance.itemKey} />
           {/* equipped badge reuses eq-badge styling from EquipmentGrid.css */}
           <span className="eq-badge eq-badge--topright ep-tier-badge">
-            {instance.tier?.replace('Tier ', '') ?? ''}
+            {/* {instance.tier?.replace('Tier ', '') ?? ''} */}
+            {TIER_BADGE[instance.tier] ?? instance.tier}
           </span>
         </>
       )}
@@ -143,12 +157,15 @@ export default function EquipPanel({ onSlotTap }) {
       </div>
 
       {/* EquipmentCard overlay for filled slots */}
-      {selectedInstance && (
-        <EquipmentCard
-          instance={selectedInstance}
-          onClose={() => setSelectedInstance(null)}
-        />
-      )}
+      {selectedInstance && (() => {
+        const liveInstance = (playerData?.equipment ?? []).find(i => i.id === selectedInstance.id) ?? selectedInstance
+        return (
+          <EquipmentCard
+            instance={liveInstance}
+            onClose={() => setSelectedInstance(null)}
+          />
+        )
+      })()}
     </>
   )
 }

@@ -112,3 +112,48 @@
   border-color: #e06c6c;
   color: #e06c6c;
 }
+
+
+
+/* slot comparison row in equip view */
+.eq-meta-compare {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.eq-meta-compare-slot {
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--color-coords-border);
+  border-radius: 6px;
+  background: var(--color-background-loot-slot);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: var(--color-text);
+  opacity: 0.6;
+}
+
+.eq-meta-compare-slot--new {
+  border-color: var(--color-button);
+  opacity: 1;
+}
+
+.eq-meta-compare-arrow {
+  font-size: 16px;
+  opacity: 0.5;
+  color: var(--color-text);
+}
+
+/* slot navigator for multiple valid slots */
+.eq-meta-slot-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
