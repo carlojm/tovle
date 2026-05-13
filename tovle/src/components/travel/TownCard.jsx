@@ -111,11 +111,10 @@ const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecu
       }
 
       //local update the inventory since we already update firebase on the serverside
+      //and also reputation
       save({
-        inventory: {
-          ...playerData?.inventory,
-          items: itemsWithOffers
-        }
+        'inventory.items': itemsWithOffers,
+        [`travel.towns.${townId}.reputation`]: data.reputation,
       }, { localOnly: true })
 
     } catch (err) {
@@ -277,18 +276,7 @@ const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecu
           onClose={() => setActiveModal(null)}
           onCollected={() => {
             const todayStr = getEasternDateStr()
-            save({
-              travel: {
-                ...playerData.travel,
-                towns: {
-                  ...playerData.travel?.towns,
-                  [townId]: {
-                    ...playerData.travel?.towns?.[townId],
-                    lastShipment: todayStr,
-                  }
-                }
-              }
-            })
+            save({ [`travel.towns.${townId}.lastShipment`]: todayStr })
             setActiveModal(null)
           }}
         />

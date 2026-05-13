@@ -50,12 +50,7 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
     const node = dialogue.nodes[entryNode]
 
     if (node.setsFlag) {
-      save({
-        travel: {
-          ...playerData?.travel,
-          dialogueFlags: { ...flags, [node.setsFlag]: true }
-        }
-      })
+      save({ [`travel.dialogueFlags.${node.setsFlag}`]: true })
     }
 
     setActiveNpc({ ...npc, dialogue, conditions })
@@ -73,12 +68,7 @@ const VisitModal = ({ townId, onClose, onViewMap }) => {
     if (!node) return
 
     if (node.setsFlag) {
-      save({
-        travel: {
-          ...playerData?.travel,
-          dialogueFlags: { ...flags, [node.setsFlag]: true }
-        }
-      })
+      save({ [`travel.dialogueFlags.${node.setsFlag}`]: true })
     }
 
     setCurrentNode(option.next)

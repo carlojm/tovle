@@ -562,6 +562,7 @@ app.post('/api/execute-trade', async (req, res) => {
 
       result = {
         reputation: newReputation,
+        tradeCounts,
         townLevel: getTownLevel(newReputation),
         reputationGained: trade.offer.reputation,
         itemsGained: trade.offer.items,

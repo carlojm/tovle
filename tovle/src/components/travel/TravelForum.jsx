@@ -63,7 +63,7 @@ const TravelForum = () => {
     const trimmed = nameInput.trim() || 'The Fallen Forum'
     setNameInput(trimmed)
     setIsEditing(false)
-    save({ travel: { ...playerData?.travel, forum: { ...forum, name: trimmed } } })
+    save({ 'travel.forum.name': trimmed })
   }
 
   const handlePlay = (config) => {
@@ -79,18 +79,9 @@ const TravelForum = () => {
     }).filter(item => item.quantity > 0)
 
     //save inventory and raw fuel to firestore
-    save({ 
-      inventory: {
-        ...playerData?.inventory,
-        items: updatedItems
-      },
-      travel: { 
-        ...playerData?.travel,
-        forum: {
-          ...forum,
-          fuel: config.totalFuel
-        }
-      }
+    save({
+      'inventory.items': updatedItems,
+      'travel.forum.fuel': config.totalFuel,
     })
   }
 
@@ -98,15 +89,7 @@ const TravelForum = () => {
     if (!nextTierDef) return
     if (!isMilestoneUnlocked(nextTierDef, playerData)) return
 
-    save({
-      travel: {
-        ...playerData?.travel,
-        forum: {
-          ...forum,
-          tier: (forum?.tier ?? 0) + 1
-        }
-      }
-    })
+    save({ 'travel.forum.tier': (forum?.tier ?? 0) + 1 })
     setShowConfetti(true)
   }
 
@@ -114,18 +97,7 @@ const TravelForum = () => {
     const unlock = TOWN_UNLOCKS.find(t => t.townId === townId)
     if (!unlock || !isMilestoneUnlocked(unlock, playerData)) return
 
-    save({
-      travel: {
-        ...playerData?.travel,
-        towns: {
-          ...(playerData?.travel?.towns ?? {}),
-          [townId]: {
-            ...(playerData?.travel?.towns?.[townId] ?? {}),
-            unlocked: true
-          }
-        }
-      }
-    })
+    save({ [`travel.towns.${townId}.unlocked`]: true })
     setShowConfetti(true)
   }
 
@@ -356,30 +328,18 @@ const TravelForum = () => {
                   const currentBest = playerData?.stats.bestTowerHeight ?? 0
                   const newBest = Math.max(currentBest, blocksBuilt)
 
-                  save({ 
-                    travel: { 
-                      ...playerData?.travel,
-                      forum: {
-                        ...forum,
-                        fuel: fuelRemaining,
-                        currencies: {
-                          ...currentCurrencies,
-                          crystals: Math.round(((currentCurrencies.crystals ?? 0) + crystals + featCrystals) * 10) / 10,
-                          shards: Math.round(((currentCurrencies.shards ?? 0) + shards + featShards) * 10) / 10,
-                        }
-                      }
-                    },
-                    stats: {
-                      ...playerData?.stats,
-                      bestTowerHeight: newBest,
-                      totalTowerBlocks: (playerData?.stats?.totalTowerBlocks ?? 0) + blocksBuilt,
-                      totalForumRuns: (playerData?.stats?.totalForumRuns ?? 0) + 1,
-                      totalCrystalsEarned: Math.round(((playerData?.stats?.totalCrystalsEarned ?? 0) + crystals + featCrystals) * 10) / 10,
-                      totalShardsEarned: Math.round(((playerData?.stats?.totalShardsEarned ?? 0) + shards + featShards) * 10) / 10,
-                      totalAnchors: (playerData?.stats?.totalAnchors ?? 0) + anchors,
-                      totalPerfects: (playerData?.stats?.totalPerfects ?? 0) + perfects,
-                      totalCrits: (playerData?.stats?.totalCrits ?? 0) + crits,
-                    }
+                  save({
+                    'travel.forum.fuel': fuelRemaining,
+                    'travel.forum.currencies.crystals': Math.round(((currentCurrencies.crystals ?? 0) + crystals + featCrystals) * 10) / 10,
+                    'travel.forum.currencies.shards': Math.round(((currentCurrencies.shards ?? 0) + shards + featShards) * 10) / 10,
+                    'stats.bestTowerHeight': newBest,
+                    'stats.totalTowerBlocks': (playerData?.stats?.totalTowerBlocks ?? 0) + blocksBuilt,
+                    'stats.totalForumRuns': (playerData?.stats?.totalForumRuns ?? 0) + 1,
+                    'stats.totalCrystalsEarned': Math.round(((playerData?.stats?.totalCrystalsEarned ?? 0) + crystals + featCrystals) * 10) / 10,
+                    'stats.totalShardsEarned': Math.round(((playerData?.stats?.totalShardsEarned ?? 0) + shards + featShards) * 10) / 10,
+                    'stats.totalAnchors': (playerData?.stats?.totalAnchors ?? 0) + anchors,
+                    'stats.totalPerfects': (playerData?.stats?.totalPerfects ?? 0) + perfects,
+                    'stats.totalCrits': (playerData?.stats?.totalCrits ?? 0) + crits,
                   })
                 }}
                 speedExponent={forumUnlocks.speedExponent}

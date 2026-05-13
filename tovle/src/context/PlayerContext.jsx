@@ -37,8 +37,22 @@ export function PlayerProvider({ children }) {
 
   async function save(updates, { localOnly = false } = {}) {
     if (!uid) return
-    setPlayerData(prev => ({ ...prev, ...updates }))
+    setPlayerData(prev => applyDotNotation(prev, updates))
     if (!localOnly) await savePlayerData(uid, updates)
+  }
+
+  function applyDotNotation(obj, updates) {
+    const result = structuredClone(obj)
+    for (const [path, value] of Object.entries(updates)) {
+      const keys = path.split('.')
+      let cur = result
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (cur[keys[i]] === undefined) cur[keys[i]] = {}
+        cur = cur[keys[i]]
+      }
+      cur[keys[keys.length - 1]] = value
+    }
+    return result
   }
 
   async function refreshPlayer() {

@@ -90,55 +90,29 @@ const Travel = () => {
 
   const handleDebugCurrencies = () => {
     save({
-      travel: {
-        ...playerData?.travel,
-        forum: {
-          ...playerData?.travel?.forum,
-          currencies: { crystals: 999, shards: 999, hearts: 999 }
-        }
-      }
+      'travel.forum.currencies': { crystals: 999, shards: 999, hearts: 999 }
     })
   }
 
   const handleDebugResetTree = () => {
     save({
-      travel: {
-        ...playerData?.travel,
-        forum: {
-          ...playerData?.travel?.forum,
-          upgrades: {},
-          currencies: { crystals: 0, shards: 0, hearts: 0 }
-        }
-      }
+      'travel.forum.upgrades': {},
+      'travel.forum.currencies': { crystals: 0, shards: 0, hearts: 0 }
     })
   }
 
   const handleDebugResetTrades = () => {
     save({
-      travel: {
-        ...playerData?.travel,
-        towns: {
-          ...playerData?.travel?.towns,
-          alnera: {
-            ...playerData?.travel?.towns?.alnera,
-            tradeWindow: null
-          }
-        }
-      }
+      'travel.towns.alnera.tradeWindow': null
     })
   }
 
   const handleDebugResetShipments = () => {
     save({
-      travel: {
-        ...playerData.travel,
-        towns: {
-          alnera:    { ...playerData.travel?.towns?.alnera,    lastShipment: null },
-          frostgate: { ...playerData.travel?.towns?.frostgate, lastShipment: null },
-          mistport:  { ...playerData.travel?.towns?.mistport,  lastShipment: null },
-          steelmeld: { ...playerData.travel?.towns?.steelmeld, lastShipment: null },
-        }
-      }
+      'travel.towns.alnera.lastShipment': null,
+      'travel.towns.frostgate.lastShipment': null,
+      'travel.towns.mistport.lastShipment': null,
+      'travel.towns.steelmeld.lastShipment': null,
     })
   }
 

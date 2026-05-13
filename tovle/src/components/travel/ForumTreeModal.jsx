@@ -358,14 +358,8 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
     }
 
     save({
-      travel: {
-        ...playerData?.travel,
-        forum: {
-          ...playerData?.travel?.forum,
-          upgrades: newUpgrades,
-          currencies: newCurrencies,
-        }
-      }
+      'travel.forum.upgrades': newUpgrades,
+      'travel.forum.currencies': newCurrencies,
     })
   }
 
