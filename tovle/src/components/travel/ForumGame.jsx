@@ -128,72 +128,65 @@ class UIScene extends Phaser.Scene {
     this.activeBubbles = []
 
     const dpr = window.devicePixelRatio || 1
-
     const scale = this.scale.width / 400
     const gameOverSize = Math.round(30 * scale)
     const xpSize = Math.round(30 * scale)
 
-    // font primer — forces Jersey 15 to load before any visible text renders
-    const primer = this.add.text(0, 0, '...', {
-      fontSize: '1px',
-      fontFamily: '"Jersey 15"',
-    }).setAlpha(0)
-    this.time.delayedCall(100, () => primer.destroy())
+    document.fonts.load('1px "Jersey 15"').then(() => {
+      this.gameOverText = this.add.text(this.scale.width / 2, this.scale.height / 3, 'Game Over!', {
+        fontSize: `${gameOverSize}px`,
+        color: '#ffffff',
+        fontFamily: '"Jersey 15"',
+        resolution: dpr,
+      }).setOrigin(0.5).setVisible(false)
 
-    this.gameOverText = this.add.text(this.scale.width / 2, this.scale.height / 3, 'Game Over!', {
-      fontSize: `${gameOverSize}px`,
-      color: '#ffffff',
-      fontFamily: '"Jersey 15"',
-      resolution: dpr,
-    }).setOrigin(0.5).setVisible(false)
+      this.crystalText = this.add.text(10, 0, '', {
+        fontSize: `${xpSize}px`,
+        color: '#ffffff',
+        fontFamily: '"Jersey 15"',
+        resolution: dpr,
+      }).setVisible(false)
 
-    this.crystalText = this.add.text(10,0, '', {
-      fontSize: `${xpSize}px`,
-      color: '#ffffff',
-      fontFamily: '"Jersey 15"',
-      resolution: dpr,
-    }).setVisible(false)
+      this.shardText = this.add.text(10, xpSize + 5, '', {
+        fontSize: `${xpSize}px`,
+        color: '#ffffff',
+        fontFamily: '"Jersey 15"',
+        resolution: dpr,
+      }).setVisible(false)
 
-    this.shardText = this.add.text(10, xpSize + 5, '', {
-      fontSize: `${xpSize}px`,
-      color: '#ffffff',
-      fontFamily: '"Jersey 15"',
-      resolution: dpr,
-    }).setVisible(false)
+      this.debugText = this.add.text(10, 40, '', {
+        fontSize: `${xpSize}px`,
+        color: '#ffffff',
+        fontFamily: '"Jersey 15"',
+        resolution: dpr,
+      }).setVisible(false)
 
-    this.debugText = this.add.text(10,40, '', {
-      fontSize: `${xpSize}px`,
-      color: '#ffffff',
-      fontFamily: '"Jersey 15"',
-      resolution: dpr,
-    }).setVisible(false)
+      // move event listeners inside here too so they can reference the text objects
+      this.scene.get('GameScene').events.on('gameover', ({ message, currency }) => {
+        this.gameOverText.setText(message)
+        this.gameOverText.setVisible(true)
 
-    // listen for game over event from GameScene
-    this.scene.get('GameScene').events.on('gameover', ({ message, currency }) => {
-      this.gameOverText.setText(message)
-      this.gameOverText.setVisible(true)
+        const { crystals, featCrystals, shards, featShards } = currency
+        const totalShards = Math.round((shards + featShards) * 10) / 10
 
-      const {crystals, featCrystals, shards, featShards} = currency
-      const totalCrystals = Math.round((crystals + featCrystals) * 10) / 10
-      const totalShards = Math.round((shards + featShards) * 10) / 10
+        const crystalLine = featCrystals > 0
+          ? `Crystals earned ${crystals} + ${featCrystals}`
+          : `Crystals earned ${crystals}`
+        this.crystalText.setText(crystalLine)
+        this.crystalText.setVisible(true)
 
-      const crystalLine = featCrystals > 0
-        ? `Crystals earned ${crystals} + ${featCrystals}`
-        : `Crystals earned ${crystals}`
-      this.crystalText.setText(crystalLine)
-      this.crystalText.setVisible(true)
+        if (totalShards > 0) {
+          const shardLine = featShards > 0
+            ? `Shards earned ${shards} + ${featShards}`
+            : `Shards earned ${totalShards}`
+          this.shardText.setText(shardLine)
+          this.shardText.setVisible(true)
+        }
+      })
 
-      if (totalShards > 0) {
-        const shardLine = featShards > 0
-          ? `Shards earned ${shards} + ${featShards}`
-          : `Shards earned ${totalShards}`
-        this.shardText.setText(shardLine)
-        this.shardText.setVisible(true)
-      }
-    })
-
-    this.scene.get('GameScene').events.on('outro', ({ currency }) => {
-      this.playOutro(currency)
+      this.scene.get('GameScene').events.on('outro', ({ currency }) => {
+        this.playOutro(currency)
+      })
     })
   }
 

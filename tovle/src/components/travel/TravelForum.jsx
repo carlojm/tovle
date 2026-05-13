@@ -22,6 +22,8 @@ const TIER_BONUSES = {
   3: ['Tier 3 equipment can be found in shipments', 'Trades can be performed 3 times per cycle.'],
   4: ['Tier 4 equipment can be found in shipments', 'Trades can be performed 4 times per cycle.'],
   5: ['Tier 5 equipment can be found in shipments', 'Trades can be performed 5 times per cycle.'],
+  6: ['Uncommon equipment can be found in shipments', 'Trades can be performed 6 times per cycle.'],
+  7: ['Unique equipment can be found in shipments', 'Trades can be performed 7 times per cycle.'],
 }
 
 const TravelForum = () => {

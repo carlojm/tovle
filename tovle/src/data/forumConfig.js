@@ -23,7 +23,7 @@ export const FORUM_TIERS = [
   {
     tier: 2,
     label: 'Tier 2',
-    description: 'Your reputation with Alnera grows. A Frostgate ambassador arrives to set up a trade route.',
+    description: 'Your reputation with Alnera grows. A Frostgate ambassador arrives to set up a trade route as well.',
     required: [
       // { type: 'town_level', townId: 'alnera', target: 2, label: 'Reach Alnera level 2' },
       {
@@ -46,7 +46,8 @@ export const FORUM_TIERS = [
   {
     tier: 3,
     label: 'Tier 3',
-    description: 'Your trading empire spans the eastern reaches. Mistport sends a courier.',
+    description:
+      `Your trading empire continues to expand. Your armory grows.`,
     required: [
       { type: 'town_level', townId: 'frostgate', target: 3, label: 'Reach Frostgate level 3' },
     ],
@@ -61,7 +62,8 @@ export const FORUM_TIERS = [
   {
     tier: 4,
     label: 'Tier 4',
-    description: 'The forum\'s influence reaches the southern ports.',
+    description: 
+      `Your trading empire continues to expand. Your armory grows.`,
     required: [
       { type: 'town_level', townId: 'mistport', target: 3, label: 'Reach Mistport level 3' },
     ],
@@ -77,9 +79,27 @@ export const FORUM_TIERS = [
   {
     tier: 5,
     label: 'Tier 5',
-    description: 'The forge city of Steelmeld opens its gates.',
+    description: 
+      `Your trading empire continues to expand. Your armory grows.`,
     required: [
       { type: 'town_level', townId: 'steelmeld', target: 3, label: 'Reach Steelmeld level 3' },
+    ],
+    optional: [
+      { type: 'trades_executed_total', target: 300, label: 'Execute 300 total trades' },
+      { type: 'town_level', townId: 'mistport', target: 5, label: 'Reach Mistport level 5' },
+      { type: 'town_level', townId: 'frostgate', target: 8, label: 'Reach Frostgate level 8' },
+      { type: 'shipments_opened', target: 75, label: 'Open 75 shipments' },
+      { type: 'total_forum_runs', target: 50, label: 'Complete 50 forum runs' },
+    ],
+    minOptional: 3,
+  },
+    {
+    tier: 6,
+    label: 'Tier 6',
+    description: 
+      `Your trading empire continues to expand. Your armory grows.`,
+    required: [
+      { type: 'town_level', townId: 'steelmeld', target: 3, label: 'Reach Steelmeld level 6' },
     ],
     optional: [
       { type: 'trades_executed_total', target: 300, label: 'Execute 300 total trades' },
@@ -109,7 +129,7 @@ export const TOWN_UNLOCKS = [
       { type: 'town_level', townId: 'alnera', target: 3, label: 'Reach Alnera level 3' },
     ],
     optional: [
-      { type: 'trades_executed_town', townId: 'alnera', target: 20, label: 'Execute 20 Alnera trades' },
+      { type: 'shipments_opened', target: 3, label: 'Open 3 shipments' },
       { type: 'caches_opened', target: 50, label: 'Open 50 caches' },
     ],
     minOptional: 1,
@@ -121,9 +141,9 @@ export const TOWN_UNLOCKS = [
       { type: 'town_level', townId: 'frostgate', target: 3, label: 'Reach Frostgate level 3' },
     ],
     optional: [
-      { type: 'trades_executed_total', target: 75, label: 'Execute 75 total trades' },
+      { type: 'trades_executed_total', target: 20, label: 'Execute 20 total trades' },
       { type: 'town_level', townId: 'alnera', target: 6, label: 'Reach Alnera level 6' },
-      { type: 'shipments_opened', target: 20, label: 'Open 20 shipments' },
+      { type: 'shipments_opened', target: 12, label: 'Open 12 shipments' },
     ],
     minOptional: 1,
   },
@@ -134,7 +154,7 @@ export const TOWN_UNLOCKS = [
       { type: 'town_level', townId: 'mistport', target: 3, label: 'Reach Mistport level 3' },
     ],
     optional: [
-      { type: 'trades_executed_total', target: 150, label: 'Execute 150 total trades' },
+      { type: 'trades_executed_total', target: 50, label: 'Execute 50 total trades' },
       { type: 'town_level', townId: 'frostgate', target: 6, label: 'Reach Frostgate level 6' },
       { type: 'shipments_opened', target: 40, label: 'Open 40 shipments' },
     ],

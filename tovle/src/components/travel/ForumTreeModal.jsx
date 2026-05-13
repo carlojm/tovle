@@ -151,7 +151,7 @@ function getNodeState(node, upgrades, totalPrestiges) {
   if (node.parent.length === 0) return 'available'
 
   //prestige nodes are available after first prestige
-  if (node.permanent && (totalPrestiges ?? 0) >= 1) return 'available'
+  if (node.permanent && ((totalPrestiges ?? 0) >= 1 || (upgrades['hearts_unlock'] ?? 0) >= 1)) return 'available'
 
   //check if any parent is unlocked
   const anyParentUnlocked = node.parent.some(pid => (upgrades[pid] ?? 0) >= 1)
@@ -265,7 +265,7 @@ const canAfford = (cost, currencies) => {
 const NODE_MAP = computeLayout(FORUM_NODES)
 
 export default function ForumTreeModal({ onClose }) {
-  const { playerData, save } = usePlayer()
+  const { uid, playerData, save } = usePlayer()
   const upgrades = playerData?.travel?.forum?.upgrades ?? {}
   const currencies = playerData?.travel?.forum?.currencies ?? { crystals: 0, shards: 0, hearts: 0 }
   const [selectedNode, setSelectedNode] = useState(null)
@@ -373,7 +373,7 @@ export default function ForumTreeModal({ onClose }) {
     })
   }, [])
 
-  const handlePurchase = () => {
+  const handlePurchase = async () => {
     if (!selectedNode) return
 
     const currentLevel = upgrades[selectedNode.id] ?? 0
@@ -402,6 +402,27 @@ export default function ForumTreeModal({ onClose }) {
       'travel.forum.upgrades': newUpgrades,
       'travel.forum.currencies': newCurrencies,
     })
+
+    //special case for axolotl
+    if (selectedNode.id === 'axolotl_3') {
+      if (selectedNode.id === 'axolotl_3' && (playerData?.axolotls?.length ?? 0) >= 3) return
+      try {
+        const res = await fetch('/api/create-axolotl', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid })
+        })
+        const data = await res.json()
+        if (res.ok) {
+          const currentAxolotls = playerData?.axolotls ?? []
+          save({ axolotls: [...currentAxolotls, data.axolotl] })
+        } else {
+          console.error('Failed to create axolotl:', data.error)
+        }
+      } catch (err) {
+        console.error('Failed to create axolotl:', err)
+      }
+    }
   }
 
   const handlePrestige = () => {

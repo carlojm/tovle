@@ -48,7 +48,7 @@ export const FORUM_NODES = [
     direction: 'W',
     parent: ['forum_core'],
     maxLevel: 1,
-    costs: [{ crystals: 5 }],
+    costs: [{ crystals: 20 }],
   },
   {
     id: 'fuel_cap_2',
@@ -431,11 +431,11 @@ export const FORUM_NODES = [
     parent: ['forum_core'],
     maxLevel: 5,
     costs: [
+      { crystals: 0.1 },
       { crystals: 1 },
+      { crystals: 2 },
+      { crystals: 3 },
       { crystals: 5 },
-      { crystals: 8 },
-      { crystals: 15 },
-      { crystals: 20 },
     ],
     x: 0,
     y: 0,
