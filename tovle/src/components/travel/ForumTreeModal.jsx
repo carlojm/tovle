@@ -13,6 +13,8 @@ const DISPLAY_SIZE = 40 // rendered size in the node
 //   NODE_FRAME[node.id] = i
 // })
 
+import { computeForumUnlocks, calculatePrestigeHearts } from './forumUnlocks'
+
 const NODE_FRAME = {
   // Row 0 (frames 0-10)
   forum_core:          0,
@@ -139,11 +141,14 @@ function computeLayout(nodes) {
   return map
 }
 
-function getNodeState(node, upgrades) {
+function getNodeState(node, upgrades, totalPrestiges) {
   const level = upgrades[node.id] ?? 0
   if (level >= node.maxLevel) return 'maxed'
   if (level > 0) return 'partial'
   if (node.parent.length === 0) return 'available'
+
+  //prestige nodes are available after first prestige
+  if (node.permanent && (totalPrestiges ?? 0) >= 1) return 'available'
 
   //check if any parent is unlocked
   const anyParentUnlocked = node.parent.some(pid => (upgrades[pid] ?? 0) >= 1)
@@ -256,13 +261,17 @@ const canAfford = (cost, currencies) => {
 
 const NODE_MAP = computeLayout(FORUM_NODES)
 
-export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}}) {
+export default function ForumTreeModal({ onClose }) {
   const { playerData, save } = usePlayer()
+  const upgrades = playerData?.travel?.forum?.upgrades ?? {}
+  const currencies = playerData?.travel?.forum?.currencies ?? { crystals: 0, shards: 0, hearts: 0 }
   const [selectedNode, setSelectedNode] = useState(null)
   const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 })
   const isPanning = useRef(false)
   const lastPos = useRef({ x: 0, y: 0 })
   const containerRef = useRef(null)
+
+  const [prestigeConfirm, setPrestigeConfirm] = useState(false)
 
   const activePointers = useRef({})
   const lastPinchDist = useRef(null)
@@ -283,6 +292,7 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
   }, [])
 
   const onPointerDown = useCallback((e) => {
+    e.preventDefault()
     activePointers.current[e.pointerId] = { x: e.clientX, y: e.clientY }
     if (e.target.closest('.ftm-node')) return
     isPanning.current = true
@@ -299,13 +309,27 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
         pointers[0].x - pointers[1].x,
         pointers[0].y - pointers[1].y
       )
+
       if (lastPinchDist.current !== null) {
         const delta = dist / lastPinchDist.current
-        setTransform(t => ({
-          ...t,
-          scale: Math.max(0.4, Math.min(2.5, t.scale * delta))
-        }))
+
+        const midX = (pointers[0].x + pointers[1].x) / 2
+        const midY = (pointers[0].y + pointers[1].y) / 2
+
+        const rect = containerRef.current.getBoundingClientRect()
+        const localX = midX - rect.left
+        const localY = midY - rect.top
+
+        setTransform(t => {
+          const newScale = Math.max(0.4, Math.min(2.5, t.scale * delta))
+          const worldX = (localX - t.x) / t.scale
+          const worldY = (localY - t.y) / t.scale
+          const newX = localX - worldX * newScale
+          const newY = localY - worldY * newScale
+          return { x: newX, y: newY, scale: newScale }
+        })
       }
+
       lastPinchDist.current = dist
       return
     }
@@ -326,10 +350,24 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
   const onWheel = useCallback((e) => {
     e.preventDefault()
     const delta = e.deltaY > 0 ? 0.9 : 1.1
-    setTransform(t => ({
-      ...t,
-      scale: Math.max(0.4, Math.min(2.5, t.scale * delta))
-    }))
+
+    const rect = containerRef.current.getBoundingClientRect()
+    const mouseX = e.clientX - rect.left
+    const mouseY = e.clientY - rect.top
+
+    setTransform(t => {
+      const newScale = Math.max(0.4, Math.min(2.5, t.scale * delta))
+
+      // world point under the cursor before scaling
+      const worldX = (mouseX - t.x) / t.scale
+      const worldY = (mouseY - t.y) / t.scale
+
+      // after scaling, that world point should still be under the cursor
+      const newX = mouseX - worldX * newScale
+      const newY = mouseY - worldY * newScale
+
+      return { x: newX, y: newY, scale: newScale }
+    })
   }, [])
 
   const handlePurchase = () => {
@@ -363,6 +401,38 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
     })
   }
 
+  const handlePrestige = () => {
+    if (heartsPreview < 1) return
+
+    if (!prestigeConfirm) {
+      setPrestigeConfirm(true)
+      setTimeout(() => setPrestigeConfirm(false), 3000)
+      return
+    }
+
+    const permanentUpgrades = Object.fromEntries(
+      Object.entries(upgrades).filter(([id]) => {
+        const node = FORUM_NODES.find(n => n.id === id)
+        return node?.permanent === true
+      })
+    )
+
+    save({
+      'travel.forum.upgrades': permanentUpgrades,
+      'travel.forum.currencies.crystals': 0,
+      'travel.forum.currencies.shards': 0,
+      'travel.forum.currencies.hearts': Math.round(((currencies.hearts ?? 0) + heartsPreview) * 10) / 10,
+      'stats.bestPrestigeTowerHeight': 0,
+      'stats.totalPrestigeCrystalsEarned': 0,
+      'stats.totalPrestigeShardsEarned': 0,
+      'stats.totalPrestigeFuelSpent': 0,
+      'stats.totalPrestiges': (playerData?.stats?.totalPrestiges ?? 0) + 1,
+      'stats.totalHeartsEarned': Math.round(((playerData?.stats?.totalHeartsEarned ?? 0) + heartsPreview) * 10) / 10,
+    })
+
+    setPrestigeConfirm(false)
+  }
+
   // compute SVG bounds to fit all nodes
   const allNodes = Object.values(nodeMap)
   const xs = allNodes.map(n => n.cx)
@@ -378,11 +448,14 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
     ? selectedNode.costs[(upgrades[selectedNode.id] ?? 0)]
     : null
 
-  const nodeState = selectedNode ? getNodeState(selectedNode, upgrades) : null
+  const nodeState = selectedNode ? getNodeState(selectedNode, upgrades, playerData?.stats?.totalPrestiges ?? 0) : null
+
+  const heartsUnlocked = (upgrades['hearts_unlock'] ?? 0) >= 1
+  const heartsPreview = calculatePrestigeHearts(playerData?.stats ?? {})
 
   return (
-    <div className="ftm-overlay">
-      <div className="ftm-modal">
+    <div className="ftm-overlay" onClick={onClose}>
+      <div className="ftm-modal" onClick={e => e.stopPropagation()}>
 
         {/* header */}
         <div className="ftm-header">
@@ -406,6 +479,28 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
           </button>
         </div>
 
+        {/* prestige band */}
+        {heartsUnlocked && (
+          <div className="ftm-prestige-band">
+            <div className="ftm-prestige-info">
+              <span className="ftm-prestige-label">
+                <img src={ITEM_MAP.heart_of_the_sea.img} className="ftm-cost-icon" />
+                {heartsPreview} obtained on prestige
+              </span>
+              <span className="ftm-prestige-sub">
+                Resets currencies and non-prestige upgrades. See stats page for gain formula.
+              </span>
+            </div>
+            <button
+              className={`ftm-prestige-btn ${prestigeConfirm ? 'ftm-prestige-btn--confirm' : ''} ${heartsPreview < 1 ? 'ftm-prestige-btn--disabled' : ''}`}
+              onClick={handlePrestige}
+              disabled={heartsPreview < 1}
+            >
+              {prestigeConfirm ? 'Are you sure?' : 'Prestige'}
+            </button>
+          </div>
+        )}
+
         {/* tree canvas */}
         <div
           className="ftm-canvas"
@@ -415,6 +510,7 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
           onWheel={onWheel}
+          onContextMenu={e => e.preventDefault()}
         >
           <div
             className="ftm-inner"
@@ -441,7 +537,7 @@ export default function ForumTreeModal({ onClose, upgrades = {}, currencies = {}
               <TreeNode
                 key={node.id}
                 node={nodeMap[node.id]}
-                state={getNodeState(node, upgrades)}
+                state={getNodeState(node, upgrades, playerData?.stats?.totalPrestiges ?? 0)}
                 isSelected={selectedNode?.id === node.id}
                 onClick={setSelectedNode}
                 level={upgrades[node.id] ?? 0}

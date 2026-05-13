@@ -110,6 +110,13 @@ function buildFreshPlayerData() {
       totalPerfects: 0,
       totalCrits: 0,
       totalBubblesPopped: 0,
+      totalPrestiges: 0,
+      totalHeartsEarned: 0,
+      //for prestige
+      bestPrestigeTowerHeight: 0,
+      totalPrestigeCrystalsEarned: 0,
+      totalPrestigeShardsEarned: 0,
+      totalPrestigeFuelSpent: 0,
     },
     today: {
       date: null,

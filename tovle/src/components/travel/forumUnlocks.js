@@ -1,3 +1,13 @@
+export const calculatePrestigeHearts = (stats = {}) => {
+  const tower = stats.bestPrestigeTowerHeight ?? 0
+  const crystals = stats.totalPrestigeCrystalsEarned ?? 0
+  const shards = stats.totalPrestigeShardsEarned ?? 0
+  const fuel = stats.totalPrestigeFuelSpent ?? 0
+
+  const raw = tower * 0.01 + crystals * 0.001 + shards * 0.01 + fuel * 0.01
+  return Math.floor(Math.sqrt(raw) * 10) / 10
+}
+
 const SPEED_EXPONENT_BASE = 1.15
 const SPEED_EXPONENT_FLOOR = 1.03
 const SPEED_EXPONENT_REDUCTION = (SPEED_EXPONENT_BASE - SPEED_EXPONENT_FLOOR) / 20
@@ -83,6 +93,9 @@ export const computeForumUnlocks = (upgrades = {}) => {
   const shardPassiveGainUnlocked = level('shard_passive_gain_1') >= 1
   const shardPassiveGain = shardPassiveGainUnlocked ? Math.pow(1.5, level('shard_passive_gain_1')) : 0
 
+  // prestige
+  const prestigeUnlocked = heartsUnlocked // alias for clarity at call sites
+
   return {
     // speed
     speedExponent,
@@ -139,5 +152,8 @@ export const computeForumUnlocks = (upgrades = {}) => {
     heartsUnlocked,
     activeShardGain,
     shardPassiveGain,
+
+    //prestige
+    prestigeUnlocked,
   }
 }

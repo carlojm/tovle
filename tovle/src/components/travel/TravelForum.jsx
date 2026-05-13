@@ -340,6 +340,11 @@ const TravelForum = () => {
                     'stats.totalAnchors': (playerData?.stats?.totalAnchors ?? 0) + anchors,
                     'stats.totalPerfects': (playerData?.stats?.totalPerfects ?? 0) + perfects,
                     'stats.totalCrits': (playerData?.stats?.totalCrits ?? 0) + crits,
+                    //for prestige
+                    'stats.bestPrestigeTowerHeight': Math.max(playerData?.stats?.bestPrestigeTowerHeight ?? 0, blocksBuilt),
+                    'stats.totalPrestigeCrystalsEarned': Math.round(((playerData?.stats?.totalPrestigeCrystalsEarned ?? 0) + crystals + featCrystals) * 10) / 10,
+                    'stats.totalPrestigeShardsEarned': Math.round(((playerData?.stats?.totalPrestigeShardsEarned ?? 0) + shards + featShards) * 10) / 10,
+                    'stats.totalPrestigeFuelSpent': (playerData?.stats?.totalPrestigeFuelSpent ?? 0) + fuelUsed,
                   })
                 }}
                 speedExponent={forumUnlocks.speedExponent}
@@ -371,10 +376,6 @@ const TravelForum = () => {
       {showTreeModal && (
         <ForumTreeModal
           onClose={() => setShowTreeModal(false)}
-          upgrades={forum?.upgrades ?? {}}
-          currencies={forum?.currencies ?? { crystals: 0, shards: 0, hearts: 0 }}
-          save={save}
-          playerData={playerData}
         />
       )}
 
