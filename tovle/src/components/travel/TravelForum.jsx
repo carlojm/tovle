@@ -317,9 +317,9 @@ const TravelForum = () => {
                 totalFuel={gameConfig.totalFuel}
                 itemsPerTap={gameConfig.itemsPerTap}
                 anchorChance={gameConfig.anchorChance}
-                onGameEnd={(currency, blocksBuilt) => {
+                onGameEnd={(currency, blocksBuilt, fuelSaverBlocks) => {
                   setGameConfig(null)
-                  const fuelUsed = blocksBuilt * gameConfig.itemsPerTap
+                  const fuelUsed = fuelSaverBlocks * gameConfig.itemsPerTap
                   const fuelRemaining = Math.max(0, Math.round((gameConfig.totalFuel - fuelUsed) * 10) / 10)
                   const currentCurrencies = forum?.currencies ?? { crystals: 0, shards: 0, hearts: 0 }
                   const { crystals, featCrystals, shards, featShards, anchors, perfects, crits } = currency
@@ -367,6 +367,7 @@ const TravelForum = () => {
                 critAnchorUnlocked={forumUnlocks.critAnchorUnlocked}
                 critAnchorChance={forumUnlocks.critAnchorChance}
                 critAnchorGrowth={forumUnlocks.critAnchorGrowth}
+                fuelSaver={forumUnlocks.fuelSaverPermanent}
               />
             </div>
           </div>

@@ -19,19 +19,31 @@ export const computeForumUnlocks = (upgrades = {}) => {
   const totalSpeedLevels = level('speed_curb_1') + level('speed_curb_2') + level('speed_curb_3') + level('speed_curb_4')
   const speedExponent = Math.max(SPEED_EXPONENT_FLOOR, SPEED_EXPONENT_BASE - totalSpeedLevels * SPEED_EXPONENT_REDUCTION)
 
+  //prestige upgrades
+  //these are not passed to the game, we calculate the bonuses here in this file in other vars
+  const crystalMultiplierPermanent = Math.pow(1.5, level('crystal_multiplier_permanent'))
+  const luckMultiplierPermanent = 1 + level('luck_multiplier_permanent') * 0.15
+  //this one is passed to the game
+  const fuelSaverPermanent = level('fuel_saver_permanent') * 0.20
+
   // crystal gain multiplier — stacks multiplicatively across tiers
   const crystalMultiplier =
     Math.pow(1.5, level('crystal_gain_1')) *
     Math.pow(1.5, level('crystal_gain_2')) *
-    Math.pow(1.5, level('crystal_gain_3'))
+    Math.pow(1.5, level('crystal_gain_3')) *
+    crystalMultiplierPermanent
 
   // active crystal gain — bonus crystals per active trigger (perfect, anchor, crit)
   // multiplied by crystal multiplier at end of game
-  const activeCrystalGain = level('crystal_active_gain_1') + level('crystal_active_gain_2')
+  // const activeCrystalGain = level('crystal_active_gain_1') + level('crystal_active_gain_2')
+  const activeCrystalGain = 
+    (level('crystal_active_gain_1') + 
+    level('crystal_active_gain_2')) * 
+    crystalMultiplierPermanent
 
   // anchor chance — 0 before unlock, 5% base after unlock, +3% per level
   const anchorUnlocked = level('anchor_unlock') >= 1
-  const anchorChance = anchorUnlocked ? 0.05 + level('anchor_chance_1') * 0.05 : 0
+  const anchorChance = anchorUnlocked ? (0.05 + level('anchor_chance_1') * 0.05) + luckMultiplierPermanent : 0
 
   // perfect placement
   const perfectPlacementUnlocked = level('perfect_placement') >= 1
@@ -42,18 +54,18 @@ export const computeForumUnlocks = (upgrades = {}) => {
   // perfect anchor
   // triggers on perfect placement, grows the block
   const perfectAnchorUnlocked = level('perfect_anchor') >= 1
-  const perfectAnchorChance = perfectAnchorUnlocked ? 0.1 + level('perfect_anchor_chance_1') * 0.1 : 0
+  const perfectAnchorChance = perfectAnchorUnlocked ? (0.1 + level('perfect_anchor_chance_1') * 0.1) + luckMultiplierPermanent : 0
   const perfectAnchorGrowthFactor = 0.1 + level('perfect_anchor_growth_1') * 0.05 // 0.1 to 0.35
 
   // bubbles / crits
   const bubblesUnlocked = level('bubble_unlock') >= 1
-  const bubbleChance = bubblesUnlocked ? 0.2 + level('bubble_chance_1') * 0.10 : 0
+  const bubbleChance = bubblesUnlocked ? (0.2 + level('bubble_chance_1') * 0.10) + luckMultiplierPermanent : 0
   const bubbleAmount = bubblesUnlocked ? 1 + level('bubble_amount_1') : 0
-  const critChainChance = bubblesUnlocked ? level('crit_chain_1') * 0.1 : 0
+  const critChainChance = bubblesUnlocked ? (level('crit_chain_1') * 0.1) + luckMultiplierPermanent : 0
 
   // crit anchor
   const critAnchorUnlocked = level('crit_anchor_unlock') >= 1
-  const critAnchorChance = critAnchorUnlocked ? 0.1 + level('crit_anchor_chance_1') * 0.1 : 0
+  const critAnchorChance = critAnchorUnlocked ? (0.1 + level('crit_anchor_chance_1') * 0.1) + luckMultiplierPermanent : 0
   const critAnchorGrowth = critAnchorUnlocked ? 0.1 + level('crit_anchor_growth_1') * 0.05 : 0
 
   // starting width
@@ -155,5 +167,6 @@ export const computeForumUnlocks = (upgrades = {}) => {
 
     //prestige
     prestigeUnlocked,
+    fuelSaverPermanent,
   }
 }

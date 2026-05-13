@@ -25,6 +25,7 @@ const NODE_FRAME = {
   fuel_cap_3:          3,
   revive:              4,
   fuel_efficiency_1:   5,
+  fuel_saver_permanent:5,
   forum_tier_1:        6,
   alnera_unlock:       7,
   axolotl_3:           8,
@@ -52,6 +53,7 @@ const NODE_FRAME = {
   crystal_gain_1:        28,
   crystal_gain_2:        29,
   crystal_gain_3:        30,
+  crystal_multiplier_permanent: 30,
   shards_unlock:         31,
   shard_active_gain_1:   32,
   shard_active_gain_2:   33,
@@ -66,6 +68,7 @@ const NODE_FRAME = {
   crit_chain_1:          45,
   crit_anchor_unlock:    46,
   crit_anchor_chance_1:  47,
+  luck_multiplier_permanent: 47,
   crit_anchor_growth_1:  48,
 }
 

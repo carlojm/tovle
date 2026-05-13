@@ -76,7 +76,9 @@ class UIScene extends Phaser.Scene {
       },
       onComplete: () => {
         this.time.delayedCall(400, () => {
-          this.scene.get('GameScene').onGameEnd(currency, this.scene.get('GameScene').blockCount)
+          const gameScene = this.scene.get('GameScene')
+          const adjustedBlocks = Math.floor(gameScene.blockCount * (1 - gameScene.fuelSaver))
+          gameScene.onGameEnd(currency, gameScene.blockCount, adjustedBlocks)
         })
       }
     })
@@ -132,7 +134,7 @@ class UIScene extends Phaser.Scene {
     const xpSize = Math.round(30 * scale)
 
     // font primer — forces Jersey 15 to load before any visible text renders
-    const primer = this.add.text(0, 0, ' ', {
+    const primer = this.add.text(0, 0, '...', {
       fontSize: '1px',
       fontFamily: '"Jersey 15"',
     }).setAlpha(0)
@@ -244,6 +246,8 @@ class GameScene extends Phaser.Scene {
     this.critAnchorUnlocked = data.critAnchorUnlocked ?? false
     this.critAnchorChance = data.critAnchorChance ?? 0
     this.critAnchorGrowth = data.critAnchorGrowth ?? 0
+
+    this.fuelSaver = data.fuelSaver ?? 0
   }
 
   getOverlap(blockA, blockB) {
@@ -741,6 +745,7 @@ const ForumGame = ({
   activeCrystalGain, activeShardGain, shardPassiveGain,
   bubblesUnlocked, bubbleChance, bubbleAmount,
   critChainChance, critAnchorUnlocked, critAnchorChance, critAnchorGrowth,
+  fuelSaver,
 }) => {
   const containerRef = useRef(null)
 
@@ -759,6 +764,7 @@ const ForumGame = ({
       activeCrystalGain, activeShardGain, shardPassiveGain,
       bubblesUnlocked, bubbleChance, bubbleAmount,
       critChainChance, critAnchorUnlocked, critAnchorChance, critAnchorGrowth,
+      fuelSaver,
     })
 
     const width = containerRef.current.offsetWidth
@@ -800,6 +806,7 @@ const ForumGame = ({
         shardPassiveGain,
         bubblesUnlocked, bubbleChance, bubbleAmount,
         critChainChance, critAnchorUnlocked, critAnchorChance, critAnchorGrowth,
+        fuelSaver,
       } //data
     )
     game.scene.add('UIScene', UIScene, true)
