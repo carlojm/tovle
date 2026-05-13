@@ -181,6 +181,57 @@ const Caches = ({ }) => {
     }
   }
 
+  const handleOpenAllCaches = async () => {
+    if (pendingItems.length > 0 || loading) return
+    flushSave()
+
+    setLoading(true)
+    setError(null)
+    setActiveGrid(null)
+    setOpeningCacheKey('bulk')
+
+    try {
+      const res = await fetch('/api/open-all-caches', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uid })
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error ?? 'Something went wrong')
+        setOpeningCacheKey(null)
+        return
+      }
+
+      const mergedItems = mergeItems(playerData?.inventory?.items ?? [], data.items)
+      const totalItems = data.items.reduce((sum, item) => sum + item.quantity, 0)
+      const existingOpenedCaches = playerData?.inventory?.openedCaches ?? []
+      const unopened = playerData?.inventory?.unopenedCaches ?? []
+
+      setPendingItems(data.items)
+      setDisplayInventory(playerData?.inventory?.items ?? [])
+
+      save({
+        'inventory.unopenedCaches': [],
+        'inventory.openedCaches': [...existingOpenedCaches, ...unopened.map(c => ({ cacheId: c.cacheId, date: c.date }))],
+        'inventory.items': mergedItems,
+        'stats.totalCachesOpened': (playerData.stats?.totalCachesOpened ?? 0) + data.cacheCount,
+        'stats.totalItemsCollected': (playerData.stats?.totalItemsCollected ?? 0) + totalItems,
+      })
+
+      setActiveGrid(data.grid)
+
+    } catch (err) {
+      setError('Failed to open caches. Try again.')
+      setOpeningCacheKey(null)
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleAnimationComplete = () => {
     setPendingItems([])
     setIsRevealing(true)
@@ -297,6 +348,15 @@ const Caches = ({ }) => {
         )}
         
         <motion.h2 layout="position">Unopened Caches</motion.h2>
+        {(playerData?.travel?.forum?.upgrades?.bulk_cache_open ?? 0) >= 1 &&
+          unopenedCaches.length > 1 && (
+          <button
+            className={`cache-entry-button ${loading || pendingItems.length > 0 ? 'disable-button' : ''}`}
+            onClick={handleOpenAllCaches}
+          >
+            <span>Open All ({unopenedCaches.length} caches)</span>
+          </button>
+        )}
         {unopenedCaches.length === 0 && !activeGrid && (
           <p className="caches-empty">No unopened caches. Play today's caches to earn more!</p>
         )}

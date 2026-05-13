@@ -349,4 +349,4 @@ const scoreToLuckMultiplier = (score) => {
   return 0.8 + (score / 100) * 0.6
 }
 
-module.exports = { rollLoot, scoreToLuckMultiplier }
+module.exports = { rollLoot, scoreToLuckMultiplier, placeInGrid }

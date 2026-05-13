@@ -4,7 +4,7 @@ const app = express()
 const path = require('path')
 
 const {createAxolotl, generateLevelRequirements} = require('./axolotl')
-const { rollLoot, scoreToLuckMultiplier} = require('./loot')
+const { rollLoot, scoreToLuckMultiplier, placeInGrid} = require('./loot')
 const { admin, db } = require('./firebase')
 
 const { 
@@ -295,6 +295,101 @@ app.post('/api/open-cache', async(req, res) => {
     if (err.status === 404) return res.status(404).json({ error: err.message })
     if (err.status === 403) return res.status(403).json({ error: err.message })
     console.error('Error opening cache!:', err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+app.post('/api/open-all-caches', async (req, res) => {
+  const { uid } = req.body
+
+  if (!uid) {
+    return res.status(400).json({ error: 'Missing uid' })
+  }
+
+  try {
+    let allItems = []
+    let openedEntries = []
+
+    await db.runTransaction(async (t) => {
+      const playerRef = db.collection('players').doc(uid)
+      const playerSnap = await t.get(playerRef)
+
+      if (!playerSnap.exists) {
+        throw Object.assign(new Error('Player not found'), { status: 404 })
+      }
+
+      const playerData = playerSnap.data()
+      const unopened = playerData.inventory?.unopenedCaches ?? []
+
+      if (unopened.length === 0) {
+        throw Object.assign(new Error('No unopened caches'), { status: 400 })
+      }
+
+      const openedCaches = playerData.inventory?.openedCaches ?? []
+      const openedSet = new Set(openedCaches.map(c => `${c.cacheId}-${c.date}`))
+
+      // roll loot for each cache
+      for (const cacheEntry of unopened) {
+        const key = `${cacheEntry.cacheId}-${cacheEntry.date}`
+
+        // skip already opened (idempotency)
+        if (openedSet.has(key)) continue
+
+        const isAxolotlCache = String(cacheEntry.cacheId).startsWith('axolotl_')
+        const cacheScore = cacheEntry.score ?? 25
+        const tov = isAxolotlCache ? null : tovs.find(t => t.id === Number(cacheEntry.cacheId) || t.id === cacheEntry.cacheId)
+        const hemisphereMultiplier = isAxolotlCache ? 1.0 : getHemisphereMultiplier(tov, playerData)
+
+        const multipliers = {
+          global: (1.0 + (playerData.upgrades?.luckTier ?? 0)) * hemisphereMultiplier,
+          cache: scoreToLuckMultiplier(cacheScore),
+          items: {}
+        }
+
+        const lootResult = rollLoot(multipliers, playerData.upgrades ?? {}, isAxolotlCache ? 'axolotl' : 'cache')
+        allItems.push(...lootResult.items)
+        openedEntries.push({ cacheId: cacheEntry.cacheId, date: cacheEntry.date })
+        openedSet.add(key)
+      }
+
+      if (openedEntries.length === 0) {
+        throw Object.assign(new Error('All caches already opened'), { status: 409 })
+      }
+
+      const existingItems = playerData.inventory?.items ?? []
+      const mergedItems = mergeItems(existingItems, allItems)
+
+      t.update(playerRef, {
+        'inventory.unopenedCaches': [],
+        'inventory.openedCaches': [...openedCaches, ...openedEntries],
+        'inventory.items': mergedItems,
+      })
+    })
+
+    // merge allItems for the response (same as stackItems does internally)
+    const stackedItems = allItems.reduce((map, item) => {
+      if (map[item.itemId]) {
+        map[item.itemId].quantity += item.quantity ?? 1
+      } else {
+        map[item.itemId] = { ...item, quantity: item.quantity ?? 1 }
+      }
+      return map
+    }, {})
+
+    const responseItems = Object.values(stackedItems)
+    // re-roll the grid from the merged items for display
+    const flatItems = responseItems.flatMap(item =>
+      Array.from({ length: item.quantity }, () => ({ itemId: item.itemId, name: item.name }))
+    )
+    const grid = placeInGrid(flatItems)
+
+    res.json({ items: responseItems, grid, cacheCount: openedEntries.length })
+
+  } catch (err) {
+    if (err.status === 400) return res.status(400).json({ error: err.message })
+    if (err.status === 404) return res.status(404).json({ error: err.message })
+    if (err.status === 409) return res.status(409).json({ error: err.message })
+    console.error('Error opening all caches:', err)
     res.status(500).json({ error: 'Internal server error' })
   }
 })
