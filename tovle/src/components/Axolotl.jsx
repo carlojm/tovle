@@ -90,13 +90,13 @@ const Axolotl = ({scheduleSave, flushSave, disableButtons}) => {
     //local state updates immediately
     save({
       axolotls: updatedAxolotls,
-      inventory: { ...playerData.inventory, items: updatedItems },
+      'inventory.items': updatedItems,
     }, {localOnly: true})
 
     //"debounce" (delay) firestore write to save on database writing a little bit
     scheduleSave({
       axolotls: updatedAxolotls,
-      inventory: { ...playerData.inventory, items: updatedItems },
+      'inventory.items': updatedItems,
     })
   }
 
@@ -130,10 +130,7 @@ const Axolotl = ({scheduleSave, flushSave, disableButtons}) => {
 
     save({
       axolotls: updatedAxolotls,
-      inventory: {
-        ...playerData.inventory,
-        unopenedCaches: [...existingUnopenedCaches, ...newCaches],
-      }
+      'inventory.unopenedCaches': [...existingUnopenedCaches, ...newCaches],
     })
   }
 

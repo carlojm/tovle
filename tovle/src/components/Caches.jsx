@@ -133,7 +133,7 @@ const Caches = ({ }) => {
         const updatedUnopenedCaches = unopenedCaches.filter(
           c => !(c.cacheId === cacheEntry.cacheId && c.date === cacheEntry.date)
         )
-        save({ inventory: { ...playerData.inventory, unopenedCaches: updatedUnopenedCaches } })
+        save({ 'inventory.unopenedCaches': updatedUnopenedCaches })
         setError(data.error ?? 'Cache already opened')
         setOpeningCacheKey(null)
         return
@@ -163,17 +163,11 @@ const Caches = ({ }) => {
       setDisplayInventory(playerData?.inventory?.items ?? [])
 
       save({
-        inventory: {
-          ...playerData.inventory,
-          unopenedCaches: updatedUnopenedCaches,
-          openedCaches: [...existingOpenedCaches, { cacheId: cacheEntry.cacheId, date: cacheEntry.date }],
-          items: mergedItems,
-        },
-        stats: {
-          ...playerData.stats,
-          totalCachesOpened: (playerData.stats?.totalCachesOpened ?? 0) + 1,
-          totalItemsCollected: (playerData.stats?.totalItemsCollected ?? 0) + totalItems,
-        }
+        'inventory.unopenedCaches': updatedUnopenedCaches,
+        'inventory.openedCaches': [...existingOpenedCaches, { cacheId: cacheEntry.cacheId, date: cacheEntry.date }],
+        'inventory.items': mergedItems,
+        'stats.totalCachesOpened': (playerData.stats?.totalCachesOpened ?? 0) + 1,
+        'stats.totalItemsCollected': (playerData.stats?.totalItemsCollected ?? 0) + totalItems,
       })
 
       setActiveGrid(data.grid)
@@ -214,28 +208,22 @@ const Caches = ({ }) => {
       score:score,
     }
     save({
-      inventory: {
-        ...playerData.inventory,
-        unopenedCaches: [...(playerData.inventory?.unopenedCaches ?? []), newUnopenedCache],
-      }
+      'inventory.unopenedCaches': [...(playerData.inventory?.unopenedCaches ?? []), newUnopenedCache],
     })
   }
 
   const handleDebugResetUpgrades = () => {
     save({
-      upgrades: {
-        ...playerData.upgrades,
-        craftingTable: 0,
-        streakRestore: 0,
-        luckTier: 0,
-        distancePrecision: 0,
-        directionArrows: 0,
-        fishingNet: 0,
-        buildHabitat: 0,
-        newHire: 0,
-        delveMode: 0,
-        unlockTravel: 0,
-      }
+      'upgrades.craftingTable': 0,
+      'upgrades.streakRestore': 0,
+      'upgrades.luckTier': 0,
+      'upgrades.distancePrecision': 0,
+      'upgrades.directionArrows': 0,
+      'upgrades.fishingNet': 0,
+      'upgrades.buildHabitat': 0,
+      'upgrades.newHire': 0,
+      'upgrades.delveMode': 0,
+      'upgrades.unlockTravel': 0,
     })
   }
 
@@ -261,11 +249,8 @@ const Caches = ({ }) => {
       return true
     })
     save({
-      inventory: {
-        ...playerData.inventory,
-        openedCaches: dedupedOpened,
-        unopenedCaches: dedupedUnopened,
-      }
+      'inventory.openedCaches': dedupedOpened,
+      'inventory.unopenedCaches': dedupedUnopened,
     })
   }
 
@@ -275,18 +260,12 @@ const Caches = ({ }) => {
     const twoDaysAgoStr = twoDaysAgo.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 
     save({
-      stats: {
-        ...playerData.stats,
-        currentStreak: 5,
-        lastPlayedDate: twoDaysAgoStr,
-        streakBrokeDate: null,
-        previousStreak: null,
-      },
-      upgrades: {
-        ...playerData.upgrades,
-        unlocked: (playerData.upgrades?.unlocked ?? []).filter(f => f !== 'streakRedeemable'),
-        streakRestore: 0,
-      }
+      'stats.currentStreak': 5,
+      'stats.lastPlayedDate': twoDaysAgoStr,
+      'stats.streakBrokeDate': null,
+      'stats.previousStreak': null,
+      'upgrades.unlocked': (playerData.upgrades?.unlocked ?? []).filter(f => f !== 'streakRedeemable'),
+      'upgrades.streakRestore': 0,
     })
 
     setTimeout(() => window.location.reload(), 500)

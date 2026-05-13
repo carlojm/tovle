@@ -86,13 +86,7 @@ export default function EquipmentCard({ instance, onClose, readOnly = false, col
       const currentDen = playerData.inventory?.currencies?.denPieces ?? 0
       save({
         equipment: updatedEquipment,
-        inventory: {
-          ...playerData.inventory,
-          currencies: {
-            ...playerData.inventory?.currencies,
-            denPieces: currentDen + data.payout,
-          }
-        }
+        'inventory.currencies.denPieces': currentDen + data.payout,
       })
 
       handleClose()
@@ -121,9 +115,9 @@ export default function EquipmentCard({ instance, onClose, readOnly = false, col
     )
 
     save({
-      equip: { slots: updatedSlots },
+      'equip.slots': updatedSlots,
       equipment: updatedEquipment,
-      stats: { ...playerData.stats, bestEquipStats },
+      'stats.bestEquipStats': bestEquipStats,
     })
     handleClose()
   }
@@ -144,9 +138,9 @@ export default function EquipmentCard({ instance, onClose, readOnly = false, col
     )
 
     save({
-      equip: { slots: updatedSlots },
+      'equip.slots': updatedSlots,
       equipment: updatedEquipment,
-      stats: { ...playerData.stats, bestEquipStats },
+      'stats.bestEquipStats': bestEquipStats,
     })
     handleClose()
   }
