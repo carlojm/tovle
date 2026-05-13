@@ -444,11 +444,13 @@ const Caches = ({ }) => {
         )}
       </motion.section>
 
-      <motion.section layout className="caches-section">
-        <h2>Equipment</h2>
-        <EquipPanel onSlotTap={(slot) => setFilterType(SLOT_TO_FILTER[slot.type] ?? '')} />
-        <EquipmentGrid filterType={filterType} setFilterType={setFilterType} />
-      </motion.section>
+      {(playerData?.equipment ?? []).length > 0 && (
+        <motion.section layout className="caches-section">
+          <h2>Equipment</h2>
+          <EquipPanel onSlotTap={(slot) => setFilterType(SLOT_TO_FILTER[slot.type] ?? '')} />
+          <EquipmentGrid filterType={filterType} setFilterType={setFilterType} />
+        </motion.section>
+      )}
 
       <motion.section layout className="caches-section">
         <div className="caches-section-header">
