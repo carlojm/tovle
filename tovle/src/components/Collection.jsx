@@ -8,6 +8,7 @@ import { getTypesForGroup } from '../utils/equipUtils'
 import './LootGrid.css'
 import './EquipmentGrid.css'
 import './Collection.css'
+import { TIER_TOTALS, getCollectedPerTier } from '../utils/collectionUtils'
 
 const ITEMS_PER_PAGE = 54 // 6 rows × 9 cols
 
@@ -22,14 +23,44 @@ const ALL_ITEMS = Object.entries(islesItems).map(([itemKey, def]) => ({ itemKey,
 // Derive available types and tiers from the full universe
 const ALL_TYPES = [...new Set(ALL_ITEMS.map(i => i.type).filter(Boolean))].sort()
 const ALL_TIERS = [...new Set(ALL_ITEMS.map(i => i.tier).filter(Boolean))]
-  .sort((a, b) => (TIER_ORDER[a] ?? 99) - (TIER_ORDER[b] ?? 99))
+.sort((a, b) => (TIER_ORDER[a] ?? 99) - (TIER_ORDER[b] ?? 99))
+
+//for stat sub-component showing progress
+function CollectionProgress({ collection }) {
+  const collectedPerTier = getCollectedPerTier(collection)
+  return (
+    <div className="col-progress">
+      {ALL_TIERS.map(tier => {
+        const total = TIER_TOTALS[tier] ?? 0
+        const found = collectedPerTier[tier] ?? 0
+        const pct = total > 0 ? (found / total) * 100 : 0
+        const complete = found === total
+
+        return (
+          <div key={tier} className={`col-progress-row ${complete ? 'col-progress-row--complete' : ''}`}>
+            <span className="col-progress-tier">{tier}</span>
+            <div className="col-progress-bar-track">
+              <div
+                className="col-progress-bar-fill"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+            <span className="col-progress-count">
+              {found}/{total}
+            </span>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
 export default function Collection() {
   const { playerData } = usePlayer()
   const collection = playerData?.stats?.equipmentCollection ?? {}
 
   const [filterType, setFilterType] = useState('')
-  const [filterTier, setFilterTier] = useState('')
+  const [filterTier, setFilterTier] = useState('Tier 1')
   const [filterCollected, setFilterCollected] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)
   const [selectedItem, setSelectedItem] = useState(null) // { itemKey, collectionData }
@@ -215,6 +246,11 @@ export default function Collection() {
           onClose={() => setSelectedItem(null)}
         />
       )}
+
+      <div className="collection-header" style={{marginTop:"12px"}}>
+        <h2>Completion Progress</h2>
+      </div>
+      <CollectionProgress collection={collection} />
     </div>
   )
 }

@@ -54,3 +54,72 @@
   font-size: 8px;
   font-weight: 700;
 }
+
+
+
+/* ====== */
+
+.col-progress {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.col-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.col-progress-tier {
+  font-size: 11px;
+  color: var(--color-text);
+  opacity: 0.6;
+  width: 72px;
+  flex-shrink: 0;
+}
+
+.col-progress-bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--color-background-loot-slot);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-loot-slot);
+}
+
+.col-progress-bar-fill {
+  height: 100%;
+  background: var(--color-bar-fill);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.col-progress-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text);
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* complete tier — bar glows, text fully opaque */
+.col-progress-row--complete .col-progress-tier {
+  opacity: 1;
+  font-weight: 700;
+}
+
+.col-progress-row--complete .col-progress-bar-fill {
+  background: var(--color-bar-fill);
+}
+
+.col-progress-row--complete .col-progress-bar-track {
+  border-color: var(--color-bar-fill);
+}
+
+.col-progress-row--complete .col-progress-count {
+  color: var(--color-button-hover);
+}
