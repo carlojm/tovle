@@ -29,8 +29,8 @@ export const FORUM_TIERS = [
       {
         type: 'collection_tier',
         tier: 'Tier 1',
-        target: 30,
-        label: 'Discover 30 unique Tier 1 items',
+        target: 25,
+        label: 'Discover 25 unique Tier 1 items',
       },
       // { type: 'best_equip_stat', stat: 'meleeEHP', target: 50, label: 'Reach 50 Melee EHP' },
       { type: 'best_equip_stat', stat: 'armor', target: 15, label: 'Reach stat: 15 Armor' }
@@ -38,8 +38,8 @@ export const FORUM_TIERS = [
     optional: [
       { type: 'caches_opened', target: 50, label: 'Open 50 caches' },
       { type: 'trades_executed_town', townId: 'alnera', target: 4, label: 'Make 4 trades with Alnera' },
-      { type: 'axolotl_level', target: 3, label: 'Reach axolotl level 3' },
-      { type: 'tower_height', target: 10, label: 'Reach tower height 10' },
+      { type: 'axolotl_level_total', target: 10, label: 'Reach axolotl combined level 10' },
+      { type: 'tower_height', target: 25, label: 'Reach tower height 25' },
     ],
     minOptional: 2,
   },
