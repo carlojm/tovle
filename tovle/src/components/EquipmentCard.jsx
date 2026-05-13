@@ -8,7 +8,7 @@ import { formatStats } from '../utils/statFormatter'
 import './EquipmentCard.css'
 
 import { calcRecyclePrice, getFloatLabel } from '../utils/recycleUtils'
-import { getValidSlotsForItem, getItemInSlot, getSlotLabel, DEFAULT_SLOTS } from '../utils/equipUtils'
+import { getValidSlotsForItem, getItemInSlot, getSlotLabel, DEFAULT_SLOTS, calcBestEquipStats, getPlayerSlots } from '../utils/equipUtils'
 
 function locationToClass(location) {
   if (!location) return ''
@@ -114,9 +114,16 @@ export default function EquipmentCard({ instance, onClose, readOnly = false, col
       return e
     })
 
+    const bestEquipStats = calcBestEquipStats(
+      updatedSlots,
+      updatedEquipment,
+      playerData?.stats?.bestEquipStats ?? {}
+    )
+
     save({
       equip: { slots: updatedSlots },
       equipment: updatedEquipment,
+      stats: { ...playerData.stats, bestEquipStats },
     })
     handleClose()
   }
@@ -129,9 +136,17 @@ export default function EquipmentCard({ instance, onClose, readOnly = false, col
     const updatedEquipment = (playerData.equipment ?? []).map(e =>
       e.id === instance.id ? { ...e, equipped: false } : e
     )
+
+    const bestEquipStats = calcBestEquipStats(
+      updatedSlots,
+      updatedEquipment,
+      playerData?.stats?.bestEquipStats ?? {}
+    )
+
     save({
       equip: { slots: updatedSlots },
       equipment: updatedEquipment,
+      stats: { ...playerData.stats, bestEquipStats },
     })
     handleClose()
   }

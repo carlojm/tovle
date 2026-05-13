@@ -1,4 +1,5 @@
 import { getTownLevel } from './townUtils'
+import { getCollectedForTier } from './collectionUtils'
 
 import { FORUM_TIERS, TOWN_UNLOCKS } from '../data/forumConfig'
 
@@ -41,6 +42,15 @@ export const checkGoal = (goal, playerData) => {
     }
     case 'skill_tree_node': {
       current = playerData?.travel?.forum?.upgrades?.[goal.nodeId] ? 1 : 0
+      break
+    }
+    case 'collection_tier': {
+      const collection = playerData?.stats?.equipmentCollection ?? {}
+      current = getCollectedForTier(collection, goal.tier)
+      break
+    }
+    case 'best_equip_stat': {
+      current = playerData?.stats?.bestEquipStats?.[goal.stat] ?? 0
       break
     }
     default:

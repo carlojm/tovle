@@ -83,3 +83,34 @@ export const getBonusSlots = (playerData) => getPlayerSlots(playerData).slice(6)
 export const getTypesForGroup = (groupKey) => {
   return SLOT_ACCEPTS[groupKey] ?? []
 }
+
+
+
+//for stats
+import { calcStats } from './odm/statCalc'
+
+export function calcBestEquipStats(updatedSlots, updatedEquipment, existingBest = {}) {
+  const stats = calcStats(updatedSlots, updatedEquipment)
+  if (!stats) return existingBest
+
+  const candidates = {
+    meleeEHP:      parseFloat(stats.meleeEHP),
+    projectileEHP: parseFloat(stats.projectileEHP),
+    magicEHP:      parseFloat(stats.magicEHP),
+    blastEHP:      parseFloat(stats.blastEHP),
+    armor:         stats.armor,
+    agility:       stats.agility,
+    critSpamDPS:   parseFloat(stats.critSpamDPS),
+    iframeCritDPS: parseFloat(stats.iframeCritDPS),
+    maxHP:         parseFloat(stats.healthFinal),
+    speed:         parseFloat(stats.speedPercent),
+  }
+
+  const updated = { ...existingBest }
+  for (const [key, val] of Object.entries(candidates)) {
+    if (!isNaN(val) && (updated[key] === undefined || val > updated[key])) {
+      updated[key] = val
+    }
+  }
+  return updated
+}

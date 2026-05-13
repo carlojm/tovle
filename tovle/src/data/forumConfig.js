@@ -25,7 +25,15 @@ export const FORUM_TIERS = [
     label: 'Tier 2',
     description: 'Your reputation with Alnera grows. A Frostgate ambassador arrives to set up a trade route.',
     required: [
-      { type: 'town_level', townId: 'alnera', target: 2, label: 'Reach Alnera level 2' },
+      // { type: 'town_level', townId: 'alnera', target: 2, label: 'Reach Alnera level 2' },
+      {
+        type: 'collection_tier',
+        tier: 'Tier 1',
+        target: 30,
+        label: 'Discover 30 unique Tier 1 items',
+      },
+      // { type: 'best_equip_stat', stat: 'meleeEHP', target: 50, label: 'Reach 50 Melee EHP' },
+      { type: 'best_equip_stat', stat: 'armor', target: 15, label: 'Reach stat: 15 Armor' }
     ],
     optional: [
       { type: 'caches_opened', target: 50, label: 'Open 50 caches' },
