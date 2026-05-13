@@ -252,7 +252,7 @@ const TravelForum = () => {
             {/* next tier unlock button */}
             {isMilestoneUnlocked(nextTierDef, playerData) && (
               <button
-                className="forum-upgrade-btn"
+                className="forum-upgrade-btn golden"
                 onClick={handleClaimTier}
                 style={{ marginTop: 8 }}
               >
