@@ -33,7 +33,7 @@ const flipVariants = {
   },
 }
 
-export default function EquipmentCard({ instance, onClose }) {
+export default function EquipmentCard({ instance, onClose, readOnly = false, collectionData = null }) {
   const { playerData, uid, save } = usePlayer()
   const [metaView, setMetaView] = useState('info') // 'info' | 'recycle' | 'equip'
   const [selectedSlotIndex, setSelectedSlotIndex] = useState(0)
@@ -47,7 +47,8 @@ export default function EquipmentCard({ instance, onClose }) {
   const locationClass = locationToClass(itemDef.location)
 
   const recyclePrice = calcRecyclePrice(instance.tier, instance.float)
-  const floatLabel = getFloatLabel(instance.float)
+  // guard float label — synthetic instances from collection view may have null float
+  const floatLabel = instance.float != null ? getFloatLabel(instance.float) : null
 
   //for equip view
   const slots = playerData?.equip?.slots ?? DEFAULT_SLOTS
@@ -150,9 +151,9 @@ export default function EquipmentCard({ instance, onClose }) {
             <ItemIcon itemKey={instance.itemKey} />
           </div>
 
-          {/* name */}
+          {/* name — prefix float label only when available */}
           <span className={`monumenta-name ${tierClass}`}>
-            {floatLabel} {itemDef.name}
+            {floatLabel ? `${floatLabel} ` : ''}{itemDef.name}
           </span>
 
           {/* type - base item */}
@@ -186,44 +187,70 @@ export default function EquipmentCard({ instance, onClose }) {
           )}
         </div>
 
-        {/* pillbox buttons */}
-        <div className="eq-card-actions" onClick={e => e.stopPropagation()}>
-          <button
-            className="eq-action-btn"
-            onClick={(e) => { e.stopPropagation(); handleStar() }}
-          >
-            {instance.starred ? '★ Unstar' : '☆ Star'}
-          </button>
-          <button
-            className="eq-action-btn"
-            disabled={validSlots.length === 0}
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedSlotIndex(0)
-              setMetaView(metaView === 'equip' ? 'info' : 'equip')
-            }}
-          >
-            {instance.equipped ? 'Unequip' : 'Equip'}
-          </button>
-          <button
-            className="eq-action-btn eq-action-btn--danger"
-            disabled={instance.starred || instance.equipped}
-            onClick={(e) => {
-              e.stopPropagation()
-              setMetaView(metaView === 'recycle' ? 'info' : 'recycle')
-            }}
-          >
-            Recycle
-          </button>
-        </div>
+        {/* pillbox buttons — hidden in readOnly mode */}
+        {!readOnly && (
+          <div className="eq-card-actions" onClick={e => e.stopPropagation()}>
+            <button
+              className="eq-action-btn"
+              onClick={(e) => { e.stopPropagation(); handleStar() }}
+            >
+              {instance.starred ? '★ Unstar' : '☆ Star'}
+            </button>
+            <button
+              className="eq-action-btn"
+              disabled={validSlots.length === 0}
+              onClick={(e) => {
+                e.stopPropagation()
+                setSelectedSlotIndex(0)
+                setMetaView(metaView === 'equip' ? 'info' : 'equip')
+              }}
+            >
+              {instance.equipped ? 'Unequip' : 'Equip'}
+            </button>
+            <button
+              className="eq-action-btn eq-action-btn--danger"
+              disabled={instance.starred || instance.equipped}
+              onClick={(e) => {
+                e.stopPropagation()
+                setMetaView(metaView === 'recycle' ? 'info' : 'recycle')
+              }}
+            >
+              Recycle
+            </button>
+          </div>
+        )}
 
-        {/* float + obtained info */}
+        {/* float + obtained info / collection data */}
         <motion.div
           className="eq-card-meta"
           onClick={e => e.stopPropagation()}
         >
           <AnimatePresence mode="popLayout" initial={false}>
-            {metaView === 'info' && (
+
+            {/* collection view — shown when readOnly */}
+            {readOnly && (
+              <motion.div
+                key="collection"
+                className="eq-card-meta-inner"
+                variants={flipVariants}
+                animate="enter"
+                exit="exit"
+              >
+                {collectionData ? (
+                  <>
+                    <span>Found {collectionData.totalFound} time{collectionData.totalFound !== 1 ? 's' : ''}</span>
+                    <span>First found {collectionData.firstFoundDate}</span>
+                    <span>
+                      Best/worst floats: {collectionData.lowestFloat?.toFixed(4)} - {collectionData.highestFloat?.toFixed(4)}
+                    </span>
+                  </>
+                ) : (
+                  <span style={{ opacity: 0.5 }}>Not yet discovered</span>
+                )}
+              </motion.div>
+            )}
+
+            {!readOnly && metaView === 'info' && (
               <motion.div
                 key="info"
                 className="eq-card-meta-inner"
@@ -236,7 +263,7 @@ export default function EquipmentCard({ instance, onClose }) {
               </motion.div>
             )}
  
-            {metaView === 'recycle' && (
+            {!readOnly && metaView === 'recycle' && (
               <motion.div
                 key="recycle"
                 className="eq-card-meta-inner"
@@ -257,7 +284,7 @@ export default function EquipmentCard({ instance, onClose }) {
               </motion.div>
             )}
  
-            {metaView === 'equip' && (
+            {!readOnly && metaView === 'equip' && (
               <motion.div
                 key="equip"
                 className="eq-card-meta-inner"
@@ -271,7 +298,7 @@ export default function EquipmentCard({ instance, onClose }) {
                   <>
                     <span>Unequip this item?</span>
                     <div className="eq-meta-confirm-btns">
-                      <button className="eq-meta-btn eq-meta-btn--cancel" onClick={() => changeMetaView('info')}>
+                      <button className="eq-meta-btn eq-meta-btn--cancel" onClick={() => setMetaView('info')}>
                         Cancel
                       </button>
                       <button className="eq-meta-btn eq-meta-btn--confirm" onClick={handleUnequip}>

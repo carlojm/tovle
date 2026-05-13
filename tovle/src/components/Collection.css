@@ -1,0 +1,56 @@
+.collection-container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 8px;
+  width: min(90vw, 600px);
+  padding: 12px 0;
+}
+
+.collection-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.collection-header h2 {
+  font-size: clamp(14px, 3vw, 18px);
+  font-weight: 600;
+  /* align-self: flex-start; */
+  margin: 0;
+}
+
+.collection-count {
+  font-size: 13px;
+  opacity: 0.5;
+  color: var(--color-text);
+}
+
+/* undiscovered slots are dimmer */
+.collection-slot--undiscovered {
+  opacity: 0.45;
+}
+
+.collection-slot--undiscovered:hover {
+  opacity: 0.7;
+}
+
+/* the ? mark for undiscovered items */
+.collection-unknown {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
+  opacity: 0.4;
+  user-select: none;
+}
+
+/* tier badge on undiscovered slots — extra dim */
+.collection-unknown-tier {
+  opacity: 0.4;
+}
+
+/* found count badge bottom-left */
+.collection-found-badge {
+  font-size: 8px;
+  font-weight: 700;
+}

@@ -27,7 +27,7 @@ export default function Navbar({ theme, onToggleTheme, onNavigate }) {
         <h1>BETA</h1>
       )}
       <div className="navbar-buttons">
-        
+
         {/* den piece chip — only shown when player has any */}
         <AnimatePresence>
           {denPieces > 0 && (
@@ -73,6 +73,7 @@ export default function Navbar({ theme, onToggleTheme, onNavigate }) {
       {menuOpen && createPortal(
         <div className="navbar-menu">
           <button className="navbar-menu-btn" onClick={() => handleNavigate('info')}>Info</button>
+          <button className="navbar-menu-btn" onClick={() => handleNavigate('collection')}>Collection</button>
           <button className="navbar-menu-btn" onClick={() => handleNavigate('data')}>Save Data</button>
         </div>,
         document.body

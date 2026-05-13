@@ -10,6 +10,7 @@ import Caches from './components/Caches'
 import Info from './components/Info'
 import DataTab from './components/DataTab'
 import Travel from './components/travel/Travel.jsx'
+import Collection from './components/Collection.jsx'
 
 import { IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM } from './data/constants.js'
 
@@ -18,6 +19,7 @@ const TABS = [
   { id: 'caches', label: 'Caches' },
   { id: 'info',   label: 'Info' },
   { id: 'data',   label: 'Data' },
+  { id: 'collection',   label: 'Collection' },
 ]
 
 const App = () => {
@@ -484,6 +486,8 @@ const App = () => {
         {activeTab === 'info' && <Info onNavigate={setActiveTab} />}
         {activeTab === 'travel' && <Travel />}
         {activeTab === 'data' && <DataTab />}
+        {activeTab === 'collection' && <Collection />}
+
       </div>
     </div>
   )
