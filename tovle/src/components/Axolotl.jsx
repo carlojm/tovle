@@ -5,6 +5,9 @@ import { PencilLine, ChevronsUp } from 'lucide-react'
 import './Axolotl.css'
 import axolotlImg from '../assets/axolotl.png'
 import axolotlGoldImg from '../assets/axolotl_gold.png'
+import axolotlCyanImg from '../assets/axolotl_cyan.png'
+import axolotlBrownImg from '../assets/axolotl_brown.png'
+
 
 const FISH_POOL = [
   'viridian_cod',
@@ -16,6 +19,7 @@ const FISH_POOL = [
   'tropical_fish',
   'arcane_fish',
 ]
+const COMMON_FISH = FISH_POOL.slice(0, 4)
 
 const MAX_HUNGER = 10
 
@@ -28,7 +32,12 @@ const Axolotl = ({scheduleSave, flushSave, disableButtons}) => {
   const [hoveredFish, setHoveredFish] = useState(null)
   const [pendingCollectId, setPendingCollectId] = useState(null)
 
-  const axolotlImages = [axolotlImg, axolotlGoldImg]
+  const autoFeedUnlocked = (playerData?.travel?.forum?.upgrades?.auto_feed ?? 0) >= 1
+  const [autoFeedDropdowns, setAutoFeedDropdowns] = useState({})
+  const autoFeedDropdownRefs = useRef({})
+
+
+  const axolotlImages = [axolotlImg, axolotlGoldImg, axolotlBrownImg, axolotlCyanImg]
 
   if (axolotls.length === 0) return null
 
@@ -189,6 +198,131 @@ const Axolotl = ({scheduleSave, flushSave, disableButtons}) => {
     }
   }
 
+  const toggleAutoFeedDropdown = (id) => {
+    setAutoFeedDropdowns(prev => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  const handleAutoFeedLevelUp = (axolotl) => {
+    if (disableButtons) return
+    flushSave()
+
+    const nextLevel = axolotl.level + 1
+    const requirements = axolotl.levelRequirements?.[nextLevel] ?? []
+    if (requirements.length === 0) return
+
+    let updatedFishEaten = { ...axolotl.fishEaten }
+    let updatedItems = [...items]
+    let hungerGained = 0
+
+    for (const req of requirements) {
+      const eaten = axolotl.fishEaten?.[req.fish] ?? 0
+      const stillNeeded = req.quantity - eaten
+      if (stillNeeded <= 0) continue
+
+      const itemIdx = updatedItems.findIndex(i => i.itemId === req.fish)
+      if (itemIdx === -1) continue
+
+      const canFeed = Math.min(updatedItems[itemIdx].quantity, stillNeeded)
+      if (canFeed <= 0) continue
+
+      updatedFishEaten[req.fish] = eaten + canFeed
+      updatedItems[itemIdx] = { ...updatedItems[itemIdx], quantity: updatedItems[itemIdx].quantity - canFeed }
+      hungerGained += canFeed
+    }
+
+    updatedItems = updatedItems.filter(i => i.quantity > 0)
+
+    const updatedAxolotls = axolotls.map(a =>
+      a.id === axolotl.id
+        ? { ...a, hunger: Math.min(a.hunger + hungerGained, MAX_HUNGER), fishEaten: updatedFishEaten }
+        : a
+    )
+
+    save({ axolotls: updatedAxolotls, 'inventory.items': updatedItems })
+    setAutoFeedDropdowns(prev => ({ ...prev, [axolotl.id]: false }))
+  }
+
+  const handleAutoFeedFillHunger = (axolotl) => {
+    if (disableButtons) return
+    flushSave()
+
+    const hungerNeeded = MAX_HUNGER - axolotl.hunger
+    if (hungerNeeded <= 0) return
+
+    const nextLevel = axolotl.level + 1
+    const requirements = axolotl.levelRequirements?.[nextLevel] ?? []
+    const wantedFish = requirements.map(r => r.fish)
+
+    // build feedable fish list: wanted first, then rest by quantity descending
+    const availableFish = COMMON_FISH
+      .map(fish => ({ fish, quantity: items.find(i => i.itemId === fish)?.quantity ?? 0 }))
+      .filter(f => f.quantity > 0)
+      .sort((a, b) => {
+        const aWanted = wantedFish.includes(a.fish)
+        const bWanted = wantedFish.includes(b.fish)
+        if (aWanted !== bWanted) return aWanted ? -1 : 1
+        return b.quantity - a.quantity
+      })
+
+    if (availableFish.length === 0) return
+
+    // distribute hunger slots proportionally across available fish
+    const total = availableFish.reduce((sum, f) => sum + f.quantity, 0)
+    let remaining = hungerNeeded
+    const toFeed = []
+
+    availableFish.forEach((f, i) => {
+      if (remaining <= 0) { toFeed.push({ ...f, feed: 0 }); return }
+      const isLast = i === availableFish.length - 1
+      const share = isLast
+        ? remaining
+        : Math.round((f.quantity / total) * hungerNeeded)
+      const feed = Math.min(share, f.quantity, remaining)
+      toFeed.push({ ...f, feed })
+      remaining -= feed
+    })
+
+    let updatedItems = [...items]
+    let updatedFishEaten = { ...axolotl.fishEaten }
+
+    for (const { fish, feed } of toFeed) {
+      if (feed <= 0) continue
+      updatedFishEaten[fish] = (updatedFishEaten[fish] ?? 0) + feed
+      const itemIdx = updatedItems.findIndex(i => i.itemId === fish)
+      if (itemIdx !== -1) {
+        updatedItems[itemIdx] = { ...updatedItems[itemIdx], quantity: updatedItems[itemIdx].quantity - feed }
+      }
+    }
+
+    updatedItems = updatedItems.filter(i => i.quantity > 0)
+
+    const updatedAxolotls = axolotls.map(a =>
+      a.id === axolotl.id
+        ? { ...a, hunger: Math.min(a.hunger + hungerNeeded, MAX_HUNGER), fishEaten: updatedFishEaten }
+        : a
+    )
+
+    save({ axolotls: updatedAxolotls, 'inventory.items': updatedItems })
+    setAutoFeedDropdowns(prev => ({ ...prev, [axolotl.id]: false }))
+  }
+
+  const canAutoFeedLevelUp = (axolotl) => {
+    const nextLevel = axolotl.level + 1
+    const requirements = axolotl.levelRequirements?.[nextLevel] ?? []
+    if (requirements.length === 0) return false
+    return requirements.some(req => {
+      const eaten = axolotl.fishEaten?.[req.fish] ?? 0
+      const stillNeeded = req.quantity - eaten
+      if (stillNeeded <= 0) return false
+      return (items.find(i => i.itemId === req.fish)?.quantity ?? 0) > 0
+    })
+  }
+
+  const canAutoFeedFill = (axolotl) => {
+    if (axolotl.hunger >= MAX_HUNGER) return false
+    return COMMON_FISH.some(fish => (items.find(i => i.itemId === fish)?.quantity ?? 0) > 0)
+  }
+
   return (
     <div className="axolotl-container" onTouchEnd={()=> setHoveredFish(null)}>
       {axolotls.map((axolotl, index) => {
@@ -325,36 +459,76 @@ const Axolotl = ({scheduleSave, flushSave, disableButtons}) => {
             </div>
 
             {/* collect button */}
-            {pendingCollectId === axolotl.id ? (
-              <div className="axolotl-collect-warning">
-                <p className="axolotl-collect-warning-text">This axolotl can level up first! Collect anyway?</p>
-                <div className="axolotl-collect-warning-buttons">
-                  <button className="axolotl-fish-btn" onClick={() => setPendingCollectId(null)}>
-                    Cancel
+            <div className="axolotl-action-row">
+              {autoFeedUnlocked && (
+                <div className="axolotl-feed-group" ref={el => autoFeedDropdownRefs.current[axolotl.id] = el}>
+                  <button
+                    className="axolotl-feed-main"
+                    onClick={() => handleAutoFeedLevelUp(axolotl)}
+                    disabled={!canAutoFeedLevelUp(axolotl) || disableButtons}
+                  >
+                    Auto feed
                   </button>
-                  <button className="axolotl-fish-btn axolotl-collect-confirm" onClick={() => { handleCollect(axolotl); setPendingCollectId(null) }}>
-                    Collect anyway
+                  <button
+                    className="axolotl-feed-chevron"
+                    onClick={() => toggleAutoFeedDropdown(axolotl.id)}
+                    disabled={disableButtons}
+                    aria-label="More feed options"
+                  >
+                    ...
                   </button>
+                  {autoFeedDropdowns[axolotl.id] && (
+                    <div className="axolotl-feed-dropdown">
+                      <button
+                        onClick={() => handleAutoFeedLevelUp(axolotl)}
+                        disabled={!canAutoFeedLevelUp(axolotl)}
+                      >
+                        <span className="share-dropdown-label">Feed to level up</span>
+                        <span className="share-dropdown-desc">Feeds fish needed for next level</span>
+                      </button>
+                      <button
+                        onClick={() => handleAutoFeedFillHunger(axolotl)}
+                        disabled={!canAutoFeedFill(axolotl)}
+                      >
+                        <span className="share-dropdown-label">Feed to fill hunger</span>
+                        <span className="share-dropdown-desc">Fills hunger bar with common fish</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ) : (
-              <button
-                className={`upgrade-button ${!canCollect(axolotl) || disableButtons ? 'disable-button' : ''}`}
-                onClick={() => {
-                  if (levelUpReady && canCollect(axolotl)) {
-                    setPendingCollectId(axolotl.id)
-                  } else {
-                    handleCollect(axolotl)
-                  }
-                }}
-              >
-                {alreadyCollected
-                  ? `Collected ${axolotl.lastCollectedCount} cache${axolotl.lastCollectedCount > 1 ? 's' : ''} today`
-                  : axolotl.hunger >= Math.min(axolotl.level, MAX_HUNGER)
-                    ? `Collect today's cache`
-                    : 'Too hungry...'}
-              </button>
-            )}
+              )}
+
+              {pendingCollectId === axolotl.id ? (
+                <div className="axolotl-collect-warning">
+                  <p className="axolotl-collect-warning-text">This axolotl can level up first! Collect anyway?</p>
+                  <div className="axolotl-collect-warning-buttons">
+                    <button className="axolotl-fish-btn" onClick={() => setPendingCollectId(null)}>
+                      Cancel
+                    </button>
+                    <button className="axolotl-fish-btn axolotl-collect-confirm" onClick={() => { handleCollect(axolotl); setPendingCollectId(null) }}>
+                      Collect anyway
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  className={`upgrade-button axolotl-action-btn ${!canCollect(axolotl) || disableButtons ? 'disable-button' : ''}`}
+                  onClick={() => {
+                    if (levelUpReady && canCollect(axolotl)) {
+                      setPendingCollectId(axolotl.id)
+                    } else {
+                      handleCollect(axolotl)
+                    }
+                  }}
+                >
+                  {alreadyCollected
+                    ? `Collected today`
+                    : axolotl.hunger >= Math.min(axolotl.level, MAX_HUNGER)
+                      ? `Collect cache`
+                      : 'Too hungry...'}
+                </button>
+              )}
+            </div>
 
           </div>
         )
