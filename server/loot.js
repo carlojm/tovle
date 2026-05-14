@@ -196,9 +196,10 @@ const weightedPick = (options) => {
 }
 
 const rollFillerBlocks = (multiplier = 1.0) => {
-  const min = Math.round(FILLER_MIN * multiplier)
-  const max = Math.round(FILLER_MAX * multiplier)
-  const block_max = Math.ceil(FILLER_BLOCK_MAX * multiplier)
+  const scaledMultiplier = Math.pow(multiplier, 2)
+  const min = Math.round(FILLER_MIN * scaledMultiplier)
+  const max = Math.round(FILLER_MAX * scaledMultiplier)
+  const block_max = Math.ceil(FILLER_BLOCK_MAX * scaledMultiplier)
   const count = min + Math.floor(Math.random() * (max-min+1))
   const tallies = {} // itemId -> count so far
   const results = []
