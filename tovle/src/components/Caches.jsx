@@ -517,11 +517,11 @@ const Caches = ({ }) => {
       </div>
       {/* )} */}
 
-      <div style={{ display: 'flex', gap: '8px', padding: '16px' }}>
+      {/* <div style={{ display: 'flex', gap: '8px', padding: '16px' }}>
         <ItemIcon itemKey="Moon's Chime" />
         <ItemIcon itemKey="Magic Crab" />
         <ItemIcon itemKey="Crusader's Phalanx" />
-      </div>
+      </div> */}
 
       
       

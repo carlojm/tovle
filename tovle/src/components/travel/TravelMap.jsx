@@ -97,7 +97,7 @@ const TravelMap = ({ onClose, onBack }) => {
           </label> */}
 
           <p className="travel-map-desc">
-            Each town's commerce boosts the treasure found in its corresponding half of the map. Quadrants shared by two towns receive bonuses from both.
+            Each town's commerce boosts cache loot found in its corresponding half of the map. Quadrants shared by two towns receive bonuses from both.
           </p>
         </div>
 
