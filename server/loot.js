@@ -196,7 +196,7 @@ const weightedPick = (options) => {
 }
 
 const rollFillerBlocks = (multiplier = 1.0) => {
-  const scaledMultiplier = Math.pow(multiplier, 2)
+  const scaledMultiplier = Math.pow(multiplier, 1.5)
   const min = Math.round(FILLER_MIN * scaledMultiplier)
   const max = Math.round(FILLER_MAX * scaledMultiplier)
   const block_max = Math.ceil(FILLER_BLOCK_MAX * scaledMultiplier)
