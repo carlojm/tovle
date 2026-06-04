@@ -286,6 +286,20 @@ const PlayTab = ({
     return `Tovle #${puzzleNum} ${displayDate}\n${lines.join('\n')}\nPlay at https://tovle.net`
   }
 
+  const buildStandardWithTimerText = () => {
+    const puzzleNum = getPuzzleNumber(playerData.today.date)
+    const displayDate = getDisplayDate(playerData.today.date)
+
+    const lines = cacheResults.map((result, i) => {
+      const dots = '🌊'.repeat(Math.min(result.guessCount, 10))
+      const delveSuffix = result.delvePointsTotal > 0 ? `, ${result.delvePointsTotal}pts` : ''
+      return `Cache ${i + 1}: ${dots} (${result.guessCount} ${result.guessCount === 1 ? 'guess' : 'guesses'}${delveSuffix})`
+    })
+
+    const timeSuffix = completionTime ? `${completionTime}` : ''
+    return `Tovle #${puzzleNum} ${displayDate}\n${lines.join('\n')}\nCompleted in ${timeSuffix}! Play at https://tovle.net`
+  }
+
   const buildCompactText = () => {
     const puzzleNum = getPuzzleNumber(playerData.today.date)
     const parts = cacheResults.map((result, i) => {
@@ -312,6 +326,7 @@ const PlayTab = ({
 
   const handleShare = () => doShare(buildStandardText())
   const handleShareCompact = () => doShare(buildCompactText())
+  const handleShareWithTimer = () => doShare(buildStandardWithTimerText())
 
   return (
     <>
@@ -583,7 +598,7 @@ const PlayTab = ({
         </div>
         <div className="completion-buttons">
           <div className="share-btn-group" ref={shareDropdownRef}>
-            <button className="share-btn-main" onClick={handleShare}>Share</button>
+            <button className="share-btn-main" onClick={handleShareWithTimer}>Share</button>
             <button
               className="share-btn-chevron"
               onClick={() => setShowShareDropdown(v => !v)}
@@ -596,6 +611,10 @@ const PlayTab = ({
                 <button onClick={handleShare}>
                   <span className="share-dropdown-label">Standard</span>
                   <span className="share-dropdown-desc">Wordle-style share</span>
+                </button>
+                <button onClick={handleShareWithTimer}>
+                  <span className="share-dropdown-label">Standard + Time</span>
+                  <span className="share-dropdown-desc">Includes time elapsed</span>
                 </button>
                 <button onClick={handleShareCompact}>
                   <span className="share-dropdown-label">Compact</span>
