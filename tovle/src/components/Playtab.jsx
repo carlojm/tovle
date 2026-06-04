@@ -10,7 +10,7 @@ import twistedStrand from '../assets/items/twisted_strand.png'
 
 import { IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM } from '../data/constants.js'
 
-import { getPuzzleNumber, getDisplayDate, formatDuration } from '../utils/dates.js'
+import { getPuzzleNumber, getDisplayDate } from '../utils/dates.js'
 import DayTimer from './DayTimer.jsx'
 
 function getCacheImage(cache) {
@@ -41,6 +41,8 @@ const PlayTab = ({
   delvePoints,
   setDelvePoints,
   delveColor,
+  completionTime,
+  setFirstGuessAt,
   // handlers from App
   handleNextCache,
   handleComplete,
@@ -198,6 +200,14 @@ const PlayTab = ({
       }),
     }
 
+    const guessTime = Date.now()
+    //set the local version of firstguess timestamp
+    //and then in save we have the firebase version
+    //this is silly but whatever im just gonna do it instead of rewriting code to keep data in sync better
+    if (currentCacheIndex === 0 && numGuesses === 0 && !playerData?.today?.firstGuessAt) {
+      setFirstGuessAt(Date.now())
+    }
+
     save({
       today: {
         date: gameDate,
@@ -205,7 +215,7 @@ const PlayTab = ({
 
         //if first guess, save time for timer
         ...(currentCacheIndex === 0 && numGuesses === 0 && !playerData?.today?.firstGuessAt && {
-          firstGuessAt: Date.now(),
+          firstGuessAt: guessTime,
         }),
         
       }
@@ -546,13 +556,7 @@ const PlayTab = ({
           <div>
             <DayTimer />
           </div>
-          <div>
-            {playerData?.today?.firstGuessAt && playerData?.today?.completedAt && (
-              <p className="completion-time">
-                Completed in {formatDuration(playerData.today.completedAt - playerData.today.firstGuessAt)}
-              </p>
-            )}
-          </div>
+          
           {cacheResults.map((result, i) => (
             <div key={result.cacheId} className="summary-row">
               <span>Cache {i + 1}:</span>
@@ -572,6 +576,10 @@ const PlayTab = ({
               </span>
             </div>
           ))}
+
+          <div>
+            {completionTime && <p className="completion-time">Time from first to last guess: <strong>{completionTime}</strong></p>}
+          </div>
         </div>
         <div className="completion-buttons">
           <div className="share-btn-group" ref={shareDropdownRef}>

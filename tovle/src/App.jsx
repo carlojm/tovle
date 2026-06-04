@@ -10,6 +10,8 @@ import Caches from './components/Caches'
 import Info from './components/Info'
 import DataTab from './components/DataTab'
 
+import { formatDuration } from './utils/dates.js'
+
 import { IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM } from './data/constants.js'
 
 const TABS = [
@@ -39,6 +41,9 @@ const App = () => {
   const [hasWon, setHasWon] = useState(false)
 
   const [todayStats, setTodayStats] = useState(null)
+
+  const [firstGuessAt, setFirstGuessAt] = useState(null)
+  const [completionTime, setCompletionTime] = useState(null) //for tracking how long game took
 
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('theme')
@@ -136,6 +141,13 @@ const App = () => {
           setCurrentCacheIndex(data.caches.length - 1)
           setAllComplete(true)
           setTodayStats(playerData?.stats ?? null)
+
+          if (playerData?.today?.firstGuessAt) setFirstGuessAt(playerData.today.firstGuessAt)
+          //calculate completion time
+          const first = playerData?.today?.firstGuessAt
+          const done = playerData?.today?.completedAt
+          if (first && done) setCompletionTime(formatDuration(done - first))
+          
           return
         }
 
@@ -409,12 +421,16 @@ const App = () => {
       delvePointsSnapshot: savedCacheEntry?.delvePointsSnapshot ?? {},
     }
 
+    //for timer
+    const completedAt = Date.now()
+    if (firstGuessAt) setCompletionTime(formatDuration(completedAt - firstGuessAt))
+
     save({
       today: {
         date: todayStr,
         caches: updatedResults,
         delvePoints: playerData?.today?.delvePoints ?? {},
-        completedAt: Date.now(), // for timer at the end
+        completedAt: completedAt, //for timer
       },
       inventory: {
         ...playerData.inventory,
@@ -460,6 +476,8 @@ const App = () => {
             delvePoints={delvePoints}
             setDelvePoints={setDelvePoints}
             delveColor={delveColor}
+            completionTime={completionTime}
+            setFirstGuessAt={setFirstGuessAt}
             // handlers from App
             handleNextCache={handleNextCache}
             handleComplete={handleComplete}
