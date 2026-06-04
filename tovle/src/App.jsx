@@ -414,6 +414,7 @@ const App = () => {
         date: todayStr,
         caches: updatedResults,
         delvePoints: playerData?.today?.delvePoints ?? {},
+        completedAt: Date.now(), // for timer at the end
       },
       inventory: {
         ...playerData.inventory,

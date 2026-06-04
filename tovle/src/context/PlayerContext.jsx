@@ -70,6 +70,8 @@ function buildFreshPlayerData() {
       date: null,
       caches: [],
       delvePoints: {},
+      firstGuessAt: null,
+      completedAt: null,
     },
     inventory: {
       unopenedCaches: [],

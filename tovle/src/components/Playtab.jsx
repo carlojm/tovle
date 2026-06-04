@@ -10,7 +10,7 @@ import twistedStrand from '../assets/items/twisted_strand.png'
 
 import { IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM } from '../data/constants.js'
 
-import { getPuzzleNumber, getDisplayDate } from '../utils/dates.js'
+import { getPuzzleNumber, getDisplayDate, formatDuration } from '../utils/dates.js'
 import DayTimer from './DayTimer.jsx'
 
 function getCacheImage(cache) {
@@ -202,6 +202,12 @@ const PlayTab = ({
       today: {
         date: gameDate,
         caches: [...existingCaches, inProgressCache],
+
+        //if first guess, save time for timer
+        ...(currentCacheIndex === 0 && numGuesses === 0 && !playerData?.today?.firstGuessAt && {
+          firstGuessAt: Date.now(),
+        }),
+        
       }
     })
   }
@@ -539,6 +545,13 @@ const PlayTab = ({
           <p>You found all {dailyCaches.length} caches today!</p>
           <div>
             <DayTimer />
+          </div>
+          <div>
+            {playerData?.today?.firstGuessAt && playerData?.today?.completedAt && (
+              <p className="completion-time">
+                Completed in {formatDuration(playerData.today.completedAt - playerData.today.firstGuessAt)}
+              </p>
+            )}
           </div>
           {cacheResults.map((result, i) => (
             <div key={result.cacheId} className="summary-row">
