@@ -297,7 +297,7 @@ const PlayTab = ({
     })
 
     const timeSuffix = completionTime ? `${completionTime}` : ''
-    return `Tovle #${puzzleNum} ${displayDate}\n${lines.join('\n')}\nCompleted in ${timeSuffix}! Play at https://tovle.net`
+    return `Tovle #${puzzleNum} ${displayDate} in ${timeSuffix}\n${lines.join('\n')}\nPlay at https://tovle.net`
   }
 
   const buildCompactText = () => {
