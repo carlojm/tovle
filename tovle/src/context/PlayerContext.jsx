@@ -164,6 +164,12 @@ function buildFreshPlayerData() {
         { slotId: 'slot_005', type: 'mainhand',   itemId: null, infusions: [] },
         { slotId: 'slot_006', type: 'offhand',    itemId: null, infusions: [] },
       ]
+    },
+    depthsle: {
+      lastPlayed: null,
+      bestScore: 0,
+      bestRooms: 0,
+      totalRuns: 0,
     }
   }
 }

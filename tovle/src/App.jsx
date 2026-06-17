@@ -14,6 +14,11 @@ import Collection from './components/Collection.jsx'
 
 import { IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM } from './data/constants.js'
 
+import DepthsleDevConsole from './depthsle/DepthsleDevConsole.jsx'
+
+const IS_DEPTHSLE_DEV = new URLSearchParams(window.location.search).get('dev') === '1'
+  || localStorage.getItem('depthsle_dev') === '1'
+
 const TABS = [
   { id: 'play',   label: 'Play' },
   { id: 'caches', label: 'Caches' },
@@ -440,6 +445,8 @@ const App = () => {
   }
 
   if (!ready) return null
+
+  if (IS_DEPTHSLE_DEV) return <DepthsleDevConsole />
 
   return (
     <div className="full-container">

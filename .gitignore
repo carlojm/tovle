@@ -5,6 +5,7 @@ server/scripts/
 
 #vscode workspace thing
 *.code-workspace
+agents/
 
 # Logs
 logs
