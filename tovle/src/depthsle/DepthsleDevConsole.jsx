@@ -30,6 +30,15 @@ export default function DepthsleDevConsole() {
 
   // ── Helpers ──────────────────────────────────────────────────────────────
 
+  // Render a description string with **value** markers as bold spans.
+  function renderDesc(desc, rarity = 0) {
+    const text = typeof desc === 'function' ? desc(rarity) : (desc ?? '')
+    const parts = text.split('**')
+    return parts.map((part, i) =>
+      i % 2 === 1 ? <strong key={i} style={{ color: '#fff' }}>{part}</strong> : part
+    )
+  }
+
   function selectClass(treeId) {
     dispatch({ type: 'SELECT_CLASS', treeId })
   }
@@ -192,7 +201,7 @@ export default function DepthsleDevConsole() {
               }}>
                 <div style={{ fontSize: 28 }}>{tree?.emoji}</div>
                 <div style={{ fontWeight: 'bold' }}>{tree?.name}</div>
-                <div style={{ fontSize: 10, color: '#aaa', maxWidth: 120 }}>{tree?.description}</div>
+                <div style={{ fontSize: 10, color: '#aaa', maxWidth: 120 }}>{renderDesc(tree?.description)}</div>
               </button>
             )
           })}
@@ -308,7 +317,7 @@ export default function DepthsleDevConsole() {
                   {['Common','Uncommon','Rare','Epic','Legendary'][a.rarity]}
                 </div>
                 <div style={{ fontSize: 13 }}>{a.name}</div>
-                <div style={{ fontSize: 10, color: '#aaa' }}>{a.description}</div>
+                <div style={{ fontSize: 10, color: '#aaa' }}>{renderDesc(a.description, a.rarity ?? 0)}</div>
               </button>
             ))}
             {choices.length === 0 && (

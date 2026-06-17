@@ -6,6 +6,7 @@
 //   ctx: { targetCell, targetEnemyId, targetCol, targetRow, rarity, runStats }
 // Each passive ability has a registerPassive(rarity, rng) function.
 //
+// description(rarity) returns a string with **value** markers for bold rendering.
 // Rarities: 0=Common 1=Uncommon 2=Rare 3=Epic 4=Legendary
 
 import {
@@ -144,7 +145,7 @@ const flamecaller = {
       cooldownBase: 5,
       damageType: 'magic',
       rarityValues: R([11, 13, 15, 17, 19]),
-      description: '2×2 magic AoE. Deals damage and applies burn to hit mobs.',
+      description(r) { return `2×2 magic AoE. Deals **${rv(this.rarityValues, r)}** damage and applies **burn** to hit mobs.` },
       execute(state, ctx) {
         const { targetCell, rarity } = ctx
         const cell = targetCell ?? centerCell(state)
@@ -164,7 +165,7 @@ const flamecaller = {
       cooldownBase: 8,
       damageType: 'magic',
       rarityValues: R([14, 17, 20, 23, 26]),
-      description: 'Full front-row magic damage + burn.',
+      description(r) { return `Full front-row magic damage (**${rv(this.rarityValues, r)}**) + **burn** on all hit mobs.` },
       execute(state, ctx) {
         const { rarity } = ctx
         let s = dealDamageRow(state, 0, rv(this.rarityValues, rarity), 'magic', { cardTree: 'flamecaller' })
@@ -183,7 +184,7 @@ const flamecaller = {
       cooldownBase: 10,
       damageType: 'magic',
       rarityValues: R([20, 24, 28, 32, 36]),
-      description: 'Full column magic damage + burn.',
+      description(r) { return `Full column magic damage (**${rv(this.rarityValues, r)}**) + **burn** on all hit mobs.` },
       execute(state, ctx) {
         const { targetCol, rarity } = ctx
         const col = targetCol ?? 0
@@ -203,7 +204,7 @@ const flamecaller = {
       cooldownBase: 16,
       damageType: 'magic',
       rarityValues: R([36, 45, 54, 63, 72]),
-      description: 'Telegraphed 3×3 AoE; fires next turn. Sets hit mobs on fire.',
+      description(r) { return `Mark a 3×3 area. Next turn: **${rv(this.rarityValues, r)}** magic damage + burn on all hit mobs.` },
       execute(state, ctx) {
         const { targetCell, rarity } = ctx
         const cell = targetCell ?? centerCell(state)
@@ -219,7 +220,7 @@ const flamecaller = {
       cooldownBase: 11,
       damageType: 'magic',
       rarityValues: R([20, 24, 28, 32, 36]),
-      description: 'Place a rune on a row. Triggers on first mob entry: row damage + burn + damage buff.',
+      description(r) { return `Place a rune on a row. First mob to enter triggers: **${rv(this.rarityValues, r)}** row damage + burn + damage buff.` },
       execute(state, ctx) {
         const { targetRow, rarity } = ctx
         const row = targetRow ?? Math.floor(state.gridState.height / 2)
@@ -233,7 +234,7 @@ const flamecaller = {
       trigger: 'passive',
       cardType: 'passive',
       rarityValues: R([2, 2.5, 3, 3.5, 4]),
-      description: 'On enemy death, explosion hits adjacent tiles.',
+      description(r) { return `On enemy death, explosion deals **${rv(this.rarityValues, r)}** damage to adjacent tiles.` },
       registerPassive(rarity, _rng) {
         registerPassive('detonation', 'on_kill', makeDetonationHandler(rv(this.rarityValues, rarity)))
       },
@@ -245,7 +246,7 @@ const flamecaller = {
       trigger: 'wildcard',
       cardType: 'passive',
       rarityValues: R([2, 2.5, 3, 3.5, 4]),
-      description: 'Hitting 3+ enemies at once summons a flame spirit that deals AoE damage each turn.',
+      description(r) { return `Hitting 3+ mobs at once summons a flame spirit dealing **${rv(this.rarityValues, r)}** AoE damage each turn.` },
       registerPassive(rarity, _rng) {
         registerPassive('flame_spirit', 'on_aoe_hit_three_plus', makeFlameSpirit(rv(this.rarityValues, rarity)))
       },
@@ -257,11 +258,9 @@ const flamecaller = {
       trigger: 'passive',
       cardType: 'passive',
       rarityValues: R([8, 12, 16, 20, 24]),
-      description: 'All Flamecaller cards deal % more magic damage.',
-      // Applied dynamically in computeDamage via state.equippedPassives check.
+      description(r) { return `All Flamecaller cards deal **+${rv(this.rarityValues, r)}%** more magic damage.` },
       registerPassive(rarity, _rng) {
-        // Store rarity on state.equippedPassives for computeDamage to read.
-        // This is done via applyAtAcquisition.
+        // Applied dynamically in computeDamage via state.equippedPassives check.
       },
       applyAtAcquisition(state, rarity) {
         const passives = [...(state.equippedPassives ?? []), { id: 'primordial_mastery', rarity, rarityValues: [8, 12, 16, 20, 24] }]
@@ -275,7 +274,7 @@ const flamecaller = {
       trigger: 'passive',
       cardType: 'passive',
       rarityValues: R([3, 4, 5, 6, 7.5]),
-      description: '% bonus damage per burning mob on the field.',
+      description(r) { return `**+${rv(this.rarityValues, r)}%** damage per burning mob on the field.` },
       applyAtAcquisition(state, rarity) {
         const passives = [...(state.equippedPassives ?? []), { id: 'pyromania', rarity, rarityValues: [3, 4, 5, 6, 7.5] }]
         return { ...state, equippedPassives: passives }
@@ -288,7 +287,7 @@ const flamecaller = {
       trigger: 'combo',
       cardType: 'passive',
       rarityValues: R([0.60, 0.70, 0.80, 0.90, 1.00]),
-      description: 'Basic attacks have a % chance to apply burn.',
+      description(r) { return `Basic attacks have a **${Math.round(rv(this.rarityValues, r) * 100)}%** chance to apply burn.` },
       registerPassive(rarity, rng) {
         registerPassive('volcanic_combos', 'on_card_played', makeVolcanicCombosHandler(rv(this.rarityValues, rarity), rng))
       },
@@ -300,7 +299,10 @@ const flamecaller = {
       trigger: 'lifeline',
       cardType: 'passive',
       rarityValues: R([[40, 0.05], [50, 0.07], [60, 0.09], [70, 0.11], [80, 0.13]]),
-      description: 'Below 25% HP: deal magic damage to all mobs, heal per kill.',
+      description(r) {
+        const [dmg, heal] = rv(this.rarityValues, r)
+        return `Below 25% HP: deal **${dmg}** magic damage to all mobs. Kills heal **${Math.round(heal * 100)}%** HP.`
+      },
       registerPassive(rarity, _rng) {
         const [damage, healPct] = rv(this.rarityValues, rarity)
         registerPassive('apocalypse', 'on_low_health', (state, payload) => {
@@ -336,7 +338,7 @@ const earthbound = {
       cooldownBase: 6,
       damageType: 'melee',
       rarityValues: R([1.00, 1.10, 1.20, 1.30, 1.40]),
-      description: '3×2 melee attack that deals damage and stuns hit mobs for 1 turn.',
+      description(r) { return `3×2 melee attack dealing **${Math.round(rv(this.rarityValues, r) * 100)}%** damage. Stuns hit mobs for **1 turn**.` },
       execute(state, ctx) {
         const { rarity, runStats } = ctx
         const dmg = Math.round(runStats.meleeDamage * rv(this.rarityValues, rarity))
@@ -362,7 +364,7 @@ const earthbound = {
       cooldownBase: 14,
       damageType: 'melee',
       rarityValues: R([0.60, 0.70, 0.80, 0.90, 1.00]),
-      description: 'Deal melee damage to all mobs. Doubled if player took damage recently.',
+      description(r) { return `Deal **${Math.round(rv(this.rarityValues, r) * 100)}%** melee damage to all mobs. **Doubled** if you took damage recently.` },
       execute(state, ctx) {
         const { rarity, runStats } = ctx
         let dmg = Math.round(runStats.meleeDamage * rv(this.rarityValues, rarity))
@@ -383,7 +385,7 @@ const earthbound = {
       cooldownBase: 11,
       damageType: 'magic',
       rarityValues: R([20, 25, 30, 35, 40]),
-      description: '3×3 magic AoE that deals damage and roots hit mobs for 1 turn.',
+      description(r) { return `3×3 magic AoE dealing **${rv(this.rarityValues, r)}** damage. Roots hit mobs for **1 turn**.` },
       execute(state, ctx) {
         const { targetCell, rarity } = ctx
         const cell = targetCell ?? centerCell(state)
@@ -403,7 +405,7 @@ const earthbound = {
       cooldownBase: 9,
       damageType: 'melee',
       rarityValues: R([1.00, 1.10, 1.20, 1.30, 1.40]),
-      description: '3×2 attack that pulls hit mobs to center front cell and stuns them for 2 turns.',
+      description(r) { return `3×2 attack (**${Math.round(rv(this.rarityValues, r) * 100)}%** dmg). Pulls hit mobs to front center + stuns for **2 turns**.` },
       execute(state, ctx) {
         const { rarity, runStats } = ctx
         const dmg = Math.round(runStats.meleeDamage * rv(this.rarityValues, rarity))
@@ -431,7 +433,10 @@ const earthbound = {
       cooldownBase: 12,
       damageType: 'melee',
       rarityValues: R([[0.10, 0.01], [0.15, 0.015], [0.20, 0.02], [0.25, 0.025], [0.30, 0.03]]),
-      description: 'Hit mobs in 2 rows. Taunted mobs take bonus damage. Gain absorption per mob hit.',
+      description(r) {
+        const [dmgBonus, absPct] = rv(this.rarityValues, r)
+        return `Hit 2 front rows. Gain **${Math.round(absPct * 100)}%** max HP as absorption per mob hit. Taunted mobs take **+${Math.round(dmgBonus * 100)}%** damage.`
+      },
       execute(state, ctx) {
         const { rarity, runStats } = ctx
         const [_dmgBonus, absPct] = rv(this.rarityValues, rarity)
@@ -456,7 +461,7 @@ const earthbound = {
       trigger: 'passive',
       cardType: 'passive',
       rarityValues: R([0.60, 0.70, 0.80, 0.90, 1.00]),
-      description: 'When an enemy attacks you, they take % of damage dealt back.',
+      description(r) { return `Return **${Math.round(rv(this.rarityValues, r) * 100)}%** of damage received back to the attacker.` },
       registerPassive(rarity, _rng) {
         registerPassive('bramble_shell', 'on_attack_received', makeBrambleShellHandler(rv(this.rarityValues, rarity)))
       },
@@ -468,7 +473,7 @@ const earthbound = {
       trigger: 'passive',
       cardType: 'passive',
       rarityValues: R([12, 11, 10, 8, 6]),
-      description: 'Block one incoming attack per N card plays.',
+      description(r) { return `Block one incoming attack every **${rv(this.rarityValues, r)}** card plays.` },
       applyAtAcquisition(state, rarity) {
         return { ...state, player: { ...state.player, bulwarkCharged: true } }
       },
@@ -483,7 +488,7 @@ const earthbound = {
       trigger: 'passive',
       cardType: 'passive',
       rarityValues: R([10, 12.5, 15, 17.5, 20]),
-      description: 'Gain % max HP at run start.',
+      description(r) { return `Gain **+${rv(this.rarityValues, r)}%** max HP at run start.` },
       applyAtAcquisition(state, rarity) {
         return modifyStat(state, 'max_hp', rv(this.rarityValues, rarity), 'percent')
       },
@@ -495,7 +500,7 @@ const earthbound = {
       trigger: 'combo',
       cardType: 'passive',
       rarityValues: R([0.60, 0.70, 0.80, 0.90, 1.00]),
-      description: 'When a mob is hit, chance to spread its status to adjacent mobs.',
+      description(r) { return `**${Math.round(rv(this.rarityValues, r) * 100)}%** chance to spread a hit mob's status effect to adjacent mobs.` },
       registerPassive(rarity, rng) {
         registerPassive('earthen_combos', 'on_card_played', makeEarthenCombosHandler(rv(this.rarityValues, rarity), rng))
       },
@@ -520,7 +525,7 @@ const shadowdancer = {
       cooldownBase: 10,
       damageType: 'melee',
       rarityValues: R([1.50, 1.75, 2.00, 2.25, 2.50]),
-      description: 'Heavy single-target melee hit. Draw one card.',
+      description(r) { return `Heavy single-target melee hit (**${Math.round(rv(this.rarityValues, r) * 100)}%** dmg). Draw one card.` },
       execute(state, ctx) {
         const { targetEnemyId, rarity, runStats } = ctx
         if (!targetEnemyId) return state
@@ -539,7 +544,7 @@ const shadowdancer = {
       cooldownBase: 5,
       damageType: 'melee',
       rarityValues: R([8, 10, 12, 14, 16]),
-      description: '3×1 attack hitting 3 times. Knocks back 1 tile.',
+      description(r) { return `Hit a row **3 times** for **${rv(this.rarityValues, r)}** damage each. Knocks back 1 tile.` },
       execute(state, ctx) {
         const { rarity, targetRow } = ctx
         const dmg = rv(this.rarityValues, rarity)
@@ -566,7 +571,7 @@ const shadowdancer = {
       cardType: 'utility',
       cooldownBase: 14,
       rarityValues: R([2, 2.25, 2.5, 2.75, 3]),
-      description: 'Stun a target for 1 turn. Next basic attack on them deals multiplied damage. Kill = draw a card.',
+      description(r) { return `Stun a target for 1 turn. Next basic attack on them deals **${rv(this.rarityValues, r)}×** damage. Kill = draw a card.` },
       execute(state, ctx) {
         const { targetEnemyId, rarity } = ctx
         if (!targetEnemyId) return state
@@ -583,7 +588,7 @@ const shadowdancer = {
       cardType: 'utility',
       cooldownBase: 14,
       rarityValues: R([20, 25, 30, 35, 40]),
-      description: 'Place a decoy token. Mobs advance toward it. Explodes after 3 turns: AoE melee + stun.',
+      description(r) { return `Place a decoy mobs advance toward. Explodes after 3 turns: **${rv(this.rarityValues, r)}** AoE melee damage + stun.` },
       execute(state, ctx) {
         const { targetCell, rarity } = ctx
         const cell = targetCell ?? centerCell(state)
@@ -598,7 +603,7 @@ const shadowdancer = {
       cardType: 'utility',
       cooldownBase: 10,
       rarityValues: R([1, 2, 3, 4, 5]),
-      description: 'Apply weakness stacks to mobs in a 3×3 area.',
+      description(r) { return `Apply **${rv(this.rarityValues, r)}** weakness stack(s) to all mobs in a 3×3 area.` },
       execute(state, ctx) {
         const { targetCell, rarity } = ctx
         const cell = targetCell ?? centerCell(state)
@@ -617,7 +622,7 @@ const shadowdancer = {
       trigger: 'passive',
       cardType: 'passive',
       rarityValues: R([0.12, 0.15, 0.18, 0.21, 0.24]),
-      description: 'Melee attacks deal % shrapnel damage to all adjacent enemies.',
+      description(r) { return `Melee attacks deal **${Math.round(rv(this.rarityValues, r) * 100)}%** of hit damage as shrapnel to adjacent mobs.` },
       registerPassive(rarity, _rng) {
         const pct = rv(this.rarityValues, rarity)
         registerPassive('brutalize', 'on_card_played', (state, payload) => {
@@ -639,7 +644,7 @@ const shadowdancer = {
       trigger: 'combo',
       cardType: 'passive',
       rarityValues: R([0.60, 0.70, 0.80, 0.90, 1.00]),
-      description: 'Basic attacks have a % chance to apply 1 weakness stack.',
+      description(r) { return `**${Math.round(rv(this.rarityValues, r) * 100)}%** chance on basic attacks to apply 1 weakness stack.` },
       registerPassive(rarity, rng) {
         registerPassive('dark_combos', 'on_card_played', makeDarkCombosHandler(rv(this.rarityValues, rarity), rng))
       },
@@ -651,7 +656,7 @@ const shadowdancer = {
       trigger: 'passive',
       cardType: 'passive',
       rarityValues: R([10, 15, 20, 25, 30]),
-      description: '% bonus damage to mobs with any weakness stack.',
+      description(r) { return `**+${rv(this.rarityValues, r)}%** damage to mobs with any weakness stack.` },
       applyAtAcquisition(state, rarity) {
         const passives = [...(state.equippedPassives ?? []), { id: 'deadly_strike', rarity, rarityValues: [10, 15, 20, 25, 30] }]
         return { ...state, equippedPassives: passives }
@@ -664,7 +669,7 @@ const shadowdancer = {
       trigger: 'passive',
       cardType: 'passive',
       rarityValues: R([14, 21, 28, 35, 42]),
-      description: '% bonus damage to elite enemies.',
+      description(r) { return `**+${rv(this.rarityValues, r)}%** damage to elite enemies.` },
       applyAtAcquisition(state, rarity) {
         const passives = [...(state.equippedPassives ?? []), { id: 'dethroner', rarity, rarityValues: [14, 21, 28, 35, 42] }]
         return { ...state, equippedPassives: passives }
@@ -677,7 +682,10 @@ const shadowdancer = {
       trigger: 'wildcard',
       cardType: 'passive',
       rarityValues: R([[6, 1], [7.5, 1], [9, 2], [10.5, 2], [12, 3]]),
-      description: 'Killing a weakened mob spawns a vex token that explodes on enemy contact.',
+      description(r) {
+        const [dmg, stacks] = rv(this.rarityValues, r)
+        return `Killing a weakened mob spawns a vex dealing **${dmg}** damage + **${stacks}** weakness stack(s) on contact.`
+      },
       registerPassive(rarity, _rng) {
         const [damage, stacks] = rv(this.rarityValues, rarity)
         registerPassive('phantom_force', 'on_kill', makePhantomForceHandler(damage, stacks))
@@ -690,7 +698,7 @@ const shadowdancer = {
       trigger: 'lifeline',
       cardType: 'passive',
       rarityValues: R([50, 60, 70, 80, 90]),
-      description: 'Below 30% HP: stun front 2 rows, gain resistance, draw a card per mob stunned.',
+      description(r) { return `Below 30% HP: stun front 2 rows, gain **${rv(this.rarityValues, r)}%** resistance, draw a card per mob stunned.` },
       registerPassive(rarity, _rng) {
         registerPassive('escape_artist', 'on_low_health', (state, payload) => {
           if ((state.player.hp / state.player.maxHp) > 0.30) return state
@@ -718,7 +726,7 @@ const frostborn = {
       cooldownBase: 5,
       damageType: 'magic',
       rarityValues: R([12.5, 15, 17.5, 20, 22.5]),
-      description: 'Column magic damage. Freezes tiles under hit mobs.',
+      description(r) { return `Column magic damage (**${rv(this.rarityValues, r)}**). Freezes tiles under hit mobs.` },
       execute(state, ctx) {
         const { targetCol, rarity } = ctx
         const col = targetCol ?? 0
@@ -739,11 +747,10 @@ const frostborn = {
       cooldownBase: 14,
       damageType: 'magic',
       rarityValues: R([28, 35, 42, 49, 56]),
-      description: 'Shatter all frozen tiles: magic damage to mobs on them + stun 2 turns.',
+      description(r) { return `Shatter all frozen tiles: **${rv(this.rarityValues, r)}** magic damage + **2-turn stun** on hit mobs.` },
       execute(state, ctx) {
         const { rarity } = ctx
         let s = shatterFrozenTiles(state, rv(this.rarityValues, rarity), 'magic')
-        // Stun all surviving enemies in room (they were on frozen tiles before shatter).
         for (const e of s.enemies) {
           s = applyStatus(s, e.instanceId, 'stun', 2)
         }
@@ -759,10 +766,9 @@ const frostborn = {
       cooldownBase: 10,
       damageType: 'magic',
       rarityValues: R([15, 18, 21, 24, 27]),
-      description: 'Freeze a line between two cells. Deal magic damage to mobs on the line.',
+      description(r) { return `Freeze a full row. Deal **${rv(this.rarityValues, r)}** magic damage to all mobs on it.` },
       execute(state, ctx) {
         const { targetCell, rarity } = ctx
-        // Freeze full front row by default (player aims at a row).
         const row = targetCell?.row ?? 0
         let s = state
         s = dealDamageRow(s, row, rv(this.rarityValues, rarity), 'magic')
@@ -779,7 +785,7 @@ const frostborn = {
       cooldownBase: 9,
       damageType: 'magic',
       rarityValues: R([18, 21, 24, 27, 30]),
-      description: 'Row magic damage. Freezes all tiles in the row.',
+      description(r) { return `Row magic damage (**${rv(this.rarityValues, r)}**). Freezes all tiles in the row.` },
       execute(state, ctx) {
         const { targetRow, rarity } = ctx
         const row = targetRow ?? 0
@@ -797,7 +803,7 @@ const frostborn = {
       cooldownBase: 11,
       damageType: 'magic',
       rarityValues: R([5, 7, 9, 11, 13]),
-      description: 'Randomly freezes tiles over 4 turns (~15% per turn). Mobs on newly frozen tiles take damage.',
+      description(r) { return `Randomly freezes tiles over 4 turns (~15% per turn). Mobs on newly frozen tiles take **${rv(this.rarityValues, r)}** damage.` },
       execute(state, ctx) {
         const { rarity } = ctx
         return placeToken(state, { row: 0, col: 0 }, 'snowstorm', 4, {
@@ -813,7 +819,7 @@ const frostborn = {
       trigger: 'combo',
       cardType: 'passive',
       rarityValues: R([0.60, 0.70, 0.80, 0.90, 1.00]),
-      description: 'Basic attacks have a % chance to freeze the hit mob\'s tile.',
+      description(r) { return `**${Math.round(rv(this.rarityValues, r) * 100)}%** chance on basic attacks to freeze the hit mob's tile.` },
       registerPassive(rarity, rng) {
         registerPassive('frigid_combos', 'on_card_played', makeFrigidCombosHandler(rv(this.rarityValues, rarity), rng))
       },
@@ -828,7 +834,10 @@ const frostborn = {
         { frozen: 20, debuff: 10 }, { frozen: 27, debuff: 13.5 },
         { frozen: 33, debuff: 16.5 }, { frozen: 40, debuff: 20 }, { frozen: 46, debuff: 23 }
       ]),
-      description: '% bonus damage to mobs on frozen tiles or with any debuff.',
+      description(r) {
+        const { frozen, debuff } = rv(this.rarityValues, r)
+        return `**+${frozen}%** damage to mobs on frozen tiles. **+${debuff}%** to any debuffed mob.`
+      },
       applyAtAcquisition(state, rarity) {
         const passives = [...(state.equippedPassives ?? []), { id: 'icebreaker', rarity, rarityValues: this.rarityValues }]
         return { ...state, equippedPassives: passives }
@@ -841,7 +850,7 @@ const frostborn = {
       trigger: 'wildcard',
       cardType: 'passive',
       rarityValues: R([1, 1, 2, 2, 3]),
-      description: 'Every 3 kills, add a Permafrost card to hand. Play to freeze a 2×2 area + apply weakness.',
+      description(r) { return `Every 3 kills, add a Permafrost card. Play to freeze a 2×2 area + apply **${rv(this.rarityValues, r)}** weakness stack(s).` },
       registerPassive(rarity, _rng) {
         registerPassive('permafrost', 'on_kill', makePermafrostHandler(rv(this.rarityValues, rarity)))
       },
@@ -853,7 +862,7 @@ const frostborn = {
       trigger: 'lifeline',
       cardType: 'passive',
       rarityValues: R([0.10, 0.12, 0.14, 0.16, 0.18]),
-      description: 'Below 25% HP: freeze front 2 rows, stun mobs on them, gain absorption.',
+      description(r) { return `Below 25% HP: freeze front 2 rows, stun all mobs, gain **${Math.round(rv(this.rarityValues, r) * 100)}%** max HP as absorption.` },
       registerPassive(rarity, _rng) {
         registerPassive('cryobox', 'on_low_health', (state, payload) => {
           if ((state.player.hp / state.player.maxHp) > 0.25) return state
