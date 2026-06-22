@@ -347,7 +347,7 @@ export function makeFrigidCombosHandler(chance, rng) {
   return (state, payload) => {
     const { hitTargets, isBasicAttack } = payload
     if (!isBasicAttack || !hitTargets?.length) return state
-    let s = state
+    let s = { ...state, gridState: { ...state.gridState, frozenTiles: new Set(state.gridState.frozenTiles) } }
     for (const e of hitTargets) {
       if (rng() < chance) {
         const enemy = s.enemies.find(en => en.instanceId === e.instanceId)
