@@ -261,6 +261,18 @@ export default class Stats {
     this.iframeCritDPS = ((attackSpeed >= 2) ? attackDamageCrit * 2 : attackDamageCrit * attackSpeed).toFixed(2)
     this.critSpamDPS = (attackCritSpeed * attackDamageCrit).toFixed(2)
 
+    //carlo's awesome derived stats
+    //proj dps as an equivalent to crit spam dps, kind of.. throwing in some constants to get it close to other numbers
+    //magic dps because i need an equivalent for wands. and this one is funky. and it takes bags into account too kinda
+    const isBow = ['Bow', 'Crossbow'].includes(this.fullItemData.mainhand?.type)
+    const effectiveThrowRate = (isBow && parseFloat(throwRate) === 0) ? 1.0 : parseFloat(throwRate)
+    this.projSpamDPS = (parseFloat(projectileDamage) * effectiveThrowRate * 2).toFixed(2)
+    this.magicDPS = (
+      this.spellDamage.val * 15 * (100 / this.spellCooldownPercent.perc)
+      + (parseFloat(this.potionDamage) * parseFloat(throwRate) * 2)
+      + (attackDamage * attackSpeed * 0.1)
+    ).toFixed(2)
+
     this.projectileDamagePercent = this.projectileDamagePercent.toFixedPerc(2)
     this.classProjectileDamagePercent = this.classProjectileDamagePercent.toFixedPerc(2)
     this.projectileDamage = projectileDamage.toFixed(2)
@@ -599,6 +611,10 @@ export default class Stats {
     this.iframeDPS = 2
     this.iframeCritDPS = 3
     this.critSpamDPS = 2
+
+    //carlo's funky values
+    this.projSpamDPS = 0
+    this.magicDPS = 0
 
     this.projectileDamagePercent = new Percentage(100)
     this.projectileDamage = 0

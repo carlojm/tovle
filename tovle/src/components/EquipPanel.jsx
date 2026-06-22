@@ -145,17 +145,19 @@ export default function EquipPanel({ onSlotTap }) {
     ['Wpn Atk Spd',   stats.attackSpeed],
     ['Damage',        `${stats.attackDamagePercent}%`],
     ['Wpn Damage',    stats.attackDamage],
-    ['Crit Spam DPS', stats.critSpamDPS],
+    ['Melee DPS', stats.critSpamDPS],
     null,
     ['Proj Damage',   `${stats.projectileDamagePercent}%`],
     ['Wpn Proj Dmg',  stats.projectileDamage],
     ['Throw Rate',    `${stats.throwRatePercent}%`],
     ['Wpn Throw Rt',  stats.throwRate],
+    ['Ranged DPS',  stats.projSpamDPS],
     null,
     ['Magic Damage',  `${stats.magicDamagePercent}%`],
     ['Total Magic',   `${stats.classMagicDamagePercent}%`],
     ['Potion Dmg',    stats.potionDamage],
     ['Cooldown',      `${stats.spellCooldownPercent}%`],
+    ['Magic DPS',      stats.magicDPS],
   ] : []
 
 
@@ -209,12 +211,30 @@ export default function EquipPanel({ onSlotTap }) {
                   {stats ? stats.meleeEHP : '—'}
                 </span>
               </div>
+              
+              
               <div className="ep-headline-card">
-                <span className="ep-headline-label">Crit DPS</span>
+                <span className="ep-headline-label">
+                  {(() => {
+                    const mainhandInstance = getItemInSlot(mainhandSlot, equipment)
+                    const itemType = mainhandInstance ? islesItems[mainhandInstance.itemKey]?.type : null
+                    if (['Bow', 'Crossbow', 'Trident', 'Snowball'].includes(itemType)) return 'Ranged DPS'
+                    if (['Wand', 'Mainhand'].includes(itemType)) return 'Magic DPS'
+                    return 'Crit DPS'
+                  })()}
+                </span>
                 <span className="ep-headline-value">
-                  {stats ? stats.critSpamDPS : '—'}
+                  {(() => {
+                    if (!stats) return '—'
+                    const mainhandInstance = getItemInSlot(mainhandSlot, equipment)
+                    const itemType = mainhandInstance ? islesItems[mainhandInstance.itemKey]?.type : null
+                    if (['Bow', 'Crossbow', 'Trident', 'Snowball'].includes(itemType)) return stats.projSpamDPS ?? '—'
+                    if (['Wand', 'Mainhand'].includes(itemType)) return stats.magicDPS ?? '—'
+                    return stats.critSpamDPS
+                  })()}
                 </span>
               </div>
+
             </div>
 
             {/* minor stats 2x2 grid */}
