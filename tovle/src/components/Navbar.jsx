@@ -7,9 +7,10 @@ import Logo from './Logo'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePlayer } from '../context/PlayerContext'
 import denPieceImg from '../assets/den_piece.png'
+import depthsleLogo from '../assets/depthsle_logo.png'
 
 
-export default function Navbar({ theme, onToggleTheme, onNavigate }) {
+export default function Navbar({ theme, onToggleTheme, onNavigate, activeTab }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   const { playerData } = usePlayer() 
@@ -22,10 +23,36 @@ export default function Navbar({ theme, onToggleTheme, onNavigate }) {
 
   return (
     <nav className="navbar">
-      <Logo />
-      {import.meta.env.VITE_BETA === '1' && (
+      {/* logo */}
+      <AnimatePresence mode="wait">
+        {activeTab === 'depthsle' ? (
+          <motion.img
+            key="depthsle"
+            src={depthsleLogo}
+            alt="Depthsle"
+            className="navbar-depthsle-logo"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          />
+        ) : (
+          <motion.div
+            key="tovle"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Logo />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* {import.meta.env.VITE_BETA === '1' && (
         <h1>BETA</h1>
-      )}
+      )} */}
+
       <div className="navbar-buttons">
 
         {/* den piece chip — only shown when player has any */}

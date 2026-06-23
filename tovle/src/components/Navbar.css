@@ -181,3 +181,11 @@
   display: block;
   min-width: 1ch; /* prevents chip from collapsing during number transition */
 }
+
+
+
+.navbar-depthsle-logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}

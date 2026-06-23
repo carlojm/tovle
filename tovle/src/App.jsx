@@ -453,7 +453,7 @@ const App = () => {
   return (
     <div className="full-container">
       <div className="app-container">
-        <Navbar theme={theme} onToggleTheme={toggleTheme} onNavigate={setActiveTab}/>
+        <Navbar theme={theme} onToggleTheme={toggleTheme} onNavigate={setActiveTab} activeTab={activeTab}/>
         <Toggle tabs={activeTabs.slice(0,3)} activeTab={activeTab} onChange={setActiveTab} />
 
         {activeTab === 'play' && (
