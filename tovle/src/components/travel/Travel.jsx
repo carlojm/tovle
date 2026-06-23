@@ -6,8 +6,9 @@ import TravelForum from './TravelForum'
 import './Travel.css'
 import TownCard from './TownCard'
 import { isTownUnlocked } from '../../utils/forumUtils'
+import DungeonCard from './DungeonCard'
 
-const Travel = () => {
+const Travel = ({onEnterDungeon}) => {
   const { uid, playerData, save } = usePlayer()
   const [showTree, setShowTree] = useState(false)
   const [tradeCountdown, setTradeCountdown] = useState(getSecondsUntilNextTradeWindow())
@@ -168,6 +169,14 @@ const Travel = () => {
       <TownCard townId="mistport" />
       <TownCard townId="steelmeld" /> */}
 
+
+
+      <div className="travel-section-header">
+        <h2 className="travel-section-title">Dungeons</h2>
+        <span className="travel-section-caption">Runs refresh every day</span>
+      </div>
+
+      <DungeonCard onEnter={onEnterDungeon} />
 
 
     </div>

@@ -1,0 +1,10 @@
+.dungeon-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--color-background-coords-display);
+  border: 2px solid var(--color-coords-border);
+  border-radius: 10px;
+  width: 100%;
+}
