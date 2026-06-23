@@ -99,7 +99,6 @@
   --color-bar-background: var(--dark-teal);
   --color-bar-fill: var(--lighterer-teal);
 
-
 }
 
 :root.light {
@@ -177,4 +176,38 @@
   --color-bar-fill: var(--dark-cyan);
 
 
+}
+
+
+
+
+:root {
+  --deep-purple: #1a0a2e;
+  --deepish-purple: #260e44;
+
+  --deeper-purple: #130820;
+  --darkest-purple: #0e0618;
+  --mid-purple: #4a2a7a;
+  --light-purple: #6a3a9a;
+  --lighter-purple: #7a4aaa;
+}
+
+:root.depthsle {
+  --color-navbar-background: var(--mid-purple);
+  --color-navbar-dropdown: var(--deepish-purple);
+
+  --color-background: var(--darkest-purple);
+  --color-button: var(--light-purple);
+  --color-button-hover: var(--lighter-purple);
+  --color-coords-border: var(--lighter-purple);
+}
+
+:root.depthsle.light {
+  --color-navbar-background: var(--mid-purple);
+  --color-navbar-dropdown: var(--deepish-purple);
+
+  --color-background: #e8e0f5;
+  --color-button: var(--mid-purple);
+  --color-button-hover: var(--light-purple);
+  --color-coords-border: var(--mid-purple);
 }

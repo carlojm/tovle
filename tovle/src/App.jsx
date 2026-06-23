@@ -218,6 +218,14 @@ const App = () => {
     }
   }, [theme])
 
+  useEffect(() => {
+    if (activeTab === 'depthsle') {
+      document.documentElement.classList.add('depthsle')
+    } else {
+      document.documentElement.classList.remove('depthsle')
+    }
+  }, [activeTab])
+
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark'
     setTheme(next)

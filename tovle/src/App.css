@@ -47,6 +47,10 @@ body {
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
+
+
+  /* background color transition for depthsle */
+  transition: background-color 0.3s ease;
 }
 
 /* but also if we need select heres a class */
@@ -64,6 +68,11 @@ body {
  /* background: #d8e7ee; */
  background: linear-gradient(135deg, #d8e7ee 0%, #c7e1e9 200%);
 
+}
+
+.depthsle.light body,
+.light.depthsle body {
+  background: var(--color-background);
 }
 
 

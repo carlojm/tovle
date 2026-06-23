@@ -24,6 +24,9 @@
 
   overflow: visible;
 
+  /* background color transition for depthsle */
+  transition: background-color 0.3s ease;
+
 }
 
 .navbar-title {
