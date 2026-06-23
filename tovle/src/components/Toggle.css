@@ -19,7 +19,7 @@
   height: calc(100% - 8px);
   background: var(--color-button, #2a2a6e);
   border-radius: 999px;
-  transition: transform 0.2s ease, width 0.2s ease;
+  transition: transform 0.2s ease, width 0.2s ease, opacity 0.25s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   pointer-events: none;
 }
