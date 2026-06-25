@@ -11,6 +11,7 @@ import DayTimer from '../components/DayTimer.jsx'
 
 import RoomSelectGrid from './components/RoomSelectGrid.jsx'
 import CombatScreen from './components/CombatScreen.jsx'
+import RewardScreen from './components/RewardScreen.jsx'
 
 import flamecallerIcon  from '../assets/talismans/flamecaller_talisman.png'
 import earthboundIcon   from '../assets/talismans/earthbound_talisman.png'
@@ -129,8 +130,12 @@ export default function Depthsle({ onExit }) {
     )
   }
 
-  if (state.phase === PHASES.PLAYING) {
+  if (state.phase === PHASES.PLAYING || state.phase === PHASES.ROOM_CLEAR) {
     return <CombatScreen state={state} dispatch={dispatch} />
+  }
+
+  if (state.phase === PHASES.REWARD) {
+    return <RewardScreen state={state} dispatch={dispatch} />
   }
 
   if (state.phase !== PHASES.CLASS_SELECT) {

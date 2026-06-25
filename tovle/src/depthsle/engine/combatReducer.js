@@ -256,10 +256,16 @@ function buildAbilityChoices(state) {
   const all = [...activeCandidates, ...passiveCandidates]
   const rng = deriveRng(state.seed, `reward_choices_${state.roomNumber}`, 0)
   const picked = shuffle(rng, all).slice(0, 3)
-  return picked.map((a, i) => ({
-    ...a,
-    rarity: rollRarity(state, i, a.tree === state.mainTree),
-  }))
+  return picked.map((a, i) => {
+    const rarity = rollRarity(state, i, a.tree === state.mainTree)
+    return {
+      ...a,
+      rarity,
+      //call description before it gets detached from its object
+      //so we can display it in RewardScreen
+      descriptionText: typeof a.description === 'function' ? a.description(rarity) : (a.description ?? ''),
+    }
+  })
 }
 
 // ─── Enemy AI ─────────────────────────────────────────────────────────────────

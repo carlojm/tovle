@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SUB_PHASES } from '../engine/combatReducer.js'
+import { SUB_PHASES, PHASES } from '../engine/combatReducer.js'
 import { ROOM_TYPES } from '../data/layouts.js'
 import PlayerStatus from './PlayerStatus.jsx'
 import CombatGrid from './CombatGrid.jsx'
@@ -129,13 +129,22 @@ export default function CombatScreen({ state, dispatch }) {
       />
 
       {/* ── End turn ── */}
-      <button
-        className={`cs-end-turn ${!isPlayerTurn ? 'cs-end-turn--disabled' : ''}`}
-        onClick={handleEndTurn}
-        disabled={!isPlayerTurn}
-      >
-        {isPlayerTurn ? 'End Turn →' : 'Enemy Turn...'}
-      </button>
+      {state.phase === PHASES.ROOM_CLEAR ? (
+        <button
+          className="cs-end-turn"
+          onClick={() => dispatch({ type: 'CLAIM_REWARD' })}
+        >
+          Claim Reward →
+        </button>
+      ) : (
+        <button
+          className={`cs-end-turn ${!isPlayerTurn ? 'cs-end-turn--disabled' : ''}`}
+          onClick={handleEndTurn}
+          disabled={!isPlayerTurn}
+        >
+          {isPlayerTurn ? 'End Turn →' : 'Enemy Turn...'}
+        </button>
+      )}
 
       {/* ── Log ── */}
       <CombatLog log={state.log} />
