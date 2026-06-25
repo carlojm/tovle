@@ -38,7 +38,7 @@ export function buildRunStats(playerData) {
   const weaponType = detectWeaponType(slots, equipment)
 
   return {
-    maxHp:             parseFloat(stats.meleeEHP),
+    maxHp:             Math.round(parseFloat(stats.meleeEHP)),
     meleeDamage:       parseFloat(stats.critSpamDPS),
     projectileDamage:  parseFloat(stats.projSpamDPS),
     magicDamage:       parseFloat(stats.magicDPS),

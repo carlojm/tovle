@@ -417,7 +417,7 @@ export function tickStatuses(state, enemyId) {
 export function healPlayer(state, amount) {
   let s = cloneState(state)
   const before = s.player.hp
-  const newHp = Math.min(s.player.maxHp, s.player.hp + Math.round(amount))
+  const newHp = Math.min(s.player.maxHp, Math.round(s.player.hp + Math.round(amount)))
   s = { ...s, player: { ...s.player, hp: newHp } }
   if (newHp > before) s = log(s, `Player heals ${newHp - before} HP (${newHp}/${s.player.maxHp})`)
   return s
@@ -453,7 +453,7 @@ export function damagePlayer(state, amount, source = 'enemy') {
     s = { ...s, player: { ...s.player, absorption: abs - absUsed } }
   }
 
-  const newHp = Math.max(0, s.player.hp - dmg)
+  const newHp = Math.max(0, Math.round(s.player.hp - dmg))
   s = { ...s, player: { ...s.player, hp: newHp, tookDamageRecently: true, tookDamageRecentlyTurnsLeft: 2 } }
   s = log(s, `Player takes ${dmg} damage from ${source} (${newHp}/${s.player.maxHp} HP)`)
   return s
