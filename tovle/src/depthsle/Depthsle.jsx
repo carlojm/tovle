@@ -9,6 +9,8 @@ import ItemIcon from '../components/ItemIcon'
 import './Depthsle.css'
 import DayTimer from '../components/DayTimer.jsx'
 
+import RoomSelectGrid from './components/RoomSelectGrid.jsx'
+
 import flamecallerIcon  from '../assets/talismans/flamecaller_talisman.png'
 import earthboundIcon   from '../assets/talismans/earthbound_talisman.png'
 import shadowdancerIcon from '../assets/talismans/shadowdancer_talisman.png'
@@ -96,6 +98,34 @@ export default function Depthsle({ onExit }) {
   const handleStart = () => {
     if (!selectedClass) return
     dispatch({ type: 'SELECT_CLASS', treeId: selectedClass })
+  }
+
+  // replace the early return for non-CLASS_SELECT phases:
+  if (state.phase === PHASES.ROOM_SELECT) {
+    return (
+      <div className="depthsle-container">
+        <div className="ds-header">
+          <div>
+            <h1 className="ds-title">Darkest Depths</h1>
+            <p style={{ opacity: 0.6, fontSize: '0.8rem', marginTop: '4px' }}>
+              Room {state.roomNumber + 1} / {state.roomsCleared} cleared
+            </p>
+          </div>
+        </div>
+        <div className="ds-section">
+          <div className="travel-section-header">
+            <h2 className="travel-section-title">Room Select</h2>
+            <span className="travel-section-caption">
+              Select your path through the dungeon. Choose the reward to receive at the end of the next room.
+            </span>
+          </div>
+          <RoomSelectGrid
+            roomOptions={state.roomOptions}
+            onSelect={(roomType) => dispatch({ type: 'SELECT_ROOM', roomType })}
+          />
+        </div>
+      </div>
+    )
   }
 
   if (state.phase !== PHASES.CLASS_SELECT) {

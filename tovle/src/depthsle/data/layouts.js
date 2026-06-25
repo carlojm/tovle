@@ -70,12 +70,12 @@ export const ELITE_LAYOUT_IDS = ['e4x4', 'e4x5']
 // Room types and their weights for the room selection roll.
 // Adjust weights to tune the run feel.
 export const ROOM_TYPES = {
-  ability:        { label: 'Ability',         emoji: '✨', weight: 30, isElite: false },
-  elite_ability:  { label: 'Elite Ability',   emoji: '💫', weight: 8,  isElite: true  },
-  upgrade:        { label: 'Upgrade',         emoji: '⬆️',  weight: 25, isElite: false },
-  elite_upgrade:  { label: 'Elite Upgrade',   emoji: '🔥', weight: 6,  isElite: true  },
-  treasure:       { label: 'Treasure',        emoji: '💎', weight: 20, isElite: false },
-  elite_treasure: { label: 'Elite Treasure',  emoji: '👑', weight: 5,  isElite: true  },
+  ability:        { label: 'Ability Room',       reward: 'Ability',   emoji: '✨', weight: 30, isElite: false, gridRow: 1, gridCol: 1 },
+  elite_ability:  { label: 'Elite Ability Room', reward: 'Ability',   emoji: '💫', weight: 8,  isElite: true,  gridRow: 3, gridCol: 1 },
+  upgrade:        { label: 'Upgrade Room',       reward: 'Upgrade',   emoji: '⬆️', weight: 25, isElite: false, gridRow: 1, gridCol: 9 },
+  elite_upgrade:  { label: 'Elite Upgrade Room', reward: 'Upgrade',   emoji: '🔥', weight: 6,  isElite: true,  gridRow: 3, gridCol: 9 },
+  treasure:       { label: 'Treasure Room',      reward: 'Treasure',  emoji: '💎', weight: 20, isElite: false, gridRow: 2, gridCol: 3 },
+  elite_treasure: { label: 'Elite Treasure Room',reward: 'Treasure',  emoji: '👑', weight: 5,  isElite: true,  gridRow: 2, gridCol: 7 },
 }
 
 // Build a weighted list of options for ROOM_SELECT.
