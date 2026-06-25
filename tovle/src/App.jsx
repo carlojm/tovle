@@ -221,6 +221,9 @@ const App = () => {
   useEffect(() => {
     if (activeTab === 'depthsle') {
       document.documentElement.classList.add('depthsle')
+      // document.documentElement.scrollTop = -40
+      // document.body.scrollTop = -40 // Safari
+      window.scrollTo({ top: -40, behavior: 'smooth' })
     } else {
       document.documentElement.classList.remove('depthsle')
     }

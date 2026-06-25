@@ -134,7 +134,7 @@ const flamecaller = {
   id: 'flamecaller',
   name: 'Flamecaller',
   emoji: '🔥',
-  description: 'Fire DoT, AoE burst, chain explosions.',
+  description: 'Cast explosions and ignite enemies',
   abilities: [
     {
       id: 'fireball',
@@ -327,7 +327,7 @@ const earthbound = {
   id: 'earthbound',
   name: 'Earthbound',
   emoji: '🪨',
-  description: 'Push/pull, crowd control, thorns, damage absorption.',
+  description: 'Root enemies and withstand attacks',
   abilities: [
     {
       id: 'beasts_claw',
@@ -514,7 +514,7 @@ const shadowdancer = {
   id: 'shadowdancer',
   name: 'Shadowdancer',
   emoji: '🌑',
-  description: 'Single-target burst, weakness stacking, vexes.',
+  description: 'Single-target attacks and weakness stacking',
   abilities: [
     {
       id: 'advancing_shadows',
@@ -715,7 +715,7 @@ const frostborn = {
   id: 'frostborn',
   name: 'Frostborn',
   emoji: '❄️',
-  description: 'Freeze tiles, shatter for burst, setup-then-detonate.',
+  description: 'Cast ice spells and freeze tiles',
   abilities: [
     {
       id: 'ice_lance',
@@ -891,7 +891,7 @@ const dawnbringer = {
   id: 'dawnbringer',
   name: 'Dawnbringer',
   emoji: '☀️',
-  description: 'Sustain, absorption, buffs, AOE stuns.',
+  description: 'Cast stuns and self buffs',
   abilities: [
     {
       id: 'bottled_sunlight',
@@ -1068,7 +1068,7 @@ const steelsage = {
   id: 'steelsage',
   name: 'Steelsage',
   emoji: '⚙️',
-  description: 'Ranged projectiles, momentum stacking, bleed.',
+  description: 'Shoot projectiles and bleed enemies',
   abilities: [
     {
       id: 'sidearm',
@@ -1286,7 +1286,7 @@ const windwalker = {
   id: 'windwalker',
   name: 'Windwalker',
   emoji: '💨',
-  description: 'Push/pull, wall collisions, cooldown reduction, grouping.',
+  description: 'Control enemies through pushing and grouping attacks',
   abilities: [
     {
       id: 'aeroblast',

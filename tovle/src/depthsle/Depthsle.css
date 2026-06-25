@@ -1,0 +1,255 @@
+.depthsle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: min(90vw, 600px);
+  padding: 12px 0 48px;
+}
+
+/* ── Header ── */
+.ds-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  /* gap: 14px; */
+}
+
+.ds-back {
+  background: none;
+  border: none;
+  color: var(--color-text);
+  opacity: 0.45;
+  font-size: 13px;
+  font-family: "Open Runde", system-ui, sans-serif;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.ds-back:hover { opacity: 0.9; }
+
+.ds-title {
+  font-size: clamp(18px, 5vw, 24px);
+  font-weight: 700;
+  margin: 0;
+  /* line-height: 1.1; */
+}
+
+.ds-subtitle {
+  font-size: 12px;
+  opacity: 0.45;
+}
+
+/* ── Sections ── */
+.ds-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ds-section-label {
+  font-size: 13px;
+  font-weight: 700;
+  /* text-transform: uppercase; */
+  /* letter-spacing: 0.08em; */
+  opacity: 0.5;
+  /* margin: 0; */
+}
+
+.ds-section-caption {
+  font-size: 13px;
+  opacity: 0.6;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Loadout card ── */
+.ds-loadout-card {
+  display: flex;
+  gap: 14px;
+  padding: 12px;
+  background: var(--color-background-loot-grid);
+  border: 2px solid var(--color-border-loot-grid);
+  border-radius: 10px;
+}
+
+/* slot grid */
+.ds-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 48px);
+  grid-template-rows: repeat(4, 48px);
+  gap: 3px;
+}
+
+.ds-slot {
+  width: 48px;
+  height: 48px;
+  background: var(--color-background-loot-slot);
+  border: 1px solid var(--color-border-loot-slot);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.ds-slot--filled {
+  border-color: var(--color-border-loot-slot-filled);
+}
+
+.ds-slot--helmet     { grid-column: 1; grid-row: 1; }
+.ds-slot--chestplate { grid-column: 1; grid-row: 2; }
+.ds-slot--leggings   { grid-column: 1; grid-row: 3; }
+.ds-slot--boots      { grid-column: 1; grid-row: 4; }
+.ds-slot--offhand    { grid-column: 2; grid-row: 1; }
+.ds-slot--mainhand   { grid-column: 2; grid-row: 4; }
+
+.ds-slot-badge {
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  font-size: 7px;
+  font-weight: 700;
+  opacity: 0.6;
+}
+
+/* stats side */
+.ds-loadout-stats {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+  min-width: 0;
+}
+
+.ds-weapon-name {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ds-weapon-type {
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+.ds-empty {
+  opacity: 0.4;
+  font-weight: 400;
+}
+
+.ds-loadout-divider {
+  height: 1px;
+  background: var(--color-border-loot-grid);
+  opacity: 0.5;
+  margin: 2px 0;
+}
+
+.ds-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.ds-stat-label {
+  font-size: 12px;
+  opacity: 0.55;
+}
+
+.ds-stat-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-coords-border);
+}
+
+/* ── Class row ── */
+.ds-class-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .ds-class-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.ds-class-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 8px;
+  background: var(--color-background-coords-display);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--color-text);
+  font-family: "Open Runde", system-ui, sans-serif;
+  transition: border-color 0.15s, opacity 0.15s;
+  opacity: 0.6;
+  text-align: center;
+}
+
+.ds-class-card:hover {
+  opacity: 0.85;
+}
+
+.ds-class-card--selected {
+  border-color: var(--color-button);
+  opacity: 1;
+}
+
+.ds-class-icon {
+  width: 52px;
+  height: 52px;
+  image-rendering: pixelated;
+  object-fit: contain;
+}
+
+.ds-class-name {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.ds-class-desc {
+  font-size: 11px;
+  opacity: 0.55;
+  line-height: 1.4;
+}
+
+/* ── Start button ── */
+.ds-start-btn {
+  width: 100%;
+  padding: 15px;
+  background: var(--color-button);
+  color: var(--color-text-button);
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: "Open Runde", system-ui, sans-serif;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.ds-start-btn:hover:not(:disabled) {
+  background: var(--color-button-hover);
+}
+
+.ds-start-btn--disabled {
+  opacity: 0.35;
+  cursor: default;
+}

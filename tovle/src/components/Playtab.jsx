@@ -530,9 +530,9 @@ const PlayTab = ({
         
         <div className="completion-summary">
           <p>You found all {dailyCaches.length} caches today!</p>
-          <div>
-            <DayTimer />
-          </div>
+          <p style={{ opacity: 0.7, fontSize: "0.85rem" }}>
+            Caches wash away in: <strong><DayTimer /></strong>
+          </p>
           {cacheResults.map((result, i) => (
             <div key={result.cacheId} className="summary-row">
               <span>Cache {i + 1}:</span>

@@ -14,9 +14,9 @@ const Dateline = () => {
       <p>Pinpoint four cache locations on the map.</p>
 			<p style={{marginBottom: "8px"}}>Guess within 50 blocks to find the cache.</p>
 			<p>{getDisplayDate()} Puzzle #{getPuzzleNumber()}</p>
-			<div>
-				<DayTimer />
-			</div>
+			<p style={{ opacity: 0.7, fontSize: "0.85rem" }}>
+				Caches wash away in: <strong><DayTimer /></strong>
+			</p>
 		</div>
 	);
 }

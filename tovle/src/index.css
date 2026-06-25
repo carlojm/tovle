@@ -200,14 +200,28 @@
   --color-button: var(--light-purple);
   --color-button-hover: var(--lighter-purple);
   --color-coords-border: var(--lighter-purple);
+
+  --color-background-loot-grid: #1a0f2e;
+  --color-border-loot-grid: #3a2a5a;
+  --color-background-loot-slot: #120a22;
+  --color-border-loot-slot: #2a1a4a;
+  --color-border-loot-slot-filled: #5a3a8a;
+  --color-background-loot-slot-hover: #2a1a4a;
 }
 
 :root.depthsle.light {
   --color-navbar-background: var(--mid-purple);
   --color-navbar-dropdown: var(--deepish-purple);
 
-  --color-background: #e8e0f5;
+  --color-background: #e5d8f8;
   --color-button: var(--mid-purple);
   --color-button-hover: var(--light-purple);
   --color-coords-border: var(--mid-purple);
+
+  --color-background-loot-grid: #e8dff5;
+  --color-border-loot-grid: #c4aae0;
+  --color-background-loot-slot: #d8ccee;
+  --color-border-loot-slot: #b89ad8;
+  --color-border-loot-slot-filled: #7a4aaa;
+  --color-background-loot-slot-hover: #c9b8e8;
 }
