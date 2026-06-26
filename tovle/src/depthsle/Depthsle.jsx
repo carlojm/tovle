@@ -138,6 +138,56 @@ export default function Depthsle({ onExit }) {
     return <RewardScreen state={state} dispatch={dispatch} />
   }
 
+  if (state.phase === PHASES.GAME_OVER) {
+    return (
+      <div className="depthsle-container">
+        <div className="ds-header">
+          <div>
+            <h1 className="ds-title">Defeated</h1>
+            <p className="rs-stats">You made it to room {state.roomNumber}</p>
+          </div>
+        </div>
+
+        <div className="ds-section">
+          <div className="travel-section-header">
+            <h2 className="travel-section-title">Run Summary</h2>
+          </div>
+          <div className="ds-loadout-card" style={{ flexDirection: 'column', gap: 8 }}>
+            <div className="ds-stat-row">
+              <span className="ds-stat-label">Rooms cleared</span>
+              <span className="ds-stat-value">{state.roomsCleared}</span>
+            </div>
+            <div className="ds-stat-row">
+              <span className="ds-stat-label">Total kills</span>
+              <span className="ds-stat-value">{state.killCount}</span>
+            </div>
+            <div className="ds-stat-row">
+              <span className="ds-stat-label">Treasure score</span>
+              <span className="ds-stat-value">{state.treasureScore}</span>
+            </div>
+            <div className="ds-stat-row">
+              <span className="ds-stat-label">Class</span>
+              <span className="ds-stat-value">{ABILITY_TREES[state.mainTree]?.name ?? '—'}</span>
+            </div>
+            <div className="ds-stat-row">
+              <span className="ds-stat-label">Abilities acquired</span>
+              <span className="ds-stat-value">{state.abilities.length}</span>
+            </div>
+            {state.abilities.length > 0 && (
+              <div className="rs-stats" style={{ opacity: 0.45, fontSize: 11 }}>
+                {state.abilities.map(a => a.name).join(', ')}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <button className="ds-start-btn" onClick={() => window.location.reload()}>
+          Try Again →
+        </button>
+      </div>
+    )
+  }
+
   if (state.phase !== PHASES.CLASS_SELECT) {
     return (
       <div className="depthsle-container">

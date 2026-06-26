@@ -143,12 +143,12 @@ export default function CombatGrid({ gridState, enemies, currentRoom, selectedCa
 
   const cells = []
 
-  for (let displayRow = 0; displayRow < displayRows; displayRow++) {
+  for (let displayRow = displayRows - 1; displayRow >= 0; displayRow--) {
     for (let displayCol = 0; displayCol < displayCols; displayCol++) {
 
       // is this a margin cell?
-      const isTopMargin    = displayRow === 0
-      const isBottomMargin = displayRow === displayRows - 1
+      const isTopMargin    = displayRow === displayRows - 1
+      const isBottomMargin = displayRow === 0
       const isLeftMargin   = displayCol === 0
       const isRightMargin  = displayCol === displayCols - 1
       const isMargin = isTopMargin || isBottomMargin || isLeftMargin || isRightMargin
