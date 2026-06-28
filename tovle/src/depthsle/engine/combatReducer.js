@@ -495,6 +495,45 @@ function tickTokens(state) {
   return s
 }
 
+
+//helper function for ending turn
+//after the player's turn ends (manually or by running out of cards), run this
+function resolveEnemyTurn(state) {
+  let s = { ...state, subPhase: SUB_PHASES.ENEMY_TURN }
+  s = tickPlayerBuffs(s)
+  s = tickPlayerDoTs(s)
+  s = addLog(s, '--- Enemy Turn ---')
+  for (const enemy of [...s.enemies]) {
+    s = tickBurn(s, enemy.instanceId)
+    s = tickStatuses(s, enemy.instanceId)
+  }
+  s = tickTokens(s)
+  for (const enemy of [...s.enemies]) {
+    const { newState, acted } = tickEnemyActionBar(s, enemy.instanceId)
+    s = newState
+    if (acted) {
+      const liveEnemy = s.enemies.find(e => e.instanceId === enemy.instanceId)
+      if (liveEnemy) {
+        s = resolveEnemyAction(s, liveEnemy)
+        s = checkLowHealth(s)
+      }
+    }
+  }
+  if (s.player.hp <= 0) return { ...s, phase: PHASES.GAME_OVER }
+  if (s.enemies.length === 0) {
+    s = { ...s, phase: PHASES.ROOM_CLEAR, subPhase: null }
+    return fireEvent(s, 'on_room_clear', {})
+  }
+  
+  const hasBasicAttack = s.hand.some(c => c.isBasicAttack)
+  if (!hasBasicAttack) {
+    const weaponType = s.runStats.weaponType ?? 'sword'
+    const basicCard = buildBasicAttackCard(weaponType, s._basicAttackChainIndex ?? 0)
+    s = { ...s, hand: [...s.hand, basicCard] }
+  }
+  return { ...s, subPhase: SUB_PHASES.PLAYER_TURN }
+}
+
 // ─── Main Reducer ─────────────────────────────────────────────────────────────
 
 export function combatReducer(state, action) {
@@ -600,65 +639,20 @@ export function combatReducer(state, action) {
 
       // After playing a card, stay in PLAYER_TURN (player may play more cards).
       // Transition to ENEMY_TURN happens with END_TURN action.
+
+      //but if hand is empty, end turn
+      if (s.hand.length === 0 && s.subPhase === SUB_PHASES.PLAYER_TURN) {
+        return resolveEnemyTurn(s)
+      }
+
       return s
     }
 
     // ── END_TURN → ENEMY_TURN ───────────────────────────────────────────────
     case 'END_TURN': {
       if (s.phase !== PHASES.PLAYING) return s
-      s = { ...s, subPhase: SUB_PHASES.ENEMY_TURN }
-      s = tickPlayerBuffs(s)
-      s = tickPlayerDoTs(s)
-      s = addLog(s, '--- Enemy Turn ---')
-
-      // Tick status effects for each enemy.
-      for (const enemy of [...s.enemies]) {
-        s = tickBurn(s, enemy.instanceId)
-        s = tickStatuses(s, enemy.instanceId)
-      }
-
-      // Tick tokens.
-      s = tickTokens(s)
-
-      // Enemies act.
-      for (const enemy of [...s.enemies]) {
-        const { newState, acted } = tickEnemyActionBar(s, enemy.instanceId)
-        s = newState
-        if (acted) {
-          const liveEnemy = s.enemies.find(e => e.instanceId === enemy.instanceId)
-          if (liveEnemy) {
-            s = resolveEnemyAction(s, liveEnemy)
-            s = checkLowHealth(s)
-          }
-        }
-      }
-
-      // Check win/loss.
-      if (s.player.hp <= 0) {
-        s = { ...s, phase: PHASES.GAME_OVER }
-        s = addLog(s, 'Game Over!')
-        return s
-      }
-
-      if (s.enemies.length === 0) {
-        s = { ...s, phase: PHASES.ROOM_CLEAR, subPhase: null }
-        s = addLog(s, 'Room cleared!')
-        s = fireEvent(s, 'on_room_clear', {})
-        return s
-      }
-
-      // Back to DRAW for cooldown-tick + draw phase.
-      s = { ...s, subPhase: SUB_PHASES.DRAW }
-      // Add basic attack back to hand if not already there.
-      const hasBasicAttack = s.hand.some(c => c.isBasicAttack)
-      if (!hasBasicAttack) {
-        const weaponType = s.runStats.weaponType ?? 'sword'
-        const chainIndex = (s._basicAttackChainIndex ?? 0)
-        const basicCard = buildBasicAttackCard(weaponType, chainIndex)
-        s = { ...s, hand: [...s.hand, basicCard], _basicAttackChainIndex: chainIndex }
-      }
-      s = { ...s, subPhase: SUB_PHASES.PLAYER_TURN }
-      return s
+      //logic extracted out to resolveEnemyTurn function above
+      return resolveEnemyTurn(s)
     }
 
     // ── CLAIM_REWARD ────────────────────────────────────────────────────────
