@@ -268,6 +268,13 @@ function buildAbilityChoices(state) {
   })
 }
 
+function buildUpgradeChoices(state) {
+  const upgradeable = state.abilities.filter(a => a.rarity < 4)
+  if (upgradeable.length === 0) return []
+  const rng = deriveRng(state.seed, `upgrade_choices_${state.roomNumber}`, 0)
+  return shuffle(rng, upgradeable).slice(0, 3)
+}
+
 // ─── Enemy AI ─────────────────────────────────────────────────────────────────
 
 function resolveEnemyAction(state, enemy) {
@@ -663,12 +670,7 @@ export function combatReducer(state, action) {
         // Build 3 ability choices.
         s = { ...s, phase: PHASES.REWARD, rewardChoices: buildAbilityChoices(s) }
       } else if (['upgrade', 'elite_upgrade'].includes(roomType)) {
-        const upgradeChoices = [
-          { id: 'max_hp', label: '+20 Max HP', description: 'Increase your maximum and current HP by 20.' },
-          { id: 'damage', label: '+5 All Damage', description: 'Boost melee, projectile, and magic damage by 5.' },
-          { id: 'regen', label: '+5% Regen', description: 'Recover 5% of your max HP at the start of each enemy turn.' },
-          { id: 'cooldown', label: '+10% Cooldown Rate', description: 'Abilities come off cooldown 10% faster.' },
-        ]
+        const upgradeChoices = buildUpgradeChoices(s)
         s = { ...s, phase: PHASES.REWARD, rewardType: 'upgrade', upgradeChoices }
       } else if (['treasure', 'elite_treasure'].includes(roomType)) {
         const scoreGain = 100 * (1 + s.roomNumber * 0.15) * (s.currentRoom.isElite ? 1.5 : 1)
@@ -684,28 +686,26 @@ export function combatReducer(state, action) {
       if (s.phase !== PHASES.REWARD) return s
 
       // Upgrade room: player picks a stat boost.
+      if (action.abilityId === '__skip__') {
+        //case for no upgrades available
+        s = progressToNextRoom(s)
+        return s
+      }
+
       if (s.rewardType === 'upgrade') {
-        const { upgradeId } = action
-        switch (upgradeId) {
-          case 'max_hp':
-            s = { ...s, player: { ...s.player, maxHp: s.player.maxHp + 20, hp: s.player.hp + 20 } }
-            s = addLog(s, 'Upgraded: +20 Max HP')
-            break
-          case 'damage':
-            s = { ...s, runStats: { ...s.runStats, meleeDamage: s.runStats.meleeDamage + 5, projectileDamage: s.runStats.projectileDamage + 5, magicDamage: s.runStats.magicDamage + 5 } }
-            s = addLog(s, 'Upgraded: +5 to all damage')
-            break
-          case 'regen':
-            s = { ...s, runStats: { ...s.runStats, regenPercent: Math.min(0.5, (s.runStats.regenPercent ?? 0) + 0.05) } }
-            s = addLog(s, 'Upgraded: +5% regen per turn')
-            break
-          case 'cooldown':
-            s = { ...s, runStats: { ...s.runStats, cooldownRate: Math.min(2.0, (s.runStats.cooldownRate ?? 1.0) + 0.1) } }
-            s = addLog(s, 'Upgraded: +10% cooldown rate')
-            break
-          default:
-            break
+        const {abilityId} = action
+        if (!abilityId) return s
+        s = {
+          ...s,
+          abilities: s.abilities.map(a =>
+            a.id === abilityId
+              ? { ...a, rarity: Math.min(4, a.rarity + 1) }
+              : a
+          ),
         }
+        const upgraded = s.abilities.find(a => a.id === abilityId)
+        s = addLog(s, `${upgraded?.name} upgraded to ${['Common','Uncommon','Rare','Epic','Legendary'][upgraded?.rarity]}`)
+        rebuildPassives(s.abilities, s.seed)
         s = progressToNextRoom(s)
         return s
       }

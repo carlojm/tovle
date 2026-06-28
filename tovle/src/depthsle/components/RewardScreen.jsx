@@ -32,31 +32,37 @@ function renderDesc(text = '') {
   )
 }
 
-function AbilityCard({ ability, onSelect }) {
+function AbilityCard({ ability, onSelect, showUpgradeRarity }) {
   const tree = ABILITY_TREES[ability.tree]
   const rarityColor = RARITY_COLOR[ability.rarity] ?? '#888'
   const rarityLabel = RARITY_LABEL[ability.rarity] ?? 'Common'
+  const nextRarityColor = RARITY_COLOR[ability.rarity + 1]
+  const nextRarityLabel = RARITY_LABEL[ability.rarity + 1]
 
   return (
     <button className="rs-ability-card" onClick={() => onSelect(ability.id)}>
       <div className="rs-ability-header">
         {TREE_ICONS[ability.tree] && (
-          <img
-            src={TREE_ICONS[ability.tree]}
-            alt={tree?.name}
-            className="rs-ability-icon"
-          />
+          <img src={TREE_ICONS[ability.tree]} alt={tree?.name} className="rs-ability-icon" />
         )}
         <div className="rs-ability-titles">
-          <span className="rs-ability-rarity" style={{ color: rarityColor }}>
-            {rarityLabel}
-          </span>
+          {showUpgradeRarity ? (
+            <span className="rs-ability-rarity">
+              <span style={{ color: rarityColor }}>{rarityLabel}</span>
+              <span style={{ opacity: 0.4 }}> → </span>
+              <span style={{ color: nextRarityColor }}>{nextRarityLabel}</span>
+            </span>
+          ) : (
+            <span className="rs-ability-rarity" style={{ color: rarityColor }}>
+              {rarityLabel}
+            </span>
+          )}
           <span className="rs-ability-name">{ability.name}</span>
           <span className="rs-ability-tree">{tree?.name}</span>
         </div>
       </div>
       <p className="rs-ability-desc">
-        {renderDesc(ability.descriptionText)}
+        {renderDesc(ability.descriptionText ?? ability.description, ability.rarity)}
       </p>
     </button>
   )
@@ -135,13 +141,27 @@ export default function RewardScreen({ state, dispatch }) {
         {/* Upgrade reward */}
         {state.rewardType === 'upgrade' && (
           <div className="rs-choices">
-            {(state.upgradeChoices ?? []).map(upgrade => (
-              <UpgradeCard
-                key={upgrade.id}
-                upgrade={upgrade}
-                onSelect={handleSelectUpgrade}
-              />
-            ))}
+            {(state.upgradeChoices ?? []).length === 0 ? (
+              <div className="ds-loadout-card" style={{ flexDirection: 'column', gap: 4 }}>
+                <span style={{ opacity: 0.5, fontSize: 13 }}>No available upgrades.</span>
+                <button
+                  className="ds-start-btn"
+                  style={{ marginTop: 8 }}
+                  onClick={() => dispatch({ type: 'SELECT_REWARD', abilityId: '__skip__' })}
+                >
+                  Continue →
+                </button>
+              </div>
+            ) : (
+              state.upgradeChoices.map(ability => (
+                <AbilityCard
+                  key={ability.id}
+                  ability={ability}
+                  onSelect={handleSelectAbility}
+                  showUpgradeRarity
+                />
+              ))
+            )}
           </div>
         )}
       </div>
