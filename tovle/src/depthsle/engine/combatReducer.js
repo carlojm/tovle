@@ -245,27 +245,52 @@ function rollRarity(state, slotIndex, isMainTree) {
 
 // Build 3 ability choices for the REWARD phase.
 function buildAbilityChoices(state) {
-  const tree = ABILITY_TREES[state.mainTree]
-  if (!tree) return []
-  const activeCandidates = tree.abilities.filter(a =>
-    a.cardType !== 'passive' && !state.abilities.some(eq => eq.id === a.id)
-  )
-  const passiveCandidates = tree.abilities.filter(a =>
-    a.cardType === 'passive' && !state.abilities.some(eq => eq.id === a.id)
-  )
-  const all = [...activeCandidates, ...passiveCandidates]
+  const mainTree = ABILITY_TREES[state.mainTree]
+  if (!mainTree) return []
+
   const rng = deriveRng(state.seed, `reward_choices_${state.roomNumber}`, 0)
-  const picked = shuffle(rng, all).slice(0, 3)
-  return picked.map((a, i) => {
-    const rarity = rollRarity(state, i, a.tree === state.mainTree)
-    return {
-      ...a,
-      rarity,
-      //call description before it gets detached from its object
-      //so we can display it in RewardScreen
-      descriptionText: typeof a.description === 'function' ? a.description(rarity) : (a.description ?? ''),
-    }
-  })
+
+  // pool of abilities from all four class options the player hasn't acquired yet
+  const allPooled = state.classOptions.flatMap(treeId => {
+    const tree = ABILITY_TREES[treeId]
+    return tree ? tree.abilities.filter(a =>
+      a.cardType !== 'passive' || true  // include passives
+    ) : []
+  }).filter(a => !state.abilities.some(eq => eq.id === a.id))
+
+  // separate main tree candidates from the rest
+  const mainCandidates = allPooled.filter(a => a.tree === state.mainTree)
+  const otherCandidates = allPooled.filter(a => a.tree !== state.mainTree)
+
+  const picked = []
+
+  // guarantee one from main tree if available
+  if (mainCandidates.length > 0) {
+    const mainPick = shuffle(rng, mainCandidates)[0]
+    picked.push({ ...mainPick, rarity: rollRarity(state, 0, true) })
+  }
+
+  // fill remaining two slots from any tree
+  const remaining = shuffle(rng, otherCandidates)
+  for (const a of remaining) {
+    if (picked.length >= 3) break
+    if (picked.some(p => p.id === a.id)) continue
+    picked.push({ ...a, rarity: rollRarity(state, picked.length, a.tree === state.mainTree) })
+  }
+
+  // if we still need more (e.g. other trees exhausted), pull from main
+  const extraMain = shuffle(rng, mainCandidates).filter(a => !picked.some(p => p.id === a.id))
+  for (const a of extraMain) {
+    if (picked.length >= 3) break
+    picked.push({ ...a, rarity: rollRarity(state, picked.length, true) })
+  }
+
+  return picked.map(a => ({
+    ...a,
+    descriptionText: typeof a.description === 'function'
+      ? a.description(a.rarity)
+      : (a.description ?? ''),
+  }))
 }
 
 function buildUpgradeChoices(state) {
