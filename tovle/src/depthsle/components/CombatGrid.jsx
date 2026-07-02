@@ -20,19 +20,51 @@ const REWARD_ICONS = {
 }
 
 // Compute which room cells should be highlighted given selected card + hovered cell
-function getHighlightedCells(selectedCard, hoveredCell, gridWidth, gridHeight) {
-  if (!selectedCard || !hoveredCell) return new Set()
+function getHighlightedCells(selectedCard, hoveredCell, gridWidth, gridHeight, enemies, gridState) {
+  if (!selectedCard) return new Set()
 
   const key = (r, c) => `${r},${c}`
   const inBounds = (r, c) => r >= 0 && r < gridHeight && c >= 0 && c < gridWidth
   const highlighted = new Set()
 
-  switch (selectedCard.attackPattern) {
+  const pattern = selectedCard.attackPattern
+
+  // Fixed patterns that don't need hover position
+  if (pattern === 'front_row' || pattern === 'row_wide') {
+    for (let c = 0; c < gridWidth; c++) highlighted.add(key(0, c))
+    return highlighted
+  }
+
+  if (pattern === 'front_2rows_wide' || pattern === 'row2') {
+    for (let c = 0; c < gridWidth; c++) {
+      highlighted.add(key(0, c))
+      highlighted.add(key(1, c))
+    }
+    return highlighted
+  }
+
+  if (pattern === 'all_enemies') {
+    for (const e of enemies) highlighted.add(key(e.cell.row, e.cell.col))
+    return highlighted
+  }
+
+  if (pattern === 'all_frozen') {
+    for (const k of gridState.frozenTiles) highlighted.add(k)
+    return highlighted
+  }
+
+  if (pattern === 'none') return highlighted
+
+  // Patterns that need hover position — return empty if no hover
+  if (!hoveredCell) return highlighted
+
+  switch (pattern) {
     case 'single':
       highlighted.add(key(hoveredCell.row, hoveredCell.col))
       break
 
     case 'row':
+    case 'row_select':
       for (let c = 0; c < gridWidth; c++) {
         highlighted.add(key(hoveredCell.row, c))
       }
@@ -44,13 +76,22 @@ function getHighlightedCells(selectedCard, hoveredCell, gridWidth, gridHeight) {
       }
       break
 
-    case 'row_wide':
-    case 'row2':
-      // front row(s) always highlighted regardless of hover
-      for (let c = 0; c < gridWidth; c++) {
-        highlighted.add(key(0, c))
-        if (selectedCard.attackPattern === 'row2') {
-          highlighted.add(key(1, c))
+    case 'col_first': {
+      // find lowest row index enemy in the hovered column
+      const inCol = enemies
+        .filter(e => e.cell.col === hoveredCell.col)
+        .sort((a, b) => a.cell.row - b.cell.row)
+      if (inCol.length > 0) highlighted.add(key(inCol[0].cell.row, inCol[0].cell.col))
+      else highlighted.add(key(hoveredCell.row, hoveredCell.col))
+      break
+    }
+
+    case 'aoe2x2':
+      for (let dr = 0; dr <= 1; dr++) {
+        for (let dc = 0; dc <= 1; dc++) {
+          const r = hoveredCell.row + dr
+          const c = hoveredCell.col + dc
+          if (inBounds(r, c)) highlighted.add(key(r, c))
         }
       }
       break
@@ -68,10 +109,8 @@ function getHighlightedCells(selectedCard, hoveredCell, gridWidth, gridHeight) {
     case 'x_shape':
       for (let d = -2; d <= 2; d++) {
         if (d === 0) continue
-        const r1 = hoveredCell.row + d
-        const c1 = hoveredCell.col + d
-        const r2 = hoveredCell.row + d
-        const c2 = hoveredCell.col - d
+        const r1 = hoveredCell.row + d, c1 = hoveredCell.col + d
+        const r2 = hoveredCell.row + d, c2 = hoveredCell.col - d
         if (inBounds(r1, c1)) highlighted.add(key(r1, c1))
         if (inBounds(r2, c2)) highlighted.add(key(r2, c2))
       }
