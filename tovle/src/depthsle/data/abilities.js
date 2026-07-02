@@ -142,6 +142,7 @@ const flamecaller = {
       name: 'Fireball',
       trigger: 'right_click',
       cardType: 'offense',
+      attackPattern: 'aoe2x2',
       cooldownBase: 5,
       damageType: 'magic',
       rarityValues: R([11, 13, 15, 17, 19]),
@@ -162,14 +163,16 @@ const flamecaller = {
       name: 'Flamestrike',
       trigger: 'sneak_right_click',
       cardType: 'offense',
+      attackPattern: 'row',
       cooldownBase: 8,
       damageType: 'magic',
       rarityValues: R([14, 17, 20, 23, 26]),
-      description(r) { return `Full front-row magic damage (**${rv(this.rarityValues, r)}**) + **burn** on all hit mobs.` },
+      description(r) { return `Full row magic damage (**${rv(this.rarityValues, r)}**) + **burn** on all hit mobs.` },
       execute(state, ctx) {
-        const { rarity } = ctx
-        let s = dealDamageRow(state, 0, rv(this.rarityValues, rarity), 'magic', { cardTree: 'flamecaller' })
-        for (const e of enemiesInRow(s, 0)) {
+        const { targetRow, rarity } = ctx
+        const row = targetRow ?? 0
+        let s = dealDamageRow(state, row, rv(this.rarityValues, rarity), 'magic', { cardTree: 'flamecaller' })
+        for (const e of enemiesInRow(s, row)) {
           s = applyBurn(s, e.instanceId, 2, 2)
         }
         return s
@@ -181,6 +184,7 @@ const flamecaller = {
       name: 'Pyroblast',
       trigger: 'sneak_bow',
       cardType: 'offense',
+      attackPattern: 'col',
       cooldownBase: 10,
       damageType: 'magic',
       rarityValues: R([20, 24, 28, 32, 36]),
@@ -201,14 +205,15 @@ const flamecaller = {
       name: 'Volcanic Meteor',
       trigger: 'swap',
       cardType: 'offense',
+      attackPattern: 'aoe3x3',
       cooldownBase: 16,
       damageType: 'magic',
       rarityValues: R([36, 45, 54, 63, 72]),
-      description(r) { return `Mark a 3×3 area. Next turn: **${rv(this.rarityValues, r)}** magic damage + burn on all hit mobs.` },
+      description(r) { return `Mark a 3×3 area. In two turns: **${rv(this.rarityValues, r)}** magic damage + burn on all hit mobs.` },
       execute(state, ctx) {
         const { targetCell, rarity } = ctx
         const cell = targetCell ?? centerCell(state)
-        return placeToken(state, cell, 'meteor_marker', 1, { damage: rv(this.rarityValues, rarity) })
+        return placeToken(state, cell, 'meteor_marker', 2, { damage: rv(this.rarityValues, rarity) })
       },
     },
     {
@@ -217,6 +222,7 @@ const flamecaller = {
       name: 'Igneous Rune',
       trigger: 'sneak_left_click',
       cardType: 'utility',
+      attackPattern: 'row',
       cooldownBase: 11,
       damageType: 'magic',
       rarityValues: R([20, 24, 28, 32, 36]),
@@ -335,24 +341,28 @@ const earthbound = {
       name: "Beast's Claw",
       trigger: 'right_click',
       cardType: 'offense',
+      attackPattern: 'aoe3x2',
       cooldownBase: 6,
       damageType: 'melee',
       rarityValues: R([1.00, 1.10, 1.20, 1.30, 1.40]),
       description(r) { return `3×2 melee attack dealing **${Math.round(rv(this.rarityValues, r) * 100)}%** damage. Stuns hit mobs for **1 turn**.` },
       execute(state, ctx) {
-        const { rarity, runStats } = ctx
+        const { targetCell, rarity, runStats } = ctx
+        const cell = targetCell ?? centerCell(state)
         const dmg = Math.round(runStats.meleeDamage * rv(this.rarityValues, rarity))
-        const cells = front3x2Cells(state)
         let s = state
-        const hits = []
-        for (const cell of cells) {
-          for (const e of enemiesAt(s, cell)) {
-            s = dealDamage(s, e.instanceId, dmg, 'melee')
-            s = applyStatus(s, e.instanceId, 'stun', 1)
-            hits.push(e)
+        for (let dr = 0; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            const c = { row: cell.row + dr, col: cell.col + dc }
+            if (isValidCell(s, c)) {
+              for (const e of enemiesAt(s, c)) {
+                s = dealDamage(s, e.instanceId, dmg, 'melee')
+                s = applyStatus(s, e.instanceId, 'stun', 1)
+              }
+            }
           }
         }
-        return { ...s, _lastCardHits: hits }
+        return s
       },
     },
     {
@@ -361,10 +371,11 @@ const earthbound = {
       name: 'Earthen Wrath',
       trigger: 'swap',
       cardType: 'offense',
+      attackPattern: 'all_enemies',
       cooldownBase: 14,
       damageType: 'melee',
       rarityValues: R([0.60, 0.70, 0.80, 0.90, 1.00]),
-      description(r) { return `Deal **${Math.round(rv(this.rarityValues, r) * 100)}%** melee damage to all mobs. **Doubled** if you took damage recently.` },
+      description(r) { return `Deal **${Math.round(rv(this.rarityValues, r) * 100)}%** melee damage to all mobs. Doubled after taking damage.` },
       execute(state, ctx) {
         const { rarity, runStats } = ctx
         let dmg = Math.round(runStats.meleeDamage * rv(this.rarityValues, rarity))
@@ -382,6 +393,7 @@ const earthbound = {
       name: 'Earthquake',
       trigger: 'sneak_bow',
       cardType: 'offense',
+      attackPattern: 'aoe3x3',
       cooldownBase: 11,
       damageType: 'magic',
       rarityValues: R([20, 25, 30, 35, 40]),
@@ -402,23 +414,29 @@ const earthbound = {
       name: 'Iron Grip',
       trigger: 'sneak_right_click',
       cardType: 'utility',
+      attackPattern: 'aoe3x2',
       cooldownBase: 9,
       damageType: 'melee',
       rarityValues: R([1.00, 1.10, 1.20, 1.30, 1.40]),
-      description(r) { return `3×2 attack (**${Math.round(rv(this.rarityValues, r) * 100)}%** dmg). Pulls hit mobs to front center + stuns for **2 turns**.` },
+      description(r) { return `3×2 attack (**${Math.round(rv(this.rarityValues, r) * 100)}%** dmg). Pulls hit mobs to you + stuns for **2 turns**.` },
       execute(state, ctx) {
-        const { rarity, runStats } = ctx
+        const { targetCell, rarity, runStats } = ctx
+        const cell = targetCell ?? centerCell(state)
         const dmg = Math.round(runStats.meleeDamage * rv(this.rarityValues, rarity))
-        const cells = front3x2Cells(state)
         const pullTarget = { row: 0, col: Math.floor(state.gridState.width / 2) }
         let s = state
         const hits = []
-        for (const cell of cells) {
-          for (const e of enemiesAt(s, cell)) {
-            s = dealDamage(s, e.instanceId, dmg, 'melee')
-            s = pullEnemy(s, e.instanceId, pullTarget)
-            s = applyStatus(s, e.instanceId, 'stun', 2)
-            hits.push(e)
+        for (let dr = 0; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            const c = { row: cell.row + dr, col: cell.col + dc }
+            if (isValidCell(s, c)) {
+              for (const e of enemiesAt(s, c)) {
+                s = dealDamage(s, e.instanceId, dmg, 'melee')
+                s = pullEnemy(s, e.instanceId, pullTarget)
+                s = applyStatus(s, e.instanceId, 'stun', 2)
+                hits.push(e)
+              }
+            }
           }
         }
         return { ...s, _lastCardHits: hits }
@@ -430,6 +448,7 @@ const earthbound = {
       name: 'Taunt',
       trigger: 'sneak_left_click',
       cardType: 'utility',
+      attackPattern: 'front_2rows',
       cooldownBase: 12,
       damageType: 'melee',
       rarityValues: R([[0.10, 0.01], [0.15, 0.015], [0.20, 0.02], [0.25, 0.025], [0.30, 0.03]]),

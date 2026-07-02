@@ -787,19 +787,14 @@ function progressToNextRoom(state) {
 
 // Dispatch a card play to the appropriate ability handler from abilities.js.
 function resolveCardPlay(state, card, ctx) {
+  const enemiesBefore = state.enemies.map(e => ({ instanceId: e.instanceId, hp: e.hp }))
   let s = { ...state, _lastCardHits: [], _lastCardDamage: 0 }
 
-  // Basic attack chains.
   if (card.isBasicAttack) {
-    return resolveBasicAttack(s, card, ctx)
-  }
-
-  // Special generated cards (created at runtime, not in ability trees).
-  if (card.id === 'draw_card' || card.cardId === 'draw_card') {
+    s = resolveBasicAttack(s, card, ctx)
+  } else if (card.id === 'draw_card' || card.cardId === 'draw_card') {
     return drawExtraCard(s)
-  }
-  if (card.id === 'lightning_bottle_generated' || card.cardId === 'lightning_bottle_generated') {
-    // 3×3 AoE magic damage + stun.
+  } else if (card.id === 'lightning_bottle_generated' || card.cardId === 'lightning_bottle_generated') {
     const damage = Math.round((s.runStats.magicDamage ?? 10) * 1.5)
     if (ctx.targetCell) {
       s = dealDamageAoe(s, ctx.targetCell, 1, damage, 'magic')
@@ -810,10 +805,7 @@ function resolveCardPlay(state, card, ctx) {
         s = applyStatus(s, e.instanceId, 'stun', 1)
       }
     }
-    return s
-  }
-  if (card.id === 'permafrost_generated' || card.cardId === 'permafrost_generated') {
-    // Freeze 2×2 area + apply weakness stacks.
+  } else if (card.id === 'permafrost_generated' || card.cardId === 'permafrost_generated') {
     if (ctx.targetCell) {
       const cells = []
       for (let dr = 0; dr <= 1; dr++)
@@ -824,16 +816,40 @@ function resolveCardPlay(state, card, ctx) {
         s = applyWeaknessStacks(s, e.instanceId, 2)
       }
     }
-    return s
+  } else {
+    const tree = ABILITY_TREES[card.tree]
+    if (!tree) return s
+    const ability = tree.abilities.find(a => a.id === (card.cardId ?? card.id))
+    if (!ability?.execute) return s
+    s = ability.execute(s, { ...ctx, rarity: card.rarity, runStats: s.runStats })
   }
 
-  // Find ability definition.
-  const tree = ABILITY_TREES[card.tree]
-  if (!tree) return s
-  const ability = tree.abilities.find(a => a.id === (card.cardId ?? card.id))
-  if (!ability?.execute) return s
+  // Derive _lastCardHits from HP changes if ability didn't set it explicitly
+  if (s._lastCardHits.length === 0) {
+    const hits = enemiesBefore
+      .map(({ instanceId, hp }) => {
+        const after = s.enemies.find(e => e.instanceId === instanceId)
+        // hit if HP changed or enemy died
+        if (!after || after.hp < hp) {
+          return state.enemies.find(e => e.instanceId === instanceId)
+        }
+        return null
+      })
+      .filter(Boolean)
+    s = { ...s, _lastCardHits: hits }
+  }
 
-  return ability.execute(s, { ...ctx, rarity: card.rarity, runStats: s.runStats })
+  // Derive _lastCardDamage from total HP lost if not set explicitly
+  if (s._lastCardDamage === 0) {
+    const totalDamage = enemiesBefore.reduce((sum, { instanceId, hp }) => {
+      const after = s.enemies.find(e => e.instanceId === instanceId)
+      const hpAfter = after ? after.hp : 0
+      return sum + Math.max(0, hp - hpAfter)
+    }, 0)
+    s = { ...s, _lastCardDamage: totalDamage }
+  }
+
+  return s
 }
 
 // Resolve a basic attack hit pattern.
