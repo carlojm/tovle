@@ -105,6 +105,16 @@ function getHighlightedCells(selectedCard, hoveredCell, gridWidth, gridHeight, e
         }
       }
       break
+    
+    case 'aoe3x2':
+      for (let dr = 0; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          const r = hoveredCell.row + dr
+          const c = hoveredCell.col + dc
+          if (inBounds(r, c)) highlighted.add(key(r, c))
+        }
+      }
+      break
 
     case 'x_shape':
       for (let d = -2; d <= 2; d++) {
@@ -172,12 +182,16 @@ export default function CombatGrid({ gridState, enemies, currentRoom, selectedCa
   const rewardIcon = currentRoom ? REWARD_ICONS[currentRoom.type] : null
 
   // auto-highlight fixed patterns even without hover
-  const autoFixed = selectedCard && ['row_wide', 'row2'].includes(selectedCard.attackPattern)
+  const autoFixed = selectedCard && [
+    'front_row', 'row_wide', 'front_2rows_wide', 'row2', 'none'
+  ].includes(selectedCard.attackPattern)
   const highlightedCells = getHighlightedCells(
     selectedCard,
     autoFixed ? { row: 0, col: 0 } : hoveredCell,
     width,
-    height
+    height,
+    enemies,
+    gridState,
   )
 
   const cells = []

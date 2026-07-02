@@ -109,9 +109,9 @@ export default function RewardScreen({ state, dispatch }) {
             {state.rewardType === 'upgrade' ? 'Choose an Upgrade' : 'Choose an Ability'}
           </h2>
           <span className="travel-section-caption">
-            {roomDef?.isElite ? 'Elite room — ' : ''}
+            {roomDef?.isElite ? 'Elite room: ' : ''}
             {state.rewardType === 'upgrade'
-              ? 'A permanent stat boost for this run.'
+              ? 'A permanent card upgrade for this run.'
               : 'A new card added to your deck.'}
           </span>
         </div>

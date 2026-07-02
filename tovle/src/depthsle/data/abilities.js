@@ -150,9 +150,18 @@ const flamecaller = {
       execute(state, ctx) {
         const { targetCell, rarity } = ctx
         const cell = targetCell ?? centerCell(state)
-        let s = dealDamageAoe(state, cell, 0.5, rv(this.rarityValues, rarity), 'magic', { cardTree: 'flamecaller' })
-        for (const e of enemiesInRadius(s, cell, 0.5)) {
-          s = applyBurn(s, e.instanceId, 2, 2)
+        const dmg = rv(this.rarityValues, rarity)
+        let s = state
+        for (let dr = 0; dr <= 1; dr++) {
+          for (let dc = 0; dc <= 1; dc++) {
+            const c = { row: cell.row + dr, col: cell.col + dc }
+            if (isValidCell(s, c)) {
+              for (const e of enemiesAt(s, c)) {
+                s = dealDamage(s, e.instanceId, dmg, 'magic', { cardTree: 'flamecaller' })
+                s = applyBurn(s, e.instanceId, 2, 2)
+              }
+            }
+          }
         }
         return s
       },
