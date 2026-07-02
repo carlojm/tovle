@@ -1347,7 +1347,7 @@ const windwalker = {
       cooldownBase: 5,
       damageType: 'magic',
       rarityValues: R([10, 12, 14, 16, 18]),
-      description(r) { return `3×2 front magic damage (**${rv(this.rarityValues, r)}**). Pushes all hit mobs back 1 tile.` },
+      description(r) { return `3×2 magic damage (**${rv(this.rarityValues, r)}**). Pushes all hit mobs back 1 tile.` },
       execute(state, ctx) {
         const { rarity } = ctx
         const dmg = rv(this.rarityValues, rarity)
@@ -1370,23 +1370,25 @@ const windwalker = {
       name: 'Wind Walk',
       trigger: 'right_click',
       cardType: 'offense',
-      attackPattern: 'row', //TODO fix this skill, what does sideways even mean now
+      attackPattern: 'col',
       cooldownBase: 9,
       damageType: 'magic',
       rarityValues: R([12, 14, 16, 18, 20]),
-      description(r) { return `Row magic damage (**${rv(this.rarityValues, r)}**). Pushes hit mobs sideways 1 tile + stuns for **1 turn**.` },
+      description(r) { return `Column magic damage (**${rv(this.rarityValues, r)}**). Hit mobs are pushed back. Other mobs are pushed sideways.` },
       execute(state, ctx) {
-        const { targetRow, rarity } = ctx
-        const row = targetRow ?? 0
+        const { targetCol, rarity } = ctx
+        const col = targetCol ?? 1
         const dmg = rv(this.rarityValues, rarity)
-        let s = dealDamageRow(state, row, dmg, 'magic')
-        let col = 0
-        for (const e of state.enemies.filter(en => en.cell.row === row)) {
-          // Alternate push direction left/right per mob.
-          const dir = col % 2 === 0 ? 'back' : 'back'
-          s = pushEnemy(s, e.instanceId, dir, 1)
-          s = applyStatus(s, e.instanceId, 'stun', 1)
-          col++
+        let s = dealDamageCol(state, col, dmg, 'magic')
+        for (const e of state.enemies) {
+          if (e.cell.col === col) {
+            s = pushEnemy(s, e.instanceId, 'back', 1)
+            // s = applyStatus(s, e.instanceId, 'stun', 1)
+          } else if (e.cell.col < col) {
+            s = pushEnemy(s, e.instanceId, 'left', 1)
+          } else {
+            s = pushEnemy(s, e.instanceId, 'right', 1)
+          }
         }
         return s
       },
@@ -1436,8 +1438,7 @@ const windwalker = {
       execute(state, ctx) {
         const { rarity } = ctx
         const [tiles, stun] = rv(this.rarityValues, rarity)
-        let s = pushAll(state, { row: 0, col: 0 })
-        // Stun mobs that ended up against the far wall.
+        let s = pushAll(state, 'back', tiles)
         const backRow = s.gridState.height - 1
         for (const e of s.enemies.filter(en => en.cell.row >= backRow - tiles + 1)) {
           s = applyStatus(s, e.instanceId, 'stun', stun)
@@ -1455,27 +1456,31 @@ const windwalker = {
       cooldownBase: 10,
       damageType: 'magic',
       rarityValues: R([20, 24, 28, 32, 36]),
-      description(r) { return `Pull two mobs toward each other. If they collide, both take **${rv(this.rarityValues, r)}** magic damage.` },
+      description(r) { return `Pull the nearest mob to the targeted mob. Both take **${rv(this.rarityValues, r)}** magic damage on collision.` },
       execute(state, ctx) {
-        const { targetCell, rarity } = ctx
+        const { targetEnemyId, rarity } = ctx
         const dmg = rv(this.rarityValues, rarity)
-        if (state.enemies.length < 2) return state
-        // Pick nearest two enemies to targetCell (or just first two).
-        const cell = targetCell ?? centerCell(state)
-        const sorted = [...state.enemies].sort((a, b) => {
-          const da = Math.abs(a.cell.row - cell.row) + Math.abs(a.cell.col - cell.col)
-          const db = Math.abs(b.cell.row - cell.row) + Math.abs(b.cell.col - cell.col)
-          return da - db
-        })
-        const [mobA, mobB] = sorted
-        let s = pullTowardEachOther(state, mobA.instanceId, mobB.instanceId)
-        // Collision: if they share a cell after pull, deal damage to both.
-        const afterA = s.enemies.find(e => e.instanceId === mobA.instanceId)
-        const afterB = s.enemies.find(e => e.instanceId === mobB.instanceId)
-        if (afterA && afterB && afterA.cell.row === afterB.cell.row && afterA.cell.col === afterB.cell.col) {
-          s = dealDamage(s, mobA.instanceId, dmg, 'magic')
-          s = dealDamage(s, mobB.instanceId, dmg, 'magic')
-        }
+        if (state.enemies.length < 2 || !targetEnemyId) return state
+
+        const target = state.enemies.find(e => e.instanceId === targetEnemyId)
+        if (!target) return state
+
+        // Find nearest other enemy to the target
+        const nearest = state.enemies
+          .filter(e => e.instanceId !== targetEnemyId)
+          .reduce((best, e) => {
+            const d = Math.abs(e.cell.row - target.cell.row) + Math.abs(e.cell.col - target.cell.col)
+            const bd = Math.abs(best.cell.row - target.cell.row) + Math.abs(best.cell.col - target.cell.col)
+            return d < bd ? e : best
+          })
+
+        // Pull nearest to target's cell
+        let s = pullEnemy(state, nearest.instanceId, target.cell)
+
+        // They're now on the same cell, deal collision damage to both
+        s = dealDamage(s, targetEnemyId, dmg, 'magic')
+        s = dealDamage(s, nearest.instanceId, dmg, 'magic')
+
         return s
       },
     },
