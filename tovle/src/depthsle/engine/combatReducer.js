@@ -90,6 +90,7 @@ export function buildInitialState(playerData) {
     mainTree: null,
     abilities: [],          // [{id, tree, name, rarity, cardType, ...}]
     hand: [],               // [{instanceId, cardId, name, rarity, source}]
+    abilityCooldowns: {},//for cooldowns
     classOptions,
     roomOptions: [],
     roomNumber: 0,
@@ -171,17 +172,80 @@ function checkLowHealth(state) {
 }
 
 // Draw the opening hand for a room (basic attack + any cooldown-ready abilities).
+// function buildOpeningHand(state) {
+//   const weaponType = state.runStats.weaponType ?? 'sword'
+//   const basicAttack = buildBasicAttackCard(weaponType, 0)
+//   let s = { ...state, hand: [basicAttack] }
+//   // Add any abilities that start off cooldown.
+//   for (const ability of state.abilities) {
+//     if (ability.cardType !== 'passive') {
+//       const card = { ...ability, instanceId: `card_${Date.now()}_${ability.id}`, cooldownRemaining: 0 }
+//       s = { ...s, hand: [...s.hand, card] }
+//     }
+//   }
+//   return s
+// }
+
 function buildOpeningHand(state) {
   const weaponType = state.runStats.weaponType ?? 'sword'
   const basicAttack = buildBasicAttackCard(weaponType, 0)
-  let s = { ...state, hand: [basicAttack] }
-  // Add any abilities that start off cooldown.
-  for (const ability of state.abilities) {
-    if (ability.cardType !== 'passive') {
-      const card = { ...ability, instanceId: `card_${Date.now()}_${ability.id}`, cooldownRemaining: 0 }
-      s = { ...s, hand: [...s.hand, card] }
+  return { ...state, hand: [basicAttack], _basicAttackChainIndex: 0 }
+}
+
+//helper for adding abilities to cooldown list
+//they start at half cooldown base
+function buildAbilityCooldowns(abilities, existing = {}) {
+  const cooldowns = { ...existing }
+  for (const ability of abilities) {
+    if (ability.cardType !== 'passive' && !(ability.id in cooldowns)) {
+      cooldowns[ability.id] = Math.floor((ability.cooldownBase ?? 5) / 2)
     }
   }
+  return cooldowns
+}
+
+//cooldown tick helper
+//cooldown keeps charging while in hand to disincentivize spamming cards
+function tickAbilityCooldowns(state) {
+  let s = { ...state }
+  const cooldowns = { ...s.abilityCooldowns }
+  const handIds = new Set(s.hand.map(c => c.cardId ?? c.id))
+
+  for (const ability of s.abilities) {
+    if (ability.cardType === 'passive') continue
+
+    const currentCooldown = cooldowns[ability.id] ?? 0
+
+    // already in hand , don't tick, don't add again
+    if (handIds.has(ability.id)) continue
+
+    // compute tick
+    const rarityBonus = [1.0, 1.1, 1.2, 1.3, 1.4][ability.rarity ?? 0]
+    const speedMult = ((s.runStats.speedPercent ?? 100) / 100) * (s.runStats.cooldownRate ?? 1.0)
+    const turnCount = s._turnCount ?? 0
+    const jitterRng = deriveRng(s.seed, `cd_jitter_${ability.id}`, turnCount)
+    const jitter = jitterRng() * 0.2 + 0.9
+    const tick = rarityBonus * speedMult * jitter
+
+    const newCooldown = currentCooldown - tick
+
+    if (newCooldown <= 0) {
+      // ready: add to hand and reset cooldown to base
+      const card = {
+        ...ability,
+        instanceId: `card_${Date.now()}_${ability.id}`,
+        cardId: ability.id,
+        cooldownRemaining: 0,
+      }
+      s = { ...s, hand: [...s.hand, card] }
+      cooldowns[ability.id] = ability.cooldownBase ?? 5
+      s = addLog(s, `${ability.name} is ready!`)
+    } else {
+      cooldowns[ability.id] = newCooldown
+    }
+  }
+
+  s = { ...s, abilityCooldowns: cooldowns, _turnCount: (s._turnCount ?? 0) + 1 }
   return s
 }
 
@@ -534,6 +598,7 @@ function resolveEnemyTurn(state) {
   let s = { ...state, subPhase: SUB_PHASES.ENEMY_TURN }
   s = tickPlayerBuffs(s)
   s = tickPlayerDoTs(s)
+  s = tickAbilityCooldowns(s)
   s = addLog(s, '--- Enemy Turn ---')
   for (const enemy of [...s.enemies]) {
     s = tickBurn(s, enemy.instanceId)
@@ -560,6 +625,8 @@ function resolveEnemyTurn(state) {
   const hasBasicAttack = s.hand.some(c => c.isBasicAttack)
   if (!hasBasicAttack) {
     const weaponType = s.runStats.weaponType ?? 'sword'
+    console.log('adding basic at chain index', s._basicAttackChainIndex)
+
     const basicCard = buildBasicAttackCard(weaponType, s._basicAttackChainIndex ?? 0)
     s = { ...s, hand: [...s.hand, basicCard] }
   }
@@ -583,7 +650,7 @@ export function combatReducer(state, action) {
     // ── CLASS_SELECT → ROOM_SELECT ──────────────────────────────────────────
     case 'SELECT_CLASS': {
       const { treeId } = action
-      s = { ...s, mainTree: treeId, phase: PHASES.ROOM_SELECT }
+      s = { ...s, mainTree: treeId, phase: PHASES.ROOM_SELECT, abilityCooldowns: {} }
       s = addLog(s, `Class selected: ${treeId}`)
       // Build first room options.
       const rng = deriveRng(s.seed, 'roomOptions', s.roomNumber)
@@ -740,6 +807,7 @@ export function combatReducer(state, action) {
       if (!chosen) return s
 
       s = { ...s, abilities: [...s.abilities, chosen] }
+      s = { ...s, abilityCooldowns: buildAbilityCooldowns(s.abilities, s.abilityCooldowns) }
       s = addLog(s, `Acquired ${chosen.name} (${['Common','Uncommon','Rare','Epic','Legendary'][chosen.rarity]})`)
 
       // Re-register all passives.

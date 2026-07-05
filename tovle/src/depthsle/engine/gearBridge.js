@@ -44,6 +44,7 @@ export function buildRunStats(playerData) {
     magicDamage:       parseFloat(stats.magicDPS),
     regenPerSec:       parseFloat(stats.regenPerSec),
     cooldownRate:      parseFloat(stats.spellCooldownPercent) / 100,
+    speedPercent:      parseFloat(stats.speedPercent),  // add this
     weaponType,
   }
 }

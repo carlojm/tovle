@@ -123,6 +123,8 @@ export default function CombatScreen({ state, dispatch }) {
       {/* ── Card hand ── */}
       <CardHand
         hand={state.hand}
+        abilities={state.abilities}
+        abilityCooldowns={state.abilityCooldowns}
         subPhase={state.subPhase}
         selectedCard={selectedCard}
         onCardSelect={handleCardSelect}
