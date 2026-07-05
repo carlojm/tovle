@@ -655,29 +655,30 @@ export function pullEnemy(state, enemyId, targetCell) {
 }
 
 // Pull two enemies toward each other; deal collision damage if they end up on same cell.
-// export function pullTowardEachOther(state, enemyIdA, enemyIdB, collisionDamage, damageType = 'magic') {
-//   let s = cloneState(state)
-//   const a = findEnemy(s, enemyIdA)
-//   const b = findEnemy(s, enemyIdB)
-//   if (!a || !b) return s
+export function pullTowardEachOther(state, enemyIdA, enemyIdB, collisionDamage, damageType = 'magic') {
+  let s = cloneState(state)
+  // const a = findEnemy(s, enemyIdA)
+  // const b = findEnemy(s, enemyIdB)
+  // if (!a || !b) return s
 
-//   const midRow = Math.round((a.cell.row + b.cell.row) / 2)
-//   const midCol = Math.round((a.cell.col + b.cell.col) / 2)
-//   const mid = { row: midRow, col: midCol }
+  // const midRow = Math.round((a.cell.row + b.cell.row) / 2)
+  // const midCol = Math.round((a.cell.col + b.cell.col) / 2)
+  // const mid = { row: midRow, col: midCol }
 
-//   s = pullEnemy(s, enemyIdA, mid)
-//   s = pullEnemy(s, enemyIdB, mid)
+  // s = pullEnemy(s, enemyIdA, mid)
+  // s = pullEnemy(s, enemyIdB, mid)
 
-//   // Collision check.
-//   const aNew = findEnemy(s, enemyIdA)
-//   const bNew = findEnemy(s, enemyIdB)
-//   if (aNew && bNew && aNew.cell.row === bNew.cell.row && aNew.cell.col === bNew.cell.col) {
-//     s = dealDamage(s, enemyIdA, collisionDamage, damageType)
-//     s = dealDamage(s, enemyIdB, collisionDamage, damageType)
-//     s = log(s, `Collision! ${a.name} and ${b.name} collide.`)
-//   }
-//   return s
-// }
+  // // Collision check.
+  // const aNew = findEnemy(s, enemyIdA)
+  // const bNew = findEnemy(s, enemyIdB)
+  // if (aNew && bNew && aNew.cell.row === bNew.cell.row && aNew.cell.col === bNew.cell.col) {
+  //   s = dealDamage(s, enemyIdA, collisionDamage, damageType)
+  //   s = dealDamage(s, enemyIdB, collisionDamage, damageType)
+  //   s = log(s, `Collision! ${a.name} and ${b.name} collide.`)
+  // }
+  console.log("you shouldnt be here: pullTowardEachOther")
+  return s
+}
 
 // Pull all enemies toward a cell (used by Guarding Bolt, Gravity Bomb).
 export function pullAll(state, targetCell) {
