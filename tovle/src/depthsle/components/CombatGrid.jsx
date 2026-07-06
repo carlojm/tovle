@@ -286,14 +286,46 @@ export default function CombatGrid({ gridState, enemies, currentRoom, selectedCa
         {/* Enemy overlay layer — siblings in same grid context */}
         <AnimatePresence>
           {enemies.map(enemy => {
+            const stackedEnemies = enemies.filter(e =>
+              e.cell.row === enemy.cell.row && e.cell.col === enemy.cell.col
+            )
+            const stackCount = stackedEnemies.length
+            const stackIndex = stackedEnemies.findIndex(e => e.instanceId === enemy.instanceId)
+
             const cssGridRow = displayRows - (enemy.cell.row + 1)
             const cssGridCol = enemy.cell.col + 2
 
-            // percentage position within the grid
             const topPct = ((cssGridRow - 1) / displayRows) * 100
             const leftPct = ((cssGridCol - 1) / displayCols) * 100
             const widthPct = (1 / displayCols) * 100
             const heightPct = (1 / displayRows) * 100
+
+            // subdivide cell for stacked enemies
+            let subLeft = 0
+            let subTop = 0
+            let subWidth = 1
+            let subHeight = 1
+
+            if (stackCount === 2) {
+              subWidth = 0.5
+              subLeft = stackIndex * 0.5
+            } else if (stackCount === 3) {
+              if (stackIndex < 2) {
+                subWidth = 0.5
+                subHeight = 0.5
+                subLeft = stackIndex * 0.5
+                subTop = 0
+              } else {
+                subWidth = 1
+                subHeight = 0.5
+                subTop = 0.5
+              }
+            } else if (stackCount >= 4) {
+              subWidth = 0.5
+              subHeight = 0.5
+              subLeft = (stackIndex % 2) * 0.5
+              subTop = Math.floor(stackIndex / 2) * 0.5
+            }
 
             const hpPct = Math.round((enemy.hp / enemy.maxHp) * 100)
             const barColor = hpPct > 50 ? '#4a8' : hpPct > 25 ? '#a84' : '#a44'
@@ -306,10 +338,10 @@ export default function CombatGrid({ gridState, enemies, currentRoom, selectedCa
                 className="cg-enemy-overlay"
                 style={{
                   position: 'absolute',
-                  top: `${topPct}%`,
-                  left: `${leftPct}%`,
-                  width: `${widthPct}%`,
-                  height: `${heightPct}%`,
+                  top: `calc(${topPct}% + ${subTop * heightPct}%)`,
+                  left: `calc(${leftPct}% + ${subLeft * widthPct}%)`,
+                  width: `${widthPct * subWidth}%`,
+                  height: `${heightPct * subHeight}%`,
                 }}
                 layout
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
