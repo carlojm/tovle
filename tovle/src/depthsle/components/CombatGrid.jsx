@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { User } from 'lucide-react'
 import { isFrozen } from '../engine/effects.js'
 import './CombatGrid.css'
+import { motion, AnimatePresence } from 'framer-motion'
 
 import abilityIcon       from '../../assets/depths_icons/normal_room_with_ability_reward.png'
 import eliteAbilityIcon  from '../../assets/depths_icons/elite_room_with_ability_reward.png'
@@ -144,30 +145,39 @@ function EnemyCell({ enemies }) {
   const actionPct = Math.round((primary.actionBar / primary.actionBarMax) * 100)
 
   return (
-    <div className="cg-enemy">
-      <span className="cg-enemy-emoji">{primary.emoji}</span>
-      {enemies.length > 1 && (
-        <span className="cg-enemy-stack">+{enemies.length - 1}</span>
-      )}
-      {primary.enraged && <span className="cg-enemy-enraged">!</span>}
-      <div className="cg-enemy-bars">
-        <div className="cg-bar-track">
-          <div className="cg-bar-fill cg-bar-hp" style={{ width: `${hpPct}%`, background: barColor }} />
+    <AnimatePresence>
+      <motion.div
+        key={primary.instanceId}
+        layoutId={primary.instanceId}
+        className="cg-enemy"
+        layout
+        transition={{ duration: 0.25, ease: 'easeInOut' }}
+      >
+        <span className="cg-enemy-emoji">{primary.emoji}</span>
+        {enemies.length > 1 && (
+          <span className="cg-enemy-stack">+{enemies.length - 1}</span>
+        )}
+        {primary.enraged && <span className="cg-enemy-enraged">!</span>}
+        <div className="cg-enemy-bars">
+          <div className="cg-bar-track">
+            <div className="cg-bar-fill cg-bar-hp" style={{ width: `${hpPct}%`, background: barColor }} />
+          </div>
+          <div className="cg-bar-track">
+            <div className="cg-bar-fill cg-bar-action" style={{ width: `${actionPct}%` }} />
+          </div>
         </div>
-        <div className="cg-bar-track">
-          <div className="cg-bar-fill cg-bar-action" style={{ width: `${actionPct}%` }} />
-        </div>
-      </div>
-      {primary.statuses.length > 0 && (
-        <div className="cg-status-dots">
-          {primary.statuses.map((s, i) => (
-            <span key={i} className={`cg-status-dot cg-status-dot--${s.type}`} />
-          ))}
-        </div>
-      )}
-    </div>
+        {primary.statuses.length > 0 && (
+          <div className="cg-status-dots">
+            {primary.statuses.map((s, i) => (
+              <span key={i} className={`cg-status-dot cg-status-dot--${s.type}`} />
+            ))}
+          </div>
+        )}
+      </motion.div>
+    </AnimatePresence>
   )
 }
+
 
 export default function CombatGrid({ gridState, enemies, currentRoom, selectedCard, onCellTap }) {
   const [hoveredCell, setHoveredCell] = useState(null)
@@ -218,12 +228,8 @@ export default function CombatGrid({ gridState, enemies, currentRoom, selectedCa
             key={`${displayRow}-${displayCol}`}
             className={`cg-cell cg-cell--margin ${isPlayer ? 'cg-cell--player' : ''} ${isExit ? 'cg-cell--exit' : ''}`}
           >
-            {isPlayer && (
-              <User size="60%" strokeWidth={1.5} className="cg-player-icon" />
-            )}
-            {isExit && rewardIcon && (
-              <img src={rewardIcon} alt="reward" className="cg-exit-icon" />
-            )}
+            {isPlayer && <User size="60%" strokeWidth={1.5} className="cg-player-icon" />}
+            {isExit && rewardIcon && <img src={rewardIcon} alt="reward" className="cg-exit-icon" />}
           </div>
         )
         continue
@@ -240,63 +246,96 @@ export default function CombatGrid({ gridState, enemies, currentRoom, selectedCa
       const isHighlighted = highlightedCells.has(cellKey)
       const hasEnemy = cellEnemies.length > 0
 
-      const handleMouseEnter = () => {
-        if (selectedCard) setHoveredCell({ row: roomRow, col: roomCol })
-      }
-      const handleMouseLeave = () => setHoveredCell(null)
-      const handleTap = () => {
-        if (selectedCard) onCellTap({ row: roomRow, col: roomCol })
-      }
-
       cells.push(
         <div
           key={`${displayRow}-${displayCol}`}
           className={[
-            'cg-cell',
-            'cg-cell--room',
-            frozen        ? 'cg-cell--frozen'      : '',
-            isHighlighted ? 'cg-cell--highlighted'  : '',
-            hasEnemy      ? 'cg-cell--has-enemy'    : '',
-            selectedCard  ? 'cg-cell--targeting'    : '',
+            'cg-cell cg-cell--room',
+            frozen        ? 'cg-cell--frozen'     : '',
+            isHighlighted ? 'cg-cell--highlighted' : '',
+            hasEnemy      ? 'cg-cell--has-enemy'   : '',
+            selectedCard  ? 'cg-cell--targeting'   : '',
           ].join(' ')}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onClick={handleTap}
+          onMouseEnter={() => selectedCard && setHoveredCell({ row: roomRow, col: roomCol })}
+          onMouseLeave={() => setHoveredCell(null)}
+          onClick={() => selectedCard && onCellTap({ row: roomRow, col: roomCol })}
         >
-          <EnemyCell enemies={cellEnemies} />
-          {token && !hasEnemy && (
-            <span className="cg-token">📌</span>
-          )}
+          {token && !hasEnemy && <span className="cg-token">📌</span>}
         </div>
       )
     }
   }
 
-  // Max cell size we want in px
-  const MAX_CELL_SIZE = 64
-
-  // Available height for the grid (viewport minus space for other UI)
-  const GRID_MAX_HEIGHT = Math.min(window.innerHeight * 0.5, displayRows * MAX_CELL_SIZE)
-
-  // Work backwards: if height is constrained, what width does that imply?
-  const cellSizeFromHeight = GRID_MAX_HEIGHT / displayRows
-  const maxGridWidth = cellSizeFromHeight * displayCols
-
-  // Also cap by a max width so huge wide grids don't overflow
-  const MAX_GRID_WIDTH = Math.min(maxGridWidth, 480)
-
   return (
-    <div className="cg-wrapper" style={{ maxWidth: `${MAX_GRID_WIDTH}px` }}>
+    <div className="cg-wrapper">
       <div
         className="cg-grid"
         style={{
           gridTemplateColumns: `repeat(${displayCols}, 1fr)`,
           gridTemplateRows: `repeat(${displayRows}, 1fr)`,
-          // '--cg-cols': displayCols,
-          // '--cg-rows': displayRows,
+          position: 'relative',
         }}
+        ref={gridRef => {
+          // store ref for enemy positioning
+          if (gridRef) gridRef._depthsleGrid = true
+        }}
+        id="cg-grid-inner"
       >
         {cells}
+
+        {/* Enemy overlay layer — siblings in same grid context */}
+        <AnimatePresence>
+          {enemies.map(enemy => {
+            const cssGridRow = displayRows - (enemy.cell.row + 1)
+            const cssGridCol = enemy.cell.col + 2
+
+            // percentage position within the grid
+            const topPct = ((cssGridRow - 1) / displayRows) * 100
+            const leftPct = ((cssGridCol - 1) / displayCols) * 100
+            const widthPct = (1 / displayCols) * 100
+            const heightPct = (1 / displayRows) * 100
+
+            const hpPct = Math.round((enemy.hp / enemy.maxHp) * 100)
+            const barColor = hpPct > 50 ? '#4a8' : hpPct > 25 ? '#a84' : '#a44'
+            const actionPct = Math.round((enemy.actionBar / enemy.actionBarMax) * 100)
+
+            return (
+              <motion.div
+                key={enemy.instanceId}
+                layoutId={enemy.instanceId}
+                className="cg-enemy-overlay"
+                style={{
+                  position: 'absolute',
+                  top: `${topPct}%`,
+                  left: `${leftPct}%`,
+                  width: `${widthPct}%`,
+                  height: `${heightPct}%`,
+                }}
+                layout
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                exit={{ opacity: 0, scale: 0.5 }}
+              >
+                <span className="cg-enemy-emoji">{enemy.emoji}</span>
+                {enemy.enraged && <span className="cg-enemy-enraged">!</span>}
+                <div className="cg-enemy-bars">
+                  <div className="cg-bar-track">
+                    <div className="cg-bar-fill cg-bar-hp" style={{ width: `${hpPct}%`, background: barColor }} />
+                  </div>
+                  <div className="cg-bar-track">
+                    <div className="cg-bar-fill cg-bar-action" style={{ width: `${actionPct}%` }} />
+                  </div>
+                </div>
+                {enemy.statuses.length > 0 && (
+                  <div className="cg-status-dots">
+                    {enemy.statuses.map((s, i) => (
+                      <span key={i} className={`cg-status-dot cg-status-dot--${s.type}`} />
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            )
+          })}
+        </AnimatePresence>
       </div>
     </div>
   )
