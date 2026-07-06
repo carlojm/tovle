@@ -454,7 +454,7 @@ export function damagePlayer(state, amount, source = 'enemy') {
   }
 
   const newHp = Math.max(0, Math.round(s.player.hp - dmg))
-  s = { ...s, player: { ...s.player, hp: newHp, tookDamageRecently: true, tookDamageRecentlyTurnsLeft: 2 } }
+  s = { ...s, player: { ...s.player, hp: newHp, tookDamageRecently: true, tookDamageRecentlyTurnsLeft: 2 }, _playerJustTookDamage: true }
   s = log(s, `Player takes ${dmg} damage from ${source} (${newHp}/${s.player.maxHp} HP)`)
   return s
 }

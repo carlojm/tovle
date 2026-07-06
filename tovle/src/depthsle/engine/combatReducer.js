@@ -647,11 +647,27 @@ function resolveEnemyTurn(state) {
     s = { ...s, phase: PHASES.ROOM_CLEAR, subPhase: null }
     return fireEvent(s, 'on_room_clear', {})
   }
+
+  //collect acting enemies for animations
+  const actedEnemyIds = []
+  for (const enemy of [...s.enemies]) {
+    const { newState, acted } = tickEnemyActionBar(s, enemy.instanceId)
+    s = newState
+    if (acted) {
+      actedEnemyIds.push(enemy.instanceId)
+      const liveEnemy = s.enemies.find(e => e.instanceId === enemy.instanceId)
+      if (liveEnemy) {
+        s = resolveEnemyAction(s, liveEnemy)
+        s = checkLowHealth(s)
+      }
+    }
+  }
+  s = { ...s, _lastActedEnemies: actedEnemyIds }
   
   const hasBasicAttack = s.hand.some(c => c.isBasicAttack)
   if (!hasBasicAttack) {
     const weaponType = s.runStats.weaponType ?? 'sword'
-    console.log('adding basic at chain index', s._basicAttackChainIndex)
+    // console.log('adding basic at chain index', s._basicAttackChainIndex)
 
     const basicCard = buildBasicAttackCard(weaponType, s._basicAttackChainIndex ?? 0)
     s = { ...s, hand: [...s.hand, basicCard] }
@@ -670,6 +686,8 @@ export function combatReducer(state, action) {
   s._lastPushWasWallCollision = false
   s._dodgeBlocked = false
   s._dodgePushTarget = null
+  s._lastActedEnemies = [] //used for enemy attack animations
+  s._playerJustTookDamage = false //for player attacked animation
 
   switch (action.type) {
 

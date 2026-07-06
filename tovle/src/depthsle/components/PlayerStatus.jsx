@@ -1,4 +1,6 @@
 import './PlayerStatus.css'
+import { motion, AnimatePresence } from 'framer-motion'
+
 
 function StatusPip({ status }) {
   const LABELS = {
@@ -25,7 +27,7 @@ function BuffPip({ buff }) {
   )
 }
 
-export default function PlayerStatus({ player }) {
+export default function PlayerStatus({ player, playerTookDamage }) {
   const hpPct = Math.round((player.hp / player.maxHp) * 100)
   const absPct = player.absorption > 0
     ? Math.round((player.absorption / player.maxHp) * 100)
@@ -48,7 +50,14 @@ export default function PlayerStatus({ player }) {
       </div>
 
       {/* ── HP bar ── */}
-      <div className="ps-bar-track">
+      <motion.div
+        className="ps-bar-track"
+        animate={playerTookDamage
+          ? { boxShadow: ['0 0 0 2px rgba(255,60,60,0.8)', '0 0 0 0px rgba(255,60,60,0)'] }
+          : { boxShadow: '0 0 0 0px rgba(255,60,60,0)' }
+        }
+        transition={{ duration: 0.4 }}
+      >
         <div
           className="ps-bar-fill"
           style={{ width: `${Math.min(hpPct, 100)}%`, background: hpColor }}
@@ -59,7 +68,7 @@ export default function PlayerStatus({ player }) {
             style={{ width: `${Math.min(absPct, 100 - hpPct)}%` }}
           />
         )}
-      </div>
+      </motion.div>
 
       {/* ── Buffs and DoTs ── */}
       {(player.buffs.length > 0 || player.playerDoTs?.length > 0 || player.webbed > 0) && (

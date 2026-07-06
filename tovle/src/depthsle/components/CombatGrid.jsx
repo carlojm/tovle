@@ -179,7 +179,7 @@ function EnemyCell({ enemies }) {
 }
 
 
-export default function CombatGrid({ gridState, enemies, currentRoom, selectedCard, onCellTap }) {
+export default function CombatGrid({ gridState, enemies, currentRoom, selectedCard, lastActedEnemies, playerTookDamage, onCellTap }) {
   const [hoveredCell, setHoveredCell] = useState(null)
 
   const { width, height } = gridState
@@ -228,7 +228,19 @@ export default function CombatGrid({ gridState, enemies, currentRoom, selectedCa
             key={`${displayRow}-${displayCol}`}
             className={`cg-cell cg-cell--margin ${isPlayer ? 'cg-cell--player' : ''} ${isExit ? 'cg-cell--exit' : ''}`}
           >
-            {isPlayer && <User size="60%" strokeWidth={1.5} className="cg-player-icon" />}
+            {isPlayer && (
+              <motion.div
+                className="cg-player-cell-inner"
+                animate={playerTookDamage
+                  ? { backgroundColor: ['rgba(255,60,60,0.4)', 'rgba(255,60,60,0)', 'rgba(255,60,60,0.3)', 'rgba(0,0,0,0)'] }
+                  : { backgroundColor: 'rgba(0,0,0,0)' }
+                }
+                transition={{ duration: 0.5 }}
+                style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 4 }}
+              >
+                <User size="60%" strokeWidth={1.5} className="cg-player-icon" />
+              </motion.div>
+            )}
             {isExit && rewardIcon && <img src={rewardIcon} alt="reward" className="cg-exit-icon" />}
           </div>
         )
@@ -331,11 +343,17 @@ export default function CombatGrid({ gridState, enemies, currentRoom, selectedCa
             const barColor = hpPct > 50 ? '#4a8' : hpPct > 25 ? '#a84' : '#a44'
             const actionPct = Math.round((enemy.actionBar / enemy.actionBarMax) * 100)
 
+            const justActed = lastActedEnemies.includes(enemy.instanceId)
+
             return (
               <motion.div
                 key={enemy.instanceId}
                 layoutId={enemy.instanceId}
                 className="cg-enemy-overlay"
+                animate={justActed
+                  ? { x: [0, -5, 5, -5, 5, 0], transition: { duration: 0.35 } }
+                  : { x: 0 }
+                }
                 style={{
                   position: 'absolute',
                   top: `calc(${topPct}% + ${subTop * heightPct}%)`,

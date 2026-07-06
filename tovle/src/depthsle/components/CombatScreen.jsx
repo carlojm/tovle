@@ -109,7 +109,10 @@ export default function CombatScreen({ state, dispatch }) {
       </div>
 
       {/* ── Player status ── */}
-      <PlayerStatus player={state.player} />
+      <PlayerStatus 
+        player={state.player}
+        playerTookDamage={state._playerJustTookDamage ?? false}
+      />
 
       {/* ── Combat grid ── */}
       <CombatGrid
@@ -117,6 +120,8 @@ export default function CombatScreen({ state, dispatch }) {
         enemies={state.enemies}
         currentRoom={state.currentRoom}
         selectedCard={selectedCard}
+        lastActedEnemies={state._lastActedEnemies ?? []} // for animations
+        playerTookDamage={state._playerJustTookDamage ?? false} // for animations
         onCellTap={handleCellTap}
       />
 
