@@ -648,15 +648,23 @@ function resolveEnemyTurn(state) {
     return fireEvent(s, 'on_room_clear', {})
   }
 
-  //collect acting enemies for animations
+  //collect attacking enemies for animations
   const actedEnemyIds = []
   for (const enemy of [...s.enemies]) {
     const { newState, acted } = tickEnemyActionBar(s, enemy.instanceId)
     s = newState
     if (acted) {
-      actedEnemyIds.push(enemy.instanceId)
       const liveEnemy = s.enemies.find(e => e.instanceId === enemy.instanceId)
       if (liveEnemy) {
+        // check if the enemy will attack (not just move)
+        const distToPlayer = liveEnemy.cell.row
+        const validActions = liveEnemy.actions.filter(a =>
+          distToPlayer >= a.minRange && distToPlayer <= a.maxRange
+        )
+        const action = validActions[0]
+        const isAttack = action && action.type !== 'move'
+        if (isAttack) actedEnemyIds.push(enemy.instanceId)
+
         s = resolveEnemyAction(s, liveEnemy)
         s = checkLowHealth(s)
       }
