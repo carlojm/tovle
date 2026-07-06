@@ -189,7 +189,33 @@ function checkLowHealth(state) {
 function buildOpeningHand(state) {
   const weaponType = state.runStats.weaponType ?? 'sword'
   const basicAttack = buildBasicAttackCard(weaponType, 0)
-  return { ...state, hand: [basicAttack], _basicAttackChainIndex: 0 }
+
+  // Keep non-basic cards from previous hand
+  const existingAbilityCards = (state.hand ?? []).filter(c => !c.isBasicAttack)
+
+  // Also add any abilities that are ready but not already in hand
+  const handIds = new Set(existingAbilityCards.map(c => c.cardId ?? c.id))
+  const readyCards = []
+
+  for (const ability of state.abilities) {
+    if (ability.cardType === 'passive') continue
+    if (handIds.has(ability.id)) continue
+    const cooldown = state.abilityCooldowns?.[ability.id] ?? Infinity
+    if (cooldown <= 0) {
+      readyCards.push({
+        ...ability,
+        instanceId: `card_${Date.now()}_${ability.id}`,
+        cardId: ability.id,
+        cooldownRemaining: 0,
+      })
+    }
+  }
+
+  return {
+    ...state,
+    hand: [basicAttack, ...existingAbilityCards, ...readyCards],
+    _basicAttackChainIndex: 0,
+  }
 }
 
 //helper for adding abilities to cooldown list
@@ -738,13 +764,15 @@ export function combatReducer(state, action) {
 
       // After playing a card, stay in PLAYER_TURN (player may play more cards).
       // Transition to ENEMY_TURN happens with END_TURN action.
-
       //but if hand is empty, end turn
-      if (s.hand.length === 0 && s.subPhase === SUB_PHASES.PLAYER_TURN) {
-        return resolveEnemyTurn(s)
-      }
+      // if (s.hand.length === 0 && s.subPhase === SUB_PHASES.PLAYER_TURN) {
+      //   return resolveEnemyTurn(s)
+      // }
 
-      return s
+      //jk just end turn after each play
+      return resolveEnemyTurn(s)
+
+      // return s
     }
 
     // ── END_TURN → ENEMY_TURN ───────────────────────────────────────────────
