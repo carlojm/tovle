@@ -1,6 +1,10 @@
 import { SUB_PHASES } from '../engine/combatReducer.js'
 import './CardHand.css'
 
+import '../../assets/depths_icons/abilities_spritesheet.css'
+import { getAbilityIconClass } from '../../data/abilityIcons.js'
+import abilityBorder from '../../assets/depths_icons/ability_border.png'
+
 const DAMAGE_COLOR = {
   melee:      '#e07040',
   projectile: '#60a8e0',
@@ -17,7 +21,7 @@ function CooldownBar({ current, max }) {
 }
 
 function AbilityButton({ ability, isReady, isSelected, isDisabled, cooldown, maxCooldown, onSelect }) {
-  const damageColor = DAMAGE_COLOR[ability.damageType] ?? '#888'
+  const iconClass = getAbilityIconClass(ability.tree, ability.id) ?? 'ability-icon--windwalker-unknown-ability'
 
   return (
     <button
@@ -30,18 +34,14 @@ function AbilityButton({ ability, isReady, isSelected, isDisabled, cooldown, max
       onClick={() => isReady && !isDisabled && onSelect(ability)}
       disabled={!isReady || isDisabled}
     >
-      <div className="ch-card-stripe" style={{ background: damageColor }} />
+      <div className="ch-card-icon-wrap">
+        <div className={`ability-icon ${iconClass ?? 'ability-icon--unknown'}`} />
+        <img src={abilityBorder} className="ch-card-border" alt="" />
+      </div>
       <div className="ch-card-body">
         <span className="ch-card-name">{ability.name}</span>
-        {ability.rarity > 0 && (
-          <span className={`ch-card-rarity ch-card-rarity--${ability.rarity}`}>
-            {['', 'Uc', 'R', 'E', 'L'][ability.rarity]}
-          </span>
-        )}
         {!isReady && (
-          <span className="ch-card-cd-label">
-            {Math.ceil(cooldown)}
-          </span>
+          <span className="ch-card-cd-label">{Math.ceil(cooldown)}</span>
         )}
       </div>
       <CooldownBar current={cooldown} max={maxCooldown} />

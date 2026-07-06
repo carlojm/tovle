@@ -157,3 +157,21 @@
   text-align: center;
   margin-top: auto;
 }
+
+.ch-card-icon-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.ch-card-border {
+  position: absolute;
+  top: -3px;
+  left: -5px;
+  width: 72px;
+  height: 72px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
