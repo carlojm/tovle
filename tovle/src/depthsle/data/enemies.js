@@ -18,8 +18,8 @@ export const ENEMIES = {
     moveSpeed: 1,            // tiles toward player per move action
     baseDamage: 8,
     actions: [
-      { type: 'melee', minRange: 0, maxRange: 1 },  // hits adjacent row
-      { type: 'move',  minRange: 2, maxRange: 99 }, // move toward player if far
+      { type: 'melee', minRange: 0, maxRange: 0 },  // hits adjacent row
+      { type: 'move',  minRange: 1, maxRange: 99 }, // move toward player if far
     ],
   },
 
@@ -45,14 +45,14 @@ export const ENEMIES = {
     emoji: '🕷️',
     isElite: false,
     baseHp: 18,
-    actionBarMax: 1.0,
+    actionBarMax: 2.0,
     actionBarSpeed: 0.5,    // fills in 2 turns — fast
     moveSpeed: 2,
     baseDamage: 5,
     actions: [
-      { type: 'melee',  minRange: 0, maxRange: 1 },
-      { type: 'poison', minRange: 0, maxRange: 1 },  // applies poison (burn-like, magic type) on hit
-      { type: 'move',   minRange: 2, maxRange: 99 },
+      { type: 'melee',  minRange: 0, maxRange: 0 },
+      { type: 'poison', minRange: 0, maxRange: 0 },  // applies poison (burn-like, magic type) on hit
+      { type: 'move',   minRange: 1, maxRange: 99 },
     ],
     onHit: ['poison'],  // always applies poison on melee contact
   },
@@ -68,8 +68,8 @@ export const ENEMIES = {
     moveSpeed: 1,
     baseDamage: 4,
     actions: [
-      { type: 'sting',  minRange: 0, maxRange: 1 },  // melee + bleed
-      { type: 'move',   minRange: 2, maxRange: 99 },
+      { type: 'sting',  minRange: 0, maxRange: 0 },  // melee + bleed
+      { type: 'move',   minRange: 1, maxRange: 99 },
     ],
     onHit: ['bleed'],
   },
@@ -91,15 +91,15 @@ export const ENEMIES = {
     enragedDamageBonus: 0.5,
     actions: [
       { type: 'slam',  minRange: 0, maxRange: 1 },   // hits front 2 rows wide
-      { type: 'melee', minRange: 0, maxRange: 1 },
-      { type: 'move',  minRange: 2, maxRange: 99 },
+      { type: 'melee', minRange: 0, maxRange: 0 },
+      { type: 'move',  minRange: 0, maxRange: 99 },
     ],
   },
 
   elite_spider: {
     id: 'elite_spider',
     name: 'Webspinner',
-    emoji: '🕷️',
+    emoji: '🕷',
     isElite: true,
     baseHp: 60,
     actionBarMax: 1.0,
@@ -108,9 +108,9 @@ export const ENEMIES = {
     baseDamage: 10,
     actions: [
       { type: 'web',    minRange: 0, maxRange: 99 }, // roots target for 2 turns
-      { type: 'melee',  minRange: 0, maxRange: 1 },
-      { type: 'poison', minRange: 0, maxRange: 1 },
-      { type: 'move',   minRange: 2, maxRange: 99 },
+      { type: 'melee',  minRange: 0, maxRange: 0 },
+      { type: 'poison', minRange: 0, maxRange: 0 },
+      { type: 'move',   minRange: 1, maxRange: 99 },
     ],
     onKill: ['pull_to_cell'],  // when this enemy is killed, pull all mobs to its cell
   },
