@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { SUB_PHASES, PHASES } from '../engine/combatReducer.js'
 import { ROOM_TYPES } from '../data/layouts.js'
 import PlayerStatus from './PlayerStatus.jsx'
@@ -12,8 +12,10 @@ export default function CombatScreen({ state, dispatch }) {
   // ── UI state (not in reducer — pure interaction state) ──────────────────
   const [selectedCard, setSelectedCard] = useState(null)
   const [pendingTarget, setPendingTarget] = useState(null)
+
   const [dragState, setDragState] = useState(null)
   // { card, iconClass, x, y, currentCell }
+  const didDragRef = useRef(false)
 
   const isPlayerTurn = state.subPhase === SUB_PHASES.PLAYER_TURN
 
@@ -26,16 +28,23 @@ export default function CombatScreen({ state, dispatch }) {
     const onMove = (e) => {
       e.preventDefault()
       const touch = e.touches?.[0]
-      if (!touch) return
-      handleDragMove(touch.clientX, touch.clientY)
+      const clientX = touch ? touch.clientX : e.clientX
+      const clientY = touch ? touch.clientY : e.clientY
+      handleDragMove(clientX, clientY)
     }
+
     const onEnd = () => handleDragEnd()
 
     window.addEventListener('touchmove', onMove, { passive: false })
     window.addEventListener('touchend', onEnd)
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onEnd)
+
     return () => {
       window.removeEventListener('touchmove', onMove)
       window.removeEventListener('touchend', onEnd)
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onEnd)
     }
   }, [dragState])
 
@@ -58,6 +67,7 @@ export default function CombatScreen({ state, dispatch }) {
     if (!isPlayerTurn) return
     const isInHand = state.hand.some(c => c.instanceId === card.instanceId)
     if (!isInHand) return
+    didDragRef.current = false
     setSelectedCard(card)
     setPendingTarget(null)
     setDragState({ card, iconClass, x: touchX, y: touchY, currentCell: null, basicIconUrl })
@@ -86,6 +96,7 @@ export default function CombatScreen({ state, dispatch }) {
     const { card, currentCell } = dragState
 
     if (currentCell && isPlayerTurn) {
+      didDragRef.current = true
       const isInHand = state.hand.some(c => c.instanceId === card.instanceId)
       if (isInHand) {
         // same play logic as handleCellTap
@@ -235,6 +246,7 @@ export default function CombatScreen({ state, dispatch }) {
         weaponType={state.runStats?.weaponType ?? 'sword'}
         onCardSelect={handleCardSelect}
         onDragStart={handleDragStart}
+        didDragRef={didDragRef}
       />
 
       {/* ── End turn ── */}

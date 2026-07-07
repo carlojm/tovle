@@ -41,13 +41,15 @@ function renderDesc(text = '') {
   )
 }
 
-function AbilityButton({ ability, handCard, isReady, isSelected, isDisabled, cooldown, maxCooldown, onSelect, onDragStart }) {
+function AbilityButton({ ability, handCard, isReady, isSelected, isDisabled, cooldown, maxCooldown, onSelect, onDragStart, didDragRef}) {
   const iconClass = getAbilityIconClass(ability.tree, ability.id) ?? 'ability-icon--windwalker-unknown-ability'
 
-  const handleTouchStart = (e) => {
+  //dragging
+  const handlePointerDown = (e) => {
     if (!isReady || isDisabled) return
-    const touch = e.touches[0]
-    onDragStart?.(handCard ?? ability, iconClass, touch.clientX, touch.clientY)
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY
+    onDragStart?.(handCard ?? ability, iconClass, clientX, clientY)
   }
   
   return (
@@ -58,9 +60,13 @@ function AbilityButton({ ability, handCard, isReady, isSelected, isDisabled, coo
         isSelected ? 'ch-card--selected' : '',
         isDisabled && !isReady ? 'ch-card--disabled' : '',
       ].join(' ')}
-      // onClick={() => !isDisabled && onSelect(ability)}  // always selectable
-      onClick={() => onSelect({ ...(handCard ?? ability), instanceId: handCard?.instanceId ?? `charging_${ability.id}` })}
-      onTouchStart={handleTouchStart}
+      onClick={(e) => {
+        if (didDragRef?.current) { didDragRef.current = false; return }
+        onSelect({ ...(handCard ?? ability), instanceId: handCard?.instanceId ?? `charging_${ability.id}` })
+      }}
+      onDragStart={(e) => e.preventDefault()}
+      onTouchStart={handlePointerDown}
+      onMouseDown={handlePointerDown}
       disabled={isDisabled && !isReady}  // only truly disabled during enemy turn
     >
       <div className="ch-card-icon-wrap">
@@ -78,15 +84,15 @@ function AbilityButton({ ability, handCard, isReady, isSelected, isDisabled, coo
   )
 }
 
-function BasicAttackCard({ card, isSelected, isDisabled, weaponType, onSelect, onDragStart }) {
+function BasicAttackCard({ card, isSelected, isDisabled, weaponType, onSelect, onDragStart, didDragRef }) {
   const icon = BASIC_ATTACK_ICONS[weaponType] ?? basicSwordIcon
 
-  const handleTouchStart = (e) => {
+  const handlePointerDown = (e) => {
     if (isDisabled) return
-    const touch = e.touches[0]
-    // for basic attack, use weapon icon as ghost
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY
     const iconUrl = BASIC_ATTACK_ICONS[weaponType] ?? basicSwordIcon
-    onDragStart?.(card, null, touch.clientX, touch.clientY, iconUrl)
+    onDragStart?.(card, null, clientX, clientY, iconUrl)
   }
 
   return (
@@ -96,9 +102,14 @@ function BasicAttackCard({ card, isSelected, isDisabled, weaponType, onSelect, o
         isSelected ? 'ch-card--selected' : '',
         isDisabled ? 'ch-card--disabled' : '',
       ].join(' ')}
-      onClick={() => !isDisabled && onSelect(card)}
+      onClick={(e) => {
+        if (didDragRef?.current) { didDragRef.current = false; return }
+        if (!isDisabled) onSelect(card)
+      }}
       disabled={isDisabled}
-      onTouchStart={handleTouchStart}
+      onDragStart={(e) => e.preventDefault()}
+      onTouchStart={handlePointerDown}
+      onMouseDown={handlePointerDown}
     >
       <div className="ch-card-icon-wrap">
         <img src={icon} alt={card.name} className="ch-basic-icon" />
@@ -112,7 +123,7 @@ function BasicAttackCard({ card, isSelected, isDisabled, weaponType, onSelect, o
   )
 }
 
-export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, selectedCard, weaponType, onCardSelect, onDragStart }) {
+export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, selectedCard, weaponType, onCardSelect, onDragStart, didDragRef }) {
   const isPlayerTurn = subPhase === SUB_PHASES.PLAYER_TURN
   const handIds = new Set(hand.map(c => c.cardId ?? c.id))
 
@@ -132,6 +143,7 @@ export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, 
             weaponType={weaponType}
             onSelect={onCardSelect}
             onDragStart={onDragStart}
+            didDragRef={didDragRef}
           />
         )}
 
@@ -154,6 +166,7 @@ export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, 
               maxCooldown={maxCooldown}
               onSelect={onCardSelect}
               onDragStart={onDragStart}
+              didDragRef={didDragRef}
             />
           )
         })}
