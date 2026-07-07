@@ -12,6 +12,14 @@ export const getPuzzleNumber = (dateStr = getEasternDateStr()) => {
   return Math.round(diff / msPerDay) + 1
 }
 
+const DEPTHSLE_LAUNCH_STR = '2026-07-07' // update to actual launch date TODO:
+export const getDepthslePuzzleNumber = (dateStr = getEasternDateStr()) => {
+  const toNoon = (dateStr) => new Date(`${dateStr}T12:00:00`)
+  const msPerDay = 1000 * 60 * 60 * 24
+  const diff = toNoon(dateStr) - toNoon(DEPTHSLE_LAUNCH_STR)
+  return Math.max(1, Math.round(diff / msPerDay) + 1)
+}
+
 export const getDisplayDate = (dateStr = getEasternDateStr()) =>
   new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', { timeZone: 'America/New_York' })
 
