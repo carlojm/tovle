@@ -42,8 +42,9 @@ function renderDesc(text = '') {
   )
 }
 
-function AbilityButton({ ability, isReady, isSelected, isDisabled, cooldown, maxCooldown, onSelect }) {
+function AbilityButton({ ability, handCard, isReady, isSelected, isDisabled, cooldown, maxCooldown, onSelect }) {
   const iconClass = getAbilityIconClass(ability.tree, ability.id) ?? 'ability-icon--windwalker-unknown-ability'
+  const cdPct = maxCooldown > 0 ? Math.round((1 - cooldown / maxCooldown) * 100) : 100
 
   return (
     <button
@@ -51,10 +52,11 @@ function AbilityButton({ ability, isReady, isSelected, isDisabled, cooldown, max
         'ch-card',
         isReady    ? 'ch-card--ready'    : 'ch-card--charging',
         isSelected ? 'ch-card--selected' : '',
-        isDisabled ? 'ch-card--disabled' : '',
+        isDisabled && !isReady ? 'ch-card--disabled' : '',
       ].join(' ')}
-      onClick={() => isReady && !isDisabled && onSelect(ability)}
-      disabled={!isReady || isDisabled}
+      // onClick={() => !isDisabled && onSelect(ability)}  // always selectable
+      onClick={() => onSelect({ ...(handCard ?? ability), instanceId: handCard?.instanceId ?? `charging_${ability.id}` })}
+      disabled={isDisabled && !isReady}  // only truly disabled during enemy turn
     >
       <div className="ch-card-icon-wrap">
         <div className={`ability-icon ${iconClass ?? 'ability-icon--unknown'}`} />
@@ -129,6 +131,7 @@ export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, 
             <AbilityButton
               key={ability.id}
               ability={handCard ?? ability}
+              handCard={handCard}
               isReady={isReady}
               isSelected={isReady && selectedCard?.instanceId === handCard?.instanceId}
               isDisabled={!isPlayerTurn}
@@ -153,6 +156,18 @@ export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, 
                   </span>
                 )}
               </div> */}
+              {(() => {
+                const cd = abilityCooldowns?.[selectedCard.cardId ?? selectedCard.id]
+                const max = selectedCard.cooldownBase
+                if (!cd || !max) return null
+                const isReady = cd <= 0
+                const pct = Math.round((1 - cd / max) * 100)
+                return (
+                  <span className="ch-selected-cd">
+                    {isReady ? 'Ready' : `${pct}% charged`}
+                  </span>
+                )
+              })()}
               {selectedCard.descriptionText && (
                 <div className="ch-selected-desc">
                   {renderDesc(selectedCard.descriptionText)}

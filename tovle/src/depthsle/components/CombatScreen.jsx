@@ -16,7 +16,7 @@ export default function CombatScreen({ state, dispatch }) {
 
   // ── Card selection ──────────────────────────────────────────────────────
   const handleCardSelect = (card) => {
-    if (!isPlayerTurn) return
+    // if (!isPlayerTurn) return
     if (selectedCard?.instanceId === card.instanceId) {
       // tap same card again = deselect
       setSelectedCard(null)
@@ -30,6 +30,10 @@ export default function CombatScreen({ state, dispatch }) {
   // ── Grid cell tap ───────────────────────────────────────────────────────
   const handleCellTap = (cell) => {
     if (!selectedCard || !isPlayerTurn) return
+
+    // don't play if card isn't actually in hand (charging)
+    const isInHand = state.hand.some(c => c.instanceId === selectedCard.instanceId)
+    if (!isInHand) return
 
     const pattern = selectedCard.attackPattern
 
