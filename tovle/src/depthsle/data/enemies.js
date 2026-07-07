@@ -16,7 +16,7 @@ export const ENEMIES = {
     actionBarMax: 1.0,
     actionBarSpeed: 0.25,   // fills in 4 turns
     moveSpeed: 1,            // tiles toward player per move action
-    baseDamage: 8,
+    baseDamage: 6,
     actions: [
       { type: 'melee', minRange: 0, maxRange: 0 },  // hits adjacent row
       { type: 'move',  minRange: 1, maxRange: 99 }, // move toward player if far
@@ -32,7 +32,7 @@ export const ENEMIES = {
     actionBarMax: 1.0,
     actionBarSpeed: 0.33,   // fills in 3 turns
     moveSpeed: 1,
-    baseDamage: 6,
+    baseDamage: 3,
     actions: [
       { type: 'ranged', minRange: 1, maxRange: 99 }, // shoots from any distance
       { type: 'melee',  minRange: 0, maxRange: 1 },  // fallback if somehow adjacent
@@ -47,8 +47,8 @@ export const ENEMIES = {
     baseHp: 18,
     actionBarMax: 2.0,
     actionBarSpeed: 0.5,    // fills in 2 turns — fast
-    moveSpeed: 2,
-    baseDamage: 5,
+    moveSpeed: 1,
+    baseDamage: 4,
     actions: [
       { type: 'melee',  minRange: 0, maxRange: 0 },
       { type: 'poison', minRange: 0, maxRange: 0 },  // applies poison (burn-like, magic type) on hit
@@ -79,18 +79,18 @@ export const ENEMIES = {
   elite_zombie: {
     id: 'elite_zombie',
     name: 'Zombie Brute',
-    emoji: '🧟',
+    emoji: '👺',
     isElite: true,
     baseHp: 100,
     actionBarMax: 1.0,
     actionBarSpeed: 0.2,    // slow but hits hard
     moveSpeed: 1,
-    baseDamage: 18,
+    baseDamage: 8,
     enrageThreshold: 0.5,   // enrages below 50% HP: +50% damage, +speed
     enragedSpeedBonus: 0.15,
     enragedDamageBonus: 0.5,
     actions: [
-      { type: 'slam',  minRange: 0, maxRange: 1 },   // hits front 2 rows wide
+      // { type: 'slam',  minRange: 0, maxRange: 0 },   // hits front 2 rows wide
       { type: 'melee', minRange: 0, maxRange: 0 },
       { type: 'move',  minRange: 0, maxRange: 99 },
     ],
@@ -104,8 +104,8 @@ export const ENEMIES = {
     baseHp: 60,
     actionBarMax: 1.0,
     actionBarSpeed: 0.4,
-    moveSpeed: 2,
-    baseDamage: 10,
+    moveSpeed: 1,
+    baseDamage: 8,
     actions: [
       { type: 'web',    minRange: 0, maxRange: 99 }, // roots target for 2 turns
       { type: 'melee',  minRange: 0, maxRange: 0 },
