@@ -9,6 +9,8 @@ import ItemIcon from '../components/ItemIcon'
 import './Depthsle.css'
 import DayTimer from '../components/DayTimer.jsx'
 
+import '../assets/depths_icons/abilities_spritesheet.css'
+
 import RoomSelectGrid from './components/RoomSelectGrid.jsx'
 import CombatScreen from './components/CombatScreen.jsx'
 import RewardScreen from './components/RewardScreen.jsx'

@@ -10,6 +10,9 @@ import dawnbringerIcon  from '../../assets/talismans/dawnbringer_talisman.png'
 import steelsageIcon    from '../../assets/talismans/steelsage_talisman.png'
 import windwalkerIcon   from '../../assets/talismans/windwalker_talisman.png'
 
+import { getAbilityIconClass } from '../../data/abilityIcons.js'
+import abilityBorder from '../../assets/depths_icons/ability_border.png'
+
 const TREE_ICONS = {
   flamecaller:  flamecallerIcon,
   earthbound:   earthboundIcon,
@@ -38,13 +41,15 @@ function AbilityCard({ ability, onSelect, showUpgradeRarity }) {
   const rarityLabel = RARITY_LABEL[ability.rarity] ?? 'Common'
   const nextRarityColor = RARITY_COLOR[ability.rarity + 1]
   const nextRarityLabel = RARITY_LABEL[ability.rarity + 1]
+  const iconClass = getAbilityIconClass(ability.tree, ability.id) ?? 'ability-icon--windwalker-unknown-ability'
 
   return (
     <button className="rs-ability-card" onClick={() => onSelect(ability.id)}>
       <div className="rs-ability-header">
-        {TREE_ICONS[ability.tree] && (
-          <img src={TREE_ICONS[ability.tree]} alt={tree?.name} className="rs-ability-icon" />
-        )}
+        <div className="rs-ability-icon-wrap">
+          <div className={`ability-icon ${iconClass}`} />
+          <img src={abilityBorder} className="rs-ability-border" alt="" />
+        </div>
         <div className="rs-ability-titles">
           {showUpgradeRarity ? (
             <span className="rs-ability-rarity">

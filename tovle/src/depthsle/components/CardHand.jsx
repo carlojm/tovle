@@ -1,7 +1,6 @@
 import { SUB_PHASES } from '../engine/combatReducer.js'
 import './CardHand.css'
 
-import '../../assets/depths_icons/abilities_spritesheet.css'
 import { getAbilityIconClass } from '../../data/abilityIcons.js'
 import abilityBorder from '../../assets/depths_icons/ability_border.png'
 

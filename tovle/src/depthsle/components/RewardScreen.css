@@ -114,3 +114,24 @@
   opacity: 0.6;
   line-height: 1.5;
 }
+
+
+
+
+
+.rs-ability-icon-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.rs-ability-border {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 84px;
+  height: 84px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
