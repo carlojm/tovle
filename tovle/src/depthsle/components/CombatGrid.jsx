@@ -179,7 +179,7 @@ function EnemyCell({ enemies }) {
 }
 
 
-export default function CombatGrid({ gridState, enemies, currentRoom, selectedCard, lastActedEnemies, playerTookDamage, onCellTap }) {
+export default function CombatGrid({ gridState, enemies, currentRoom, selectedCard, pendingTarget, lastActedEnemies, playerTookDamage, onCellTap }) {
   const [hoveredCell, setHoveredCell] = useState(null)
 
   const { width, height } = gridState
@@ -203,6 +203,8 @@ export default function CombatGrid({ gridState, enemies, currentRoom, selectedCa
     enemies,
     gridState,
   )
+  const isPending = pendingTarget &&
+    highlightedCells.has(`${pendingTarget.row},${pendingTarget.col}`)
 
   const cells = []
 
@@ -258,13 +260,19 @@ export default function CombatGrid({ gridState, enemies, currentRoom, selectedCa
       const isHighlighted = highlightedCells.has(cellKey)
       const hasEnemy = cellEnemies.length > 0
 
+      //for mobile tap highlight and stuff
+      const isPendingCell = pendingTarget &&
+        roomRow === pendingTarget.row &&
+        roomCol === pendingTarget.col
+
       cells.push(
         <div
           key={`${displayRow}-${displayCol}`}
           className={[
             'cg-cell cg-cell--room',
-            frozen        ? 'cg-cell--frozen'     : '',
+            frozen        ? 'cg-cell--frozen'      : '',
             isHighlighted ? 'cg-cell--highlighted' : '',
+            isPendingCell ? 'cg-cell--pending'     : '',
             hasEnemy      ? 'cg-cell--has-enemy'   : '',
             selectedCard  ? 'cg-cell--targeting'   : '',
           ].join(' ')}

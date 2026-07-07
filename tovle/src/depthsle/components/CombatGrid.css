@@ -86,6 +86,19 @@
   border-color: rgba(255, 100, 100, 0.6);
 }
 
+
+.cg-cell--pending {
+  background: rgba(100, 160, 255, 0.35);
+  border-color: rgba(100, 160, 255, 0.9);
+  box-shadow: 0 0 0 2px rgba(100, 160, 255, 0.4);
+}
+
+.cg-cell--pending.cg-cell--has-enemy {
+  background: rgba(255, 100, 100, 0.35);
+  border-color: rgba(255, 100, 100, 0.9);
+  box-shadow: 0 0 0 2px rgba(255, 100, 100, 0.4);
+}
+
 /* ── Enemy display ── */
 .cg-enemy {
   position: absolute;

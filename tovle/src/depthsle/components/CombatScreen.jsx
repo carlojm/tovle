@@ -14,6 +14,8 @@ export default function CombatScreen({ state, dispatch }) {
 
   const isPlayerTurn = state.subPhase === SUB_PHASES.PLAYER_TURN
 
+  const isTouchDevice = window.matchMedia('(hover: none)').matches
+
   // ── Card selection ──────────────────────────────────────────────────────
   const handleCardSelect = (card) => {
     // if (!isPlayerTurn) return
@@ -36,32 +38,43 @@ export default function CombatScreen({ state, dispatch }) {
     if (!isInHand) return
 
     const pattern = selectedCard.attackPattern
+    const noTargetNeeded = [
+      'row_wide', 'row2', 'front_2rows_wide', 'all_enemies', 
+      'all_frozen', 'none', 'front_row'
+    ].includes(pattern)
 
-    // Patterns that need no positional choice — confirm immediately
-    const autoConfirm = ['row_wide', 'row2', 'aoe3x3', 'x_shape']
-    if (autoConfirm.includes(pattern)) {
+    // On touch devices, non-targeted cards still confirm on first tap
+    // Targeted cards need two taps — first sets pending, second confirms
+    if (isTouchDevice && !noTargetNeeded) {
+      if (pendingTarget && pendingTarget.row === cell.row && pendingTarget.col === cell.col) {
+        // second tap on same cell — fall through to play logic below
+        setPendingTarget(null)
+      } else {
+        // first tap — set pending and return
+        setPendingTarget(cell)
+        return
+      }
+    }
+
+    if (['row_wide', 'row2'].includes(pattern)) {
       playCard(selectedCard, { targetCell: cell })
       return
     }
-
     // Row attack — any cell in the row confirms
     if (pattern === 'row') {
       playCard(selectedCard, { targetRow: cell.row, targetCell: cell })
       return
     }
-
     // Col attack — any cell in the col confirms
     if (pattern === 'col') {
       playCard(selectedCard, { targetCol: cell.col, targetCell: cell })
       return
     }
-
     // Single target — tap to confirm
     if (pattern === 'single') {
       playCard(selectedCard, { targetCell: cell, targetEnemyId: getFirstEnemyAt(cell) })
       return
     }
-
     // Default: treat as single
     playCard(selectedCard, { targetCell: cell })
   }
@@ -124,6 +137,7 @@ export default function CombatScreen({ state, dispatch }) {
         enemies={state.enemies}
         currentRoom={state.currentRoom}
         selectedCard={selectedCard}
+        pendingTarget={pendingTarget}
         lastActedEnemies={state._lastActedEnemies ?? []} // for animations
         playerTookDamage={state._playerJustTookDamage ?? false} // for animations
         onCellTap={handleCellTap}
