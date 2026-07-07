@@ -137,7 +137,7 @@ export default function Depthsle({ onExit }) {
   }
 
   if (state.phase === PHASES.REWARD) {
-    return <RewardScreen state={state} dispatch={dispatch} />
+    return <RewardScreen state={state} dispatch={dispatch} runStats={state.runStats} />
   }
 
   if (state.phase === PHASES.GAME_OVER) {

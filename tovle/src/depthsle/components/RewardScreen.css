@@ -81,6 +81,12 @@
   margin: 0;
 }
 
+.rs-ability-cooldown {
+  font-size: 12px;
+  opacity: 0.6;
+  margin: 0;
+}
+
 /* ── Upgrade card ── */
 .rs-upgrade-card {
   width: 100%;
@@ -112,7 +118,7 @@
 .rs-upgrade-desc {
   font-size: 12px;
   opacity: 0.6;
-  line-height: 1.5;
+  /* line-height: 1.5; */
 }
 
 
@@ -135,3 +141,8 @@
   image-rendering: pixelated;
   pointer-events: none;
 }
+
+
+
+
+

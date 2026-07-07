@@ -35,13 +35,22 @@ function renderDesc(text = '') {
   )
 }
 
-function AbilityCard({ ability, onSelect, showUpgradeRarity }) {
+function calcTrueCooldown(ability, runStats) {
+  if (!ability.cooldownBase || !runStats) return null
+  const rarityBonus = [1.0, 1.1, 1.2, 1.3, 1.4][ability.rarity ?? 0]
+  const speedMult = ((runStats.speedPercent ?? 100) / 100) * (runStats.cooldownRate ?? 1.0)
+  return Math.round(ability.cooldownBase / (rarityBonus * speedMult))
+}
+
+function AbilityCard({ ability, onSelect, showUpgradeRarity, runStats }) {
   const tree = ABILITY_TREES[ability.tree]
   const rarityColor = RARITY_COLOR[ability.rarity] ?? '#888'
   const rarityLabel = RARITY_LABEL[ability.rarity] ?? 'Common'
   const nextRarityColor = RARITY_COLOR[ability.rarity + 1]
   const nextRarityLabel = RARITY_LABEL[ability.rarity + 1]
   const iconClass = getAbilityIconClass(ability.tree, ability.id) ?? 'ability-icon--windwalker-unknown-ability'
+  const trueCooldown = calcTrueCooldown(ability, runStats)
+  const baseCooldown = ability.cooldownBase
 
   return (
     <button className="rs-ability-card" onClick={() => onSelect(ability.id)}>
@@ -69,6 +78,17 @@ function AbilityCard({ ability, onSelect, showUpgradeRarity }) {
       <p className="rs-ability-desc">
         {renderDesc(ability.descriptionText ?? ability.description, ability.rarity)}
       </p>
+      {baseCooldown && (
+        <span className="rs-ability-cooldown">
+          Base {baseCooldown} turns
+          {ability.rarity > 0 && ` +${Math.round(([1.0,1.1,1.2,1.3,1.4][ability.rarity] - 1) * 100)}% rarity`}
+          {runStats && (() => {
+            const mult = ((runStats.speedPercent??100)/100)*(runStats.cooldownRate??1.0)
+            return mult !== 1 ? ` +${Math.round((mult - 1) * 100)}% gear` : ''
+          })()}
+          {trueCooldown && trueCooldown !== baseCooldown && ` ≈ ${trueCooldown} turn cooldown`}
+        </span>
+      )}
     </button>
   )
 }
@@ -82,7 +102,7 @@ function UpgradeCard({ upgrade, onSelect }) {
   )
 }
 
-export default function RewardScreen({ state, dispatch }) {
+export default function RewardScreen({ state, dispatch, runStats}) {
   const roomDef = state.currentRoom ? ROOM_TYPES[state.currentRoom.type] : null
 
   const handleSelectAbility = (abilityId) => {
@@ -101,8 +121,7 @@ export default function RewardScreen({ state, dispatch }) {
         <div>
           <h1 className="ds-title">Room Cleared</h1>
           <p className="rs-stats">
-            {state.killCountRoom} {state.killCountRoom === 1 ? 'enemy' : 'enemies'} defeated
-            · {state.roomsCleared} {state.roomsCleared === 1 ? 'room' : 'rooms'} cleared total
+            {state.roomsCleared} {state.roomsCleared === 1 ? 'room' : 'rooms'} cleared, {state.killCountRoom} {state.killCountRoom === 1 ? 'enemy' : 'enemies'} defeated
           </p>
         </div>
       </div>
@@ -117,7 +136,7 @@ export default function RewardScreen({ state, dispatch }) {
             {roomDef?.isElite ? 'Elite room: ' : ''}
             {state.rewardType === 'upgrade'
               ? 'A permanent card upgrade for this run.'
-              : 'A new card added to your deck.'}
+              : 'A new ability added to your loadout.'}
           </span>
         </div>
 
@@ -137,6 +156,7 @@ export default function RewardScreen({ state, dispatch }) {
                   key={ability.id}
                   ability={ability}
                   onSelect={handleSelectAbility}
+                  runStats={runStats}
                 />
               ))
             )}
@@ -164,6 +184,7 @@ export default function RewardScreen({ state, dispatch }) {
                   ability={ability}
                   onSelect={handleSelectAbility}
                   showUpgradeRarity
+                  runStats={runStats}
                 />
               ))
             )}
