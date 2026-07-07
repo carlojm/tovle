@@ -179,7 +179,7 @@ function EnemyCell({ enemies }) {
 }
 
 
-export default function CombatGrid({ gridState, enemies, currentRoom, selectedCard, pendingTarget, lastActedEnemies, playerTookDamage, onCellTap }) {
+export default function CombatGrid({ gridState, enemies, currentRoom, selectedCard, pendingTarget, lastActedEnemies, playerTookDamage, onCellTap, dragCell }) {
   const [hoveredCell, setHoveredCell] = useState(null)
 
   const { width, height } = gridState
@@ -195,9 +195,11 @@ export default function CombatGrid({ gridState, enemies, currentRoom, selectedCa
   const autoFixed = selectedCard && [
     'front_row', 'row_wide', 'front_2rows_wide', 'row2', 'none'
   ].includes(selectedCard.attackPattern)
+
+  const effectiveHover = dragCell ?? hoveredCell
   const highlightedCells = getHighlightedCells(
     selectedCard,
-    autoFixed ? { row: 0, col: 0 } : hoveredCell,
+    autoFixed ? { row: 0, col: 0 } : effectiveHover,
     width,
     height,
     enemies,

@@ -222,6 +222,7 @@ export default function CombatScreen({ state, dispatch }) {
         lastActedEnemies={state._lastActedEnemies ?? []} // for animations
         playerTookDamage={state._playerJustTookDamage ?? false} // for animations
         onCellTap={handleCellTap}
+        dragCell={dragState?.currentCell ?? null}
       />
 
       {/* ── Card hand ── */}
