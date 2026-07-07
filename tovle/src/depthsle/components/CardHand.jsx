@@ -41,10 +41,15 @@ function renderDesc(text = '') {
   )
 }
 
-function AbilityButton({ ability, handCard, isReady, isSelected, isDisabled, cooldown, maxCooldown, onSelect }) {
+function AbilityButton({ ability, handCard, isReady, isSelected, isDisabled, cooldown, maxCooldown, onSelect, onDragStart }) {
   const iconClass = getAbilityIconClass(ability.tree, ability.id) ?? 'ability-icon--windwalker-unknown-ability'
-  const cdPct = maxCooldown > 0 ? Math.round((1 - cooldown / maxCooldown) * 100) : 100
 
+  const handleTouchStart = (e) => {
+    if (!isReady || isDisabled) return
+    const touch = e.touches[0]
+    onDragStart?.(handCard ?? ability, iconClass, touch.clientX, touch.clientY)
+  }
+  
   return (
     <button
       className={[
@@ -55,6 +60,7 @@ function AbilityButton({ ability, handCard, isReady, isSelected, isDisabled, coo
       ].join(' ')}
       // onClick={() => !isDisabled && onSelect(ability)}  // always selectable
       onClick={() => onSelect({ ...(handCard ?? ability), instanceId: handCard?.instanceId ?? `charging_${ability.id}` })}
+      onTouchStart={handleTouchStart}
       disabled={isDisabled && !isReady}  // only truly disabled during enemy turn
     >
       <div className="ch-card-icon-wrap">
@@ -72,8 +78,16 @@ function AbilityButton({ ability, handCard, isReady, isSelected, isDisabled, coo
   )
 }
 
-function BasicAttackCard({ card, isSelected, isDisabled, weaponType, onSelect }) {
+function BasicAttackCard({ card, isSelected, isDisabled, weaponType, onSelect, onDragStart }) {
   const icon = BASIC_ATTACK_ICONS[weaponType] ?? basicSwordIcon
+
+  const handleTouchStart = (e) => {
+    if (isDisabled) return
+    const touch = e.touches[0]
+    // for basic attack, use weapon icon as ghost
+    const iconUrl = BASIC_ATTACK_ICONS[weaponType] ?? basicSwordIcon
+    onDragStart?.(card, null, touch.clientX, touch.clientY, iconUrl)
+  }
 
   return (
     <button
@@ -84,6 +98,7 @@ function BasicAttackCard({ card, isSelected, isDisabled, weaponType, onSelect })
       ].join(' ')}
       onClick={() => !isDisabled && onSelect(card)}
       disabled={isDisabled}
+      onTouchStart={handleTouchStart}
     >
       <div className="ch-card-icon-wrap">
         <img src={icon} alt={card.name} className="ch-basic-icon" />
@@ -97,7 +112,7 @@ function BasicAttackCard({ card, isSelected, isDisabled, weaponType, onSelect })
   )
 }
 
-export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, selectedCard, weaponType, onCardSelect }) {
+export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, selectedCard, weaponType, onCardSelect, onDragStart }) {
   const isPlayerTurn = subPhase === SUB_PHASES.PLAYER_TURN
   const handIds = new Set(hand.map(c => c.cardId ?? c.id))
 
@@ -116,6 +131,7 @@ export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, 
             isDisabled={!isPlayerTurn}
             weaponType={weaponType}
             onSelect={onCardSelect}
+            onDragStart={onDragStart}
           />
         )}
 
@@ -137,6 +153,7 @@ export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, 
               cooldown={cooldown}
               maxCooldown={maxCooldown}
               onSelect={onCardSelect}
+              onDragStart={onDragStart}
             />
           )
         })}

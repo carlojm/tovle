@@ -268,6 +268,8 @@ export default function CombatGrid({ gridState, enemies, currentRoom, selectedCa
       cells.push(
         <div
           key={`${displayRow}-${displayCol}`}
+          data-row={roomRow}
+          data-col={roomCol}
           className={[
             'cg-cell cg-cell--room',
             frozen        ? 'cg-cell--frozen'      : '',

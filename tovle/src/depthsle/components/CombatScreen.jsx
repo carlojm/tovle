@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { SUB_PHASES, PHASES } from '../engine/combatReducer.js'
 import { ROOM_TYPES } from '../data/layouts.js'
 import PlayerStatus from './PlayerStatus.jsx'
@@ -6,15 +6,38 @@ import CombatGrid from './CombatGrid.jsx'
 import CardHand from './CardHand.jsx'
 import CombatLog from './CombatLog.jsx'
 import './CombatScreen.css'
+import { createPortal } from 'react-dom'
 
 export default function CombatScreen({ state, dispatch }) {
   // ── UI state (not in reducer — pure interaction state) ──────────────────
   const [selectedCard, setSelectedCard] = useState(null)
   const [pendingTarget, setPendingTarget] = useState(null)
+  const [dragState, setDragState] = useState(null)
+  // { card, iconClass, x, y, currentCell }
 
   const isPlayerTurn = state.subPhase === SUB_PHASES.PLAYER_TURN
 
   const isTouchDevice = window.matchMedia('(hover: none)').matches
+
+  //useeffect for dragging
+  useEffect(() => {
+    if (!dragState) return
+
+    const onMove = (e) => {
+      e.preventDefault()
+      const touch = e.touches?.[0]
+      if (!touch) return
+      handleDragMove(touch.clientX, touch.clientY)
+    }
+    const onEnd = () => handleDragEnd()
+
+    window.addEventListener('touchmove', onMove, { passive: false })
+    window.addEventListener('touchend', onEnd)
+    return () => {
+      window.removeEventListener('touchmove', onMove)
+      window.removeEventListener('touchend', onEnd)
+    }
+  }, [dragState])
 
   // ── Card selection ──────────────────────────────────────────────────────
   const handleCardSelect = (card) => {
@@ -28,6 +51,64 @@ export default function CombatScreen({ state, dispatch }) {
       setPendingTarget(null)
     }
   }
+
+  // ── drag handlers  ──────────────────────────────────────────────────────
+
+  const handleDragStart = (card, iconClass, touchX, touchY, basicIconUrl) => {
+    if (!isPlayerTurn) return
+    const isInHand = state.hand.some(c => c.instanceId === card.instanceId)
+    if (!isInHand) return
+    setSelectedCard(card)
+    setPendingTarget(null)
+    setDragState({ card, iconClass, x: touchX, y: touchY, currentCell: null, basicIconUrl })
+  }
+
+  const handleDragMove = (touchX, touchY) => {
+    if (!dragState) return
+
+    // find which grid cell is under the finger
+    const el = document.elementFromPoint(touchX, touchY)
+    const row = el?.dataset?.row
+    const col = el?.dataset?.col
+    const currentCell = (row !== undefined && col !== undefined)
+      ? { row: parseInt(row), col: parseInt(col) }
+      : null
+
+    setDragState(prev => ({ ...prev, x: touchX, y: touchY, currentCell }))
+
+    // update pending target for highlight
+    if (currentCell) setPendingTarget(currentCell)
+    else setPendingTarget(null)
+  }
+
+  const handleDragEnd = () => {
+    if (!dragState) return
+    const { card, currentCell } = dragState
+
+    if (currentCell && isPlayerTurn) {
+      const isInHand = state.hand.some(c => c.instanceId === card.instanceId)
+      if (isInHand) {
+        // same play logic as handleCellTap
+        const pattern = card.attackPattern
+        if (['row_wide', 'row2', 'front_2rows_wide', 'all_enemies', 'all_frozen', 'none', 'front_row'].includes(pattern)) {
+          playCard(card, { targetCell: currentCell })
+        } else if (pattern === 'row') {
+          playCard(card, { targetRow: currentCell.row, targetCell: currentCell })
+        } else if (pattern === 'col') {
+          playCard(card, { targetCol: currentCell.col, targetCell: currentCell })
+        } else if (pattern === 'single') {
+          playCard(card, { targetCell: currentCell, targetEnemyId: getFirstEnemyAt(currentCell) })
+        } else {
+          playCard(card, { targetCell: currentCell })
+        }
+      }
+    }
+
+    setDragState(null)
+    setPendingTarget(null)
+    setSelectedCard(null)
+  }
+
 
   // ── Grid cell tap ───────────────────────────────────────────────────────
   const handleCellTap = (cell) => {
@@ -152,6 +233,7 @@ export default function CombatScreen({ state, dispatch }) {
         selectedCard={selectedCard}
         weaponType={state.runStats?.weaponType ?? 'sword'}
         onCardSelect={handleCardSelect}
+        onDragStart={handleDragStart}
       />
 
       {/* ── End turn ── */}
@@ -175,6 +257,26 @@ export default function CombatScreen({ state, dispatch }) {
       {/* ── Log ── */}
       <CombatLog log={state.log} />
 
+      {/* drag ghost */}
+      {dragState && createPortal(
+        <div style={{
+          position: 'fixed',
+          left: dragState.x - 32,
+          top: dragState.y - 32,
+          width: 64,
+          height: 64,
+          pointerEvents: 'none',
+          zIndex: 9999,
+          opacity: 0.85,
+        }}>
+          {dragState.iconClass
+            ? <div className={`ability-icon ${dragState.iconClass}`} />
+            : <img src={dragState.basicIconUrl}
+                  style={{ width: 64, height: 64, imageRendering: 'pixelated' }} />
+          }
+        </div>,
+        document.body
+      )}
     </div>
   )
 }
