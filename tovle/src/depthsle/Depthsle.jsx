@@ -36,7 +36,7 @@ const DAMAGE_TYPE_LABEL = {
   axe:    'Melee Base Damage',
   scythe: 'Melee Base Damage',
   ranged: 'Ranged Base Damage',
-  magic:  'Magic Base Damage',
+  wand:  'Magic Base Damage',
 }
 
 const WEAPON_TYPE_LABEL = {
@@ -44,7 +44,7 @@ const WEAPON_TYPE_LABEL = {
   axe:    'Aspect of the Axe',
   scythe: 'Aspect of the Scythe',
   ranged: 'Aspect of the Bow',
-  magic:  'Aspect of the Wand',
+  wand:  'Aspect of the Wand',
 }
 
 const DAMAGE_STAT_KEY = {
@@ -52,7 +52,7 @@ const DAMAGE_STAT_KEY = {
   axe:    'critSpamDPS',
   scythe: 'critSpamDPS',
   ranged: 'projSpamDPS',
-  magic:  'magicDPS',
+  wand:  'magicDPS',
 }
 
 const TIER_BADGE = {

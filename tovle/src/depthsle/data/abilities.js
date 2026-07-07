@@ -103,8 +103,10 @@ export const BASIC_ATTACK_CHAINS = {
     { id: 'ranged_2', name: 'Column Shot', attackPattern: 'col',  chainLength: 2 },
   ],
   wand: [
-    { id: 'wand_1', name: 'X Blast',    attackPattern: 'x_shape', chainLength: 2 },
-    { id: 'wand_2', name: 'Wide Pulse', attackPattern: 'aoe3x3', chainLength: 2 },
+    { id: 'wand_1', name: 'Mana Bolt',    attackPattern: 'single', chainLength: 3 },
+    { id: 'wand_1', name: 'Arcane Strike',    attackPattern: 'aoe2x2', chainLength: 3 },
+    { id: 'wand_3', name: 'Cross Blast',    attackPattern: 'x_shape', chainLength: 3 },
+    // { id: 'wand_2', name: 'Wide Pulse', attackPattern: 'aoe3x3', chainLength: 2 },
   ],
   scythe: [
     { id: 'scythe_1', name: 'Scythe Swing', attackPattern: 'row', chainLength: 3 },

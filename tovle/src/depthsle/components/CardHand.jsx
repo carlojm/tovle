@@ -14,7 +14,7 @@ const BASIC_ATTACK_ICONS = {
   sword:  basicSwordIcon,
   axe:    basicAxeIcon,
   scythe: basicScytheIcon,
-  magic:  basicWandIcon,
+  wand:  basicWandIcon,
   ranged: basicBowIcon,
 }
 
@@ -62,9 +62,9 @@ function AbilityButton({ ability, isReady, isSelected, isDisabled, cooldown, max
       </div>
       <div className="ch-card-body">
         <span className="ch-card-name">{ability.name}</span>
-        {!isReady && (
+        {/* {!isReady && (
           <span className="ch-card-cd-label">{Math.ceil(cooldown)}</span>
-        )}
+        )} */}
       </div>
       <CooldownBar current={cooldown} max={maxCooldown} />
     </button>
@@ -145,14 +145,14 @@ export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, 
         <div className="ch-selected-info">
           {!selectedCard.isBasicAttack && (
             <>
-              <div className="ch-selected-name">
+              {/* <div className="ch-selected-name">
                 {selectedCard.name}
                 {selectedCard.rarity > 0 && (
                   <span className={`ch-card-rarity ch-card-rarity--${selectedCard.rarity}`}>
                     {' '}{['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'][selectedCard.rarity]}
                   </span>
                 )}
-              </div>
+              </div> */}
               {selectedCard.descriptionText && (
                 <div className="ch-selected-desc">
                   {renderDesc(selectedCard.descriptionText)}

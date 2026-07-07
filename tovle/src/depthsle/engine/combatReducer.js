@@ -978,7 +978,10 @@ function resolveCardPlay(state, card, ctx) {
 function resolveBasicAttack(state, card, ctx) {
   let s = state
   const rs = s.runStats
-  const dmg = rs.meleeDamage
+  const weaponType = state.runStats.weaponType ?? 'sword'
+  const dmg = weaponType === 'wand'   ? rs.magicDamage :
+              weaponType === 'ranged' ? rs.projectileDamage :
+              rs.meleeDamage
   const { targetCell, targetCol, targetRow } = ctx
 
   let hits = []
@@ -1001,6 +1004,34 @@ function resolveBasicAttack(state, card, ctx) {
     case 'row2': // front 2 rows
       hits = s.enemies.filter(e => e.cell.row <= 1)
       break
+    case 'x_shape': {
+      for (let d = -2; d <= 2; d++) {
+        if (d === 0) continue
+        const cells = [
+          { row: (targetCell?.row ?? 0) + d, col: (targetCell?.col ?? 0) + d },
+          { row: (targetCell?.row ?? 0) + d, col: (targetCell?.col ?? 0) - d },
+        ]
+        for (const c of cells) {
+          if (c.row >= 0 && c.row < s.gridState.height && c.col >= 0 && c.col < s.gridState.width) {
+            hits.push(...enemiesAt(s, c))
+          }
+        }
+      }
+      if (targetCell) hits.push(...enemiesAt(s, targetCell))
+      break
+    }
+    case 'aoe2x2': {
+      const center = targetCell ?? { row: 0, col: 1 }
+      for (let dr = 0; dr <= 1; dr++) {
+        for (let dc = 0; dc <= 1; dc++) {
+          const c = { row: center.row + dr, col: center.col + dc }
+          if (c.row >= 0 && c.row < s.gridState.height && c.col >= 0 && c.col < s.gridState.width) {
+            hits.push(...enemiesAt(s, c))
+          }
+        }
+      }
+      break
+    }
     default:
       break
   }

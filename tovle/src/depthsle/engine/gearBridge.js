@@ -23,7 +23,7 @@ function detectWeaponType(slots, equipment) {
   if (!instance) return 'sword'
   const itemType = islesItems[instance.itemKey]?.type ?? ''
   if (['Bow', 'Crossbow', 'Trident', 'Snowball'].includes(itemType)) return 'ranged'
-  if (['Wand', 'Mainhand'].includes(itemType)) return 'magic' //mainhand = potion bag cuz idk
+  if (['Wand', 'Mainhand'].includes(itemType)) return 'wand' //mainhand = potion bag cuz idk
   if (itemType === 'Axe') return 'axe'
   if (itemType === 'Scythe') return 'scythe'
   return 'sword'
