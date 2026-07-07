@@ -5,6 +5,19 @@ import '../../assets/depths_icons/abilities_spritesheet.css'
 import { getAbilityIconClass } from '../../data/abilityIcons.js'
 import abilityBorder from '../../assets/depths_icons/ability_border.png'
 
+import basicSwordIcon  from '../../assets/depths_icons/basic_sword.png'
+import basicAxeIcon    from '../../assets/depths_icons/basic_axe.png'
+import basicScytheIcon from '../../assets/depths_icons/basic_scythe.png'
+import basicWandIcon   from '../../assets/depths_icons/basic_wand.png'
+import basicBowIcon    from '../../assets/depths_icons/basic_bow.png'
+const BASIC_ATTACK_ICONS = {
+  sword:  basicSwordIcon,
+  axe:    basicAxeIcon,
+  scythe: basicScytheIcon,
+  magic:  basicWandIcon,
+  ranged: basicBowIcon,
+}
+
 const DAMAGE_COLOR = {
   melee:      '#e07040',
   projectile: '#60a8e0',
@@ -17,6 +30,15 @@ function CooldownBar({ current, max }) {
     <div className="ch-cd-track">
       <div className="ch-cd-fill" style={{ width: `${pct * 100}%` }} />
     </div>
+  )
+}
+
+function renderDesc(text = '') {
+  const parts = text.split('**')
+  return parts.map((part, i) =>
+    i % 2 === 1
+      ? <strong key={i} style={{ color: 'var(--color-coords-border)' }}>{part}</strong>
+      : part
   )
 }
 
@@ -49,7 +71,9 @@ function AbilityButton({ ability, isReady, isSelected, isDisabled, cooldown, max
   )
 }
 
-function BasicAttackCard({ card, isSelected, isDisabled, onSelect }) {
+function BasicAttackCard({ card, isSelected, isDisabled, weaponType, onSelect }) {
+  const icon = BASIC_ATTACK_ICONS[weaponType] ?? basicSwordIcon
+
   return (
     <button
       className={[
@@ -60,16 +84,19 @@ function BasicAttackCard({ card, isSelected, isDisabled, onSelect }) {
       onClick={() => !isDisabled && onSelect(card)}
       disabled={isDisabled}
     >
-      <div className="ch-card-stripe" style={{ background: '#888' }} />
+      <div className="ch-card-icon-wrap">
+        <img src={icon} alt={card.name} className="ch-basic-icon" />
+        <img src={abilityBorder} className="ch-card-border" alt="" />
+      </div>
       <div className="ch-card-body">
         <span className="ch-card-name">{card.name}</span>
-        <span className="ch-card-type" style={{ color: '#888' }}>Basic</span>
+        <span className="ch-card-type" style={{ opacity: 0.5, fontSize: 10 }}>Basic</span>
       </div>
     </button>
   )
 }
 
-export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, selectedCard, onCardSelect }) {
+export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, selectedCard, weaponType, onCardSelect }) {
   const isPlayerTurn = subPhase === SUB_PHASES.PLAYER_TURN
   const handIds = new Set(hand.map(c => c.cardId ?? c.id))
 
@@ -86,6 +113,7 @@ export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, 
             card={basicAttack}
             isSelected={selectedCard?.instanceId === basicAttack.instanceId}
             isDisabled={!isPlayerTurn}
+            weaponType={weaponType}
             onSelect={onCardSelect}
           />
         )}
@@ -114,14 +142,33 @@ export default function CardHand({ hand, abilities, abilityCooldowns, subPhase, 
       </div>
 
       {selectedCard && (
-        <p className="ch-hint">
-          {['row_wide', 'row2', 'front_2rows_wide', 'all_enemies', 'all_frozen', 'none'].includes(selectedCard.attackPattern)
-            ? 'Tap anywhere on the grid to confirm'
-            : selectedCard.attackPattern === 'single'
-            ? 'Tap an enemy to target'
-            : `Tap the grid to select a target`
-          }
-        </p>
+        <div className="ch-selected-info">
+          {!selectedCard.isBasicAttack && (
+            <>
+              <div className="ch-selected-name">
+                {selectedCard.name}
+                {selectedCard.rarity > 0 && (
+                  <span className={`ch-card-rarity ch-card-rarity--${selectedCard.rarity}`}>
+                    {' '}{['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'][selectedCard.rarity]}
+                  </span>
+                )}
+              </div>
+              {selectedCard.descriptionText && (
+                <div className="ch-selected-desc">
+                  {renderDesc(selectedCard.descriptionText)}
+                </div>
+              )}
+            </>
+          )}
+          <p className="ch-hint">
+            {['row_wide', 'row2', 'front_2rows_wide', 'all_enemies', 'all_frozen', 'none'].includes(selectedCard.attackPattern)
+              ? 'Tap anywhere on the grid to confirm'
+              : selectedCard.attackPattern === 'single'
+              ? 'Tap an enemy to target'
+              : 'Tap the grid to select a target'
+            }
+          </p>
+        </div>
       )}
     </div>
   )

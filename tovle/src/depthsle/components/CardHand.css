@@ -99,7 +99,7 @@
 }
 
 .ch-card-rarity {
-  font-size: 9px;
+  /* font-size: 9px; */
   font-weight: 700;
   margin-top: auto;
 }
@@ -174,4 +174,46 @@
   height: 72px;
   image-rendering: pixelated;
   pointer-events: none;
+}
+
+
+
+
+
+.ch-selected-info {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 4px;
+  padding: 8px 12px;
+  /* background: var(--color-background-loot-grid); */
+  /* border: 2px solid var(--color-border-loot-grid); */
+  /* border-radius: 8px; */
+  width: 100%;
+}
+
+.ch-selected-name {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ch-selected-desc {
+  font-size: 12px;
+  opacity: 0.7;
+  line-height: 1.5;
+}
+
+.ch-hint {
+  font-size: 11px;
+  opacity: 0.45;
+  margin: 0;
+}
+
+
+
+.ch-basic-icon {
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+  object-fit: contain;
 }

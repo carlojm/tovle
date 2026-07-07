@@ -132,6 +132,7 @@ export default function CombatScreen({ state, dispatch }) {
         abilityCooldowns={state.abilityCooldowns}
         subPhase={state.subPhase}
         selectedCard={selectedCard}
+        weaponType={state.runStats?.weaponType ?? 'sword'}
         onCardSelect={handleCardSelect}
       />
 
