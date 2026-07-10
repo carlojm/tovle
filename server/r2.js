@@ -1,4 +1,4 @@
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
 const r2 = new S3Client({
   region: 'auto',
@@ -29,4 +29,4 @@ async function testR2() {
   return url
 }
 
-module.exports = { uploadToR2, testR2 }
+export { uploadToR2, testR2 }

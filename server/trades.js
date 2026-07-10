@@ -1,4 +1,5 @@
-const { ITEM_WEIGHTS, WANT_ONLY_ITEMS, TRADEABLE_ITEMS } = require('./data/itemWeights.js')
+import { fileURLToPath } from 'url'
+import { ITEM_WEIGHTS, WANT_ONLY_ITEMS, TRADEABLE_ITEMS } from './data/itemWeights.js'
 
 //seeded rng mulberry32
 function makeRng(seed) {
@@ -176,8 +177,8 @@ function getSecondsUntilNextWindow() {
   return (4 * 3600) - secondsIntoWindow
 }
 
-module.exports = { 
-  generateTrades, 
+export {
+  generateTrades,
   getCurrentWindowIndex,
   getTownLevel,
   getNumSlots,
@@ -186,7 +187,7 @@ module.exports = {
 }
 
 // Run with: node server/trades.js
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   console.log('=== Trade Generation Test ===\n')
 
   const towns = ['alnera', 'frostgate', 'mistport', 'steelmeld']

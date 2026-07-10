@@ -49,4 +49,4 @@ const calcRecyclePrice = (tier, float) => {
   return Math.round(base * multiplier)
 }
 
-module.exports = { getFloatLabel, calcRecyclePrice }
+export { getFloatLabel, calcRecyclePrice }

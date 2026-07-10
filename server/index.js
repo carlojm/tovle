@@ -1,25 +1,29 @@
-require('dotenv').config()
-const express = require('express')
+import 'dotenv/config'
+import express from 'express'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { readFileSync } from 'fs'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
-const path = require('path')
 
-const {createAxolotl, generateLevelRequirements} = require('./axolotl')
-const { rollLoot, scoreToLuckMultiplier, placeInGrid} = require('./loot')
-const { admin, db } = require('./firebase')
+import { createAxolotl, generateLevelRequirements } from './axolotl.js'
+import { rollLoot, scoreToLuckMultiplier, placeInGrid } from './loot.js'
+import { admin, db } from './firebase.js'
 
-const { testR2, uploadToR2 } = require('./r2')
+import { testR2, uploadToR2 } from './r2.js'
 
-const { 
-  generateTrades, 
+import {
+  generateTrades,
   getCurrentWindowIndex,
   getTownLevel,
   getNumSlots,
   getTradeLimit,
   getSecondsUntilNextWindow
-} = require('./trades')
+} from './trades.js'
 
-const { rollShipment } = require('./shipments')
-const { calcRecyclePrice } = require('./recycle')
+import { rollShipment } from './shipments.js'
+import { calcRecyclePrice } from './recycle.js'
 
 
 //env
@@ -31,8 +35,8 @@ if (missingEnv.length > 0) {
   process.exit(1)
 }
 
-const schedule = require('./data/schedule.json')
-const tovs = require('./data/tovs.json')
+const schedule = JSON.parse(readFileSync(path.join(__dirname, 'data/schedule.json'), 'utf-8'))
+const tovs = JSON.parse(readFileSync(path.join(__dirname, 'data/tovs.json'), 'utf-8'))
 
 app.use(express.json())
 

@@ -1,4 +1,9 @@
-const islesItems = require('./data/islesItems.json')
+import { fileURLToPath } from 'url'
+import { readFileSync } from 'fs'
+import path from 'path'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const islesItems = JSON.parse(readFileSync(path.join(__dirname, 'data/islesItems.json'), 'utf-8'))
 
 const MAX_TIER_BY_FORUM = {
   1: 1,
@@ -255,11 +260,11 @@ const rollShipment = (reputation, forumTier, townId, existingEquipment, todayStr
 
 
 // exports for use in index.js
-module.exports = { rollShipment, getTierWeights, getShipmentSize }
+export { rollShipment, getTierWeights, getShipmentSize }
 
 // ─── tester ───────────────────────────────────────────────────────────────────
 // run with: node server/shipments.js
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   console.log('=== Shipment System Test ===\n')
 
   // ── tier weight distributions ──────────────────────────────────────────────

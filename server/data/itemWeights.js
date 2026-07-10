@@ -86,4 +86,4 @@ const WANT_ONLY_ITEMS = new Set([
 // Convenience: all tradeable item IDs
 const TRADEABLE_ITEMS = Object.keys(ITEM_WEIGHTS)
 
-module.exports = { ITEM_WEIGHTS, WANT_ONLY_ITEMS, TRADEABLE_ITEMS }
+export { ITEM_WEIGHTS, WANT_ONLY_ITEMS, TRADEABLE_ITEMS }
