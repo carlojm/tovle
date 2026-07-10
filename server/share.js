@@ -33,7 +33,7 @@ async function getOrCreateShareId(uid) {
   const existing = doc.data()?.shareId
   if (existing) return existing
   const shareId = generateShareId()
-  await userRef.update({ shareId })
+  await userRef.set({ shareId }, { merge: true })
   return shareId
 }
 
