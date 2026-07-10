@@ -41,6 +41,48 @@ const tovs = JSON.parse(readFileSync(path.join(__dirname, 'data/tovs.json'), 'ut
 
 app.use(express.json())
 
+
+//before the static file serving, the opengraphimage share link redirect
+app.get('/d/:shareId', async (req, res) => {
+  const { shareId } = req.params
+  
+  try {
+    // look up which player owns this shareId
+    const snapshot = await db.collection('players')
+      .where('shareId', '==', shareId)
+      .limit(1)
+      .get()
+    
+    const imageUrl = snapshot.empty
+      ? 'https://tovle.net/og-default.png'
+      : `https://images.tovle.net/og/${shareId}.png?v=${shareId}`
+
+    // serve the normal index.html but inject OG tags
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta property="og:title" content="Depthsle" />
+  <meta property="og:description" content="A daily card-based dungeon crawler" />
+  <meta property="og:image" content="${imageUrl}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://tovle.net/d/${shareId}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta http-equiv="refresh" content="0;url=/" />
+</head>
+<body>
+  <script>window.location.href = '/'</script>
+</body>
+</html>`
+    
+    res.send(html)
+  } catch (err) {
+    console.error('Share redirect failed:', err)
+    res.redirect('/')
+  }
+})
+
+
 //serve static files with long cache for hashed assets
 //should help with performance, specifically for the map image
 app.use(express.static(path.join(__dirname, 'dist'), {
