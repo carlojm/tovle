@@ -7,6 +7,8 @@ const {createAxolotl, generateLevelRequirements} = require('./axolotl')
 const { rollLoot, scoreToLuckMultiplier, placeInGrid} = require('./loot')
 const { admin, db } = require('./firebase')
 
+const { testR2, uploadToR2 } = require('./r2')
+
 const { 
   generateTrades, 
   getCurrentWindowIndex,
@@ -833,6 +835,16 @@ app.post('/api/auth/token', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' })
   }
 
+})
+
+app.get('/api/test-r2', async (req, res) => {
+  try {
+    const url = await testR2()
+    res.json({ ok: true, url })
+  } catch (err) {
+    console.error('R2 test failed:', err)
+    res.status(500).json({ ok: false, error: err.message })
+  }
 })
 
 app.listen(PORT, '0.0.0.0', () => {
