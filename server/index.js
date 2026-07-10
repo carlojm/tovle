@@ -11,7 +11,8 @@ import { createAxolotl, generateLevelRequirements } from './axolotl.js'
 import { rollLoot, scoreToLuckMultiplier, placeInGrid } from './loot.js'
 import { admin, db } from './firebase.js'
 
-import { testR2, uploadToR2 } from './r2.js'
+// import { testR2, uploadToR2 } from './r2.js'
+import { generateShareImage } from './share.js'
 
 import {
   generateTrades,
@@ -841,13 +842,16 @@ app.post('/api/auth/token', async (req, res) => {
 
 })
 
-app.get('/api/test-r2', async (req, res) => {
+app.post('/api/depthsle/share', async (req, res) => {
   try {
-    const url = await testR2()
-    res.json({ ok: true, url })
+    const { uid, runData } = req.body
+    if (!uid) return res.status(400).json({ error: 'uid required' })
+
+    const { shareId, url } = await generateShareImage(uid, runData)
+    res.json({ ok: true, shareId, url })
   } catch (err) {
-    console.error('R2 test failed:', err)
-    res.status(500).json({ ok: false, error: err.message })
+    console.error('Share generation failed:', err)
+    res.status(500).json({ error: err.message })
   }
 })
 

@@ -13,6 +13,8 @@ import dawnbringerIcon  from '../../assets/talismans/dawnbringer_talisman.png'
 import steelsageIcon    from '../../assets/talismans/steelsage_talisman.png'
 import windwalkerIcon   from '../../assets/talismans/windwalker_talisman.png'
 
+import { usePlayer } from '../../context/PlayerContext.jsx'
+
 const TREE_ICONS = {
   flamecaller:  flamecallerIcon,
   earthbound:   earthboundIcon,
@@ -50,11 +52,44 @@ export default function GameOver({ state, onRestart }) {
     `Play at tovle.net`,
   ].filter(Boolean).join('\n')
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(shareText).then(() => {
+  const { uid } = usePlayer()
+
+  const handleShare = async () => {
+    setShareState('generating')
+    try {
+      const res = await fetch('/api/depthsle/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          uid,
+          runData: {
+            roomsCleared: state.roomsCleared,
+            killCount: state.killCount,
+            treasureScore: state.treasureScore,
+            mainTree: state.mainTree,
+            abilities: state.abilities.map(a => ({ name: a.name, rarity: a.rarity, tree: a.tree })),
+            puzzleNumber: getDepthslePuzzleNumber(),
+            dateString: getDisplayDate(),
+          }
+        })
+      })
+      const data = await res.json()
+      if (!data.ok) throw new Error(data.error)
+
+      const text = [
+        `Depthsle #${getDepthslePuzzleNumber()} ${getDisplayDate()}`,
+        `Cleared ${state.roomsCleared} floors`,
+        state.treasureScore > 0 ? `${state.treasureScore} treasure score` : null,
+        `Play at ${data.url}`,
+      ].filter(Boolean).join('\n')
+
+      await navigator.clipboard.writeText(text)
       setShareState('copied')
       setTimeout(() => setShareState('idle'), 2000)
-    })
+    } catch (err) {
+      console.error('Share failed:', err)
+      setShareState('idle')
+    }
   }
 
   return (
@@ -120,11 +155,8 @@ export default function GameOver({ state, onRestart }) {
         <button className="ds-start-btn" onClick={onRestart}>
           Try Again →
         </button>
-        <button
-          className="go-share-btn"
-          onClick={handleShare}
-        >
-          {shareState === 'copied' ? 'Copied! ✓' : 'Share Result'}
+        <button className="go-share-btn" onClick={handleShare} disabled={shareState === 'generating'}>
+          {shareState === 'generating' ? 'Generating...' : shareState === 'copied' ? 'Copied! ✓' : 'Share Result'}
         </button>
       </div>
 
