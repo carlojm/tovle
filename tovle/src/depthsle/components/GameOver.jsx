@@ -15,6 +15,8 @@ import windwalkerIcon   from '../../assets/talismans/windwalker_talisman.png'
 
 import { usePlayer } from '../../context/PlayerContext.jsx'
 
+import ShareCard from './ShareCard.jsx'
+
 const TREE_ICONS = {
   flamecaller:  flamecallerIcon,
   earthbound:   earthboundIcon,
@@ -158,6 +160,16 @@ export default function GameOver({ state, onRestart }) {
         <button className="go-share-btn" onClick={handleShare} disabled={shareState === 'generating'}>
           {shareState === 'generating' ? 'Generating...' : shareState === 'copied' ? 'Copied! ✓' : 'Share Result'}
         </button>
+      </div>
+
+
+      {/* ── Share card preview ── */}
+      <div className="ds-section">
+        <div className="travel-section-header">
+          <h2 className="travel-section-title">Your Card</h2>
+          <span className="travel-section-caption">Shared when you copy your result</span>
+        </div>
+        <ShareCard state={state} />
       </div>
 
     </div>
