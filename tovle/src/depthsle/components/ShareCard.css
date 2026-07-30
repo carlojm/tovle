@@ -13,10 +13,14 @@
 .sc-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  /* gap: 12px; */
   padding: 10px 18px;
   background: #130820;
   border-bottom: 2px solid #2a1a4a;
+}
+
+.sc-header > * + * {
+  margin-left: 12px;
 }
 
 .sc-logo {
@@ -29,8 +33,12 @@
 .sc-header-center {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  /* gap: 8px; */
   flex: 1;
+}
+
+.sc-header-center > * + * {
+  margin-left: 8px;
 }
 
 .sc-dungeon-label {
@@ -60,8 +68,12 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 6px;
+  /* gap: 6px; */
   flex-shrink: 0;
+}
+
+.sc-class-block > * + * {
+  margin-left: 6px;
 }
 
 .sc-main-class-icon {
@@ -80,7 +92,11 @@
 .sc-subclass-row {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  /* gap: 3px; */
+}
+
+.sc-subclass-row > * + * {
+  margin-top: 3px;
 }
 
 .sc-sub-class-icon {
@@ -94,14 +110,18 @@
 /* ── Body ── */
 .sc-body {
   display: flex;
-  gap: 0;
+  /* gap: 0; */
 }
 
 .sc-col {
   display: flex;
   flex-direction: column;
   padding: 12px 16px;
-  gap: 10px;
+  /* gap: 10px; */
+}
+
+.sc-col > * + * {
+  margin-top: 10px;
 }
 
 .sc-col--slots {
@@ -133,12 +153,31 @@
 }
 
 /* ── Slots ── */
-.sc-slots-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 40px);
-  grid-template-rows: repeat(4, 40px);
+.sc-slots-outer {
+  display: flex;
   gap: 3px;
 }
+
+.sc-slots-col-left {
+  display: flex;
+  flex-direction: column;
+  /* gap: 3px; */
+}
+
+.sc-slots-col-left > * + * {
+  margin-top: 3px;
+}
+
+.sc-slots-col-right {
+  display: flex;
+  flex-direction: column;
+  /* gap: 3px; */
+}
+
+.sc-slots-col-right > * + * {
+  margin-top: 3px;
+}
+
 
 .sc-slot {
   width: 40px;
@@ -159,12 +198,6 @@
   height: 40px;
 }
 
-.sc-slot--helmet     { grid-column: 1; grid-row: 1; }
-.sc-slot--offhand    { grid-column: 2; grid-row: 1; }
-.sc-slot--chestplate { grid-column: 1; grid-row: 2; }
-.sc-slot--leggings   { grid-column: 1; grid-row: 3; }
-.sc-slot--boots      { grid-column: 1; grid-row: 4; }
-.sc-slot--mainhand   { grid-column: 2; grid-row: 4; }
 
 .sc-slot--filled {
   border-color: #5a3a8a;
@@ -197,7 +230,11 @@
 .sc-namelist {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  /* gap: 4px; */
+}
+
+.sc-namelist > * + * {
+  margin-top: 4px;
 }
 
 .sc-name-row {
@@ -226,7 +263,8 @@
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  /* text-overflow: ellipsis; */
+  max-width: 140px;
   text-align: right;
 }
 
@@ -238,13 +276,16 @@
 .sc-divider {
   height: 1px;
   background: #2a1a4a;
-  margin: 2px 0;
 }
 
 .sc-stat-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  /* gap: 4px; */
+}
+
+.sc-stat-list > * + * {
+  margin-top: 4px;
 }
 
 .sc-stat-row {
@@ -268,7 +309,11 @@
 .sc-run-stats {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  /* gap: 4px; */
+}
+
+.sc-run-stats > * + * {
+  margin-top: 4px;
 }
 
 .sc-run-line {
@@ -280,15 +325,19 @@
 .sc-abilities-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  /* gap: 6px; */
 }
 
 .sc-ability-item {
   display: flex;
   align-items: center;
-  gap: 4px;
+  /* gap: 4px; */
   width: calc(50% - 3px);
   min-width: 0;
+}
+
+.sc-ability-item:nth-child(odd) {
+  margin-right: 6px;
 }
 
 .sc-ability-name {
@@ -296,8 +345,7 @@
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
+  max-width: 80px;
 }
 
 .sc-ability-icon-wrap {

@@ -147,15 +147,19 @@ export default function ShareCard({ state }) {
         {/* Column 1 — slot icons */}
         <div className="sc-col sc-col--slots">
           <div className="sc-col-label">LOADOUT</div>
-          <div className="sc-slots-grid">
-            <SlotCell slot={helmetSlot}   instance={getItemInSlot(helmetSlot, equipment)} />
-            <SlotCell slot={offhandSlot}  instance={getItemInSlot(offhandSlot, equipment)} />
-            <SlotCell slot={chestSlot}    instance={getItemInSlot(chestSlot, equipment)} />
-            <div className="sc-slot-spacer" />
-            <SlotCell slot={legsSlot}     instance={getItemInSlot(legsSlot, equipment)} />
-            <div className="sc-slot-spacer" />
-            <SlotCell slot={bootsSlot}    instance={getItemInSlot(bootsSlot, equipment)} />
-            <SlotCell slot={mainhandSlot} instance={getItemInSlot(mainhandSlot, equipment)} />
+          <div className="sc-slots-outer">
+            <div className="sc-slots-col-left">
+              <SlotCell slot={helmetSlot}   instance={getItemInSlot(helmetSlot, equipment)} />
+              <SlotCell slot={chestSlot}    instance={getItemInSlot(chestSlot, equipment)} />
+              <SlotCell slot={legsSlot}     instance={getItemInSlot(legsSlot, equipment)} />
+              <SlotCell slot={bootsSlot}    instance={getItemInSlot(bootsSlot, equipment)} />
+            </div>
+            <div className="sc-slots-col-right">
+              <SlotCell slot={offhandSlot}  instance={getItemInSlot(offhandSlot, equipment)} />
+              <div className="sc-slot-spacer" />
+              <div className="sc-slot-spacer" />
+              <SlotCell slot={mainhandSlot} instance={getItemInSlot(mainhandSlot, equipment)} />
+            </div>
           </div>
           {bonusSlots.length > 0 && (
             <div className="sc-bonus-slots">
