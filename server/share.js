@@ -36,6 +36,7 @@ function loadBase64(filePath) {
 const depthsleLogo = loadBase64(path.join(__dirname, 'assets/depthsle_logo.png'))
 // console.log('[share] depthsleLogo loaded:', !!depthsleLogo, depthsleLogo?.slice(0, 50))
 const abilityBorderImg = loadBase64(path.join(__dirname, 'assets/ability_border.png'))
+const unknownAbilityImg = loadBase64(path.join(__dirname, 'assets/unknown_ability.png'))
 
 const talismanIcons = {
   flamecaller:  loadBase64(path.join(__dirname, 'assets/talismans/flamecaller_talisman.png')),
@@ -193,7 +194,9 @@ function abilityItem(ability) {
       flexShrink: 0,
       position: 'relative',
     }, [
-      iconSrc ? i(iconSrc, { width: ICON, height: ICON }) : null,
+      iconSrc
+        ? i(iconSrc, { width: ICON, height: ICON })
+        : unknownAbilityImg ? i(unknownAbilityImg, { width: ICON, height: ICON }) : null,
         // : d({ width: ICON, height: ICON, background: rarityColor, borderRadius: 4, opacity: 0.5 }, []),
       abilityBorderImg
         ? i(abilityBorderImg, { position: 'absolute', top: -6, left: -6, width: ICON + 12, height: ICON + 12 })

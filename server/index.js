@@ -53,10 +53,10 @@ app.get('/d/:shareId', async (req, res) => {
 <html>
 <head>
   <meta property="og:title" content="Depthsle" />
-  <meta property="og:description" content="your share id is ${shareId} and it is ${dateStr}" />
-  <meta property="og:image" content="${imageUrl}" />
+  <!-- <meta property="og:description" content="your share id is ${shareId} and it is ${dateStr}" /> -->
+  <meta property="og:image" content="${imageUrl} />
   <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
+  <meta property="og:image:height" content="600" />
   <meta property="og:url" content="https://tovle.net/d/${shareId}" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta http-equiv="refresh" content="0;url=/" />
