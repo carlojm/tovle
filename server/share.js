@@ -257,6 +257,20 @@ function buildCard({
 
   const treeName = mainTree ? mainTree.charAt(0).toUpperCase() + mainTree.slice(1) : ''
 
+  const MAX_ABILITIES = 6
+  const displayAbilities = abilities.slice(0, MAX_ABILITIES)
+  const extraCount = abilities.length - MAX_ABILITIES
+  // replace last slot with overflow indicator if needed
+  const abilityItems = extraCount > 0
+    ? [
+        ...displayAbilities.slice(0, 5).map(a => abilityItem(a)),
+        row([
+          t({ fontSize: 20, color: C.textDim, fontFamily: 'Open Runde' }, `+${extraCount} more...`),
+        ], { alignItems: 'center', width: '48%', marginBottom: 12, marginRight: '2%' })
+      ]
+    : displayAbilities.map(a => abilityItem(a))
+
+
   return d({
     width: W,
     height: H,
@@ -344,7 +358,7 @@ function buildCard({
         d({ height: 1, background: C.border, marginTop: 12, marginBottom: 24 }, []),
         abilities.length > 0 ? col([
           // t({ fontSize: 26, color: C.textDim, marginBottom: 14 }, 'ABILITIES'),
-          d({ flexWrap: 'wrap' }, abilities.map(a => abilityItem(a))),
+          d({ flexWrap: 'wrap' }, abilityItems)
         ]) : null,
       ].filter(Boolean), {
         flex: 1,
