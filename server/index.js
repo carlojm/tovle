@@ -52,7 +52,7 @@ app.get('/d/:shareId', async (req, res) => {
   const html = `<!DOCTYPE html>
 <html>
 <head>
-  <meta property="og:title" content="Depthsle" />
+  <!-- <meta property="og:title" content="Depthsle" /> -->
   <!-- <meta property="og:description" content="your share id is ${shareId} and it is ${dateStr}" /> -->
   <meta property="og:image" content="${imageUrl} />
   <meta property="og:image:width" content="1200" />
