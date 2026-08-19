@@ -141,7 +141,7 @@ export default function GameOver({ state, onRestart }) {
         `Depthsle #${getDepthslePuzzleNumber(dateStr)} ${getDisplayDate(dateStr)}`,
         `Cleared ${state.roomsCleared} floors`,
         state.treasureScore > 0 ? `${state.treasureScore} treasure score` : null,
-        `Play at ${data.url}`,
+        `${data.url}`,
       ].filter(Boolean).join('\n')
 
       await navigator.clipboard.writeText(text)
@@ -184,8 +184,8 @@ export default function GameOver({ state, onRestart }) {
       {state.abilities.length > 0 && (
         <div className="ds-section">
           <div className="travel-section-header">
-            <h2 className="travel-section-title">Abilities</h2>
-            <span className="travel-section-caption">{state.abilities.length} acquired this run</span>
+            <h2 className="travel-section-title">Abilities ({state.abilities.length})</h2>
+            {/* <span className="travel-section-caption">{state.abilities.length} acquired this run</span> */}
           </div>
           <div className="go-abilities">
             {state.abilities.map(ability => {
@@ -213,10 +213,10 @@ export default function GameOver({ state, onRestart }) {
 
       {/* ── Actions ── */}
       <div className="go-actions">
-        <button className="ds-start-btn" onClick={onRestart}>
-          Try Again →
-        </button>
-        <button className="go-share-btn" onClick={handleShare} disabled={shareState === 'generating'}>
+        {/* <button className="ds-start-btn" onClick={onRestart}>
+          Try Again (reloads page WIP)
+        </button> */}
+        <button className="ds-start-btn" onClick={handleShare} disabled={shareState === 'generating'}>
           {shareState === 'generating' ? 'Generating...' : shareState === 'copied' ? 'Copied! ✓' : 'Share Result'}
         </button>
       </div>
@@ -226,7 +226,7 @@ export default function GameOver({ state, onRestart }) {
       <div className="ds-section">
         <div className="travel-section-header">
           <h2 className="travel-section-title">Your Card</h2>
-          <span className="travel-section-caption">Shared when you copy your result</span>
+          <span className="travel-section-caption">Embedded when you share your result</span>
         </div>
         <ShareCard state={state} />
       </div>
