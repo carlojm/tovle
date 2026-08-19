@@ -1,0 +1,5409 @@
+.minecraft {
+	background-image: url('./minecraft.png');
+	background-repeat: no-repeat;
+	display: inline-block;
+	vertical-align: middle;
+	width: 64px;
+	height: 64px;
+}
+
+.minecraft-acacia-boat {
+	background-position: 0 0;
+}
+
+.minecraft-acacia-button {
+	background-position: -64px 0;
+}
+
+.minecraft-acacia-door {
+	background-position: -128px 0;
+}
+
+.minecraft-acacia-fence {
+	background-position: -192px 0;
+}
+
+.minecraft-acacia-fence-gate {
+	background-position: -256px 0;
+}
+
+.minecraft-acacia-leaves {
+	background-position: -320px 0;
+}
+
+.minecraft-acacia-log {
+	background-position: -384px 0;
+}
+
+.minecraft-acacia-planks {
+	background-position: -448px 0;
+}
+
+.minecraft-acacia-pressure-plate {
+	background-position: -512px 0;
+}
+
+.minecraft-acacia-sapling {
+	background-position: -576px 0;
+}
+
+.minecraft-acacia-sign {
+	background-position: -640px 0;
+}
+
+.minecraft-acacia-slab {
+	background-position: -704px 0;
+}
+
+.minecraft-acacia-stairs {
+	background-position: -768px 0;
+}
+
+.minecraft-acacia-trapdoor {
+	background-position: -832px 0;
+}
+
+.minecraft-acacia-wood {
+	background-position: -896px 0;
+}
+
+.minecraft-activator-rail {
+	background-position: -960px 0;
+}
+
+.minecraft-air {
+	background-position: -1024px 0;
+}
+
+.minecraft-allium {
+	background-position: -1088px 0;
+}
+
+.minecraft-amethyst-block {
+	background-position: -1152px 0;
+}
+
+.minecraft-amethyst-cluster {
+	background-position: -1216px 0;
+}
+
+.minecraft-amethyst-shard {
+	background-position: -1280px 0;
+}
+
+.minecraft-ancient-debris {
+	background-position: -1344px 0;
+}
+
+.minecraft-andesite {
+	background-position: -1408px 0;
+}
+
+.minecraft-andesite-slab {
+	background-position: -1472px 0;
+}
+
+.minecraft-andesite-stairs {
+	background-position: -1536px 0;
+}
+
+.minecraft-andesite-wall {
+	background-position: -1600px 0;
+}
+
+.minecraft-anvil {
+	background-position: -1664px 0;
+}
+
+.minecraft-apple {
+	background-position: -1728px 0;
+}
+
+.minecraft-armor-stand {
+	background-position: -1792px 0;
+}
+
+.minecraft-arrow {
+	background-position: -1856px 0;
+}
+
+.minecraft-axolotl-bucket {
+	background-position: -1920px 0;
+}
+
+.minecraft-azalea {
+	background-position: -1984px 0;
+}
+
+.minecraft-azalea-leaves {
+	background-position: -2048px 0;
+}
+
+.minecraft-azure-bluet {
+	background-position: -2112px 0;
+}
+
+.minecraft-baked-potato {
+	background-position: -2176px 0;
+}
+
+.minecraft-bamboo {
+	background-position: -2240px 0;
+}
+
+.minecraft-barrel {
+	background-position: -2304px 0;
+}
+
+.minecraft-barrier {
+	background-position: 0 -64px;
+}
+
+.minecraft-basalt {
+	background-position: -64px -64px;
+}
+
+.minecraft-bat-spawn-egg {
+	background-position: -128px -64px;
+}
+
+.minecraft-beacon {
+	background-position: -192px -64px;
+}
+
+.minecraft-bedrock {
+	background-position: -256px -64px;
+}
+
+.minecraft-beef {
+	background-position: -320px -64px;
+}
+
+.minecraft-beehive {
+	background-position: -384px -64px;
+}
+
+.minecraft-beetroot {
+	background-position: -448px -64px;
+}
+
+.minecraft-beetroot-seeds {
+	background-position: -512px -64px;
+}
+
+.minecraft-beetroot-soup {
+	background-position: -576px -64px;
+}
+
+.minecraft-bee-nest {
+	background-position: -640px -64px;
+}
+
+.minecraft-bee-spawn-egg {
+	background-position: -704px -64px;
+}
+
+.minecraft-bell {
+	background-position: -768px -64px;
+}
+
+.minecraft-birch-boat {
+	background-position: -832px -64px;
+}
+
+.minecraft-birch-button {
+	background-position: -896px -64px;
+}
+
+.minecraft-birch-door {
+	background-position: -960px -64px;
+}
+
+.minecraft-birch-fence {
+	background-position: -1024px -64px;
+}
+
+.minecraft-birch-fence-gate {
+	background-position: -1088px -64px;
+}
+
+.minecraft-birch-leaves {
+	background-position: -1152px -64px;
+}
+
+.minecraft-birch-log {
+	background-position: -1216px -64px;
+}
+
+.minecraft-birch-planks {
+	background-position: -1280px -64px;
+}
+
+.minecraft-birch-pressure-plate {
+	background-position: -1344px -64px;
+}
+
+.minecraft-birch-sapling {
+	background-position: -1408px -64px;
+}
+
+.minecraft-birch-sign {
+	background-position: -1472px -64px;
+}
+
+.minecraft-birch-slab {
+	background-position: -1536px -64px;
+}
+
+.minecraft-birch-stairs {
+	background-position: -1600px -64px;
+}
+
+.minecraft-birch-trapdoor {
+	background-position: -1664px -64px;
+}
+
+.minecraft-birch-wood {
+	background-position: -1728px -64px;
+}
+
+.minecraft-blackstone {
+	background-position: -1792px -64px;
+}
+
+.minecraft-blackstone-slab {
+	background-position: -1856px -64px;
+}
+
+.minecraft-blackstone-stairs {
+	background-position: -1920px -64px;
+}
+
+.minecraft-blackstone-wall {
+	background-position: -1984px -64px;
+}
+
+.minecraft-black-banner {
+	background-position: -2048px -64px;
+}
+
+.minecraft-black-bed {
+	background-position: -2112px -64px;
+}
+
+.minecraft-black-candle {
+	background-position: -2176px -64px;
+}
+
+.minecraft-black-carpet {
+	background-position: -2240px -64px;
+}
+
+.minecraft-black-concrete {
+	background-position: -2304px -64px;
+}
+
+.minecraft-black-concrete-powder {
+	background-position: 0 -128px;
+}
+
+.minecraft-black-dye {
+	background-position: -64px -128px;
+}
+
+.minecraft-black-glazed-terracotta {
+	background-position: -128px -128px;
+}
+
+.minecraft-black-shulker-box {
+	background-position: -192px -128px;
+}
+
+.minecraft-black-stained-glass {
+	background-position: -256px -128px;
+}
+
+.minecraft-black-stained-glass-pane {
+	background-position: -320px -128px;
+}
+
+.minecraft-black-terracotta {
+	background-position: -384px -128px;
+}
+
+.minecraft-black-wool {
+	background-position: -448px -128px;
+}
+
+.minecraft-blast-furnace {
+	background-position: -512px -128px;
+}
+
+.minecraft-blaze-powder {
+	background-position: -576px -128px;
+}
+
+.minecraft-blaze-rod {
+	background-position: -640px -128px;
+}
+
+.minecraft-blaze-spawn-egg {
+	background-position: -704px -128px;
+}
+
+.minecraft-blue-banner {
+	background-position: -768px -128px;
+}
+
+.minecraft-blue-bed {
+	background-position: -832px -128px;
+}
+
+.minecraft-blue-candle {
+	background-position: -896px -128px;
+}
+
+.minecraft-blue-carpet {
+	background-position: -960px -128px;
+}
+
+.minecraft-blue-concrete {
+	background-position: -1024px -128px;
+}
+
+.minecraft-blue-concrete-powder {
+	background-position: -1088px -128px;
+}
+
+.minecraft-blue-dye {
+	background-position: -1152px -128px;
+}
+
+.minecraft-blue-glazed-terracotta {
+	background-position: -1216px -128px;
+}
+
+.minecraft-blue-ice {
+	background-position: -1280px -128px;
+}
+
+.minecraft-blue-orchid {
+	background-position: -1344px -128px;
+}
+
+.minecraft-blue-shulker-box {
+	background-position: -1408px -128px;
+}
+
+.minecraft-blue-stained-glass {
+	background-position: -1472px -128px;
+}
+
+.minecraft-blue-stained-glass-pane {
+	background-position: -1536px -128px;
+}
+
+.minecraft-blue-terracotta {
+	background-position: -1600px -128px;
+}
+
+.minecraft-blue-wool {
+	background-position: -1664px -128px;
+}
+
+.minecraft-bone {
+	background-position: -1728px -128px;
+}
+
+.minecraft-bone-block {
+	background-position: -1792px -128px;
+}
+
+.minecraft-bone-meal {
+	background-position: -1856px -128px;
+}
+
+.minecraft-book {
+	background-position: -1920px -128px;
+}
+
+.minecraft-bookshelf {
+	background-position: -1984px -128px;
+}
+
+.minecraft-bow {
+	background-position: -2048px -128px;
+}
+
+.minecraft-bowl {
+	background-position: -2112px -128px;
+}
+
+.minecraft-brain-coral {
+	background-position: -2176px -128px;
+}
+
+.minecraft-brain-coral-block {
+	background-position: -2240px -128px;
+}
+
+.minecraft-brain-coral-fan {
+	background-position: -2304px -128px;
+}
+
+.minecraft-bread {
+	background-position: 0 -192px;
+}
+
+.minecraft-brewing-stand {
+	background-position: -64px -192px;
+}
+
+.minecraft-brick {
+	background-position: -128px -192px;
+}
+
+.minecraft-bricks {
+	background-position: -192px -192px;
+}
+
+.minecraft-brick-slab {
+	background-position: -256px -192px;
+}
+
+.minecraft-brick-stairs {
+	background-position: -320px -192px;
+}
+
+.minecraft-brick-wall {
+	background-position: -384px -192px;
+}
+
+.minecraft-broken-elytra {
+	background-position: -448px -192px;
+}
+
+.minecraft-brown-banner {
+	background-position: -512px -192px;
+}
+
+.minecraft-brown-bed {
+	background-position: -576px -192px;
+}
+
+.minecraft-brown-candle {
+	background-position: -640px -192px;
+}
+
+.minecraft-brown-carpet {
+	background-position: -704px -192px;
+}
+
+.minecraft-brown-concrete {
+	background-position: -768px -192px;
+}
+
+.minecraft-brown-concrete-powder {
+	background-position: -832px -192px;
+}
+
+.minecraft-brown-dye {
+	background-position: -896px -192px;
+}
+
+.minecraft-brown-glazed-terracotta {
+	background-position: -960px -192px;
+}
+
+.minecraft-brown-mushroom {
+	background-position: -1024px -192px;
+}
+
+.minecraft-brown-mushroom-block {
+	background-position: -1088px -192px;
+}
+
+.minecraft-brown-shulker-box {
+	background-position: -1152px -192px;
+}
+
+.minecraft-brown-stained-glass {
+	background-position: -1216px -192px;
+}
+
+.minecraft-brown-stained-glass-pane {
+	background-position: -1280px -192px;
+}
+
+.minecraft-brown-terracotta {
+	background-position: -1344px -192px;
+}
+
+.minecraft-brown-wool {
+	background-position: -1408px -192px;
+}
+
+.minecraft-bubble-coral {
+	background-position: -1472px -192px;
+}
+
+.minecraft-bubble-coral-block {
+	background-position: -1536px -192px;
+}
+
+.minecraft-bubble-coral-fan {
+	background-position: -1600px -192px;
+}
+
+.minecraft-bucket {
+	background-position: -1664px -192px;
+}
+
+.minecraft-budding-amethyst {
+	background-position: -1728px -192px;
+}
+
+.minecraft-bundle {
+	background-position: -1792px -192px;
+}
+
+.minecraft-bundle-filled {
+	background-position: -1856px -192px;
+}
+
+.minecraft-cactus {
+	background-position: -1920px -192px;
+}
+
+.minecraft-cake {
+	background-position: -1984px -192px;
+}
+
+.minecraft-calcite {
+	background-position: -2048px -192px;
+}
+
+.minecraft-campfire {
+	background-position: -2112px -192px;
+}
+
+.minecraft-candle {
+	background-position: -2176px -192px;
+}
+
+.minecraft-carrot {
+	background-position: -2240px -192px;
+}
+
+.minecraft-carrot-on-a-stick {
+	background-position: -2304px -192px;
+}
+
+.minecraft-cartography-table {
+	background-position: 0 -256px;
+}
+
+.minecraft-carved-pumpkin {
+	background-position: -64px -256px;
+}
+
+.minecraft-cat-spawn-egg {
+	background-position: -128px -256px;
+}
+
+.minecraft-cauldron {
+	background-position: -192px -256px;
+}
+
+.minecraft-cave-spider-spawn-egg {
+	background-position: -256px -256px;
+}
+
+.minecraft-cave-vines {
+	background-position: -320px -256px;
+}
+
+.minecraft-cave-vines-lit {
+	background-position: -384px -256px;
+}
+
+.minecraft-cave-vines-plant {
+	background-position: -448px -256px;
+}
+
+.minecraft-cave-vines-plant-lit {
+	background-position: -512px -256px;
+}
+
+.minecraft-chain {
+	background-position: -576px -256px;
+}
+
+.minecraft-chainmail-boots {
+	background-position: -640px -256px;
+}
+
+.minecraft-chainmail-chestplate {
+	background-position: -704px -256px;
+}
+
+.minecraft-chainmail-helmet {
+	background-position: -768px -256px;
+}
+
+.minecraft-chainmail-leggings {
+	background-position: -832px -256px;
+}
+
+.minecraft-chain-command-block {
+	background-position: -896px -256px;
+}
+
+.minecraft-charcoal {
+	background-position: -960px -256px;
+}
+
+.minecraft-chest {
+	background-position: -1024px -256px;
+}
+
+.minecraft-chest-minecart {
+	background-position: -1088px -256px;
+}
+
+.minecraft-chicken {
+	background-position: -1152px -256px;
+}
+
+.minecraft-chicken-spawn-egg {
+	background-position: -1216px -256px;
+}
+
+.minecraft-chipped-anvil {
+	background-position: -1280px -256px;
+}
+
+.minecraft-chiseled-deepslate {
+	background-position: -1344px -256px;
+}
+
+.minecraft-chiseled-nether-bricks {
+	background-position: -1408px -256px;
+}
+
+.minecraft-chiseled-polished-blackstone {
+	background-position: -1472px -256px;
+}
+
+.minecraft-chiseled-quartz-block {
+	background-position: -1536px -256px;
+}
+
+.minecraft-chiseled-red-sandstone {
+	background-position: -1600px -256px;
+}
+
+.minecraft-chiseled-sandstone {
+	background-position: -1664px -256px;
+}
+
+.minecraft-chiseled-stone-bricks {
+	background-position: -1728px -256px;
+}
+
+.minecraft-chorus-flower {
+	background-position: -1792px -256px;
+}
+
+.minecraft-chorus-fruit {
+	background-position: -1856px -256px;
+}
+
+.minecraft-chorus-plant {
+	background-position: -1920px -256px;
+}
+
+.minecraft-clay {
+	background-position: -1984px -256px;
+}
+
+.minecraft-clay-ball {
+	background-position: -2048px -256px;
+}
+
+.minecraft-clock {
+	background-position: -2112px -256px;
+}
+
+.minecraft-clock-00 {
+	background-position: -2176px -256px;
+}
+
+.minecraft-clock-01 {
+	background-position: -2240px -256px;
+}
+
+.minecraft-clock-02 {
+	background-position: -2304px -256px;
+}
+
+.minecraft-clock-03 {
+	background-position: 0 -320px;
+}
+
+.minecraft-clock-04 {
+	background-position: -64px -320px;
+}
+
+.minecraft-clock-05 {
+	background-position: -128px -320px;
+}
+
+.minecraft-clock-06 {
+	background-position: -192px -320px;
+}
+
+.minecraft-clock-07 {
+	background-position: -256px -320px;
+}
+
+.minecraft-clock-08 {
+	background-position: -320px -320px;
+}
+
+.minecraft-clock-09 {
+	background-position: -384px -320px;
+}
+
+.minecraft-clock-10 {
+	background-position: -448px -320px;
+}
+
+.minecraft-clock-11 {
+	background-position: -512px -320px;
+}
+
+.minecraft-clock-12 {
+	background-position: -576px -320px;
+}
+
+.minecraft-clock-13 {
+	background-position: -640px -320px;
+}
+
+.minecraft-clock-14 {
+	background-position: -704px -320px;
+}
+
+.minecraft-clock-15 {
+	background-position: -768px -320px;
+}
+
+.minecraft-clock-16 {
+	background-position: -832px -320px;
+}
+
+.minecraft-clock-17 {
+	background-position: -896px -320px;
+}
+
+.minecraft-clock-18 {
+	background-position: -960px -320px;
+}
+
+.minecraft-clock-19 {
+	background-position: -1024px -320px;
+}
+
+.minecraft-clock-20 {
+	background-position: -1088px -320px;
+}
+
+.minecraft-clock-21 {
+	background-position: -1152px -320px;
+}
+
+.minecraft-clock-22 {
+	background-position: -1216px -320px;
+}
+
+.minecraft-clock-23 {
+	background-position: -1280px -320px;
+}
+
+.minecraft-clock-24 {
+	background-position: -1344px -320px;
+}
+
+.minecraft-clock-25 {
+	background-position: -1408px -320px;
+}
+
+.minecraft-clock-26 {
+	background-position: -1472px -320px;
+}
+
+.minecraft-clock-27 {
+	background-position: -1536px -320px;
+}
+
+.minecraft-clock-28 {
+	background-position: -1600px -320px;
+}
+
+.minecraft-clock-29 {
+	background-position: -1664px -320px;
+}
+
+.minecraft-clock-30 {
+	background-position: -1728px -320px;
+}
+
+.minecraft-clock-31 {
+	background-position: -1792px -320px;
+}
+
+.minecraft-clock-32 {
+	background-position: -1856px -320px;
+}
+
+.minecraft-clock-33 {
+	background-position: -1920px -320px;
+}
+
+.minecraft-clock-34 {
+	background-position: -1984px -320px;
+}
+
+.minecraft-clock-35 {
+	background-position: -2048px -320px;
+}
+
+.minecraft-clock-36 {
+	background-position: -2112px -320px;
+}
+
+.minecraft-clock-37 {
+	background-position: -2176px -320px;
+}
+
+.minecraft-clock-38 {
+	background-position: -2240px -320px;
+}
+
+.minecraft-clock-39 {
+	background-position: -2304px -320px;
+}
+
+.minecraft-clock-40 {
+	background-position: 0 -384px;
+}
+
+.minecraft-clock-41 {
+	background-position: -64px -384px;
+}
+
+.minecraft-clock-42 {
+	background-position: -128px -384px;
+}
+
+.minecraft-clock-43 {
+	background-position: -192px -384px;
+}
+
+.minecraft-clock-44 {
+	background-position: -256px -384px;
+}
+
+.minecraft-clock-45 {
+	background-position: -320px -384px;
+}
+
+.minecraft-clock-46 {
+	background-position: -384px -384px;
+}
+
+.minecraft-clock-47 {
+	background-position: -448px -384px;
+}
+
+.minecraft-clock-48 {
+	background-position: -512px -384px;
+}
+
+.minecraft-clock-49 {
+	background-position: -576px -384px;
+}
+
+.minecraft-clock-50 {
+	background-position: -640px -384px;
+}
+
+.minecraft-clock-51 {
+	background-position: -704px -384px;
+}
+
+.minecraft-clock-52 {
+	background-position: -768px -384px;
+}
+
+.minecraft-clock-53 {
+	background-position: -832px -384px;
+}
+
+.minecraft-clock-54 {
+	background-position: -896px -384px;
+}
+
+.minecraft-clock-55 {
+	background-position: -960px -384px;
+}
+
+.minecraft-clock-56 {
+	background-position: -1024px -384px;
+}
+
+.minecraft-clock-57 {
+	background-position: -1088px -384px;
+}
+
+.minecraft-clock-58 {
+	background-position: -1152px -384px;
+}
+
+.minecraft-clock-59 {
+	background-position: -1216px -384px;
+}
+
+.minecraft-clock-60 {
+	background-position: -1280px -384px;
+}
+
+.minecraft-clock-61 {
+	background-position: -1344px -384px;
+}
+
+.minecraft-clock-62 {
+	background-position: -1408px -384px;
+}
+
+.minecraft-clock-63 {
+	background-position: -1472px -384px;
+}
+
+.minecraft-coal {
+	background-position: -1536px -384px;
+}
+
+.minecraft-coal-block {
+	background-position: -1600px -384px;
+}
+
+.minecraft-coal-ore {
+	background-position: -1664px -384px;
+}
+
+.minecraft-coarse-dirt {
+	background-position: -1728px -384px;
+}
+
+.minecraft-cobbled-deepslate {
+	background-position: -1792px -384px;
+}
+
+.minecraft-cobbled-deepslate-slab {
+	background-position: -1856px -384px;
+}
+
+.minecraft-cobbled-deepslate-stairs {
+	background-position: -1920px -384px;
+}
+
+.minecraft-cobblestone {
+	background-position: -1984px -384px;
+}
+
+.minecraft-cobblestone-slab {
+	background-position: -2048px -384px;
+}
+
+.minecraft-cobblestone-stairs {
+	background-position: -2112px -384px;
+}
+
+.minecraft-cobblestone-wall {
+	background-position: -2176px -384px;
+}
+
+.minecraft-cobweb {
+	background-position: -2240px -384px;
+}
+
+.minecraft-cocoa-beans {
+	background-position: -2304px -384px;
+}
+
+.minecraft-cod {
+	background-position: 0 -448px;
+}
+
+.minecraft-cod-bucket {
+	background-position: -64px -448px;
+}
+
+.minecraft-cod-spawn-egg {
+	background-position: -128px -448px;
+}
+
+.minecraft-command-block {
+	background-position: -192px -448px;
+}
+
+.minecraft-command-block-minecart {
+	background-position: -256px -448px;
+}
+
+.minecraft-comparator {
+	background-position: -320px -448px;
+}
+
+.minecraft-compass {
+	background-position: -384px -448px;
+}
+
+.minecraft-compass-00 {
+	background-position: -448px -448px;
+}
+
+.minecraft-compass-01 {
+	background-position: -512px -448px;
+}
+
+.minecraft-compass-02 {
+	background-position: -576px -448px;
+}
+
+.minecraft-compass-03 {
+	background-position: -640px -448px;
+}
+
+.minecraft-compass-04 {
+	background-position: -704px -448px;
+}
+
+.minecraft-compass-05 {
+	background-position: -768px -448px;
+}
+
+.minecraft-compass-06 {
+	background-position: -832px -448px;
+}
+
+.minecraft-compass-07 {
+	background-position: -896px -448px;
+}
+
+.minecraft-compass-08 {
+	background-position: -960px -448px;
+}
+
+.minecraft-compass-09 {
+	background-position: -1024px -448px;
+}
+
+.minecraft-compass-10 {
+	background-position: -1088px -448px;
+}
+
+.minecraft-compass-11 {
+	background-position: -1152px -448px;
+}
+
+.minecraft-compass-12 {
+	background-position: -1216px -448px;
+}
+
+.minecraft-compass-13 {
+	background-position: -1280px -448px;
+}
+
+.minecraft-compass-14 {
+	background-position: -1344px -448px;
+}
+
+.minecraft-compass-15 {
+	background-position: -1408px -448px;
+}
+
+.minecraft-compass-16 {
+	background-position: -1472px -448px;
+}
+
+.minecraft-compass-17 {
+	background-position: -1536px -448px;
+}
+
+.minecraft-compass-18 {
+	background-position: -1600px -448px;
+}
+
+.minecraft-compass-19 {
+	background-position: -1664px -448px;
+}
+
+.minecraft-compass-20 {
+	background-position: -1728px -448px;
+}
+
+.minecraft-compass-21 {
+	background-position: -1792px -448px;
+}
+
+.minecraft-compass-22 {
+	background-position: -1856px -448px;
+}
+
+.minecraft-compass-23 {
+	background-position: -1920px -448px;
+}
+
+.minecraft-compass-24 {
+	background-position: -1984px -448px;
+}
+
+.minecraft-compass-25 {
+	background-position: -2048px -448px;
+}
+
+.minecraft-compass-26 {
+	background-position: -2112px -448px;
+}
+
+.minecraft-compass-27 {
+	background-position: -2176px -448px;
+}
+
+.minecraft-compass-28 {
+	background-position: -2240px -448px;
+}
+
+.minecraft-compass-29 {
+	background-position: -2304px -448px;
+}
+
+.minecraft-compass-30 {
+	background-position: 0 -512px;
+}
+
+.minecraft-compass-31 {
+	background-position: -64px -512px;
+}
+
+.minecraft-composter {
+	background-position: -128px -512px;
+}
+
+.minecraft-conduit {
+	background-position: -192px -512px;
+}
+
+.minecraft-cooked-beef {
+	background-position: -256px -512px;
+}
+
+.minecraft-cooked-chicken {
+	background-position: -320px -512px;
+}
+
+.minecraft-cooked-cod {
+	background-position: -384px -512px;
+}
+
+.minecraft-cooked-mutton {
+	background-position: -448px -512px;
+}
+
+.minecraft-cooked-porkchop {
+	background-position: -512px -512px;
+}
+
+.minecraft-cooked-rabbit {
+	background-position: -576px -512px;
+}
+
+.minecraft-cooked-salmon {
+	background-position: -640px -512px;
+}
+
+.minecraft-cookie {
+	background-position: -704px -512px;
+}
+
+.minecraft-copper-block {
+	background-position: -768px -512px;
+}
+
+.minecraft-copper-ingot {
+	background-position: -832px -512px;
+}
+
+.minecraft-copper-ore {
+	background-position: -896px -512px;
+}
+
+.minecraft-cornflower {
+	background-position: -960px -512px;
+}
+
+.minecraft-cow-spawn-egg {
+	background-position: -1024px -512px;
+}
+
+.minecraft-cracked-deepslate-bricks {
+	background-position: -1088px -512px;
+}
+
+.minecraft-cracked-deepslate-tiles {
+	background-position: -1152px -512px;
+}
+
+.minecraft-cracked-nether-bricks {
+	background-position: -1216px -512px;
+}
+
+.minecraft-cracked-polished-blackstone-bricks {
+	background-position: -1280px -512px;
+}
+
+.minecraft-cracked-stone-bricks {
+	background-position: -1344px -512px;
+}
+
+.minecraft-crafting-table {
+	background-position: -1408px -512px;
+}
+
+.minecraft-creeper-banner-pattern {
+	background-position: -1472px -512px;
+}
+
+.minecraft-creeper-head {
+	background-position: -1536px -512px;
+}
+
+.minecraft-creeper-spawn-egg {
+	background-position: -1600px -512px;
+}
+
+.minecraft-crimson-button {
+	background-position: -1664px -512px;
+}
+
+.minecraft-crimson-door {
+	background-position: -1728px -512px;
+}
+
+.minecraft-crimson-fence {
+	background-position: -1792px -512px;
+}
+
+.minecraft-crimson-fence-gate {
+	background-position: -1856px -512px;
+}
+
+.minecraft-crimson-fungus {
+	background-position: -1920px -512px;
+}
+
+.minecraft-crimson-hyphae {
+	background-position: -1984px -512px;
+}
+
+.minecraft-crimson-nylium {
+	background-position: -2048px -512px;
+}
+
+.minecraft-crimson-planks {
+	background-position: -2112px -512px;
+}
+
+.minecraft-crimson-pressure-plate {
+	background-position: -2176px -512px;
+}
+
+.minecraft-crimson-roots {
+	background-position: -2240px -512px;
+}
+
+.minecraft-crimson-sign {
+	background-position: -2304px -512px;
+}
+
+.minecraft-crimson-slab {
+	background-position: 0 -576px;
+}
+
+.minecraft-crimson-stairs {
+	background-position: -64px -576px;
+}
+
+.minecraft-crimson-stem {
+	background-position: -128px -576px;
+}
+
+.minecraft-crimson-trapdoor {
+	background-position: -192px -576px;
+}
+
+.minecraft-crossbow {
+	background-position: -256px -576px;
+}
+
+.minecraft-crossbow-firework {
+	background-position: -320px -576px;
+}
+
+.minecraft-crying-obsidian {
+	background-position: -384px -576px;
+}
+
+.minecraft-cut-copper {
+	background-position: -448px -576px;
+}
+
+.minecraft-cut-copper-slab {
+	background-position: -512px -576px;
+}
+
+.minecraft-cut-copper-stairs {
+	background-position: -576px -576px;
+}
+
+.minecraft-cut-red-sandstone {
+	background-position: -640px -576px;
+}
+
+.minecraft-cut-red-sandstone-slab {
+	background-position: -704px -576px;
+}
+
+.minecraft-cut-sandstone {
+	background-position: -768px -576px;
+}
+
+.minecraft-cut-sandstone-slab {
+	background-position: -832px -576px;
+}
+
+.minecraft-cyan-banner {
+	background-position: -896px -576px;
+}
+
+.minecraft-cyan-bed {
+	background-position: -960px -576px;
+}
+
+.minecraft-cyan-candle {
+	background-position: -1024px -576px;
+}
+
+.minecraft-cyan-carpet {
+	background-position: -1088px -576px;
+}
+
+.minecraft-cyan-concrete {
+	background-position: -1152px -576px;
+}
+
+.minecraft-cyan-concrete-powder {
+	background-position: -1216px -576px;
+}
+
+.minecraft-cyan-dye {
+	background-position: -1280px -576px;
+}
+
+.minecraft-cyan-glazed-terracotta {
+	background-position: -1344px -576px;
+}
+
+.minecraft-cyan-shulker-box {
+	background-position: -1408px -576px;
+}
+
+.minecraft-cyan-stained-glass {
+	background-position: -1472px -576px;
+}
+
+.minecraft-cyan-stained-glass-pane {
+	background-position: -1536px -576px;
+}
+
+.minecraft-cyan-terracotta {
+	background-position: -1600px -576px;
+}
+
+.minecraft-cyan-wool {
+	background-position: -1664px -576px;
+}
+
+.minecraft-damaged-anvil {
+	background-position: -1728px -576px;
+}
+
+.minecraft-dandelion {
+	background-position: -1792px -576px;
+}
+
+.minecraft-dark-oak-boat {
+	background-position: -1856px -576px;
+}
+
+.minecraft-dark-oak-button {
+	background-position: -1920px -576px;
+}
+
+.minecraft-dark-oak-door {
+	background-position: -1984px -576px;
+}
+
+.minecraft-dark-oak-fence {
+	background-position: -2048px -576px;
+}
+
+.minecraft-dark-oak-fence-gate {
+	background-position: -2112px -576px;
+}
+
+.minecraft-dark-oak-leaves {
+	background-position: -2176px -576px;
+}
+
+.minecraft-dark-oak-log {
+	background-position: -2240px -576px;
+}
+
+.minecraft-dark-oak-planks {
+	background-position: -2304px -576px;
+}
+
+.minecraft-dark-oak-pressure-plate {
+	background-position: 0 -640px;
+}
+
+.minecraft-dark-oak-sapling {
+	background-position: -64px -640px;
+}
+
+.minecraft-dark-oak-sign {
+	background-position: -128px -640px;
+}
+
+.minecraft-dark-oak-slab {
+	background-position: -192px -640px;
+}
+
+.minecraft-dark-oak-stairs {
+	background-position: -256px -640px;
+}
+
+.minecraft-dark-oak-trapdoor {
+	background-position: -320px -640px;
+}
+
+.minecraft-dark-oak-wood {
+	background-position: -384px -640px;
+}
+
+.minecraft-dark-prismarine {
+	background-position: -448px -640px;
+}
+
+.minecraft-dark-prismarine-slab {
+	background-position: -512px -640px;
+}
+
+.minecraft-dark-prismarine-stairs {
+	background-position: -576px -640px;
+}
+
+.minecraft-daylight-detector {
+	background-position: -640px -640px;
+}
+
+.minecraft-dead-brain-coral {
+	background-position: -704px -640px;
+}
+
+.minecraft-dead-brain-coral-block {
+	background-position: -768px -640px;
+}
+
+.minecraft-dead-brain-coral-fan {
+	background-position: -832px -640px;
+}
+
+.minecraft-dead-bubble-coral {
+	background-position: -896px -640px;
+}
+
+.minecraft-dead-bubble-coral-block {
+	background-position: -960px -640px;
+}
+
+.minecraft-dead-bubble-coral-fan {
+	background-position: -1024px -640px;
+}
+
+.minecraft-dead-bush {
+	background-position: -1088px -640px;
+}
+
+.minecraft-dead-fire-coral {
+	background-position: -1152px -640px;
+}
+
+.minecraft-dead-fire-coral-block {
+	background-position: -1216px -640px;
+}
+
+.minecraft-dead-fire-coral-fan {
+	background-position: -1280px -640px;
+}
+
+.minecraft-dead-horn-coral {
+	background-position: -1344px -640px;
+}
+
+.minecraft-dead-horn-coral-block {
+	background-position: -1408px -640px;
+}
+
+.minecraft-dead-horn-coral-fan {
+	background-position: -1472px -640px;
+}
+
+.minecraft-dead-tube-coral {
+	background-position: -1536px -640px;
+}
+
+.minecraft-dead-tube-coral-block {
+	background-position: -1600px -640px;
+}
+
+.minecraft-dead-tube-coral-fan {
+	background-position: -1664px -640px;
+}
+
+.minecraft-debug-stick {
+	background-position: -1728px -640px;
+}
+
+.minecraft-deepslate-bricks {
+	background-position: -1792px -640px;
+}
+
+.minecraft-deepslate-brick-slab {
+	background-position: -1856px -640px;
+}
+
+.minecraft-deepslate-brick-stairs {
+	background-position: -1920px -640px;
+}
+
+.minecraft-deepslate-coal-ore {
+	background-position: -1984px -640px;
+}
+
+.minecraft-deepslate-copper-ore {
+	background-position: -2048px -640px;
+}
+
+.minecraft-deepslate-diamond-ore {
+	background-position: -2112px -640px;
+}
+
+.minecraft-deepslate-emerald-ore {
+	background-position: -2176px -640px;
+}
+
+.minecraft-deepslate-gold-ore {
+	background-position: -2240px -640px;
+}
+
+.minecraft-deepslate-iron-ore {
+	background-position: -2304px -640px;
+}
+
+.minecraft-deepslate-lapis-ore {
+	background-position: 0 -704px;
+}
+
+.minecraft-deepslate-redstone-ore {
+	background-position: -64px -704px;
+}
+
+.minecraft-deepslate-tiles {
+	background-position: -128px -704px;
+}
+
+.minecraft-deepslate-tile-slab {
+	background-position: -192px -704px;
+}
+
+.minecraft-deepslate-tile-stairs {
+	background-position: -256px -704px;
+}
+
+.minecraft-detector-rail {
+	background-position: -320px -704px;
+}
+
+.minecraft-diamond {
+	background-position: -384px -704px;
+}
+
+.minecraft-diamond-axe {
+	background-position: -448px -704px;
+}
+
+.minecraft-diamond-block {
+	background-position: -512px -704px;
+}
+
+.minecraft-diamond-boots {
+	background-position: -576px -704px;
+}
+
+.minecraft-diamond-chestplate {
+	background-position: -640px -704px;
+}
+
+.minecraft-diamond-helmet {
+	background-position: -704px -704px;
+}
+
+.minecraft-diamond-hoe {
+	background-position: -768px -704px;
+}
+
+.minecraft-diamond-horse-armor {
+	background-position: -832px -704px;
+}
+
+.minecraft-diamond-leggings {
+	background-position: -896px -704px;
+}
+
+.minecraft-diamond-ore {
+	background-position: -960px -704px;
+}
+
+.minecraft-diamond-pickaxe {
+	background-position: -1024px -704px;
+}
+
+.minecraft-diamond-shovel {
+	background-position: -1088px -704px;
+}
+
+.minecraft-diamond-sword {
+	background-position: -1152px -704px;
+}
+
+.minecraft-diorite {
+	background-position: -1216px -704px;
+}
+
+.minecraft-diorite-slab {
+	background-position: -1280px -704px;
+}
+
+.minecraft-diorite-stairs {
+	background-position: -1344px -704px;
+}
+
+.minecraft-diorite-wall {
+	background-position: -1408px -704px;
+}
+
+.minecraft-dirt {
+	background-position: -1472px -704px;
+}
+
+.minecraft-dirt-path {
+	background-position: -1536px -704px;
+}
+
+.minecraft-dispenser {
+	background-position: -1600px -704px;
+}
+
+.minecraft-dolphin-spawn-egg {
+	background-position: -1664px -704px;
+}
+
+.minecraft-donkey-spawn-egg {
+	background-position: -1728px -704px;
+}
+
+.minecraft-dragon-breath {
+	background-position: -1792px -704px;
+}
+
+.minecraft-dragon-egg {
+	background-position: -1856px -704px;
+}
+
+.minecraft-dragon-head {
+	background-position: -1920px -704px;
+}
+
+.minecraft-dried-kelp {
+	background-position: -1984px -704px;
+}
+
+.minecraft-dried-kelp-block {
+	background-position: -2048px -704px;
+}
+
+.minecraft-dripstone-block {
+	background-position: -2112px -704px;
+}
+
+.minecraft-dropper {
+	background-position: -2176px -704px;
+}
+
+.minecraft-drowned-spawn-egg {
+	background-position: -2240px -704px;
+}
+
+.minecraft-egg {
+	background-position: -2304px -704px;
+}
+
+.minecraft-elder-guardian-spawn-egg {
+	background-position: 0 -768px;
+}
+
+.minecraft-elytra {
+	background-position: -64px -768px;
+}
+
+.minecraft-emerald {
+	background-position: -128px -768px;
+}
+
+.minecraft-emerald-block {
+	background-position: -192px -768px;
+}
+
+.minecraft-emerald-ore {
+	background-position: -256px -768px;
+}
+
+.minecraft-empty-armor-slot-boots {
+	background-position: -320px -768px;
+}
+
+.minecraft-empty-armor-slot-chestplate {
+	background-position: -384px -768px;
+}
+
+.minecraft-empty-armor-slot-helmet {
+	background-position: -448px -768px;
+}
+
+.minecraft-empty-armor-slot-leggings {
+	background-position: -512px -768px;
+}
+
+.minecraft-empty-armor-slot-shield {
+	background-position: -576px -768px;
+}
+
+.minecraft-enchanted-book {
+	background-position: -640px -768px;
+}
+
+.minecraft-enchanted-golden-apple {
+	background-position: -704px -768px;
+}
+
+.minecraft-enchanting-table {
+	background-position: -768px -768px;
+}
+
+.minecraft-enderman-spawn-egg {
+	background-position: -832px -768px;
+}
+
+.minecraft-endermite-spawn-egg {
+	background-position: -896px -768px;
+}
+
+.minecraft-ender-chest {
+	background-position: -960px -768px;
+}
+
+.minecraft-ender-eye {
+	background-position: -1024px -768px;
+}
+
+.minecraft-ender-pearl {
+	background-position: -1088px -768px;
+}
+
+.minecraft-end-crystal {
+	background-position: -1152px -768px;
+}
+
+.minecraft-end-portal-frame {
+	background-position: -1216px -768px;
+}
+
+.minecraft-end-rod {
+	background-position: -1280px -768px;
+}
+
+.minecraft-end-stone {
+	background-position: -1344px -768px;
+}
+
+.minecraft-end-stone-bricks {
+	background-position: -1408px -768px;
+}
+
+.minecraft-end-stone-brick-slab {
+	background-position: -1472px -768px;
+}
+
+.minecraft-end-stone-brick-stairs {
+	background-position: -1536px -768px;
+}
+
+.minecraft-end-stone-brick-wall {
+	background-position: -1600px -768px;
+}
+
+.minecraft-evoker-spawn-egg {
+	background-position: -1664px -768px;
+}
+
+.minecraft-experience-bottle {
+	background-position: -1728px -768px;
+}
+
+.minecraft-exposed-copper {
+	background-position: -1792px -768px;
+}
+
+.minecraft-exposed-cut-copper {
+	background-position: -1856px -768px;
+}
+
+.minecraft-exposed-cut-copper-slab {
+	background-position: -1920px -768px;
+}
+
+.minecraft-exposed-cut-copper-stairs {
+	background-position: -1984px -768px;
+}
+
+.minecraft-farmland {
+	background-position: -2048px -768px;
+}
+
+.minecraft-feather {
+	background-position: -2112px -768px;
+}
+
+.minecraft-fermented-spider-eye {
+	background-position: -2176px -768px;
+}
+
+.minecraft-fern {
+	background-position: -2240px -768px;
+}
+
+.minecraft-filled-map {
+	background-position: -2304px -768px;
+}
+
+.minecraft-filled-map-markings {
+	background-position: 0 -832px;
+}
+
+.minecraft-firework-rocket {
+	background-position: -64px -832px;
+}
+
+.minecraft-firework-star {
+	background-position: -128px -832px;
+}
+
+.minecraft-fire-charge {
+	background-position: -192px -832px;
+}
+
+.minecraft-fire-coral {
+	background-position: -256px -832px;
+}
+
+.minecraft-fire-coral-block {
+	background-position: -320px -832px;
+}
+
+.minecraft-fire-coral-fan {
+	background-position: -384px -832px;
+}
+
+.minecraft-fishing-rod {
+	background-position: -448px -832px;
+}
+
+.minecraft-fishing-rod-cast {
+	background-position: -512px -832px;
+}
+
+.minecraft-fletching-table {
+	background-position: -576px -832px;
+}
+
+.minecraft-flint {
+	background-position: -640px -832px;
+}
+
+.minecraft-flint-and-steel {
+	background-position: -704px -832px;
+}
+
+.minecraft-flowering-azalea {
+	background-position: -768px -832px;
+}
+
+.minecraft-flowering-azalea-leaves {
+	background-position: -832px -832px;
+}
+
+.minecraft-flower-banner-pattern {
+	background-position: -896px -832px;
+}
+
+.minecraft-flower-pot {
+	background-position: -960px -832px;
+}
+
+.minecraft-fox-spawn-egg {
+	background-position: -1024px -832px;
+}
+
+.minecraft-furnace {
+	background-position: -1088px -832px;
+}
+
+.minecraft-furnace-minecart {
+	background-position: -1152px -832px;
+}
+
+.minecraft-ghast-spawn-egg {
+	background-position: -1216px -832px;
+}
+
+.minecraft-ghast-tear {
+	background-position: -1280px -832px;
+}
+
+.minecraft-gilded-blackstone {
+	background-position: -1344px -832px;
+}
+
+.minecraft-glass {
+	background-position: -1408px -832px;
+}
+
+.minecraft-glass-bottle {
+	background-position: -1472px -832px;
+}
+
+.minecraft-glass-pane {
+	background-position: -1536px -832px;
+}
+
+.minecraft-glistering-melon-slice {
+	background-position: -1600px -832px;
+}
+
+.minecraft-globe-banner-pattern {
+	background-position: -1664px -832px;
+}
+
+.minecraft-glowstone {
+	background-position: -1728px -832px;
+}
+
+.minecraft-glowstone-dust {
+	background-position: -1792px -832px;
+}
+
+.minecraft-glow-berries {
+	background-position: -1856px -832px;
+}
+
+.minecraft-glow-ink-sac {
+	background-position: -1920px -832px;
+}
+
+.minecraft-glow-item-frame {
+	background-position: -1984px -832px;
+}
+
+.minecraft-golden-apple {
+	background-position: -2048px -832px;
+}
+
+.minecraft-golden-axe {
+	background-position: -2112px -832px;
+}
+
+.minecraft-golden-boots {
+	background-position: -2176px -832px;
+}
+
+.minecraft-golden-carrot {
+	background-position: -2240px -832px;
+}
+
+.minecraft-golden-chestplate {
+	background-position: -2304px -832px;
+}
+
+.minecraft-golden-helmet {
+	background-position: 0 -896px;
+}
+
+.minecraft-golden-hoe {
+	background-position: -64px -896px;
+}
+
+.minecraft-golden-horse-armor {
+	background-position: -128px -896px;
+}
+
+.minecraft-golden-leggings {
+	background-position: -192px -896px;
+}
+
+.minecraft-golden-pickaxe {
+	background-position: -256px -896px;
+}
+
+.minecraft-golden-shovel {
+	background-position: -320px -896px;
+}
+
+.minecraft-golden-sword {
+	background-position: -384px -896px;
+}
+
+.minecraft-gold-block {
+	background-position: -448px -896px;
+}
+
+.minecraft-gold-ingot {
+	background-position: -512px -896px;
+}
+
+.minecraft-gold-nugget {
+	background-position: -576px -896px;
+}
+
+.minecraft-gold-ore {
+	background-position: -640px -896px;
+}
+
+.minecraft-granite {
+	background-position: -704px -896px;
+}
+
+.minecraft-granite-slab {
+	background-position: -768px -896px;
+}
+
+.minecraft-granite-stairs {
+	background-position: -832px -896px;
+}
+
+.minecraft-granite-wall {
+	background-position: -896px -896px;
+}
+
+.minecraft-grass {
+	background-position: -960px -896px;
+}
+
+.minecraft-grass-block {
+	background-position: -1024px -896px;
+}
+
+.minecraft-grass-path {
+	background-position: -1088px -896px;
+}
+
+.minecraft-gravel {
+	background-position: -1152px -896px;
+}
+
+.minecraft-gray-banner {
+	background-position: -1216px -896px;
+}
+
+.minecraft-gray-bed {
+	background-position: -1280px -896px;
+}
+
+.minecraft-gray-candle {
+	background-position: -1344px -896px;
+}
+
+.minecraft-gray-carpet {
+	background-position: -1408px -896px;
+}
+
+.minecraft-gray-concrete {
+	background-position: -1472px -896px;
+}
+
+.minecraft-gray-concrete-powder {
+	background-position: -1536px -896px;
+}
+
+.minecraft-gray-dye {
+	background-position: -1600px -896px;
+}
+
+.minecraft-gray-glazed-terracotta {
+	background-position: -1664px -896px;
+}
+
+.minecraft-gray-shulker-box {
+	background-position: -1728px -896px;
+}
+
+.minecraft-gray-stained-glass {
+	background-position: -1792px -896px;
+}
+
+.minecraft-gray-stained-glass-pane {
+	background-position: -1856px -896px;
+}
+
+.minecraft-gray-terracotta {
+	background-position: -1920px -896px;
+}
+
+.minecraft-gray-wool {
+	background-position: -1984px -896px;
+}
+
+.minecraft-green-banner {
+	background-position: -2048px -896px;
+}
+
+.minecraft-green-bed {
+	background-position: -2112px -896px;
+}
+
+.minecraft-green-candle {
+	background-position: -2176px -896px;
+}
+
+.minecraft-green-carpet {
+	background-position: -2240px -896px;
+}
+
+.minecraft-green-concrete {
+	background-position: -2304px -896px;
+}
+
+.minecraft-green-concrete-powder {
+	background-position: 0 -960px;
+}
+
+.minecraft-green-dye {
+	background-position: -64px -960px;
+}
+
+.minecraft-green-glazed-terracotta {
+	background-position: -128px -960px;
+}
+
+.minecraft-green-shulker-box {
+	background-position: -192px -960px;
+}
+
+.minecraft-green-stained-glass {
+	background-position: -256px -960px;
+}
+
+.minecraft-green-stained-glass-pane {
+	background-position: -320px -960px;
+}
+
+.minecraft-green-terracotta {
+	background-position: -384px -960px;
+}
+
+.minecraft-green-wool {
+	background-position: -448px -960px;
+}
+
+.minecraft-grindstone {
+	background-position: -512px -960px;
+}
+
+.minecraft-guardian-spawn-egg {
+	background-position: -576px -960px;
+}
+
+.minecraft-gunpowder {
+	background-position: -640px -960px;
+}
+
+.minecraft-hay-block {
+	background-position: -704px -960px;
+}
+
+.minecraft-heart-of-the-sea {
+	background-position: -768px -960px;
+}
+
+.minecraft-heavy-weighted-pressure-plate {
+	background-position: -832px -960px;
+}
+
+.minecraft-hoglin-spawn-egg {
+	background-position: -896px -960px;
+}
+
+.minecraft-honeycomb {
+	background-position: -960px -960px;
+}
+
+.minecraft-honeycomb-block {
+	background-position: -1024px -960px;
+}
+
+.minecraft-honey-block {
+	background-position: -1088px -960px;
+}
+
+.minecraft-honey-bottle {
+	background-position: -1152px -960px;
+}
+
+.minecraft-hopper {
+	background-position: -1216px -960px;
+}
+
+.minecraft-hopper-minecart {
+	background-position: -1280px -960px;
+}
+
+.minecraft-horn-coral {
+	background-position: -1344px -960px;
+}
+
+.minecraft-horn-coral-block {
+	background-position: -1408px -960px;
+}
+
+.minecraft-horn-coral-fan {
+	background-position: -1472px -960px;
+}
+
+.minecraft-horse-spawn-egg {
+	background-position: -1536px -960px;
+}
+
+.minecraft-husk-spawn-egg {
+	background-position: -1600px -960px;
+}
+
+.minecraft-ice {
+	background-position: -1664px -960px;
+}
+
+.minecraft-infested-chiseled-stone-bricks {
+	background-position: -1728px -960px;
+}
+
+.minecraft-infested-cobblestone {
+	background-position: -1792px -960px;
+}
+
+.minecraft-infested-cracked-stone-bricks {
+	background-position: -1856px -960px;
+}
+
+.minecraft-infested-mossy-stone-bricks {
+	background-position: -1920px -960px;
+}
+
+.minecraft-infested-stone {
+	background-position: -1984px -960px;
+}
+
+.minecraft-infested-stone-bricks {
+	background-position: -2048px -960px;
+}
+
+.minecraft-ink-sac {
+	background-position: -2112px -960px;
+}
+
+.minecraft-iron-axe {
+	background-position: -2176px -960px;
+}
+
+.minecraft-iron-bars {
+	background-position: -2240px -960px;
+}
+
+.minecraft-iron-block {
+	background-position: -2304px -960px;
+}
+
+.minecraft-iron-boots {
+	background-position: 0 -1024px;
+}
+
+.minecraft-iron-chestplate {
+	background-position: -64px -1024px;
+}
+
+.minecraft-iron-door {
+	background-position: -128px -1024px;
+}
+
+.minecraft-iron-helmet {
+	background-position: -192px -1024px;
+}
+
+.minecraft-iron-hoe {
+	background-position: -256px -1024px;
+}
+
+.minecraft-iron-horse-armor {
+	background-position: -320px -1024px;
+}
+
+.minecraft-iron-ingot {
+	background-position: -384px -1024px;
+}
+
+.minecraft-iron-leggings {
+	background-position: -448px -1024px;
+}
+
+.minecraft-iron-nugget {
+	background-position: -512px -1024px;
+}
+
+.minecraft-iron-ore {
+	background-position: -576px -1024px;
+}
+
+.minecraft-iron-pickaxe {
+	background-position: -640px -1024px;
+}
+
+.minecraft-iron-shovel {
+	background-position: -704px -1024px;
+}
+
+.minecraft-iron-sword {
+	background-position: -768px -1024px;
+}
+
+.minecraft-iron-trapdoor {
+	background-position: -832px -1024px;
+}
+
+.minecraft-item-frame {
+	background-position: -896px -1024px;
+}
+
+.minecraft-jack-o-lantern {
+	background-position: -960px -1024px;
+}
+
+.minecraft-jigsaw {
+	background-position: -1024px -1024px;
+}
+
+.minecraft-jukebox {
+	background-position: -1088px -1024px;
+}
+
+.minecraft-jungle-boat {
+	background-position: -1152px -1024px;
+}
+
+.minecraft-jungle-button {
+	background-position: -1216px -1024px;
+}
+
+.minecraft-jungle-door {
+	background-position: -1280px -1024px;
+}
+
+.minecraft-jungle-fence {
+	background-position: -1344px -1024px;
+}
+
+.minecraft-jungle-fence-gate {
+	background-position: -1408px -1024px;
+}
+
+.minecraft-jungle-leaves {
+	background-position: -1472px -1024px;
+}
+
+.minecraft-jungle-log {
+	background-position: -1536px -1024px;
+}
+
+.minecraft-jungle-planks {
+	background-position: -1600px -1024px;
+}
+
+.minecraft-jungle-pressure-plate {
+	background-position: -1664px -1024px;
+}
+
+.minecraft-jungle-sapling {
+	background-position: -1728px -1024px;
+}
+
+.minecraft-jungle-sign {
+	background-position: -1792px -1024px;
+}
+
+.minecraft-jungle-slab {
+	background-position: -1856px -1024px;
+}
+
+.minecraft-jungle-stairs {
+	background-position: -1920px -1024px;
+}
+
+.minecraft-jungle-trapdoor {
+	background-position: -1984px -1024px;
+}
+
+.minecraft-jungle-wood {
+	background-position: -2048px -1024px;
+}
+
+.minecraft-kelp {
+	background-position: -2112px -1024px;
+}
+
+.minecraft-knowledge-book {
+	background-position: -2176px -1024px;
+}
+
+.minecraft-ladder {
+	background-position: -2240px -1024px;
+}
+
+.minecraft-lantern {
+	background-position: -2304px -1024px;
+}
+
+.minecraft-lapis-block {
+	background-position: 0 -1088px;
+}
+
+.minecraft-lapis-lazuli {
+	background-position: -64px -1088px;
+}
+
+.minecraft-lapis-ore {
+	background-position: -128px -1088px;
+}
+
+.minecraft-large-amethyst-bud {
+	background-position: -192px -1088px;
+}
+
+.minecraft-large-fern {
+	background-position: -256px -1088px;
+}
+
+.minecraft-lava-bucket {
+	background-position: -320px -1088px;
+}
+
+.minecraft-lead {
+	background-position: -384px -1088px;
+}
+
+.minecraft-leather {
+	background-position: -448px -1088px;
+}
+
+.minecraft-leather-boots {
+	background-position: -512px -1088px;
+}
+
+.minecraft-leather-chestplate {
+	background-position: -576px -1088px;
+}
+
+.minecraft-leather-helmet {
+	background-position: -640px -1088px;
+}
+
+.minecraft-leather-horse-armor {
+	background-position: -704px -1088px;
+}
+
+.minecraft-leather-leggings {
+	background-position: -768px -1088px;
+}
+
+.minecraft-lectern {
+	background-position: -832px -1088px;
+}
+
+.minecraft-lever {
+	background-position: -896px -1088px;
+}
+
+.minecraft-light {
+	background-position: -960px -1088px;
+}
+
+.minecraft-light-00 {
+	background-position: -1024px -1088px;
+}
+
+.minecraft-light-01 {
+	background-position: -1088px -1088px;
+}
+
+.minecraft-light-02 {
+	background-position: -1152px -1088px;
+}
+
+.minecraft-light-03 {
+	background-position: -1216px -1088px;
+}
+
+.minecraft-light-04 {
+	background-position: -1280px -1088px;
+}
+
+.minecraft-light-05 {
+	background-position: -1344px -1088px;
+}
+
+.minecraft-light-06 {
+	background-position: -1408px -1088px;
+}
+
+.minecraft-light-07 {
+	background-position: -1472px -1088px;
+}
+
+.minecraft-light-08 {
+	background-position: -1536px -1088px;
+}
+
+.minecraft-light-09 {
+	background-position: -1600px -1088px;
+}
+
+.minecraft-light-10 {
+	background-position: -1664px -1088px;
+}
+
+.minecraft-light-11 {
+	background-position: -1728px -1088px;
+}
+
+.minecraft-light-12 {
+	background-position: -1792px -1088px;
+}
+
+.minecraft-light-13 {
+	background-position: -1856px -1088px;
+}
+
+.minecraft-light-14 {
+	background-position: -1920px -1088px;
+}
+
+.minecraft-light-15 {
+	background-position: -1984px -1088px;
+}
+
+.minecraft-light-blue-banner {
+	background-position: -2048px -1088px;
+}
+
+.minecraft-light-blue-bed {
+	background-position: -2112px -1088px;
+}
+
+.minecraft-light-blue-candle {
+	background-position: -2176px -1088px;
+}
+
+.minecraft-light-blue-carpet {
+	background-position: -2240px -1088px;
+}
+
+.minecraft-light-blue-concrete {
+	background-position: -2304px -1088px;
+}
+
+.minecraft-light-blue-concrete-powder {
+	background-position: 0 -1152px;
+}
+
+.minecraft-light-blue-dye {
+	background-position: -64px -1152px;
+}
+
+.minecraft-light-blue-glazed-terracotta {
+	background-position: -128px -1152px;
+}
+
+.minecraft-light-blue-shulker-box {
+	background-position: -192px -1152px;
+}
+
+.minecraft-light-blue-stained-glass {
+	background-position: -256px -1152px;
+}
+
+.minecraft-light-blue-stained-glass-pane {
+	background-position: -320px -1152px;
+}
+
+.minecraft-light-blue-terracotta {
+	background-position: -384px -1152px;
+}
+
+.minecraft-light-blue-wool {
+	background-position: -448px -1152px;
+}
+
+.minecraft-light-gray-banner {
+	background-position: -512px -1152px;
+}
+
+.minecraft-light-gray-bed {
+	background-position: -576px -1152px;
+}
+
+.minecraft-light-gray-candle {
+	background-position: -640px -1152px;
+}
+
+.minecraft-light-gray-carpet {
+	background-position: -704px -1152px;
+}
+
+.minecraft-light-gray-concrete {
+	background-position: -768px -1152px;
+}
+
+.minecraft-light-gray-concrete-powder {
+	background-position: -832px -1152px;
+}
+
+.minecraft-light-gray-dye {
+	background-position: -896px -1152px;
+}
+
+.minecraft-light-gray-glazed-terracotta {
+	background-position: -960px -1152px;
+}
+
+.minecraft-light-gray-shulker-box {
+	background-position: -1024px -1152px;
+}
+
+.minecraft-light-gray-stained-glass {
+	background-position: -1088px -1152px;
+}
+
+.minecraft-light-gray-stained-glass-pane {
+	background-position: -1152px -1152px;
+}
+
+.minecraft-light-gray-terracotta {
+	background-position: -1216px -1152px;
+}
+
+.minecraft-light-gray-wool {
+	background-position: -1280px -1152px;
+}
+
+.minecraft-light-weighted-pressure-plate {
+	background-position: -1344px -1152px;
+}
+
+.minecraft-lilac {
+	background-position: -1408px -1152px;
+}
+
+.minecraft-lily-of-the-valley {
+	background-position: -1472px -1152px;
+}
+
+.minecraft-lily-pad {
+	background-position: -1536px -1152px;
+}
+
+.minecraft-lime-banner {
+	background-position: -1600px -1152px;
+}
+
+.minecraft-lime-bed {
+	background-position: -1664px -1152px;
+}
+
+.minecraft-lime-candle {
+	background-position: -1728px -1152px;
+}
+
+.minecraft-lime-carpet {
+	background-position: -1792px -1152px;
+}
+
+.minecraft-lime-concrete {
+	background-position: -1856px -1152px;
+}
+
+.minecraft-lime-concrete-powder {
+	background-position: -1920px -1152px;
+}
+
+.minecraft-lime-dye {
+	background-position: -1984px -1152px;
+}
+
+.minecraft-lime-glazed-terracotta {
+	background-position: -2048px -1152px;
+}
+
+.minecraft-lime-shulker-box {
+	background-position: -2112px -1152px;
+}
+
+.minecraft-lime-stained-glass {
+	background-position: -2176px -1152px;
+}
+
+.minecraft-lime-stained-glass-pane {
+	background-position: -2240px -1152px;
+}
+
+.minecraft-lime-terracotta {
+	background-position: -2304px -1152px;
+}
+
+.minecraft-lime-wool {
+	background-position: 0 -1216px;
+}
+
+.minecraft-lingering-potion {
+	background-position: -64px -1216px;
+}
+
+.minecraft-lingering-potion-10 {
+	background-position: -128px -1216px;
+}
+
+.minecraft-lingering-potion-11 {
+	background-position: -192px -1216px;
+}
+
+.minecraft-lingering-potion-12 {
+	background-position: -256px -1216px;
+}
+
+.minecraft-lingering-potion-13 {
+	background-position: -320px -1216px;
+}
+
+.minecraft-lingering-potion-14 {
+	background-position: -384px -1216px;
+}
+
+.minecraft-lingering-potion-15 {
+	background-position: -448px -1216px;
+}
+
+.minecraft-lingering-potion-16 {
+	background-position: -512px -1216px;
+}
+
+.minecraft-lingering-potion-17 {
+	background-position: -576px -1216px;
+}
+
+.minecraft-lingering-potion-18 {
+	background-position: -640px -1216px;
+}
+
+.minecraft-lingering-potion-19 {
+	background-position: -704px -1216px;
+}
+
+.minecraft-lingering-potion-2 {
+	background-position: -768px -1216px;
+}
+
+.minecraft-lingering-potion-20 {
+	background-position: -832px -1216px;
+}
+
+.minecraft-lingering-potion-21 {
+	background-position: -896px -1216px;
+}
+
+.minecraft-lingering-potion-22 {
+	background-position: -960px -1216px;
+}
+
+.minecraft-lingering-potion-23 {
+	background-position: -1024px -1216px;
+}
+
+.minecraft-lingering-potion-24 {
+	background-position: -1088px -1216px;
+}
+
+.minecraft-lingering-potion-25 {
+	background-position: -1152px -1216px;
+}
+
+.minecraft-lingering-potion-26 {
+	background-position: -1216px -1216px;
+}
+
+.minecraft-lingering-potion-27 {
+	background-position: -1280px -1216px;
+}
+
+.minecraft-lingering-potion-28 {
+	background-position: -1344px -1216px;
+}
+
+.minecraft-lingering-potion-29 {
+	background-position: -1408px -1216px;
+}
+
+.minecraft-lingering-potion-3 {
+	background-position: -1472px -1216px;
+}
+
+.minecraft-lingering-potion-30 {
+	background-position: -1536px -1216px;
+}
+
+.minecraft-lingering-potion-31 {
+	background-position: -1600px -1216px;
+}
+
+.minecraft-lingering-potion-32 {
+	background-position: -1664px -1216px;
+}
+
+.minecraft-lingering-potion-33 {
+	background-position: -1728px -1216px;
+}
+
+.minecraft-lingering-potion-34 {
+	background-position: -1792px -1216px;
+}
+
+.minecraft-lingering-potion-35 {
+	background-position: -1856px -1216px;
+}
+
+.minecraft-lingering-potion-36 {
+	background-position: -1920px -1216px;
+}
+
+.minecraft-lingering-potion-37 {
+	background-position: -1984px -1216px;
+}
+
+.minecraft-lingering-potion-38 {
+	background-position: -2048px -1216px;
+}
+
+.minecraft-lingering-potion-39 {
+	background-position: -2112px -1216px;
+}
+
+.minecraft-lingering-potion-4 {
+	background-position: -2176px -1216px;
+}
+
+.minecraft-lingering-potion-40 {
+	background-position: -2240px -1216px;
+}
+
+.minecraft-lingering-potion-41 {
+	background-position: -2304px -1216px;
+}
+
+.minecraft-lingering-potion-42 {
+	background-position: 0 -1280px;
+}
+
+.minecraft-lingering-potion-5 {
+	background-position: -64px -1280px;
+}
+
+.minecraft-lingering-potion-6 {
+	background-position: -128px -1280px;
+}
+
+.minecraft-lingering-potion-7 {
+	background-position: -192px -1280px;
+}
+
+.minecraft-lingering-potion-8 {
+	background-position: -256px -1280px;
+}
+
+.minecraft-lingering-potion-9 {
+	background-position: -320px -1280px;
+}
+
+.minecraft-llama-spawn-egg {
+	background-position: -384px -1280px;
+}
+
+.minecraft-lodestone {
+	background-position: -448px -1280px;
+}
+
+.minecraft-loom {
+	background-position: -512px -1280px;
+}
+
+.minecraft-magenta-banner {
+	background-position: -576px -1280px;
+}
+
+.minecraft-magenta-bed {
+	background-position: -640px -1280px;
+}
+
+.minecraft-magenta-candle {
+	background-position: -704px -1280px;
+}
+
+.minecraft-magenta-carpet {
+	background-position: -768px -1280px;
+}
+
+.minecraft-magenta-concrete {
+	background-position: -832px -1280px;
+}
+
+.minecraft-magenta-concrete-powder {
+	background-position: -896px -1280px;
+}
+
+.minecraft-magenta-dye {
+	background-position: -960px -1280px;
+}
+
+.minecraft-magenta-glazed-terracotta {
+	background-position: -1024px -1280px;
+}
+
+.minecraft-magenta-shulker-box {
+	background-position: -1088px -1280px;
+}
+
+.minecraft-magenta-stained-glass {
+	background-position: -1152px -1280px;
+}
+
+.minecraft-magenta-stained-glass-pane {
+	background-position: -1216px -1280px;
+}
+
+.minecraft-magenta-terracotta {
+	background-position: -1280px -1280px;
+}
+
+.minecraft-magenta-wool {
+	background-position: -1344px -1280px;
+}
+
+.minecraft-magma-block {
+	background-position: -1408px -1280px;
+}
+
+.minecraft-magma-cream {
+	background-position: -1472px -1280px;
+}
+
+.minecraft-magma-cube-spawn-egg {
+	background-position: -1536px -1280px;
+}
+
+.minecraft-map {
+	background-position: -1600px -1280px;
+}
+
+.minecraft-medium-amethyst-bud {
+	background-position: -1664px -1280px;
+}
+
+.minecraft-melon {
+	background-position: -1728px -1280px;
+}
+
+.minecraft-melon-seeds {
+	background-position: -1792px -1280px;
+}
+
+.minecraft-melon-slice {
+	background-position: -1856px -1280px;
+}
+
+.minecraft-milk-bucket {
+	background-position: -1920px -1280px;
+}
+
+.minecraft-minecart {
+	background-position: -1984px -1280px;
+}
+
+.minecraft-mojang-banner-pattern {
+	background-position: -2048px -1280px;
+}
+
+.minecraft-mooshroom-spawn-egg {
+	background-position: -2112px -1280px;
+}
+
+.minecraft-mossy-cobblestone {
+	background-position: -2176px -1280px;
+}
+
+.minecraft-mossy-cobblestone-slab {
+	background-position: -2240px -1280px;
+}
+
+.minecraft-mossy-cobblestone-stairs {
+	background-position: -2304px -1280px;
+}
+
+.minecraft-mossy-cobblestone-wall {
+	background-position: 0 -1344px;
+}
+
+.minecraft-mossy-stone-bricks {
+	background-position: -64px -1344px;
+}
+
+.minecraft-mossy-stone-brick-slab {
+	background-position: -128px -1344px;
+}
+
+.minecraft-mossy-stone-brick-stairs {
+	background-position: -192px -1344px;
+}
+
+.minecraft-mossy-stone-brick-wall {
+	background-position: -256px -1344px;
+}
+
+.minecraft-moss-block {
+	background-position: -320px -1344px;
+}
+
+.minecraft-moss-carpet {
+	background-position: -384px -1344px;
+}
+
+.minecraft-mule-spawn-egg {
+	background-position: -448px -1344px;
+}
+
+.minecraft-mushroom-stem {
+	background-position: -512px -1344px;
+}
+
+.minecraft-mushroom-stew {
+	background-position: -576px -1344px;
+}
+
+.minecraft-music-disc-11 {
+	background-position: -640px -1344px;
+}
+
+.minecraft-music-disc-13 {
+	background-position: -704px -1344px;
+}
+
+.minecraft-music-disc-blocks {
+	background-position: -768px -1344px;
+}
+
+.minecraft-music-disc-cat {
+	background-position: -832px -1344px;
+}
+
+.minecraft-music-disc-chirp {
+	background-position: -896px -1344px;
+}
+
+.minecraft-music-disc-far {
+	background-position: -960px -1344px;
+}
+
+.minecraft-music-disc-mall {
+	background-position: -1024px -1344px;
+}
+
+.minecraft-music-disc-mellohi {
+	background-position: -1088px -1344px;
+}
+
+.minecraft-music-disc-otherside {
+	background-position: -1152px -1344px;
+}
+
+.minecraft-music-disc-pigstep {
+	background-position: -1216px -1344px;
+}
+
+.minecraft-music-disc-stal {
+	background-position: -1280px -1344px;
+}
+
+.minecraft-music-disc-strad {
+	background-position: -1344px -1344px;
+}
+
+.minecraft-music-disc-wait {
+	background-position: -1408px -1344px;
+}
+
+.minecraft-music-disc-ward {
+	background-position: -1472px -1344px;
+}
+
+.minecraft-mutton {
+	background-position: -1536px -1344px;
+}
+
+.minecraft-mycelium {
+	background-position: -1600px -1344px;
+}
+
+.minecraft-name-tag {
+	background-position: -1664px -1344px;
+}
+
+.minecraft-nautilus-shell {
+	background-position: -1728px -1344px;
+}
+
+.minecraft-netherite-axe {
+	background-position: -1792px -1344px;
+}
+
+.minecraft-netherite-block {
+	background-position: -1856px -1344px;
+}
+
+.minecraft-netherite-boots {
+	background-position: -1920px -1344px;
+}
+
+.minecraft-netherite-chestplate {
+	background-position: -1984px -1344px;
+}
+
+.minecraft-netherite-helmet {
+	background-position: -2048px -1344px;
+}
+
+.minecraft-netherite-hoe {
+	background-position: -2112px -1344px;
+}
+
+.minecraft-netherite-ingot {
+	background-position: -2176px -1344px;
+}
+
+.minecraft-netherite-leggings {
+	background-position: -2240px -1344px;
+}
+
+.minecraft-netherite-pickaxe {
+	background-position: -2304px -1344px;
+}
+
+.minecraft-netherite-scrap {
+	background-position: 0 -1408px;
+}
+
+.minecraft-netherite-shovel {
+	background-position: -64px -1408px;
+}
+
+.minecraft-netherite-sword {
+	background-position: -128px -1408px;
+}
+
+.minecraft-netherrack {
+	background-position: -192px -1408px;
+}
+
+.minecraft-nether-brick {
+	background-position: -256px -1408px;
+}
+
+.minecraft-nether-bricks {
+	background-position: -320px -1408px;
+}
+
+.minecraft-nether-brick-fence {
+	background-position: -384px -1408px;
+}
+
+.minecraft-nether-brick-slab {
+	background-position: -448px -1408px;
+}
+
+.minecraft-nether-brick-stairs {
+	background-position: -512px -1408px;
+}
+
+.minecraft-nether-brick-wall {
+	background-position: -576px -1408px;
+}
+
+.minecraft-nether-gold-ore {
+	background-position: -640px -1408px;
+}
+
+.minecraft-nether-quartz-ore {
+	background-position: -704px -1408px;
+}
+
+.minecraft-nether-sprouts {
+	background-position: -768px -1408px;
+}
+
+.minecraft-nether-star {
+	background-position: -832px -1408px;
+}
+
+.minecraft-nether-wart {
+	background-position: -896px -1408px;
+}
+
+.minecraft-nether-wart-block {
+	background-position: -960px -1408px;
+}
+
+.minecraft-note-block {
+	background-position: -1024px -1408px;
+}
+
+.minecraft-oak-boat {
+	background-position: -1088px -1408px;
+}
+
+.minecraft-oak-button {
+	background-position: -1152px -1408px;
+}
+
+.minecraft-oak-door {
+	background-position: -1216px -1408px;
+}
+
+.minecraft-oak-fence {
+	background-position: -1280px -1408px;
+}
+
+.minecraft-oak-fence-gate {
+	background-position: -1344px -1408px;
+}
+
+.minecraft-oak-leaves {
+	background-position: -1408px -1408px;
+}
+
+.minecraft-oak-log {
+	background-position: -1472px -1408px;
+}
+
+.minecraft-oak-planks {
+	background-position: -1536px -1408px;
+}
+
+.minecraft-oak-pressure-plate {
+	background-position: -1600px -1408px;
+}
+
+.minecraft-oak-sapling {
+	background-position: -1664px -1408px;
+}
+
+.minecraft-oak-sign {
+	background-position: -1728px -1408px;
+}
+
+.minecraft-oak-slab {
+	background-position: -1792px -1408px;
+}
+
+.minecraft-oak-stairs {
+	background-position: -1856px -1408px;
+}
+
+.minecraft-oak-trapdoor {
+	background-position: -1920px -1408px;
+}
+
+.minecraft-oak-wood {
+	background-position: -1984px -1408px;
+}
+
+.minecraft-observer {
+	background-position: -2048px -1408px;
+}
+
+.minecraft-obsidian {
+	background-position: -2112px -1408px;
+}
+
+.minecraft-ocelot-spawn-egg {
+	background-position: -2176px -1408px;
+}
+
+.minecraft-orange-banner {
+	background-position: -2240px -1408px;
+}
+
+.minecraft-orange-bed {
+	background-position: -2304px -1408px;
+}
+
+.minecraft-orange-candle {
+	background-position: 0 -1472px;
+}
+
+.minecraft-orange-carpet {
+	background-position: -64px -1472px;
+}
+
+.minecraft-orange-concrete {
+	background-position: -128px -1472px;
+}
+
+.minecraft-orange-concrete-powder {
+	background-position: -192px -1472px;
+}
+
+.minecraft-orange-dye {
+	background-position: -256px -1472px;
+}
+
+.minecraft-orange-glazed-terracotta {
+	background-position: -320px -1472px;
+}
+
+.minecraft-orange-shulker-box {
+	background-position: -384px -1472px;
+}
+
+.minecraft-orange-stained-glass {
+	background-position: -448px -1472px;
+}
+
+.minecraft-orange-stained-glass-pane {
+	background-position: -512px -1472px;
+}
+
+.minecraft-orange-terracotta {
+	background-position: -576px -1472px;
+}
+
+.minecraft-orange-tulip {
+	background-position: -640px -1472px;
+}
+
+.minecraft-orange-wool {
+	background-position: -704px -1472px;
+}
+
+.minecraft-oxeye-daisy {
+	background-position: -768px -1472px;
+}
+
+.minecraft-oxidized-copper {
+	background-position: -832px -1472px;
+}
+
+.minecraft-oxidized-cut-copper {
+	background-position: -896px -1472px;
+}
+
+.minecraft-oxidized-cut-copper-slab {
+	background-position: -960px -1472px;
+}
+
+.minecraft-oxidized-cut-copper-stairs {
+	background-position: -1024px -1472px;
+}
+
+.minecraft-packed-ice {
+	background-position: -1088px -1472px;
+}
+
+.minecraft-painting {
+	background-position: -1152px -1472px;
+}
+
+.minecraft-panda-spawn-egg {
+	background-position: -1216px -1472px;
+}
+
+.minecraft-paper {
+	background-position: -1280px -1472px;
+}
+
+.minecraft-parrot-spawn-egg {
+	background-position: -1344px -1472px;
+}
+
+.minecraft-peony {
+	background-position: -1408px -1472px;
+}
+
+.minecraft-petrified-oak-slab {
+	background-position: -1472px -1472px;
+}
+
+.minecraft-phantom-membrane {
+	background-position: -1536px -1472px;
+}
+
+.minecraft-phantom-spawn-egg {
+	background-position: -1600px -1472px;
+}
+
+.minecraft-piglin-banner-pattern {
+	background-position: -1664px -1472px;
+}
+
+.minecraft-piglin-brute-spawn-egg {
+	background-position: -1728px -1472px;
+}
+
+.minecraft-piglin-spawn-egg {
+	background-position: -1792px -1472px;
+}
+
+.minecraft-pig-spawn-egg {
+	background-position: -1856px -1472px;
+}
+
+.minecraft-pillager-spawn-egg {
+	background-position: -1920px -1472px;
+}
+
+.minecraft-pink-banner {
+	background-position: -1984px -1472px;
+}
+
+.minecraft-pink-bed {
+	background-position: -2048px -1472px;
+}
+
+.minecraft-pink-candle {
+	background-position: -2112px -1472px;
+}
+
+.minecraft-pink-carpet {
+	background-position: -2176px -1472px;
+}
+
+.minecraft-pink-concrete {
+	background-position: -2240px -1472px;
+}
+
+.minecraft-pink-concrete-powder {
+	background-position: -2304px -1472px;
+}
+
+.minecraft-pink-dye {
+	background-position: 0 -1536px;
+}
+
+.minecraft-pink-glazed-terracotta {
+	background-position: -64px -1536px;
+}
+
+.minecraft-pink-shulker-box {
+	background-position: -128px -1536px;
+}
+
+.minecraft-pink-stained-glass {
+	background-position: -192px -1536px;
+}
+
+.minecraft-pink-stained-glass-pane {
+	background-position: -256px -1536px;
+}
+
+.minecraft-pink-terracotta {
+	background-position: -320px -1536px;
+}
+
+.minecraft-pink-tulip {
+	background-position: -384px -1536px;
+}
+
+.minecraft-pink-wool {
+	background-position: -448px -1536px;
+}
+
+.minecraft-piston {
+	background-position: -512px -1536px;
+}
+
+.minecraft-player-head {
+	background-position: -576px -1536px;
+}
+
+.minecraft-podzol {
+	background-position: -640px -1536px;
+}
+
+.minecraft-pointed-dripstone {
+	background-position: -704px -1536px;
+}
+
+.minecraft-pointed-dripstone-down-tip {
+	background-position: -768px -1536px;
+}
+
+.minecraft-poisonous-potato {
+	background-position: -832px -1536px;
+}
+
+.minecraft-polar-bear-spawn-egg {
+	background-position: -896px -1536px;
+}
+
+.minecraft-polished-andesite {
+	background-position: -960px -1536px;
+}
+
+.minecraft-polished-andesite-slab {
+	background-position: -1024px -1536px;
+}
+
+.minecraft-polished-andesite-stairs {
+	background-position: -1088px -1536px;
+}
+
+.minecraft-polished-basalt {
+	background-position: -1152px -1536px;
+}
+
+.minecraft-polished-blackstone {
+	background-position: -1216px -1536px;
+}
+
+.minecraft-polished-blackstone-bricks {
+	background-position: -1280px -1536px;
+}
+
+.minecraft-polished-blackstone-brick-slab {
+	background-position: -1344px -1536px;
+}
+
+.minecraft-polished-blackstone-brick-stairs {
+	background-position: -1408px -1536px;
+}
+
+.minecraft-polished-blackstone-brick-wall {
+	background-position: -1472px -1536px;
+}
+
+.minecraft-polished-blackstone-button {
+	background-position: -1536px -1536px;
+}
+
+.minecraft-polished-blackstone-pressure-plate {
+	background-position: -1600px -1536px;
+}
+
+.minecraft-polished-blackstone-slab {
+	background-position: -1664px -1536px;
+}
+
+.minecraft-polished-blackstone-stairs {
+	background-position: -1728px -1536px;
+}
+
+.minecraft-polished-blackstone-wall {
+	background-position: -1792px -1536px;
+}
+
+.minecraft-polished-deepslate {
+	background-position: -1856px -1536px;
+}
+
+.minecraft-polished-deepslate-slab {
+	background-position: -1920px -1536px;
+}
+
+.minecraft-polished-deepslate-stairs {
+	background-position: -1984px -1536px;
+}
+
+.minecraft-polished-diorite {
+	background-position: -2048px -1536px;
+}
+
+.minecraft-polished-diorite-slab {
+	background-position: -2112px -1536px;
+}
+
+.minecraft-polished-diorite-stairs {
+	background-position: -2176px -1536px;
+}
+
+.minecraft-polished-granite {
+	background-position: -2240px -1536px;
+}
+
+.minecraft-polished-granite-slab {
+	background-position: -2304px -1536px;
+}
+
+.minecraft-polished-granite-stairs {
+	background-position: 0 -1600px;
+}
+
+.minecraft-popped-chorus-fruit {
+	background-position: -64px -1600px;
+}
+
+.minecraft-poppy {
+	background-position: -128px -1600px;
+}
+
+.minecraft-porkchop {
+	background-position: -192px -1600px;
+}
+
+.minecraft-potato {
+	background-position: -256px -1600px;
+}
+
+.minecraft-potion {
+	background-position: -320px -1600px;
+}
+
+.minecraft-potion-10 {
+	background-position: -384px -1600px;
+}
+
+.minecraft-potion-11 {
+	background-position: -448px -1600px;
+}
+
+.minecraft-potion-12 {
+	background-position: -512px -1600px;
+}
+
+.minecraft-potion-13 {
+	background-position: -576px -1600px;
+}
+
+.minecraft-potion-14 {
+	background-position: -640px -1600px;
+}
+
+.minecraft-potion-15 {
+	background-position: -704px -1600px;
+}
+
+.minecraft-potion-16 {
+	background-position: -768px -1600px;
+}
+
+.minecraft-potion-17 {
+	background-position: -832px -1600px;
+}
+
+.minecraft-potion-18 {
+	background-position: -896px -1600px;
+}
+
+.minecraft-potion-19 {
+	background-position: -960px -1600px;
+}
+
+.minecraft-potion-2 {
+	background-position: -1024px -1600px;
+}
+
+.minecraft-potion-20 {
+	background-position: -1088px -1600px;
+}
+
+.minecraft-potion-21 {
+	background-position: -1152px -1600px;
+}
+
+.minecraft-potion-22 {
+	background-position: -1216px -1600px;
+}
+
+.minecraft-potion-23 {
+	background-position: -1280px -1600px;
+}
+
+.minecraft-potion-24 {
+	background-position: -1344px -1600px;
+}
+
+.minecraft-potion-25 {
+	background-position: -1408px -1600px;
+}
+
+.minecraft-potion-26 {
+	background-position: -1472px -1600px;
+}
+
+.minecraft-potion-27 {
+	background-position: -1536px -1600px;
+}
+
+.minecraft-potion-28 {
+	background-position: -1600px -1600px;
+}
+
+.minecraft-potion-29 {
+	background-position: -1664px -1600px;
+}
+
+.minecraft-potion-3 {
+	background-position: -1728px -1600px;
+}
+
+.minecraft-potion-30 {
+	background-position: -1792px -1600px;
+}
+
+.minecraft-potion-31 {
+	background-position: -1856px -1600px;
+}
+
+.minecraft-potion-32 {
+	background-position: -1920px -1600px;
+}
+
+.minecraft-potion-33 {
+	background-position: -1984px -1600px;
+}
+
+.minecraft-potion-34 {
+	background-position: -2048px -1600px;
+}
+
+.minecraft-potion-35 {
+	background-position: -2112px -1600px;
+}
+
+.minecraft-potion-36 {
+	background-position: -2176px -1600px;
+}
+
+.minecraft-potion-4 {
+	background-position: -2240px -1600px;
+}
+
+.minecraft-potion-5 {
+	background-position: -2304px -1600px;
+}
+
+.minecraft-potion-6 {
+	background-position: 0 -1664px;
+}
+
+.minecraft-potion-7 {
+	background-position: -64px -1664px;
+}
+
+.minecraft-potion-8 {
+	background-position: -128px -1664px;
+}
+
+.minecraft-potion-9 {
+	background-position: -192px -1664px;
+}
+
+.minecraft-powder-snow {
+	background-position: -256px -1664px;
+}
+
+.minecraft-powder-snow-bucket {
+	background-position: -320px -1664px;
+}
+
+.minecraft-powered-rail {
+	background-position: -384px -1664px;
+}
+
+.minecraft-prismarine {
+	background-position: -448px -1664px;
+}
+
+.minecraft-prismarine-bricks {
+	background-position: -512px -1664px;
+}
+
+.minecraft-prismarine-brick-slab {
+	background-position: -576px -1664px;
+}
+
+.minecraft-prismarine-brick-stairs {
+	background-position: -640px -1664px;
+}
+
+.minecraft-prismarine-crystals {
+	background-position: -704px -1664px;
+}
+
+.minecraft-prismarine-shard {
+	background-position: -768px -1664px;
+}
+
+.minecraft-prismarine-slab {
+	background-position: -832px -1664px;
+}
+
+.minecraft-prismarine-stairs {
+	background-position: -896px -1664px;
+}
+
+.minecraft-prismarine-wall {
+	background-position: -960px -1664px;
+}
+
+.minecraft-pufferfish {
+	background-position: -1024px -1664px;
+}
+
+.minecraft-pufferfish-bucket {
+	background-position: -1088px -1664px;
+}
+
+.minecraft-pufferfish-spawn-egg {
+	background-position: -1152px -1664px;
+}
+
+.minecraft-pumpkin {
+	background-position: -1216px -1664px;
+}
+
+.minecraft-pumpkin-pie {
+	background-position: -1280px -1664px;
+}
+
+.minecraft-pumpkin-seeds {
+	background-position: -1344px -1664px;
+}
+
+.minecraft-purple-banner {
+	background-position: -1408px -1664px;
+}
+
+.minecraft-purple-bed {
+	background-position: -1472px -1664px;
+}
+
+.minecraft-purple-candle {
+	background-position: -1536px -1664px;
+}
+
+.minecraft-purple-carpet {
+	background-position: -1600px -1664px;
+}
+
+.minecraft-purple-concrete {
+	background-position: -1664px -1664px;
+}
+
+.minecraft-purple-concrete-powder {
+	background-position: -1728px -1664px;
+}
+
+.minecraft-purple-dye {
+	background-position: -1792px -1664px;
+}
+
+.minecraft-purple-glazed-terracotta {
+	background-position: -1856px -1664px;
+}
+
+.minecraft-purple-shulker-box {
+	background-position: -1920px -1664px;
+}
+
+.minecraft-purple-stained-glass {
+	background-position: -1984px -1664px;
+}
+
+.minecraft-purple-stained-glass-pane {
+	background-position: -2048px -1664px;
+}
+
+.minecraft-purple-terracotta {
+	background-position: -2112px -1664px;
+}
+
+.minecraft-purple-wool {
+	background-position: -2176px -1664px;
+}
+
+.minecraft-purpur-block {
+	background-position: -2240px -1664px;
+}
+
+.minecraft-purpur-pillar {
+	background-position: -2304px -1664px;
+}
+
+.minecraft-purpur-slab {
+	background-position: 0 -1728px;
+}
+
+.minecraft-purpur-stairs {
+	background-position: -64px -1728px;
+}
+
+.minecraft-quartz {
+	background-position: -128px -1728px;
+}
+
+.minecraft-quartz-block {
+	background-position: -192px -1728px;
+}
+
+.minecraft-quartz-bricks {
+	background-position: -256px -1728px;
+}
+
+.minecraft-quartz-pillar {
+	background-position: -320px -1728px;
+}
+
+.minecraft-quartz-slab {
+	background-position: -384px -1728px;
+}
+
+.minecraft-quartz-stairs {
+	background-position: -448px -1728px;
+}
+
+.minecraft-rabbit {
+	background-position: -512px -1728px;
+}
+
+.minecraft-rabbit-foot {
+	background-position: -576px -1728px;
+}
+
+.minecraft-rabbit-hide {
+	background-position: -640px -1728px;
+}
+
+.minecraft-rabbit-spawn-egg {
+	background-position: -704px -1728px;
+}
+
+.minecraft-rabbit-stew {
+	background-position: -768px -1728px;
+}
+
+.minecraft-rail {
+	background-position: -832px -1728px;
+}
+
+.minecraft-ravager-spawn-egg {
+	background-position: -896px -1728px;
+}
+
+.minecraft-raw-copper {
+	background-position: -960px -1728px;
+}
+
+.minecraft-raw-copper-block {
+	background-position: -1024px -1728px;
+}
+
+.minecraft-raw-gold {
+	background-position: -1088px -1728px;
+}
+
+.minecraft-raw-gold-block {
+	background-position: -1152px -1728px;
+}
+
+.minecraft-raw-iron {
+	background-position: -1216px -1728px;
+}
+
+.minecraft-raw-iron-block {
+	background-position: -1280px -1728px;
+}
+
+.minecraft-redstone {
+	background-position: -1344px -1728px;
+}
+
+.minecraft-redstone-block {
+	background-position: -1408px -1728px;
+}
+
+.minecraft-redstone-lamp {
+	background-position: -1472px -1728px;
+}
+
+.minecraft-redstone-ore {
+	background-position: -1536px -1728px;
+}
+
+.minecraft-redstone-torch {
+	background-position: -1600px -1728px;
+}
+
+.minecraft-red-banner {
+	background-position: -1664px -1728px;
+}
+
+.minecraft-red-bed {
+	background-position: -1728px -1728px;
+}
+
+.minecraft-red-candle {
+	background-position: -1792px -1728px;
+}
+
+.minecraft-red-carpet {
+	background-position: -1856px -1728px;
+}
+
+.minecraft-red-concrete {
+	background-position: -1920px -1728px;
+}
+
+.minecraft-red-concrete-powder {
+	background-position: -1984px -1728px;
+}
+
+.minecraft-red-dye {
+	background-position: -2048px -1728px;
+}
+
+.minecraft-red-glazed-terracotta {
+	background-position: -2112px -1728px;
+}
+
+.minecraft-red-mushroom {
+	background-position: -2176px -1728px;
+}
+
+.minecraft-red-mushroom-block {
+	background-position: -2240px -1728px;
+}
+
+.minecraft-red-nether-bricks {
+	background-position: -2304px -1728px;
+}
+
+.minecraft-red-nether-brick-slab {
+	background-position: 0 -1792px;
+}
+
+.minecraft-red-nether-brick-stairs {
+	background-position: -64px -1792px;
+}
+
+.minecraft-red-nether-brick-wall {
+	background-position: -128px -1792px;
+}
+
+.minecraft-red-sand {
+	background-position: -192px -1792px;
+}
+
+.minecraft-red-sandstone {
+	background-position: -256px -1792px;
+}
+
+.minecraft-red-sandstone-slab {
+	background-position: -320px -1792px;
+}
+
+.minecraft-red-sandstone-stairs {
+	background-position: -384px -1792px;
+}
+
+.minecraft-red-sandstone-wall {
+	background-position: -448px -1792px;
+}
+
+.minecraft-red-shulker-box {
+	background-position: -512px -1792px;
+}
+
+.minecraft-red-stained-glass {
+	background-position: -576px -1792px;
+}
+
+.minecraft-red-stained-glass-pane {
+	background-position: -640px -1792px;
+}
+
+.minecraft-red-terracotta {
+	background-position: -704px -1792px;
+}
+
+.minecraft-red-tulip {
+	background-position: -768px -1792px;
+}
+
+.minecraft-red-wool {
+	background-position: -832px -1792px;
+}
+
+.minecraft-repeater {
+	background-position: -896px -1792px;
+}
+
+.minecraft-repeating-command-block {
+	background-position: -960px -1792px;
+}
+
+.minecraft-respawn-anchor {
+	background-position: -1024px -1792px;
+}
+
+.minecraft-rooted-dirt {
+	background-position: -1088px -1792px;
+}
+
+.minecraft-rose-bush {
+	background-position: -1152px -1792px;
+}
+
+.minecraft-rotten-flesh {
+	background-position: -1216px -1792px;
+}
+
+.minecraft-saddle {
+	background-position: -1280px -1792px;
+}
+
+.minecraft-salmon {
+	background-position: -1344px -1792px;
+}
+
+.minecraft-salmon-bucket {
+	background-position: -1408px -1792px;
+}
+
+.minecraft-salmon-spawn-egg {
+	background-position: -1472px -1792px;
+}
+
+.minecraft-sand {
+	background-position: -1536px -1792px;
+}
+
+.minecraft-sandstone {
+	background-position: -1600px -1792px;
+}
+
+.minecraft-sandstone-slab {
+	background-position: -1664px -1792px;
+}
+
+.minecraft-sandstone-stairs {
+	background-position: -1728px -1792px;
+}
+
+.minecraft-sandstone-wall {
+	background-position: -1792px -1792px;
+}
+
+.minecraft-scaffolding {
+	background-position: -1856px -1792px;
+}
+
+.minecraft-scute {
+	background-position: -1920px -1792px;
+}
+
+.minecraft-seagrass {
+	background-position: -1984px -1792px;
+}
+
+.minecraft-sea-lantern {
+	background-position: -2048px -1792px;
+}
+
+.minecraft-sea-pickle {
+	background-position: -2112px -1792px;
+}
+
+.minecraft-shears {
+	background-position: -2176px -1792px;
+}
+
+.minecraft-sheep-spawn-egg {
+	background-position: -2240px -1792px;
+}
+
+.minecraft-shield {
+	background-position: -2304px -1792px;
+}
+
+.minecraft-shroomlight {
+	background-position: 0 -1856px;
+}
+
+.minecraft-shulker-box {
+	background-position: -64px -1856px;
+}
+
+.minecraft-shulker-shell {
+	background-position: -128px -1856px;
+}
+
+.minecraft-shulker-spawn-egg {
+	background-position: -192px -1856px;
+}
+
+.minecraft-silverfish-spawn-egg {
+	background-position: -256px -1856px;
+}
+
+.minecraft-skeleton-horse-spawn-egg {
+	background-position: -320px -1856px;
+}
+
+.minecraft-skeleton-skull {
+	background-position: -384px -1856px;
+}
+
+.minecraft-skeleton-spawn-egg {
+	background-position: -448px -1856px;
+}
+
+.minecraft-skull-banner-pattern {
+	background-position: -512px -1856px;
+}
+
+.minecraft-slime-ball {
+	background-position: -576px -1856px;
+}
+
+.minecraft-slime-block {
+	background-position: -640px -1856px;
+}
+
+.minecraft-slime-spawn-egg {
+	background-position: -704px -1856px;
+}
+
+.minecraft-small-amethyst-bud {
+	background-position: -768px -1856px;
+}
+
+.minecraft-smithing-table {
+	background-position: -832px -1856px;
+}
+
+.minecraft-smoker {
+	background-position: -896px -1856px;
+}
+
+.minecraft-smooth-basalt {
+	background-position: -960px -1856px;
+}
+
+.minecraft-smooth-quartz {
+	background-position: -1024px -1856px;
+}
+
+.minecraft-smooth-quartz-slab {
+	background-position: -1088px -1856px;
+}
+
+.minecraft-smooth-quartz-stairs {
+	background-position: -1152px -1856px;
+}
+
+.minecraft-smooth-red-sandstone {
+	background-position: -1216px -1856px;
+}
+
+.minecraft-smooth-red-sandstone-slab {
+	background-position: -1280px -1856px;
+}
+
+.minecraft-smooth-red-sandstone-stairs {
+	background-position: -1344px -1856px;
+}
+
+.minecraft-smooth-sandstone {
+	background-position: -1408px -1856px;
+}
+
+.minecraft-smooth-sandstone-slab {
+	background-position: -1472px -1856px;
+}
+
+.minecraft-smooth-sandstone-stairs {
+	background-position: -1536px -1856px;
+}
+
+.minecraft-smooth-stone {
+	background-position: -1600px -1856px;
+}
+
+.minecraft-smooth-stone-slab {
+	background-position: -1664px -1856px;
+}
+
+.minecraft-snow {
+	background-position: -1728px -1856px;
+}
+
+.minecraft-snowball {
+	background-position: -1792px -1856px;
+}
+
+.minecraft-snow-block {
+	background-position: -1856px -1856px;
+}
+
+.minecraft-soul-campfire {
+	background-position: -1920px -1856px;
+}
+
+.minecraft-soul-lantern {
+	background-position: -1984px -1856px;
+}
+
+.minecraft-soul-sand {
+	background-position: -2048px -1856px;
+}
+
+.minecraft-soul-soil {
+	background-position: -2112px -1856px;
+}
+
+.minecraft-soul-torch {
+	background-position: -2176px -1856px;
+}
+
+.minecraft-spawner {
+	background-position: -2240px -1856px;
+}
+
+.minecraft-spawn-egg {
+	background-position: -2304px -1856px;
+}
+
+.minecraft-spectral-arrow {
+	background-position: 0 -1920px;
+}
+
+.minecraft-spider-eye {
+	background-position: -64px -1920px;
+}
+
+.minecraft-spider-spawn-egg {
+	background-position: -128px -1920px;
+}
+
+.minecraft-splash-potion {
+	background-position: -192px -1920px;
+}
+
+.minecraft-splash-potion-10 {
+	background-position: -256px -1920px;
+}
+
+.minecraft-splash-potion-11 {
+	background-position: -320px -1920px;
+}
+
+.minecraft-splash-potion-12 {
+	background-position: -384px -1920px;
+}
+
+.minecraft-splash-potion-13 {
+	background-position: -448px -1920px;
+}
+
+.minecraft-splash-potion-14 {
+	background-position: -512px -1920px;
+}
+
+.minecraft-splash-potion-15 {
+	background-position: -576px -1920px;
+}
+
+.minecraft-splash-potion-16 {
+	background-position: -640px -1920px;
+}
+
+.minecraft-splash-potion-17 {
+	background-position: -704px -1920px;
+}
+
+.minecraft-splash-potion-18 {
+	background-position: -768px -1920px;
+}
+
+.minecraft-splash-potion-19 {
+	background-position: -832px -1920px;
+}
+
+.minecraft-splash-potion-2 {
+	background-position: -896px -1920px;
+}
+
+.minecraft-splash-potion-20 {
+	background-position: -960px -1920px;
+}
+
+.minecraft-splash-potion-21 {
+	background-position: -1024px -1920px;
+}
+
+.minecraft-splash-potion-22 {
+	background-position: -1088px -1920px;
+}
+
+.minecraft-splash-potion-23 {
+	background-position: -1152px -1920px;
+}
+
+.minecraft-splash-potion-24 {
+	background-position: -1216px -1920px;
+}
+
+.minecraft-splash-potion-25 {
+	background-position: -1280px -1920px;
+}
+
+.minecraft-splash-potion-26 {
+	background-position: -1344px -1920px;
+}
+
+.minecraft-splash-potion-27 {
+	background-position: -1408px -1920px;
+}
+
+.minecraft-splash-potion-28 {
+	background-position: -1472px -1920px;
+}
+
+.minecraft-splash-potion-29 {
+	background-position: -1536px -1920px;
+}
+
+.minecraft-splash-potion-3 {
+	background-position: -1600px -1920px;
+}
+
+.minecraft-splash-potion-30 {
+	background-position: -1664px -1920px;
+}
+
+.minecraft-splash-potion-31 {
+	background-position: -1728px -1920px;
+}
+
+.minecraft-splash-potion-32 {
+	background-position: -1792px -1920px;
+}
+
+.minecraft-splash-potion-33 {
+	background-position: -1856px -1920px;
+}
+
+.minecraft-splash-potion-34 {
+	background-position: -1920px -1920px;
+}
+
+.minecraft-splash-potion-35 {
+	background-position: -1984px -1920px;
+}
+
+.minecraft-splash-potion-4 {
+	background-position: -2048px -1920px;
+}
+
+.minecraft-splash-potion-5 {
+	background-position: -2112px -1920px;
+}
+
+.minecraft-splash-potion-6 {
+	background-position: -2176px -1920px;
+}
+
+.minecraft-splash-potion-7 {
+	background-position: -2240px -1920px;
+}
+
+.minecraft-splash-potion-8 {
+	background-position: -2304px -1920px;
+}
+
+.minecraft-splash-potion-9 {
+	background-position: 0 -1984px;
+}
+
+.minecraft-sponge {
+	background-position: -64px -1984px;
+}
+
+.minecraft-spruce-boat {
+	background-position: -128px -1984px;
+}
+
+.minecraft-spruce-button {
+	background-position: -192px -1984px;
+}
+
+.minecraft-spruce-door {
+	background-position: -256px -1984px;
+}
+
+.minecraft-spruce-fence {
+	background-position: -320px -1984px;
+}
+
+.minecraft-spruce-fence-gate {
+	background-position: -384px -1984px;
+}
+
+.minecraft-spruce-leaves {
+	background-position: -448px -1984px;
+}
+
+.minecraft-spruce-log {
+	background-position: -512px -1984px;
+}
+
+.minecraft-spruce-planks {
+	background-position: -576px -1984px;
+}
+
+.minecraft-spruce-pressure-plate {
+	background-position: -640px -1984px;
+}
+
+.minecraft-spruce-sapling {
+	background-position: -704px -1984px;
+}
+
+.minecraft-spruce-sign {
+	background-position: -768px -1984px;
+}
+
+.minecraft-spruce-slab {
+	background-position: -832px -1984px;
+}
+
+.minecraft-spruce-stairs {
+	background-position: -896px -1984px;
+}
+
+.minecraft-spruce-trapdoor {
+	background-position: -960px -1984px;
+}
+
+.minecraft-spruce-wood {
+	background-position: -1024px -1984px;
+}
+
+.minecraft-spyglass {
+	background-position: -1088px -1984px;
+}
+
+.minecraft-spyglass-model {
+	background-position: -1152px -1984px;
+}
+
+.minecraft-squid-spawn-egg {
+	background-position: -1216px -1984px;
+}
+
+.minecraft-stick {
+	background-position: -1280px -1984px;
+}
+
+.minecraft-sticky-piston {
+	background-position: -1344px -1984px;
+}
+
+.minecraft-stone {
+	background-position: -1408px -1984px;
+}
+
+.minecraft-stonecutter {
+	background-position: -1472px -1984px;
+}
+
+.minecraft-stone-axe {
+	background-position: -1536px -1984px;
+}
+
+.minecraft-stone-bricks {
+	background-position: -1600px -1984px;
+}
+
+.minecraft-stone-brick-slab {
+	background-position: -1664px -1984px;
+}
+
+.minecraft-stone-brick-stairs {
+	background-position: -1728px -1984px;
+}
+
+.minecraft-stone-brick-wall {
+	background-position: -1792px -1984px;
+}
+
+.minecraft-stone-button {
+	background-position: -1856px -1984px;
+}
+
+.minecraft-stone-hoe {
+	background-position: -1920px -1984px;
+}
+
+.minecraft-stone-pickaxe {
+	background-position: -1984px -1984px;
+}
+
+.minecraft-stone-pressure-plate {
+	background-position: -2048px -1984px;
+}
+
+.minecraft-stone-shovel {
+	background-position: -2112px -1984px;
+}
+
+.minecraft-stone-slab {
+	background-position: -2176px -1984px;
+}
+
+.minecraft-stone-stairs {
+	background-position: -2240px -1984px;
+}
+
+.minecraft-stone-sword {
+	background-position: -2304px -1984px;
+}
+
+.minecraft-stray-spawn-egg {
+	background-position: 0 -2048px;
+}
+
+.minecraft-strider-spawn-egg {
+	background-position: -64px -2048px;
+}
+
+.minecraft-string {
+	background-position: -128px -2048px;
+}
+
+.minecraft-stripped-acacia-log {
+	background-position: -192px -2048px;
+}
+
+.minecraft-stripped-acacia-wood {
+	background-position: -256px -2048px;
+}
+
+.minecraft-stripped-birch-log {
+	background-position: -320px -2048px;
+}
+
+.minecraft-stripped-birch-wood {
+	background-position: -384px -2048px;
+}
+
+.minecraft-stripped-crimson-hyphae {
+	background-position: -448px -2048px;
+}
+
+.minecraft-stripped-crimson-stem {
+	background-position: -512px -2048px;
+}
+
+.minecraft-stripped-dark-oak-log {
+	background-position: -576px -2048px;
+}
+
+.minecraft-stripped-dark-oak-wood {
+	background-position: -640px -2048px;
+}
+
+.minecraft-stripped-jungle-log {
+	background-position: -704px -2048px;
+}
+
+.minecraft-stripped-jungle-wood {
+	background-position: -768px -2048px;
+}
+
+.minecraft-stripped-oak-log {
+	background-position: -832px -2048px;
+}
+
+.minecraft-stripped-oak-wood {
+	background-position: -896px -2048px;
+}
+
+.minecraft-stripped-spruce-log {
+	background-position: -960px -2048px;
+}
+
+.minecraft-stripped-spruce-wood {
+	background-position: -1024px -2048px;
+}
+
+.minecraft-stripped-warped-hyphae {
+	background-position: -1088px -2048px;
+}
+
+.minecraft-stripped-warped-stem {
+	background-position: -1152px -2048px;
+}
+
+.minecraft-structure-block {
+	background-position: -1216px -2048px;
+}
+
+.minecraft-structure-void {
+	background-position: -1280px -2048px;
+}
+
+.minecraft-sugar {
+	background-position: -1344px -2048px;
+}
+
+.minecraft-sugar-cane {
+	background-position: -1408px -2048px;
+}
+
+.minecraft-sunflower {
+	background-position: -1472px -2048px;
+}
+
+.minecraft-suspicious-stew {
+	background-position: -1536px -2048px;
+}
+
+.minecraft-sweet-berries {
+	background-position: -1600px -2048px;
+}
+
+.minecraft-tall-grass {
+	background-position: -1664px -2048px;
+}
+
+.minecraft-target {
+	background-position: -1728px -2048px;
+}
+
+.minecraft-terracotta {
+	background-position: -1792px -2048px;
+}
+
+.minecraft-tinted-glass {
+	background-position: -1856px -2048px;
+}
+
+.minecraft-tipped-arrow {
+	background-position: -1920px -2048px;
+}
+
+.minecraft-tipped-arrow-10 {
+	background-position: -1984px -2048px;
+}
+
+.minecraft-tipped-arrow-11 {
+	background-position: -2048px -2048px;
+}
+
+.minecraft-tipped-arrow-12 {
+	background-position: -2112px -2048px;
+}
+
+.minecraft-tipped-arrow-13 {
+	background-position: -2176px -2048px;
+}
+
+.minecraft-tipped-arrow-14 {
+	background-position: -2240px -2048px;
+}
+
+.minecraft-tipped-arrow-15 {
+	background-position: -2304px -2048px;
+}
+
+.minecraft-tipped-arrow-16 {
+	background-position: 0 -2112px;
+}
+
+.minecraft-tipped-arrow-17 {
+	background-position: -64px -2112px;
+}
+
+.minecraft-tipped-arrow-18 {
+	background-position: -128px -2112px;
+}
+
+.minecraft-tipped-arrow-19 {
+	background-position: -192px -2112px;
+}
+
+.minecraft-tipped-arrow-2 {
+	background-position: -256px -2112px;
+}
+
+.minecraft-tipped-arrow-20 {
+	background-position: -320px -2112px;
+}
+
+.minecraft-tipped-arrow-21 {
+	background-position: -384px -2112px;
+}
+
+.minecraft-tipped-arrow-22 {
+	background-position: -448px -2112px;
+}
+
+.minecraft-tipped-arrow-23 {
+	background-position: -512px -2112px;
+}
+
+.minecraft-tipped-arrow-24 {
+	background-position: -576px -2112px;
+}
+
+.minecraft-tipped-arrow-25 {
+	background-position: -640px -2112px;
+}
+
+.minecraft-tipped-arrow-26 {
+	background-position: -704px -2112px;
+}
+
+.minecraft-tipped-arrow-27 {
+	background-position: -768px -2112px;
+}
+
+.minecraft-tipped-arrow-28 {
+	background-position: -832px -2112px;
+}
+
+.minecraft-tipped-arrow-29 {
+	background-position: -896px -2112px;
+}
+
+.minecraft-tipped-arrow-3 {
+	background-position: -960px -2112px;
+}
+
+.minecraft-tipped-arrow-30 {
+	background-position: -1024px -2112px;
+}
+
+.minecraft-tipped-arrow-31 {
+	background-position: -1088px -2112px;
+}
+
+.minecraft-tipped-arrow-32 {
+	background-position: -1152px -2112px;
+}
+
+.minecraft-tipped-arrow-33 {
+	background-position: -1216px -2112px;
+}
+
+.minecraft-tipped-arrow-34 {
+	background-position: -1280px -2112px;
+}
+
+.minecraft-tipped-arrow-35 {
+	background-position: -1344px -2112px;
+}
+
+.minecraft-tipped-arrow-36 {
+	background-position: -1408px -2112px;
+}
+
+.minecraft-tipped-arrow-37 {
+	background-position: -1472px -2112px;
+}
+
+.minecraft-tipped-arrow-38 {
+	background-position: -1536px -2112px;
+}
+
+.minecraft-tipped-arrow-4 {
+	background-position: -1600px -2112px;
+}
+
+.minecraft-tipped-arrow-5 {
+	background-position: -1664px -2112px;
+}
+
+.minecraft-tipped-arrow-6 {
+	background-position: -1728px -2112px;
+}
+
+.minecraft-tipped-arrow-7 {
+	background-position: -1792px -2112px;
+}
+
+.minecraft-tipped-arrow-8 {
+	background-position: -1856px -2112px;
+}
+
+.minecraft-tipped-arrow-9 {
+	background-position: -1920px -2112px;
+}
+
+.minecraft-tipped-arrow-base {
+	background-position: -1984px -2112px;
+}
+
+.minecraft-tipped-arrow-head {
+	background-position: -2048px -2112px;
+}
+
+.minecraft-tnt {
+	background-position: -2112px -2112px;
+}
+
+.minecraft-tnt-minecart {
+	background-position: -2176px -2112px;
+}
+
+.minecraft-torch {
+	background-position: -2240px -2112px;
+}
+
+.minecraft-totem-of-undying {
+	background-position: -2304px -2112px;
+}
+
+.minecraft-trader-llama-spawn-egg {
+	background-position: 0 -2176px;
+}
+
+.minecraft-trapped-chest {
+	background-position: -64px -2176px;
+}
+
+.minecraft-trident {
+	background-position: -128px -2176px;
+}
+
+.minecraft-tripwire-hook {
+	background-position: -192px -2176px;
+}
+
+.minecraft-tropical-fish {
+	background-position: -256px -2176px;
+}
+
+.minecraft-tropical-fish-bucket {
+	background-position: -320px -2176px;
+}
+
+.minecraft-tropical-fish-spawn-egg {
+	background-position: -384px -2176px;
+}
+
+.minecraft-tube-coral {
+	background-position: -448px -2176px;
+}
+
+.minecraft-tube-coral-block {
+	background-position: -512px -2176px;
+}
+
+.minecraft-tube-coral-fan {
+	background-position: -576px -2176px;
+}
+
+.minecraft-tuff {
+	background-position: -640px -2176px;
+}
+
+.minecraft-turtle-egg {
+	background-position: -704px -2176px;
+}
+
+.minecraft-turtle-helmet {
+	background-position: -768px -2176px;
+}
+
+.minecraft-turtle-spawn-egg {
+	background-position: -832px -2176px;
+}
+
+.minecraft-twisting-vines {
+	background-position: -896px -2176px;
+}
+
+.minecraft-vanillas {
+	background-position: -960px -2176px;
+}
+
+.minecraft-vex-spawn-egg {
+	background-position: -1024px -2176px;
+}
+
+.minecraft-villager-spawn-egg {
+	background-position: -1088px -2176px;
+}
+
+.minecraft-vindicator-spawn-egg {
+	background-position: -1152px -2176px;
+}
+
+.minecraft-vine {
+	background-position: -1216px -2176px;
+}
+
+.minecraft-wandering-trader-spawn-egg {
+	background-position: -1280px -2176px;
+}
+
+.minecraft-warped-button {
+	background-position: -1344px -2176px;
+}
+
+.minecraft-warped-door {
+	background-position: -1408px -2176px;
+}
+
+.minecraft-warped-fence {
+	background-position: -1472px -2176px;
+}
+
+.minecraft-warped-fence-gate {
+	background-position: -1536px -2176px;
+}
+
+.minecraft-warped-fungus {
+	background-position: -1600px -2176px;
+}
+
+.minecraft-warped-fungus-on-a-stick {
+	background-position: -1664px -2176px;
+}
+
+.minecraft-warped-hyphae {
+	background-position: -1728px -2176px;
+}
+
+.minecraft-warped-nylium {
+	background-position: -1792px -2176px;
+}
+
+.minecraft-warped-planks {
+	background-position: -1856px -2176px;
+}
+
+.minecraft-warped-pressure-plate {
+	background-position: -1920px -2176px;
+}
+
+.minecraft-warped-roots {
+	background-position: -1984px -2176px;
+}
+
+.minecraft-warped-sign {
+	background-position: -2048px -2176px;
+}
+
+.minecraft-warped-slab {
+	background-position: -2112px -2176px;
+}
+
+.minecraft-warped-stairs {
+	background-position: -2176px -2176px;
+}
+
+.minecraft-warped-stem {
+	background-position: -2240px -2176px;
+}
+
+.minecraft-warped-trapdoor {
+	background-position: -2304px -2176px;
+}
+
+.minecraft-warped-wart-block {
+	background-position: 0 -2240px;
+}
+
+.minecraft-water-bucket {
+	background-position: -64px -2240px;
+}
+
+.minecraft-weathered-copper {
+	background-position: -128px -2240px;
+}
+
+.minecraft-weathered-cut-copper {
+	background-position: -192px -2240px;
+}
+
+.minecraft-weathered-cut-copper-slab {
+	background-position: -256px -2240px;
+}
+
+.minecraft-weathered-cut-copper-stairs {
+	background-position: -320px -2240px;
+}
+
+.minecraft-weeping-vines {
+	background-position: -384px -2240px;
+}
+
+.minecraft-wet-sponge {
+	background-position: -448px -2240px;
+}
+
+.minecraft-wheat {
+	background-position: -512px -2240px;
+}
+
+.minecraft-wheat-seeds {
+	background-position: -576px -2240px;
+}
+
+.minecraft-white-banner {
+	background-position: -640px -2240px;
+}
+
+.minecraft-white-bed {
+	background-position: -704px -2240px;
+}
+
+.minecraft-white-candle {
+	background-position: -768px -2240px;
+}
+
+.minecraft-white-carpet {
+	background-position: -832px -2240px;
+}
+
+.minecraft-white-concrete {
+	background-position: -896px -2240px;
+}
+
+.minecraft-white-concrete-powder {
+	background-position: -960px -2240px;
+}
+
+.minecraft-white-dye {
+	background-position: -1024px -2240px;
+}
+
+.minecraft-white-glazed-terracotta {
+	background-position: -1088px -2240px;
+}
+
+.minecraft-white-shulker-box {
+	background-position: -1152px -2240px;
+}
+
+.minecraft-white-stained-glass {
+	background-position: -1216px -2240px;
+}
+
+.minecraft-white-stained-glass-pane {
+	background-position: -1280px -2240px;
+}
+
+.minecraft-white-terracotta {
+	background-position: -1344px -2240px;
+}
+
+.minecraft-white-tulip {
+	background-position: -1408px -2240px;
+}
+
+.minecraft-white-wool {
+	background-position: -1472px -2240px;
+}
+
+.minecraft-witch-spawn-egg {
+	background-position: -1536px -2240px;
+}
+
+.minecraft-wither-rose {
+	background-position: -1600px -2240px;
+}
+
+.minecraft-wither-skeleton-skull {
+	background-position: -1664px -2240px;
+}
+
+.minecraft-wither-skeleton-spawn-egg {
+	background-position: -1728px -2240px;
+}
+
+.minecraft-wolf-spawn-egg {
+	background-position: -1792px -2240px;
+}
+
+.minecraft-wooden-axe {
+	background-position: -1856px -2240px;
+}
+
+.minecraft-wooden-hoe {
+	background-position: -1920px -2240px;
+}
+
+.minecraft-wooden-pickaxe {
+	background-position: -1984px -2240px;
+}
+
+.minecraft-wooden-shovel {
+	background-position: -2048px -2240px;
+}
+
+.minecraft-wooden-sword {
+	background-position: -2112px -2240px;
+}
+
+.minecraft-writable-book {
+	background-position: -2176px -2240px;
+}
+
+.minecraft-written-book {
+	background-position: -2240px -2240px;
+}
+
+.minecraft-yellow-banner {
+	background-position: -2304px -2240px;
+}
+
+.minecraft-yellow-bed {
+	background-position: 0 -2304px;
+}
+
+.minecraft-yellow-candle {
+	background-position: -64px -2304px;
+}
+
+.minecraft-yellow-carpet {
+	background-position: -128px -2304px;
+}
+
+.minecraft-yellow-concrete {
+	background-position: -192px -2304px;
+}
+
+.minecraft-yellow-concrete-powder {
+	background-position: -256px -2304px;
+}
+
+.minecraft-yellow-dye {
+	background-position: -320px -2304px;
+}
+
+.minecraft-yellow-glazed-terracotta {
+	background-position: -384px -2304px;
+}
+
+.minecraft-yellow-shulker-box {
+	background-position: -448px -2304px;
+}
+
+.minecraft-yellow-stained-glass {
+	background-position: -512px -2304px;
+}
+
+.minecraft-yellow-stained-glass-pane {
+	background-position: -576px -2304px;
+}
+
+.minecraft-yellow-terracotta {
+	background-position: -640px -2304px;
+}
+
+.minecraft-yellow-wool {
+	background-position: -704px -2304px;
+}
+
+.minecraft-zoglin-spawn-egg {
+	background-position: -768px -2304px;
+}
+
+.minecraft-zombie-head {
+	background-position: -832px -2304px;
+}
+
+.minecraft-zombie-horse-spawn-egg {
+	background-position: -896px -2304px;
+}
+
+.minecraft-zombie-spawn-egg {
+	background-position: -960px -2304px;
+}
+
+.minecraft-zombie-villager-spawn-egg {
+	background-position: -1024px -2304px;
+}
+
+.minecraft-zombified-piglin-spawn-egg {
+	background-position: -1088px -2304px;
+}
+

@@ -5,6 +5,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { uploadToR2 } from './r2.js'
 import { db } from './firebase.js'
+import { getItemIconBase64 } from './itemIcons.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -33,7 +34,7 @@ function loadBase64(filePath) {
 }
 
 const depthsleLogo = loadBase64(path.join(__dirname, 'assets/depthsle_logo.png'))
-console.log('[share] depthsleLogo loaded:', !!depthsleLogo, depthsleLogo?.slice(0, 50))
+// console.log('[share] depthsleLogo loaded:', !!depthsleLogo, depthsleLogo?.slice(0, 50))
 const abilityBorderImg = loadBase64(path.join(__dirname, 'assets/ability_border.png'))
 
 const talismanIcons = {
@@ -132,7 +133,7 @@ const SLOT_GAP = 4
 
 // ── Sub-components ────────────────────────────────────────────────────────
 
-function slotCell(instance) {
+function slotCell(instance, iconBase64) {
   const filled = !!instance
   return d({
     width: SLOT,
@@ -143,7 +144,7 @@ function slotCell(instance) {
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
-  }, [])
+  }, filled && iconBase64 ? [i(iconBase64, { width: SLOT - 8, height: SLOT - 8 })] : [])
 }
 
 function slotSpacer() {
@@ -216,7 +217,7 @@ function buildCard({
   weaponType, hpValue, dpsValue, dpsLabel, speedValue,
   slotData, equippedSlots,
   roomsCleared, killCount, treasureScore,
-  abilities,
+  abilities, equippedIconsBase64
 }) {
   const treeIcon = talismanIcons[mainTree?.toLowerCase()] ?? talismanIcons.flamecaller
 
@@ -224,23 +225,23 @@ function buildCard({
   const SLOTS_COL_W = SLOT * 2 + SLOT_GAP
 
   const slotsLeft = col([
-    slotCell(equippedSlots[0]),  // helmet
+    slotCell(equippedSlots[0], equippedIconsBase64[0]),  // helmet
     d({ height: SLOT_GAP }, []),
-    slotCell(equippedSlots[1]),  // chest
+    slotCell(equippedSlots[1], equippedIconsBase64[1]),  // chest
     d({ height: SLOT_GAP }, []),
-    slotCell(equippedSlots[2]),  // legs
+    slotCell(equippedSlots[2], equippedIconsBase64[2]),  // legs
     d({ height: SLOT_GAP }, []),
-    slotCell(equippedSlots[3]),  // boots
+    slotCell(equippedSlots[3], equippedIconsBase64[3]),  // boots
   ])
 
   const slotsRight = col([
-    slotCell(equippedSlots[5]),  // offhand
+    slotCell(equippedSlots[5], equippedIconsBase64[5]),  // offhand
     d({ height: SLOT_GAP }, []),
     slotSpacer(),
     d({ height: SLOT_GAP }, []),
     slotSpacer(),
     d({ height: SLOT_GAP }, []),
-    slotCell(equippedSlots[4]),  // mainhand
+    slotCell(equippedSlots[4], equippedIconsBase64[4]),  // mainhand
   ])
 
   const slotsGrid = row([slotsLeft, d({ width: SLOT_GAP }, []), slotsRight])
@@ -400,13 +401,24 @@ export async function generateShareImage(uid, runData) {
 
   const equippedSlots = equippedItems.map(item => item.instance)
 
+  //item images
+  const islesItemsPath = path.join(__dirname, 'data/islesItems.json')
+  const islesItems = JSON.parse(fs.readFileSync(islesItemsPath, 'utf-8'))
+  const equippedIconsBase64 = await Promise.all(
+    equippedItems.map(async item => {
+      if (!item.instance?.itemKey) return null
+      const itemDef = islesItems[item.instance.itemKey]
+      return getItemIconBase64(itemDef)
+    })
+  )
+
   const element = buildCard({
     puzzleNumber, displayDate,
     mainTree, subclasses,
     weaponType, hpValue, dpsValue, dpsLabel, speedValue,
     slotData, equippedSlots,
     roomsCleared, killCount, treasureScore,
-    abilities,
+    abilities, equippedIconsBase64
   })
 
   const svg = await satori(element, {
