@@ -5,6 +5,12 @@ import abilityBorder from '../../assets/depths_icons/ability_border.png'
 import './GameOver.css'
 import { getDepthslePuzzleNumber, getDisplayDate, getEasternDateStr } from '../../utils/dates.js'
 
+// imports needed for handleShare
+import { calcStats } from '../../utils/odm/statCalc'
+import { buildRunStats } from '../engine/gearBridge'
+import { getPlayerSlots, getMainSlots, getItemInSlot } from '../../utils/equipUtils'
+import islesItems from '../../data/islesItems.json'
+
 import flamecallerIcon  from '../../assets/talismans/flamecaller_talisman.png'
 import earthboundIcon   from '../../assets/talismans/earthbound_talisman.png'
 import shadowdancerIcon from '../../assets/talismans/shadowdancer_talisman.png'
@@ -54,11 +60,51 @@ export default function GameOver({ state, onRestart }) {
     `Play at tovle.net`,
   ].filter(Boolean).join('\n')
 
-  const { uid } = usePlayer()
+  const { uid, playerData } = usePlayer()
 
   const handleShare = async () => {
     setShareState('generating')
     try {
+      const slots = getPlayerSlots(playerData)
+      const mainSlots = getMainSlots(playerData)
+      const equipment = playerData?.equipment ?? []
+      const stats = calcStats(slots, equipment)
+      const runStats = buildRunStats(playerData)
+
+      const [helmetSlot, chestSlot, legsSlot, bootsSlot, mainhandSlot, offhandSlot] = mainSlots
+
+      const SLOT_LABELS = [
+        [helmetSlot,   'Helmet'],
+        [chestSlot,    'Chest'],
+        [legsSlot,     'Leggings'],
+        [bootsSlot,    'Boots'],
+        [mainhandSlot, 'Mainhand'],
+        [offhandSlot,  'Offhand'],
+      ]
+
+      const weaponType = runStats?.weaponType ?? 'sword'
+      const DAMAGE_TYPE_LABEL = {
+        sword: 'Melee DPS', axe: 'Melee DPS', scythe: 'Melee DPS',
+        ranged: 'Ranged DPS', wand: 'Magic DPS',
+      }
+      const DAMAGE_STAT_KEY = {
+        sword: 'critSpamDPS', axe: 'critSpamDPS', scythe: 'critSpamDPS',
+        ranged: 'projSpamDPS', wand: 'magicDPS',
+      }
+
+      const dateStr = getEasternDateStr()
+
+      const equippedItems = SLOT_LABELS.map(([slot, label]) => {
+        const instance = getItemInSlot(slot, equipment)
+        const itemDef = instance ? islesItems[instance.itemKey] : null
+        return {
+          label,
+          name: itemDef?.name ?? null,
+          tier: instance?.tier ?? null,
+          instance: instance ? { itemKey: instance.itemKey } : null,
+        }
+      })
+
       const res = await fetch('/api/depthsle/share', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,17 +115,30 @@ export default function GameOver({ state, onRestart }) {
             killCount: state.killCount,
             treasureScore: state.treasureScore,
             mainTree: state.mainTree,
-            abilities: state.abilities.map(a => ({ name: a.name, rarity: a.rarity, tree: a.tree })),
-            puzzleNumber: getDepthslePuzzleNumber(),
-            dateString: getDisplayDate(),
+            classOptions: state.classOptions,
+            abilities: state.abilities.map(a => ({
+              name: a.name,
+              rarity: a.rarity,
+              tree: a.tree,
+              id: a.id,
+            })),
+            weaponType,
+            hpValue: stats ? parseFloat(stats.meleeEHP).toFixed(0) : '—',
+            dpsValue: stats ? parseFloat(stats[DAMAGE_STAT_KEY[weaponType]]).toFixed(1) : '—',
+            dpsLabel: DAMAGE_TYPE_LABEL[weaponType],
+            speedValue: stats ? stats.speedPercent : '—',
+            puzzleNumber: getDepthslePuzzleNumber(dateStr),
+            displayDate: getDisplayDate(dateStr),
+            equippedItems,
           }
         })
       })
+
       const data = await res.json()
       if (!data.ok) throw new Error(data.error)
 
       const text = [
-        `Depthsle #${getDepthslePuzzleNumber()} ${getDisplayDate()}`,
+        `Depthsle #${getDepthslePuzzleNumber(dateStr)} ${getDisplayDate(dateStr)}`,
         `Cleared ${state.roomsCleared} floors`,
         state.treasureScore > 0 ? `${state.treasureScore} treasure score` : null,
         `Play at ${data.url}`,

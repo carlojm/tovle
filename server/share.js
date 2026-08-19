@@ -8,12 +8,13 @@ import { db } from './firebase.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// Load fonts once at module load time
-const fontRegular = fs.readFileSync(path.join(__dirname, 'fonts/OpenRunde-Regular.ttf'))
-const fontBold = fs.readFileSync(path.join(__dirname, 'fonts/OpenRunde-Bold.ttf'))
+// ── Load assets at module startup ─────────────────────────────────────────
+
 //command to convert woff2 to ttf:
 //cd server
 //woff2_decompress fonts/OpenRunde-Bold.woff2
+const fontRegular = fs.readFileSync(path.join(__dirname, 'fonts/OpenRunde-Regular.ttf'))
+const fontBold    = fs.readFileSync(path.join(__dirname, 'fonts/OpenRunde-Bold.ttf'))
 
 const FONTS = [
   { name: 'Open Runde', data: fontRegular, weight: 400, style: 'normal' },
@@ -21,21 +22,353 @@ const FONTS = [
 ]
 
 // Generate a random 6-char alphanumeric share ID
+function loadBase64(filePath) {
+  if (!fs.existsSync(filePath)) {
+    console.warn(`[share] Asset not found: ${filePath}`)
+    return null
+  }
+  const ext = path.extname(filePath).slice(1).replace('jpg', 'jpeg')
+  const data = fs.readFileSync(filePath).toString('base64')
+  return `data:image/${ext};base64,${data}`
+}
+
+const depthsleLogo = loadBase64(path.join(__dirname, 'assets/depthsle_logo.png'))
+console.log('[share] depthsleLogo loaded:', !!depthsleLogo, depthsleLogo?.slice(0, 50))
+const abilityBorderImg = loadBase64(path.join(__dirname, 'assets/ability_border.png'))
+
+const talismanIcons = {
+  flamecaller:  loadBase64(path.join(__dirname, 'assets/talismans/flamecaller_talisman.png')),
+  earthbound:   loadBase64(path.join(__dirname, 'assets/talismans/earthbound_talisman.png')),
+  shadowdancer: loadBase64(path.join(__dirname, 'assets/talismans/shadowdancer_talisman.png')),
+  frostborn:    loadBase64(path.join(__dirname, 'assets/talismans/frostborn_talisman.png')),
+  dawnbringer:  loadBase64(path.join(__dirname, 'assets/talismans/dawnbringer_talisman.png')),
+  steelsage:    loadBase64(path.join(__dirname, 'assets/talismans/steelsage_talisman.png')),
+  windwalker:   loadBase64(path.join(__dirname, 'assets/talismans/windwalker_talisman.png')),
+}
+
+function loadAbilityIcons() {
+  const icons = {}
+  const abilitiesDir = path.join(__dirname, 'scripts/abilities')
+  if (!fs.existsSync(abilitiesDir)) {
+    console.warn('[share] Abilities dir not found:', abilitiesDir)
+    return icons
+  }
+  for (const className of fs.readdirSync(abilitiesDir)) {
+    const classDir = path.join(abilitiesDir, className)
+    if (!fs.statSync(classDir).isDirectory()) continue
+    for (const file of fs.readdirSync(classDir)) {
+      if (!file.endsWith('.png')) continue
+      if (file === 'border.png' || file === 'border_silenced.png') continue
+      const abilityId = file.replace('.png', '')
+      icons[`${className}/${abilityId}`] = loadBase64(path.join(classDir, file))
+    }
+  }
+  console.log(`[share] Loaded ${Object.keys(icons).length} ability icons`)
+  return icons
+}
+
+const abilityIcons = loadAbilityIcons()
+
+// ── Constants ─────────────────────────────────────────────────────────────
+
+const TIER_BADGE = {
+  'Tier 1': 'T1', 'Tier 2': 'T2', 'Tier 3': 'T3',
+  'Tier 4': 'T4', 'Tier 5': 'T5',
+  'Uncommon': 'Uc', 'Unique': 'Uq',
+  'Rare': 'R', 'Artifact': 'A', 'Epic': 'E',
+}
+
+const DAMAGE_TYPE_LABEL = {
+  sword: 'Melee DPS', axe: 'Melee DPS', scythe: 'Melee DPS',
+  ranged: 'Ranged DPS', wand: 'Magic DPS',
+}
+
+const RARITY_COLORS = ['#888888', '#77ddff', '#ff9900', '#ff44ff', '#ffaa00']
+
+// ── Colors ────────────────────────────────────────────────────────────────
+
+const C = {
+  bg:        '#0e0618',
+  headerBg:  '#130820',
+  border:    '#2a1a4a',
+  slotBg:    '#1a0f2e',
+  slotBorderEmpty:  '#2a1a4a',
+  slotBorderFilled: '#5a3a8a',
+  text:      '#eff1ed',
+  textDim:   'rgba(239, 241, 237, 0.60)',
+  textFaint: 'rgba(239,241,237,0.45)',
+  accent:    '#7a4aaa',
+}
+
+// ── Element builders ──────────────────────────────────────────────────────
+
+const d = (style, children) => ({
+  type: 'div',
+  props: { style: { display: 'flex', ...style }, children: Array.isArray(children) ? children.filter(Boolean) : children }
+})
+
+const t = (style, text) => ({
+  type: 'span',
+  props: { style, children: String(text ?? '') }
+})
+
+const i = (src, style) => src ? ({
+  type: 'img',
+  props: { src, style }
+}) : null
+
+const row = (children, style = {}) => d({ flexDirection: 'row', ...style }, children)
+const col = (children, style = {}) => d({ flexDirection: 'column', ...style }, children)
+
+// ── Card dimensions ───────────────────────────────────────────────────────
+
+const W = 1200
+const H = 630
+const HEADER_H = 140
+const BODY_H = H - HEADER_H
+const PAD = 28
+const SLOT = 80   // slot cell size in px
+const SLOT_GAP = 4
+
+// ── Sub-components ────────────────────────────────────────────────────────
+
+function slotCell(instance) {
+  const filled = !!instance
+  return d({
+    width: SLOT,
+    height: SLOT,
+    background: C.slotBg,
+    border: `2px solid ${filled ? C.slotBorderFilled : C.slotBorderEmpty}`,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  }, [])
+}
+
+function slotSpacer() {
+  return d({ width: SLOT, height: SLOT, flexShrink: 0 }, [])
+}
+
+function statRow(label, value) {
+  return row([
+    t({ fontSize: 26, color: C.textDim }, label),
+    t({ fontSize: 32, fontWeight: 700, color: C.accent }, String(value)),
+  ], {
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    marginBottom: 10,
+  })
+}
+
+function nameRow(label, name, tier) {
+  return row([
+    t({ fontSize: 22, color: C.textFaint, width: 110, flexShrink: 0 }, label),
+    row([
+      t({ fontSize: 22, fontWeight: 600, color: C.text }, name ?? '—'),
+      tier ? t({ fontSize: 18, fontWeight: 700, color: C.textDim, marginLeft: 8 }, tier) : null,
+    ].filter(Boolean), { justifyContent: 'flex-end', flex: 1 }),
+  ], {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  })
+}
+
+function abilityItem(ability) {
+  const iconKey = `${ability.tree}/${ability.id}`
+  const iconSrc = abilityIcons[iconKey]
+  const rarityColor = RARITY_COLORS[ability.rarity ?? 0]
+  const ICON = 48
+
+  return row([
+    // icon box
+    d({
+      width: ICON,
+      height: ICON,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 10,
+      flexShrink: 0,
+      position: 'relative',
+    }, [
+      iconSrc
+        ? i(iconSrc, { width: ICON, height: ICON })
+        : d({ width: ICON, height: ICON, background: rarityColor, borderRadius: 4, opacity: 0.5 }, []),
+      abilityBorderImg
+        ? i(abilityBorderImg, { position: 'absolute', top: -3, left: -3, width: ICON + 6, height: ICON + 6 })
+        : null,
+    ]),
+    t({ fontSize: 22, fontWeight: 600, color: C.text, overflow: 'hidden' }, ability.name),
+  ], {
+    alignItems: 'center',
+    width: '48%',
+    marginBottom: 12,
+    marginRight: '2%',
+  })
+}
+
+// ── Main card builder ─────────────────────────────────────────────────────
+
+function buildCard({
+  puzzleNumber, displayDate,
+  mainTree, subclasses,
+  weaponType, hpValue, dpsValue, dpsLabel, speedValue,
+  slotData, equippedSlots,
+  roomsCleared, killCount, treasureScore,
+  abilities,
+}) {
+  const treeIcon = talismanIcons[mainTree?.toLowerCase()] ?? talismanIcons.flamecaller
+
+  // slot grid — C shape
+  const SLOTS_COL_W = SLOT * 2 + SLOT_GAP
+
+  const slotsLeft = col([
+    slotCell(equippedSlots[0]),  // helmet
+    d({ height: SLOT_GAP }, []),
+    slotCell(equippedSlots[1]),  // chest
+    d({ height: SLOT_GAP }, []),
+    slotCell(equippedSlots[2]),  // legs
+    d({ height: SLOT_GAP }, []),
+    slotCell(equippedSlots[3]),  // boots
+  ])
+
+  const slotsRight = col([
+    slotCell(equippedSlots[5]),  // offhand
+    d({ height: SLOT_GAP }, []),
+    slotSpacer(),
+    d({ height: SLOT_GAP }, []),
+    slotSpacer(),
+    d({ height: SLOT_GAP }, []),
+    slotCell(equippedSlots[4]),  // mainhand
+  ])
+
+  const slotsGrid = row([slotsLeft, d({ width: SLOT_GAP }, []), slotsRight])
+
+  // column widths
+  const COL1_W = SLOTS_COL_W + PAD * 2       // slots column
+  const COL2_W = 500                           // names + stats
+  const COL3_W = W - COL1_W - COL2_W         // run + abilities
+
+  const treeName = mainTree ? mainTree.charAt(0).toUpperCase() + mainTree.slice(1) : ''
+
+  return d({
+    width: W,
+    height: H,
+    background: C.bg,
+    fontFamily: 'Open Runde',
+    color: C.text,
+    flexDirection: 'column',
+  }, [
+
+    // ── Header ────────────────────────────────────────────────────────
+    row([
+      // logo
+      depthsleLogo
+        ? i(depthsleLogo, { height: 80, width: 300, objectFit: 'contain', marginLeft: -12, marginRight: 12, marginTop: 14 })
+        : t({ fontSize: 40, fontWeight: 700, color: C.text, marginRight: 24 }, 'Depthsle'),
+
+      // dungeon number + date
+      row([
+        // t({ fontSize: 32, color: 'rgba(239,241,237,0.6)', marginRight: 10 }, 'Dungeon'),
+        t({ fontSize: 36, color: 'rgba(239,241,237,0.6)', marginTop: 6, marginRight: 14}, displayDate),
+        t({ fontSize: 44, fontWeight: 700, color: C.text, marginTop: 6}, `#${puzzleNumber}`),
+      ], { alignItems: 'baseline', flex: 1 }),
+
+      // class block: name + main icon + sub icons
+      row([
+        t({ fontSize: 32, fontWeight: 600, marginRight: 12, marginTop: 6 }, treeName ?? ''),
+        treeIcon ? i(treeIcon, { width: 80, height: 80 }) : null,
+        col(
+          subclasses.map((id, idx) => i(talismanIcons[id], {
+            width: 28, height: 28,
+            marginTop: idx > 0 ? 4 : 0,
+            opacity: 0.8,
+          })).filter(Boolean),
+          { marginLeft: 8 }
+        ),
+      ], { alignItems: 'center' }),
+    ], {
+      height: HEADER_H,
+      alignItems: 'center',
+      padding: `0 ${PAD}px`,
+      background: C.headerBg,
+      borderBottom: `2px solid ${C.border}`,
+    }),
+
+    // ── Body ──────────────────────────────────────────────────────────
+    row([
+
+      // Column 1 — slot icons
+      col([
+        t({ fontSize: 26, color: C.textDim, marginTop: 8, marginBottom: 16 }, 'Equipment'),
+        slotsGrid,
+      ], {
+        width: COL1_W,
+        padding: `${PAD}px`,
+        borderRight: `1px solid ${C.border}`,
+        flexShrink: 0,
+      }),
+
+      // Column 2 — stats + item names
+      col([
+        statRow('Dungeon HP', hpValue),
+        statRow(dpsLabel, dpsValue),
+        statRow('Speed', `${speedValue}%`),
+        d({ height: 1, background: C.border, marginTop: 12, marginBottom: 24 }, []),
+        ...slotData.map(({ label, name, tier }) => nameRow(label, name, tier)),
+      ], {
+        width: COL2_W,
+        padding: `${PAD}px`,
+        borderRight: `1px solid ${C.border}`,
+        flexShrink: 0,
+      }),
+
+      // Column 3 — run summary + abilities
+      col([
+        // t({ fontSize: 26, color: C.textDim, marginBottom: 16 }, "TODAY'S RUN"),
+        // t({ fontSize: 32, color: C.text, marginBottom: 10 },
+        //   `${roomsCleared} ${roomsCleared === 1 ? 'room' : 'rooms'} cleared`),
+        // t({ fontSize: 32, color: C.text, marginBottom: 10 }, `${killCount} kills`),
+        // t({ fontSize: 32, color: C.text, marginBottom: 10 }, `${treasureScore} treasure score`),
+        statRow('Rooms cleared', `${roomsCleared}`),
+        statRow('Kills', `${killCount}`),
+        statRow('Treasure score', `${treasureScore}`),
+        // t({ fontSize: 28, color: C.textDim, marginBottom: 20 },
+        //   `${DAMAGE_TYPE_LABEL[weaponType]?.replace(' DPS', '') ?? 'Melee'} build`),
+        d({ height: 1, background: C.border, marginTop: 12, marginBottom: 24 }, []),
+        abilities.length > 0 ? col([
+          // t({ fontSize: 26, color: C.textDim, marginBottom: 14 }, 'ABILITIES'),
+          d({ flexWrap: 'wrap' }, abilities.map(a => abilityItem(a))),
+        ]) : null,
+      ].filter(Boolean), {
+        flex: 1,
+        padding: `${PAD}px`,
+      }),
+
+    ], { flex: 1 }),
+
+  ])
+}
+
+// ── Firestore helpers ─────────────────────────────────────────────────────
+
 function generateShareId() {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
   return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
 }
 
-// Get or create a stable shareId for this player
 async function getOrCreateShareId(uid) {
-  const userRef = db.collection('players').doc(uid)
-  const doc = await userRef.get()
+  const playerRef = db.collection('players').doc(uid)
+  const doc = await playerRef.get()
   const existing = doc.data()?.shareId
   if (existing) return existing
   const shareId = generateShareId()
-  await userRef.set({ shareId }, { merge: true })
+  await playerRef.set({ shareId }, { merge: true })
   return shareId
 }
+
+// ── Main export ───────────────────────────────────────────────────────────
 
 export async function generateShareImage(uid, runData) {
   const shareId = await getOrCreateShareId(uid)
@@ -44,234 +377,49 @@ export async function generateShareImage(uid, runData) {
     roomsCleared = 0,
     killCount = 0,
     treasureScore = 0,
-    mainTree = null,
+    mainTree = 'flamecaller',
+    classOptions = [],
     abilities = [],
+    weaponType = 'sword',
+    hpValue = '—',
+    dpsValue = '—',
+    dpsLabel = 'Melee DPS',
+    speedValue = '—',
     puzzleNumber = 1,
-    dateString = '',
+    displayDate = '',
+    equippedItems = [],
   } = runData
 
-  // Build the card JSX for satori
-  const element = {
-    type: 'div',
-    props: {
-      style: {
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        background: '#0e0618',
-        padding: '48px',
-        fontFamily: 'Open Runde',
-        color: '#eff1ed',
-      },
-      children: [
-        // Header row
-        {
-          type: 'div',
-          props: {
-            style: {
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              marginBottom: '32px',
-            },
-            children: [
-              {
-                type: 'div',
-                props: {
-                  style: { display: 'flex', flexDirection: 'column', gap: '8px' },
-                  children: [
-                    {
-                      type: 'div',
-                      props: {
-                        style: { fontSize: '36px', fontWeight: 700 },
-                        children: `Darkest Depths`,
-                      },
-                    },
-                    {
-                      type: 'div',
-                      props: {
-                        style: { fontSize: '18px', opacity: 0.5 },
-                        children: `#${puzzleNumber} · ${dateString}`,
-                      },
-                    },
-                  ],
-                },
-              },
-              // Wave emoji as logo
-              {
-                type: 'div',
-                props: {
-                  style: { fontSize: '64px' },
-                  children: '🌊',
-                },
-              },
-            ],
-          },
-        },
+  const subclasses = classOptions.filter(id => id !== mainTree)
 
-        // Stats row
-        {
-          type: 'div',
-          props: {
-            style: {
-              display: 'flex',
-              gap: '16px',
-              marginBottom: '32px',
-            },
-            children: [
-              statCard('Floors', roomsCleared),
-              statCard('Kills', killCount),
-              statCard('Score', treasureScore),
-            ],
-          },
-        },
+  const slotData = equippedItems.map(item => ({
+    label: item.label,
+    name: item.name,
+    tier: item.tier ? (TIER_BADGE[item.tier] ?? item.tier) : null,
+  }))
 
-        // Abilities
-        abilities.length > 0 ? {
-          type: 'div',
-          props: {
-            style: {
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-            },
-            children: [
-              {
-                type: 'div',
-                props: {
-                  style: { fontSize: '14px', opacity: 0.45, marginBottom: '4px', fontWeight: 700, letterSpacing: '0.08em' },
-                  children: 'ABILITIES',
-                },
-              },
-              {
-                type: 'div',
-                props: {
-                  style: { display: 'flex', flexWrap: 'wrap', gap: '8px' },
-                  children: abilities.slice(0, 8).map(a => abilityChip(a)),
-                },
-              },
-            ],
-          },
-        } : null,
+  const equippedSlots = equippedItems.map(item => item.instance)
 
-        // Footer
-        {
-          type: 'div',
-          props: {
-            style: {
-              marginTop: 'auto',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
-            },
-            children: [
-              {
-                type: 'div',
-                props: {
-                  style: { fontSize: '14px', opacity: 0.4 },
-                  children: 'tovle.net',
-                },
-              },
-              {
-                type: 'div',
-                props: {
-                  style: {
-                    fontSize: '14px',
-                    opacity: 0.4,
-                  },
-                  children: mainTree ? `${mainTree} class` : '',
-                },
-              },
-            ],
-          },
-        },
-      ].filter(Boolean),
-    },
-  }
+  const element = buildCard({
+    puzzleNumber, displayDate,
+    mainTree, subclasses,
+    weaponType, hpValue, dpsValue, dpsLabel, speedValue,
+    slotData, equippedSlots,
+    roomsCleared, killCount, treasureScore,
+    abilities,
+  })
 
   const svg = await satori(element, {
-    width: 1200,
-    height: 630,
+    width: W,
+    height: H,
     fonts: FONTS,
   })
 
   const resvg = new Resvg(svg)
   const pngBuffer = resvg.render().asPng()
 
-  // Upload to R2
   const key = `og/${shareId}.png`
   await uploadToR2(key, pngBuffer, 'image/png')
 
-  return { shareId, url: `https://tovle.net/d/${shareId}` }
-}
-
-function statCard(label, value) {
-  return {
-    type: 'div',
-    props: {
-      style: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px',
-        background: 'rgba(255,255,255,0.06)',
-        border: '1px solid rgba(122,74,170,0.4)',
-        borderRadius: '10px',
-        padding: '16px 24px',
-        flex: 1,
-      },
-      children: [
-        {
-          type: 'div',
-          props: {
-            style: { fontSize: '13px', opacity: 0.45 },
-            children: label,
-          },
-        },
-        {
-          type: 'div',
-          props: {
-            style: { fontSize: '32px', fontWeight: 700 },
-            children: String(value),
-          },
-        },
-      ],
-    },
-  }
-}
-
-function abilityChip(ability) {
-  const RARITY_COLORS = ['#888888', '#77ddff', '#ff9900', '#ff44ff', '#ffaa00']
-  const color = RARITY_COLORS[ability.rarity ?? 0]
-  return {
-    type: 'div',
-    props: {
-      style: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px',
-        background: 'rgba(255,255,255,0.06)',
-        border: `1px solid ${color}`,
-        borderRadius: '6px',
-        padding: '6px 12px',
-        fontSize: '13px',
-      },
-      children: [
-        {
-          type: 'div',
-          props: {
-            style: { color, fontSize: '11px', fontWeight: 700 },
-            children: ['C','Uc','R','E','L'][ability.rarity ?? 0],
-          },
-        },
-        {
-          type: 'div',
-          props: {
-            style: { color: '#eff1ed' },
-            children: ability.name,
-          },
-        },
-      ],
-    },
-  }
+  return { shareId, url: `https://tovle-beta.fly.dev/d/${shareId}` }
 }
