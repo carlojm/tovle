@@ -110,7 +110,7 @@ const d = (style, children) => ({
 
 const t = (style, text) => ({
   type: 'span',
-  props: { style, children: String(text ?? '') }
+  props: { style: { fontFamily: 'Open Runde', ...style }, children: String(text ?? '') }
 })
 
 const i = (src, style) => src ? ({
@@ -124,7 +124,7 @@ const col = (children, style = {}) => d({ flexDirection: 'column', ...style }, c
 // ── Card dimensions ───────────────────────────────────────────────────────
 
 const W = 1200
-const H = 630
+const H = 600
 const HEADER_H = 140
 const BODY_H = H - HEADER_H
 const PAD = 28
@@ -158,7 +158,7 @@ function statRow(label, value) {
   ], {
     justifyContent: 'space-between',
     alignItems: 'baseline',
-    marginBottom: 10,
+    marginBottom: 6,
   })
 }
 
@@ -179,8 +179,8 @@ function nameRow(label, name, tier) {
 function abilityItem(ability) {
   const iconKey = `${ability.tree}/${ability.id}`
   const iconSrc = abilityIcons[iconKey]
-  const rarityColor = RARITY_COLORS[ability.rarity ?? 0]
-  const ICON = 48
+  // const rarityColor = RARITY_COLORS[ability.rarity ?? 0]
+  const ICON = 64
 
   return row([
     // icon box
@@ -193,14 +193,15 @@ function abilityItem(ability) {
       flexShrink: 0,
       position: 'relative',
     }, [
-      iconSrc
-        ? i(iconSrc, { width: ICON, height: ICON })
-        : d({ width: ICON, height: ICON, background: rarityColor, borderRadius: 4, opacity: 0.5 }, []),
+      iconSrc ? i(iconSrc, { width: ICON, height: ICON }) : null,
+        // : d({ width: ICON, height: ICON, background: rarityColor, borderRadius: 4, opacity: 0.5 }, []),
       abilityBorderImg
-        ? i(abilityBorderImg, { position: 'absolute', top: -3, left: -3, width: ICON + 6, height: ICON + 6 })
+        ? i(abilityBorderImg, { position: 'absolute', top: -6, left: -6, width: ICON + 12, height: ICON + 12 })
         : null,
     ]),
-    t({ fontSize: 22, fontWeight: 600, color: C.text, overflow: 'hidden' }, ability.name),
+    d({ width: 140, flexWrap: 'wrap' }, [
+      t({ fontSize: 18, fontWeight: 600, color: C.text }, ability.name),
+    ]),
   ], {
     alignItems: 'center',
     width: '48%',
@@ -407,10 +408,12 @@ export async function generateShareImage(uid, runData) {
   const equippedIconsBase64 = await Promise.all(
     equippedItems.map(async item => {
       if (!item.instance?.itemKey) return null
+      // console.log('[share] itemKey:', item.instance?.itemKey, '-> found:', !!islesItems[item.instance?.itemKey])
       const itemDef = islesItems[item.instance.itemKey]
       return getItemIconBase64(itemDef)
     })
   )
+  
 
   const element = buildCard({
     puzzleNumber, displayDate,

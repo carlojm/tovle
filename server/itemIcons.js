@@ -15,7 +15,7 @@ function parseSpritesheet(cssPath) {
     return map
   }
   const css = fs.readFileSync(cssPath, 'utf-8')
-  const rules = css.matchAll(/\.([\w-]+)\s*\{\s*background-position:\s*(-?\d+)px\s+(-?\d+)px/g)
+  const rules = css.matchAll(/\.([\w-]+)\s*\{\s*background-position:\s*(-?\d+)(?:px)?\s+(-?\d+)(?:px)?/g)
   for (const [, className, x, y] of rules) {
     map[className] = { x: Math.abs(parseInt(x)), y: Math.abs(parseInt(y)) }
   }
@@ -81,6 +81,8 @@ export async function getItemIconBase64(item) {
   if (!item) return null
 
   const monumentaClass = getMonumentaClass(item.name)
+  // console.log('[itemIcons]', item.name, '->', monumentaClass, 'exists:', !!monumentaMap[monumentaClass])
+
   if (monumentaMap[monumentaClass]) {
     const { x, y } = monumentaMap[monumentaClass]
     return extractSprite(ITEMSHEET, x, y)
@@ -88,6 +90,7 @@ export async function getItemIconBase64(item) {
 
   if (item.base_item) {
     const minecraftClass = getMinecraftClass(item.base_item)
+    // console.log('[itemIcons] minecraft fallback:', item.base_item, '->', minecraftClass, 'exists:', !!minecraftMap[minecraftClass])
     if (minecraftMap[minecraftClass]) {
       const { x, y } = minecraftMap[minecraftClass]
       return extractSprite(MINECRAFT, x, y)
