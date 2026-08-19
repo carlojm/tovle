@@ -11,6 +11,8 @@ import depthsleLogo from '../../assets/depthsle_logo.png'
 import abilityBorder from '../../assets/depths_icons/ability_border.png'
 import './ShareCard.css'
 
+import { useRef, useState, useEffect } from 'react'
+
 import flamecallerIcon  from '../../assets/talismans/flamecaller_talisman.png'
 import earthboundIcon   from '../../assets/talismans/earthbound_talisman.png'
 import shadowdancerIcon from '../../assets/talismans/shadowdancer_talisman.png'
@@ -109,152 +111,182 @@ export default function ShareCard({ state }) {
     bonusRows.push(bonusSlots.slice(i, i + 9))
   }
 
+  const cardRef = useRef(null)
+  const [scale, setScale] = useState(1)
+
+  useEffect(() => {
+    if (!cardRef.current) return
+    const observer = new ResizeObserver(([entry]) => {
+      setScale(entry.contentRect.width / 600)
+    })
+    observer.observe(cardRef.current)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <div className="sc-card">
+    <div ref={cardRef} className="sc-card">
+      <div
+        className="sc-card-inner"
+        style={{ transform: `scale(${scale})` }}
+      >
 
-      {/* ── Header ── */}
-      <div className="sc-header">
-        <img src={depthsleLogo} alt="Depthsle" className="sc-logo" />
-        <div className="sc-header-center">
-          <span className="sc-dungeon-label">Dungeon</span>
-          <span className="sc-dungeon-number">#{puzzleNumber}</span>
-          {/* <span className="sc-header-divider">·</span> */}
-          <span className="sc-date">{displayDate}</span>
-        </div>
-        <div className="sc-class-block">
-          <span className="sc-main-class-name">{mainTree?.name}</span>
-          <img
-            src={TREE_ICONS[state.mainTree]}
-            alt={mainTree?.name}
-            className="sc-main-class-icon"
-          />
-          <div className="sc-subclass-row">
-            {subclasses.map(id => (
-              <img
-                key={id}
-                src={TREE_ICONS[id]}
-                alt={id}
-                className="sc-sub-class-icon"
-              />
-            ))}
+        {/* ── Header ── */}
+        <div className="sc-header">
+          <img src={depthsleLogo} alt="Depthsle" className="sc-logo" />
+          <div className="sc-header-center">
+            {/* <span className="sc-dungeon-label">Dungeon</span> */}
+            <span className="sc-dungeon-number">#{puzzleNumber}</span>
+            {/* <span className="sc-header-divider">·</span> */}
+            <span className="sc-date">{displayDate}</span>
           </div>
-        </div>
-      </div>
-
-      {/* ── Body ── */}
-      <div className="sc-body">
-
-        {/* Column 1 — slot icons */}
-        <div className="sc-col sc-col--slots">
-          <div className="sc-col-label">LOADOUT</div>
-          <div className="sc-slots-outer">
-            <div className="sc-slots-col-left">
-              <SlotCell slot={helmetSlot}   instance={getItemInSlot(helmetSlot, equipment)} />
-              <SlotCell slot={chestSlot}    instance={getItemInSlot(chestSlot, equipment)} />
-              <SlotCell slot={legsSlot}     instance={getItemInSlot(legsSlot, equipment)} />
-              <SlotCell slot={bootsSlot}    instance={getItemInSlot(bootsSlot, equipment)} />
-            </div>
-            <div className="sc-slots-col-right">
-              <SlotCell slot={offhandSlot}  instance={getItemInSlot(offhandSlot, equipment)} />
-              <div className="sc-slot-spacer" />
-              <div className="sc-slot-spacer" />
-              <SlotCell slot={mainhandSlot} instance={getItemInSlot(mainhandSlot, equipment)} />
-            </div>
-          </div>
-          {bonusSlots.length > 0 && (
-            <div className="sc-bonus-slots">
-              {bonusRows.map((row, i) => (
-                <div key={i} className="sc-bonus-row">
-                  {row.map(slot => (
-                    <SlotCell
-                      key={slot.slotId}
-                      slot={slot}
-                      instance={getItemInSlot(slot, equipment)}
-                    />
-                  ))}
-                </div>
+          <div className="sc-class-block">
+            <span className="sc-main-class-name">{mainTree?.name}</span>
+            <img
+              src={TREE_ICONS[state.mainTree]}
+              alt={mainTree?.name}
+              className="sc-main-class-icon"
+            />
+            <div className="sc-subclass-row">
+              {subclasses.map(id => (
+                <img
+                  key={id}
+                  src={TREE_ICONS[id]}
+                  alt={id}
+                  className="sc-sub-class-icon"
+                />
               ))}
             </div>
-          )}
+          </div>
         </div>
 
-        {/* Column 2 — item names + stats */}
-        <div className="sc-col sc-col--names">
-          {/* <div className="sc-col-label">&nbsp;</div> */}
-          <div className="sc-stat-list">
-            <div className="sc-stat-row">
-              <span className="sc-stat-label">Dungeon HP</span>
-              <span className="sc-stat-value">{hpValue}</span>
-            </div>
-            <div className="sc-stat-row">
-              <span className="sc-stat-label">{dpsLabel}</span>
-              <span className="sc-stat-value">{dpsValue}</span>
-            </div>
-            <div className="sc-stat-row">
-              <span className="sc-stat-label">Speed</span>
-              <span className="sc-stat-value">{speedValue}%</span>
-            </div>
-          </div>
+        {/* ── Body ── */}
+        <div className="sc-body">
 
-          <div className="sc-divider" />
-
-          <div className="sc-namelist">
-            {SLOT_LABELS.map(([slot, label]) => {
-              const instance = getItemInSlot(slot, equipment)
-              const itemDef = instance ? islesItems[instance.itemKey] : null
-              return (
-                <div key={slot.slotId} className="sc-name-row">
-                  <span className="sc-name-slot-label">{label}</span>
-                  <span className={`sc-name-value ${!itemDef ? 'sc-name-empty' : ''}`}>
-                    {itemDef ? itemDef.name : '—'}
-                    {instance?.tier && (
-                      <span className="sc-name-tier">
-                        {TIER_BADGE[instance.tier] ?? instance.tier}
-                      </span>
-                    )}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-          
-        </div>
-
-        {/* Column 3 — run summary + abilities */}
-        <div className="sc-col sc-col--run">
-          <div className="sc-col-label">TODAY'S RUN</div>
-          <div className="sc-run-stats">
-            <span className="sc-run-line">
-              {state.roomsCleared} {state.roomsCleared === 1 ? 'room' : 'rooms'} cleared
-            </span>
-            <span className="sc-run-line">{state.killCount} kills</span>
-            {state.treasureScore > 0 && (
-              <span className="sc-run-line">{state.treasureScore} treasure score</span>
-            )}
-            <span className="sc-run-line">{DAMAGE_TYPE_LABEL[weaponType].replace(' DPS', '')} build</span>
-          </div>
-
-          {state.abilities.length > 0 && (
-            <>
-              <div className="sc-col-label sc-col-label--abilities">ABILITIES</div>
-              <div className="sc-abilities-grid">
-                {state.abilities.map(ability => {
-                  const iconClass = getAbilityIconClass(ability.tree, ability.id) ?? UNKNOWN_ICON
-                  return (
-                    <div key={ability.id} className="sc-ability-item">
-                      <div className="sc-ability-icon-wrap">
-                        <div className={`ability-icon ${iconClass}`} />
-                        <img src={abilityBorder} className="sc-ability-border" alt="" />
-                      </div>
-                      <span className="sc-ability-name">{ability.name}</span>
-                    </div>
-                  )
-                })}
+          {/* Column 1 — slot icons */}
+          <div className="sc-col sc-col--slots">
+            <div className="sc-col-label">Equipment</div>
+            <div className="sc-slots-outer">
+              <div className="sc-slots-col-left">
+                <SlotCell slot={helmetSlot}   instance={getItemInSlot(helmetSlot, equipment)} />
+                <SlotCell slot={chestSlot}    instance={getItemInSlot(chestSlot, equipment)} />
+                <SlotCell slot={legsSlot}     instance={getItemInSlot(legsSlot, equipment)} />
+                <SlotCell slot={bootsSlot}    instance={getItemInSlot(bootsSlot, equipment)} />
               </div>
-            </>
-          )}
-        </div>
+              <div className="sc-slots-col-right">
+                <SlotCell slot={offhandSlot}  instance={getItemInSlot(offhandSlot, equipment)} />
+                <div className="sc-slot-spacer" />
+                <div className="sc-slot-spacer" />
+                <SlotCell slot={mainhandSlot} instance={getItemInSlot(mainhandSlot, equipment)} />
+              </div>
+            </div>
+            {bonusSlots.length > 0 && (
+              <div className="sc-bonus-slots">
+                {bonusRows.map((row, i) => (
+                  <div key={i} className="sc-bonus-row">
+                    {row.map(slot => (
+                      <SlotCell
+                        key={slot.slotId}
+                        slot={slot}
+                        instance={getItemInSlot(slot, equipment)}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
+          {/* Column 2 — item names + stats */}
+          <div className="sc-col sc-col--names">
+            {/* <div className="sc-col-label">&nbsp;</div> */}
+            <div className="sc-stat-list">
+              <div className="sc-stat-row">
+                <span className="sc-stat-label">Dungeon HP</span>
+                <span className="sc-stat-value">{hpValue}</span>
+              </div>
+              <div className="sc-stat-row">
+                <span className="sc-stat-label">{dpsLabel}</span>
+                <span className="sc-stat-value">{dpsValue}</span>
+              </div>
+              <div className="sc-stat-row">
+                <span className="sc-stat-label">Speed</span>
+                <span className="sc-stat-value">{speedValue}%</span>
+              </div>
+            </div>
+
+            <div className="sc-divider" />
+
+            <div className="sc-namelist">
+              {SLOT_LABELS.map(([slot, label]) => {
+                const instance = getItemInSlot(slot, equipment)
+                const itemDef = instance ? islesItems[instance.itemKey] : null
+                return (
+                  <div key={slot.slotId} className="sc-name-row">
+                    <span className="sc-name-slot-label">{label}</span>
+                    <span className={`sc-name-value ${!itemDef ? 'sc-name-empty' : ''}`}>
+                      {itemDef ? itemDef.name : '—'}
+                      {instance?.tier && (
+                        <span className="sc-name-tier">
+                          {TIER_BADGE[instance.tier] ?? instance.tier}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+            
+          </div>
+
+          {/* Column 3 — run summary + abilities */}
+          <div className="sc-col sc-col--run">
+            {/* <div className="sc-col-label">TODAY'S RUN</div> */}
+            {/* <div className="sc-run-stats">
+              <span className="sc-run-line">
+                {state.roomsCleared} {state.roomsCleared === 1 ? 'room' : 'rooms'} cleared
+              </span>
+              <span className="sc-run-line">{state.killCount} kills</span>
+              {state.treasureScore > 0 && (
+                <span className="sc-run-line">{state.treasureScore} treasure score</span>
+              )}
+              <span className="sc-run-line">{DAMAGE_TYPE_LABEL[weaponType].replace(' DPS', '')} build</span>
+            </div> */}
+            <div className="sc-stat-list">
+              <div className="sc-stat-row">
+                <span className="sc-stat-label">Rooms cleared</span>
+                <span className="sc-stat-value">{state.roomsCleared}</span>
+              </div>
+              <div className="sc-stat-row">
+                <span className="sc-stat-label">Kills</span>
+                <span className="sc-stat-value">{state.killCount}</span>
+              </div>
+              <div className="sc-stat-row">
+                <span className="sc-stat-label">Treasure score</span>
+                <span className="sc-stat-value">{state.treasureScore}</span>
+              </div>
+            </div>
+
+            {state.abilities.length > 0 && (
+              <>
+                {/* <div className="sc-col-label sc-col-label--abilities">ABILITIES</div> */}
+                <div className="sc-abilities-grid">
+                  {state.abilities.map(ability => {
+                    const iconClass = getAbilityIconClass(ability.tree, ability.id) ?? UNKNOWN_ICON
+                    return (
+                      <div key={ability.id} className="sc-ability-item">
+                        <div className="sc-ability-icon-wrap">
+                          <div className={`ability-icon ${iconClass}`} />
+                          <img src={abilityBorder} className="sc-ability-border" alt="" />
+                        </div>
+                        <span className="sc-ability-name">{ability.name}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -1,13 +1,23 @@
 .sc-card {
   width: 100%;
+  aspect-ratio: 1200 / 630;
   background: #0e0618;
   border-radius: 12px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  /* display: flex;
+  flex-direction: column; */
   font-family: "Open Runde", system-ui, sans-serif;
   color: #eff1ed;
 }
+
+.sc-card-inner {
+  width: 600px;
+  /* height: 630px; */
+  display: flex;
+  flex-direction: column;
+  transform-origin: top left;
+}
+
 
 /* ── Header ── */
 .sc-header {
