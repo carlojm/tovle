@@ -1,4 +1,7 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand,
+  //these three are for the opengraph cleanup
+  HeadObjectCommand, ListObjectsV2Command, DeleteObjectsCommand
+} from '@aws-sdk/client-s3'
 
 const r2 = new S3Client({
   region: 'auto',
@@ -29,4 +32,40 @@ async function testR2() {
   return url
 }
 
-export { uploadToR2, testR2 }
+
+async function existsInR2(key) {
+  try {
+    await r2.send(new HeadObjectCommand({ Bucket: BUCKET, Key: key }))
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function cleanupOldOgImages(daysToKeep = 31) {
+  const cutoff = Date.now() - daysToKeep * 24 * 60 * 60 * 1000
+
+  const list = await r2.send(new ListObjectsV2Command({
+    Bucket: BUCKET,
+    Prefix: 'og/',
+  }))
+
+  if (!list.Contents?.length) return { deleted: 0 }
+
+  const toDelete = list.Contents
+    .filter(obj => obj.LastModified && obj.LastModified.getTime() < cutoff)
+    .map(obj => ({ Key: obj.Key }))
+
+  if (!toDelete.length) return { deleted: 0 }
+
+  await r2.send(new DeleteObjectsCommand({
+    Bucket: BUCKET,
+    Delete: { Objects: toDelete },
+  }))
+
+  console.log(`[r2] Deleted ${toDelete.length} old OG images`)
+  return { deleted: toDelete.length }
+}
+
+
+export { uploadToR2, testR2, existsInR2, cleanupOldOgImages }

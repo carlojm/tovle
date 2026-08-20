@@ -11,7 +11,7 @@ import { createAxolotl, generateLevelRequirements } from './axolotl.js'
 import { rollLoot, scoreToLuckMultiplier, placeInGrid } from './loot.js'
 import { admin, db } from './firebase.js'
 
-// import { testR2, uploadToR2 } from './r2.js'
+import { cleanupOldOgImages } from './r2.js'
 import { generateShareImage } from './share.js'
 
 import {
@@ -880,6 +880,20 @@ app.post('/api/depthsle/share', async (req, res) => {
     res.json({ ok: true, shareId, url })
   } catch (err) {
     console.error('Share generation failed:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+app.post('/api/admin/cleanup-og', async (req, res) => {
+  const secret = req.headers['x-admin-secret']
+  if (secret !== process.env.ADMIN_SECRET) {
+    return res.status(401).json({ error: 'unauthorized' })
+  }
+  try {
+    const result = await cleanupOldOgImages(1) //TODO: set to like 31 or something
+    res.json({ ok: true, ...result })
+  } catch (err) {
+    console.error('Cleanup failed:', err)
     res.status(500).json({ error: err.message })
   }
 })
