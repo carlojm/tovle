@@ -48,6 +48,9 @@ const talismanIcons = {
   windwalker:   loadBase64(path.join(__dirname, 'assets/talismans/windwalker_talisman.png')),
 }
 
+const islesItemsPath = path.join(__dirname, 'data/islesItems.json')
+const islesItems = JSON.parse(fs.readFileSync(islesItemsPath, 'utf-8'))
+
 function loadAbilityIcons() {
   const icons = {}
   const abilitiesDir = path.join(__dirname, 'scripts/abilities')
@@ -371,26 +374,44 @@ function buildCard({
 }
 
 // ── Firestore helpers ─────────────────────────────────────────────────────
+//except its not firestore anymore we just use uid to generate a new code each day
 
-function generateShareId() {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
-  return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
-}
-
-async function getOrCreateShareId(uid) {
-  const playerRef = db.collection('players').doc(uid)
-  const doc = await playerRef.get()
-  const existing = doc.data()?.shareId
-  if (existing) return existing
-  const shareId = generateShareId()
-  await playerRef.set({ shareId }, { merge: true })
-  return shareId
+function generateDailyShareId(uid, dateStr) {
+  // deterministic 6-char ID from uid + date
+  const input = `${uid}:${dateStr}`
+  let hash = 5381
+  for (let i = 0; i < input.length; i++) {
+    hash = ((hash << 5) + hash) ^ input.charCodeAt(i)
+    hash = hash >>> 0
+  }
+  const chars = 'bcdfhjklmnpqrstvwxyz0123456789'
+  let id = ''
+  let h = hash
+  for (let i = 0; i < 6; i++) {
+    id += chars[h % chars.length]
+    h = Math.floor(h / chars.length)
+  }
+  return id
 }
 
 // ── Main export ───────────────────────────────────────────────────────────
 
 export async function generateShareImage(uid, runData) {
-  const shareId = await getOrCreateShareId(uid)
+  // const shareId = await getOrCreateShareId(uid)
+  const dateStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+  const shareId = generateDailyShareId(uid, dateStr)
+
+  //check if image already generated
+  //by checking if shareId already exists
+  const playerRef = db.collection('players').doc(uid)
+  const playerDoc = await playerRef.get()
+  const existingShareId = playerDoc.data()?.todayShareId
+  const existingDate = playerDoc.data()?.todayShareDate
+  //if exists, return that instead of generating new image
+  if (existingShareId && existingDate === dateStr) {
+    console.log('[share] shareId:', existingShareId, 'already exists, returning instead of regenerating image')
+    return { shareId: existingShareId, url: `https://tovle.net/d/${existingShareId}` }
+  }
 
   const {
     roomsCleared = 0,
@@ -420,8 +441,6 @@ export async function generateShareImage(uid, runData) {
   const equippedSlots = equippedItems.map(item => item.instance)
 
   //item images
-  const islesItemsPath = path.join(__dirname, 'data/islesItems.json')
-  const islesItems = JSON.parse(fs.readFileSync(islesItemsPath, 'utf-8'))
   const equippedIconsBase64 = await Promise.all(
     equippedItems.map(async item => {
       if (!item.instance?.itemKey) return null
@@ -430,7 +449,6 @@ export async function generateShareImage(uid, runData) {
       return getItemIconBase64(itemDef)
     })
   )
-  
 
   const element = buildCard({
     puzzleNumber, displayDate,
@@ -452,6 +470,12 @@ export async function generateShareImage(uid, runData) {
 
   const key = `og/${shareId}.png`
   await uploadToR2(key, pngBuffer, 'image/png')
+
+  //after upload, save to firestore to prevent repeated uploads today
+  await playerRef.set({ 
+    todayShareId: shareId, 
+    todayShareDate: dateStr 
+  }, { merge: true })
 
   return { shareId, url: `https://tovle-beta.fly.dev/d/${shareId}` }
 }
