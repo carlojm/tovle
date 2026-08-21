@@ -507,7 +507,7 @@ const App = () => {
         {activeTab === 'travel' && <Travel onEnterDungeon={() => setActiveTab('depthsle')} />}
         {activeTab === 'data' && <DataTab />}
         {activeTab === 'collection' && <Collection />}
-        {activeTab === 'depthsle' && <Depthsle />}
+        {activeTab === 'depthsle' && gameDate && <Depthsle gameDate={gameDate} />}
 
       </div>
     </div>

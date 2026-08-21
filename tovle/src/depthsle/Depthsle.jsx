@@ -1,6 +1,9 @@
-import { useReducer, useState } from 'react'
+import { useReducer, useState, useEffect, useRef } from 'react'
 import { usePlayer } from '../context/PlayerContext'
+
 import { combatReducer, buildInitialState, PHASES } from './engine/combatReducer.js'
+import { saveRunToStorage, clearRunFromStorage } from './engine/persistence.js'
+
 import { ABILITY_TREES } from './data/abilities.js'
 import { calcStats } from '../utils/odm/statCalc'
 import { getPlayerSlots, getItemInSlot, getMainSlots } from '../utils/equipUtils'
@@ -79,10 +82,86 @@ function SlotCell({ slot, instance }) {
   )
 }
 
-export default function Depthsle({ onExit }) {
-  const { playerData } = usePlayer()
-  const [state, dispatch] = useReducer(combatReducer, playerData, buildInitialState)
+export default function Depthsle({ onExit, gameDate }) {
+  const { playerData, save } = usePlayer()
+  const [state, dispatch] = useReducer(combatReducer, { playerData, gameDate }, buildInitialState)
   const [selectedClass, setSelectedClass] = useState(null)
+  const savedResultRef = useRef(false)
+
+  //mid run autosave: save state to localstorage
+  useEffect(() => {
+    if (state.phase === PHASES.CLASS_SELECT) return
+    if (state.phase === PHASES.GAME_OVER) return
+    saveRunToStorage(state)
+  }, [state])
+
+  //run complete: write to firestore, clear localstorage save
+  useEffect(() => {
+    if (state.phase !== PHASES.GAME_OVER) return
+    if (savedResultRef.current) return
+    savedResultRef.current = true
+
+    save({
+      'depthsle.lastPlayed': gameDate,
+      'depthsle.totalRuns': (playerData?.depthsle?.totalRuns ?? 0) + 1,
+      'depthsle.bestScore': Math.max(playerData?.depthsle?.bestScore ?? 0, state.treasureScore),
+      'depthsle.bestRooms': Math.max(playerData?.depthsle?.bestRooms ?? 0, state.roomsCleared),
+      'depthsle.lastResult': {
+        score: state.treasureScore,
+        roomsCleared: state.roomsCleared,
+        roomNumber: state.roomNumber,
+        killCount: state.killCount,
+        mainTree: state.mainTree,
+        classOptions: state.classOptions,
+        abilities: state.abilities.map(a => ({
+          id: a.id,
+          name: a.name,
+          rarity: a.rarity,
+          tree: a.tree,
+        })),
+        dateString: gameDate,
+      },
+    })
+    clearRunFromStorage()
+  }, [state.phase])
+
+  //debug button 
+  // const handleDebugReset = () => {
+  //   save({
+  //     'depthsle.lastPlayed': null,
+  //     'depthsle.lastResult': null,
+  //   })
+  //   clearRunFromStorage()
+  //   // window.location.reload()
+  // }
+
+  //if already played today, return a different page view
+  const alreadyPlayedToday = playerData?.depthsle?.lastPlayed === gameDate
+  if (alreadyPlayedToday) {
+    const result = playerData.depthsle.lastResult
+    const recapState = {
+      phase: PHASES.GAME_OVER,
+      mainTree: result.mainTree,
+      roomNumber: result.roomNumber,
+      roomsCleared: result.roomsCleared,
+      killCount: result.killCount,
+      treasureScore: result.score,
+      abilities: result.abilities ?? [],
+      classOptions: result.classOptions ?? [],
+    }
+    return (
+      <>
+        <GameOver state={recapState} onRestart={() => window.location.reload()} />
+        {/* <button
+          className="ds-start-btn"
+          onClick={handleDebugReset}
+          style={{ opacity: 0.5, fontSize: '0.75rem', margin: '0 16px 16px' }}
+        >
+          [DEBUG] Reset daily play
+        </button> */}
+      </>
+    )
+  }
 
   const slots = getPlayerSlots(playerData)
   const mainSlots = getMainSlots(playerData)

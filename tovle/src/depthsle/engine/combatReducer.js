@@ -27,6 +27,8 @@ import { ENEMIES, BASIC_ENEMY_IDS, ELITE_ENEMY_IDS, spawnEnemy } from '../data/e
 import { LAYOUTS, STANDARD_LAYOUT_IDS, ELITE_LAYOUT_IDS, ROOM_TYPES, seededRoomOptions } from '../data/layouts.js'
 import { ABILITY_TREES, TREE_IDS, buildBasicAttackCard } from '../data/abilities.js'
 
+import { loadRunFromStorage } from './persistence.js'
+
 // ─── Phase Constants ──────────────────────────────────────────────────────────
 
 export const PHASES = {
@@ -48,9 +50,20 @@ export const SUB_PHASES = {
 
 // ─── Initial State Builder ────────────────────────────────────────────────────
 
-export function buildInitialState(playerData) {
-  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' }).replace(/-/g, '')
-  const seed = buildDailySeed(today)
+export function buildInitialState({playerData, gameDate}) {
+  //resume run from localstorage if exists for today
+  const resumed = loadRunFromStorage(gameDate)
+  if (resumed) {
+    //the passive registry lives outside of react state
+    //it doesnt survive a remount, so rebuild it from
+    //restored abilities before handing state back
+    rebuildPassives(resumed.abilities, resumed.seed)
+    return resumed
+  }
+
+  //convert gameDate to compact YYYYMMDD form for parity sake i think its like that elsewhere
+  const seedDateStr = gameDate.replace(/-/g, '')
+  const seed = buildDailySeed(seedDateStr)
   const runStats = buildRunStats(playerData)
 
   // Seeded class options: pick 4 of the 7 trees.
@@ -61,7 +74,7 @@ export function buildInitialState(playerData) {
     phase: PHASES.CLASS_SELECT,
     subPhase: null,
     seed,
-    dateString: today,
+    dateString: gameDate,
     runStats,
 
     player: {

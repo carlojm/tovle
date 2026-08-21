@@ -170,6 +170,7 @@ function buildFreshPlayerData() {
       bestScore: 0,
       bestRooms: 0,
       totalRuns: 0,
+      lastResult: null,
     }
   }
 }
