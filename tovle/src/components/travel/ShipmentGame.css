@@ -81,6 +81,21 @@
   line-height: 1.1;
 }
 
+/*shape preview styles*/
+.sg-shape-preview {
+  display: grid;
+  gap: 1px;
+}
+
+.sg-shape-cell {
+  border-radius: 1px;
+  background: transparent;
+}
+
+.sg-shape-cell--filled {
+  background: var(--color-button);
+}
+
 /* ── Tile tray ────────────────────────────────────────────────────────────── */
 
 .sg-tray {
@@ -117,6 +132,7 @@
 .sg-tile--selected {
   border-color: var(--color-button) !important;
   background: var(--color-background-modal-inset);
+  opacity: 0.8;
 }
 
 /* ── Controls row ─────────────────────────────────────────────────────────── */

@@ -74,6 +74,19 @@ export function footprintFor(cells, anchorR, anchorC) {
   return cells.map(([dr, dc]) => [anchorR + dr, anchorC + dc])
 }
 
+// Converts a drop cell (where the player's cursor/finger is) into the
+// top-left anchor footprintFor expects, treating the drop cell as the
+// shape's bottom-right corner instead of its top-left. Matches how a
+// tile dragged up from a tray below the board naturally feels — the
+// point under your finger is the near/bottom edge of the shape, not
+// the far one.
+export function anchorFromDropCell(cells, dropR, dropC) {
+  const maxR = Math.max(...cells.map(c => c[0]))
+  const maxC = Math.max(...cells.map(c => c[1]))
+  return { anchorR: dropR - maxR, anchorC: dropC - maxC }
+}
+
+
 // ── Placement validity ──────────────────────────────────────────────────
 // isCellFree(r, c) is injected by the caller so this stays independent of
 // however the board component represents its cells.

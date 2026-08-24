@@ -1,4 +1,5 @@
-import { useReducer, useEffect, useRef } from 'react'
+import { useReducer, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import islesItems from '../../data/islesItems.json'
 import {
   TIER_BADGE,
@@ -7,10 +8,12 @@ import {
   rotateShape,
   footprintFor,
   canPlaceTile,
+  anchorFromDropCell,
   evaluateCut,
   normalizeShape,
   generateShipmentBoard,
   getExtraTileCost,
+  getCumulativeExtraTileCost,
   saveShipmentBoard,
   loadShipmentBoard,
   clearShipmentBoard,
@@ -19,10 +22,35 @@ import './ShipmentGame.css'
 
 const keyOf = (r, c) => r + '_' + c
 
+// ── Shape preview — used in the tray button and the drag ghost ──────────
+
+function TileShapePreview({ cells, cellSize = 10 }) {
+  const maxR = Math.max(...cells.map(c => c[0])) + 1
+  const maxC = Math.max(...cells.map(c => c[1])) + 1
+  return (
+    <div
+      className="sg-shape-preview"
+      style={{
+        gridTemplateColumns: `repeat(${maxC}, ${cellSize}px)`,
+        gridTemplateRows: `repeat(${maxR}, ${cellSize}px)`,
+      }}
+    >
+      {Array.from({ length: maxR * maxC }, (_, i) => {
+        const r = Math.floor(i / maxC), c = i % maxC
+        const filled = cells.some(([pr, pc]) => pr === r && pc === c)
+        return (
+          <div
+            key={i}
+            className={filled ? 'sg-shape-cell sg-shape-cell--filled' : 'sg-shape-cell'}
+            style={{ width: cellSize, height: cellSize }}
+          />
+        )
+      })}
+    </div>
+  )
+}
+
 // ── Reducer ──────────────────────────────────────────────────────────────
-// Kept inline rather than split into its own engine file for now — most of
-// the actual game math already lives in shipmentUtils.js as pure functions,
-// this reducer is mostly just orchestrating which of those to call and when.
 
 function buildInitialState({ equipment, filler, townId, rolledDate, cutUnlocked }) {
   const resumed = loadShipmentBoard(townId, rolledDate)
@@ -33,9 +61,9 @@ function buildInitialState({ equipment, filler, townId, rolledDate, cutUnlocked 
     rolledDate,
     size: board.size,
     walls: new Set(board.walls),
-    itemsByCell: board.placements, // array of [cellKey, {kind, item}]
+    itemsByCell: board.placements,
     tiles: board.tiles,
-    placements: new Map(), // cellKey -> tileId
+    placements: new Map(),
     selected: null,
     cutMode: false,
     cutTargetId: null,
@@ -57,7 +85,6 @@ function shipmentReducer(state, action) {
       const tile = state.tiles.find(t => t.id === action.id)
       if (!tile || !tile.available) return state
       if (state.selected === action.id) {
-        // second click on the same tile = rotate
         return {
           ...state,
           tiles: state.tiles.map(t => t.id === action.id ? { ...t, rotation: (t.rotation + 1) % 4 } : t),
@@ -66,14 +93,17 @@ function shipmentReducer(state, action) {
       return { ...state, selected: action.id, cutMode: false, cutTargetId: null }
     }
 
-    case 'PLACE_SELECTED': {
-      const tile = state.tiles.find(t => t.id === state.selected)
+    // dropR/dropC is the cell under the cursor/finger — the shape's
+    // bottom-right corner, not its top-left anchor.
+    case 'PLACE_TILE': {
+      const tile = state.tiles.find(t => t.id === action.tileId)
       if (!tile || !tile.available) return state
       const cells = rotateShape(tile.baseCells, tile.rotation)
-      if (!canPlaceTile(cells, action.r, action.c, state.size, state.size, (r, c) => isCellFree(state, r, c))) {
+      const { anchorR, anchorC } = anchorFromDropCell(cells, action.dropR, action.dropC)
+      if (!canPlaceTile(cells, anchorR, anchorC, state.size, state.size, (r, c) => isCellFree(state, r, c))) {
         return state
       }
-      const fp = footprintFor(cells, action.r, action.c)
+      const fp = footprintFor(cells, anchorR, anchorC)
       const placements = new Map(state.placements)
       fp.forEach(([r, c]) => placements.set(keyOf(r, c), tile.id))
       return {
@@ -135,17 +165,10 @@ function shipmentReducer(state, action) {
 
     case 'BUY_EXTRA_TILE': {
       const newTile = { id: 'extra' + state.extraTilesPurchased, baseCells: [[0, 0]], rotation: 0, available: true }
-      return {
-        ...state,
-        tiles: [...state.tiles, newTile],
-        extraTilesPurchased: state.extraTilesPurchased + 1,
-      }
+      return { ...state, tiles: [...state.tiles, newTile], extraTilesPurchased: state.extraTilesPurchased + 1 }
     }
 
     case 'AUTOPLACE': {
-      // best-effort, not optimal: for each unplaced tile, try to find any
-      // anchor that covers at least one uncollected item; fall back to any
-      // valid placement at all if no item-covering spot exists
       let placements = new Map(state.placements)
       let tiles = [...state.tiles]
       const itemCells = new Set(state.itemsByCell.map(([k]) => k))
@@ -162,7 +185,7 @@ function shipmentReducer(state, action) {
             const fp = footprintFor(cells, r, c)
             const coversItem = fp.some(([rr, cc]) => itemCells.has(keyOf(rr, cc)) && !placements.has(keyOf(rr, cc)))
             if (coversItem) { bestAnchor = [r, c]; break outer }
-            if (!bestAnchor) bestAnchor = [r, c] // fallback: first valid spot found
+            if (!bestAnchor) bestAnchor = [r, c]
           }
         }
         if (bestAnchor) {
@@ -188,7 +211,12 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
   const [state, dispatch] = useReducer(shipmentReducer, { equipment, filler, townId, rolledDate, cutUnlocked }, buildInitialState)
   const submittedRef = useRef(false)
 
-  // autosave on every change, same pattern as Depthsle
+  // hover fallback for desktop mice that aren't dragging — separate from
+  // dragState below, which covers both touch and click-drag
+  const [hoverCell, setHoverCell] = useState(null)
+  const [dragState, setDragState] = useState(null) // { tileId, cells, x, y, currentCell }
+  const didDragRef = useRef(false)
+
   useEffect(() => {
     if (state.submitted) return
     saveShipmentBoard(townId, state)
@@ -206,14 +234,79 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
       if (entry.kind === 'equipment') collectedEquipmentIds.push(entry.item.id)
       else collectedFillerIds.push(entry.item.id)
     }
-
-    //only charge the player for 1x1s that actually got placed
-    //buying one and not using it will cost nothing
     const extraTilesUsed = state.tiles.filter(t => t.id.startsWith('extra') && !t.available).length
 
     clearShipmentBoard(townId)
     onSubmit({ collectedEquipmentIds, collectedFillerIds, extraTilesUsed })
   }, [state.submitted])
+
+  // ── Drag tracking — same pattern as CombatScreen: unified mouse/touch
+  // listeners on window while dragState is set, elementFromPoint to find
+  // the cell under the cursor via its data-row/data-col attributes.
+  useEffect(() => {
+    if (!dragState) return
+
+    const onMove = (e) => {
+      e.preventDefault()
+      const touch = e.touches?.[0]
+      const clientX = touch ? touch.clientX : e.clientX
+      const clientY = touch ? touch.clientY : e.clientY
+
+      const el = document.elementFromPoint(clientX, clientY)
+      const row = el?.dataset?.row
+      const col = el?.dataset?.col
+      const currentCell = (row !== undefined && col !== undefined)
+        ? { r: parseInt(row), c: parseInt(col) }
+        : null
+
+      didDragRef.current = true
+      setDragState(prev => ({ ...prev, x: clientX, y: clientY, currentCell }))
+    }
+
+    const onEnd = () => {
+      setDragState(prev => {
+        if (prev?.currentCell) {
+          dispatch({ type: 'PLACE_TILE', tileId: prev.tileId, dropR: prev.currentCell.r, dropC: prev.currentCell.c })
+        }
+        return null
+      })
+    }
+
+    window.addEventListener('touchmove', onMove, { passive: false })
+    window.addEventListener('touchend', onEnd)
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onEnd)
+    return () => {
+      window.removeEventListener('touchmove', onMove)
+      window.removeEventListener('touchend', onEnd)
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onEnd)
+    }
+  }, [dragState])
+
+  const handleDragStart = (tile, clientX, clientY) => {
+    if (state.cutMode || !tile.available) return
+    didDragRef.current = false
+    setDragState({
+      tileId: tile.id,
+      cells: rotateShape(tile.baseCells, tile.rotation),
+      x: clientX,
+      y: clientY,
+      currentCell: null,
+    })
+  }
+
+  // ── Preview footprint — driven by whichever is active, drag or hover ────
+  const activeDropCell = dragState?.currentCell ?? (state.selected ? hoverCell : null)
+  const activeTile = state.tiles.find(t => t.id === (dragState?.tileId ?? state.selected))
+  const preview = (() => {
+    if (!activeTile || !activeDropCell) return null
+    const cells = rotateShape(activeTile.baseCells, activeTile.rotation)
+    const { anchorR, anchorC } = anchorFromDropCell(cells, activeDropCell.r, activeDropCell.c)
+    const fp = footprintFor(cells, anchorR, anchorC)
+    const valid = canPlaceTile(cells, anchorR, anchorC, state.size, state.size, (r, c) => isCellFree(state, r, c))
+    return { cells: fp, valid }
+  })()
 
   const itemAt = (r, c) => state.itemsByCell.find(([k]) => k === keyOf(r, c))?.[1] ?? null
 
@@ -243,28 +336,30 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
 
   return (
     <div className="sg-game">
-      <div className="sg-board" style={{ gridTemplateColumns: `repeat(${state.size}, 1fr)` }}>
+      <div
+        className="sg-board"
+        style={{ gridTemplateColumns: `repeat(${state.size}, 1fr)` }}
+        onMouseLeave={() => setHoverCell(null)}
+      >
         {Array.from({ length: state.size * state.size }, (_, i) => {
           const r = Math.floor(i / state.size), c = i % state.size
           const wall = state.walls.has(keyOf(r, c))
           const covered = state.placements.get(keyOf(r, c))
           const item = itemAt(r, c)
-          const selectedTile = state.tiles.find(t => t.id === state.selected)
+          const inPreview = preview?.cells.some(([pr, pc]) => pr === r && pc === c)
+          const previewClass = inPreview ? (preview.valid ? 'sg-cell--preview-valid' : 'sg-cell--preview-invalid') : ''
 
           return (
             <div
               key={i}
-              className={`sg-cell ${wall ? 'sg-cell--wall' : ''} ${covered ? 'sg-cell--covered' : ''}`}
-              onMouseEnter={(e) => {
-                if (!selectedTile || wall || covered) return
-                // hover preview handled via CSS class toggling in a real
-                // implementation — omitted here for brevity, same green/red
-                // pattern as the prototypes
-              }}
+              data-row={r}
+              data-col={c}
+              className={`sg-cell ${wall ? 'sg-cell--wall' : ''} ${covered ? 'sg-cell--covered' : ''} ${previewClass}`}
+              onMouseEnter={() => !wall && setHoverCell({ r, c })}
               onClick={() => {
-                if (state.submitted) return
+                if (state.submitted || wall) return
                 if (covered) return dispatch({ type: 'PICK_UP_TILE', tileId: covered })
-                if (selectedTile) dispatch({ type: 'PLACE_SELECTED', r, c })
+                if (state.selected) dispatch({ type: 'PLACE_TILE', tileId: state.selected, dropR: r, dropC: c })
               }}
             >
               {!wall && item && !covered && (
@@ -276,19 +371,30 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
       </div>
 
       <div className="sg-tray">
-        {state.tiles.map(tile => (
-          <button
-            key={tile.id}
-            disabled={!tile.available}
-            className={state.selected === tile.id ? 'sg-tile--selected' : ''}
-            onClick={() => {
-              if (state.cutMode) return dispatch({ type: 'SELECT_CUT_TARGET', id: tile.id })
-              dispatch({ type: 'SELECT_TILE', id: tile.id })
-            }}
-          >
-            {tile.available ? `${rotateShape(tile.baseCells, tile.rotation).length} cells` : 'placed'}
-          </button>
-        ))}
+        {state.tiles.map(tile => {
+          const cells = rotateShape(tile.baseCells, tile.rotation)
+          return (
+            <button
+              key={tile.id}
+              disabled={!tile.available}
+              className={state.selected === tile.id ? 'sg-tile sg-tile--selected' : 'sg-tile'}
+              onMouseDown={(e) => handleDragStart(tile, e.clientX, e.clientY)}
+              onTouchStart={(e) => {
+                const t = e.touches[0]
+                handleDragStart(tile, t.clientX, t.clientY)
+              }}
+              onClick={() => {
+                // click without drag = tap-to-select fallback, same dual
+                // mode as CombatScreen's card tap vs. drag
+                if (didDragRef.current) { didDragRef.current = false; return }
+                if (state.cutMode) return dispatch({ type: 'SELECT_CUT_TARGET', id: tile.id })
+                dispatch({ type: 'SELECT_TILE', id: tile.id })
+              }}
+            >
+              <TileShapePreview cells={cells} />
+            </button>
+          )
+        })}
       </div>
 
       <div className="sg-controls">
@@ -298,7 +404,7 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
           </button>
         )}
         <button
-          disabled={denPieces < getExtraTileCost(state.extraTilesPurchased)}
+          disabled={denPieces < getCumulativeExtraTileCost(state.extraTilesPurchased + 1)}
           onClick={() => dispatch({ type: 'BUY_EXTRA_TILE' })}
         >
           Buy 1x1 tile ({getExtraTileCost(state.extraTilesPurchased)} den pieces)
@@ -308,13 +414,25 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
         )}
         <button onClick={() => dispatch({ type: 'SUBMIT' })}>Submit</button>
       </div>
+
+      {/* drag ghost — same portal pattern as CombatScreen */}
+      {dragState && createPortal(
+        <div style={{
+          position: 'fixed',
+          left: dragState.x - 20,
+          top: dragState.y - 20,
+          pointerEvents: 'none',
+          zIndex: 9999,
+          opacity: 0.85,
+        }}>
+          <TileShapePreview cells={dragState.cells} cellSize={16} />
+        </div>,
+        document.body
+      )}
     </div>
   )
 }
 
-// Enlarged interactive shape view for cutting — same vertex-click approach
-// as the prototype's v5, ported to a small dedicated component so
-// ShipmentGame's main render stays readable.
 function CutCanvas({ cells, cutStart, onSetStart, onCommit }) {
   const maxR = Math.max(...cells.map(c => c[0])) + 1
   const maxC = Math.max(...cells.map(c => c[1])) + 1

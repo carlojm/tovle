@@ -13,7 +13,7 @@
 
 .sm-modal {
   width: min(480px, 92vw);
-  height: min(600px, 70vh);
+  height: min(600px, 65vh);
   background: var(--color-background-modal);
   border: 2px solid var(--color-border-modal-visit);
   border-radius: 16px;
