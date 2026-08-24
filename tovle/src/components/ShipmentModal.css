@@ -252,8 +252,8 @@
 
 .sm-chest-static {
   image-rendering: pixelated;
-  width: 92px;
-  height: 92px;
+  width: 150px;
+  height: 150px;
   transition: opacity 0.2s;
   position:relative;
   z-index: 2;

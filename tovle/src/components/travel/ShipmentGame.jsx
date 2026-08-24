@@ -390,7 +390,7 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
               data-col={c}
               className={`sg-cell ${wall ? 'sg-cell--wall' : ''} ${covered ? 'sg-cell--covered' : ''} ${previewClass}`}
               style={covered ? { filter: `hue-rotate(${state.tiles.find(t => t.id === covered)?.shade ?? 0}deg) saturate(1.1)` } : undefined}
-              onMouseEnter={() => !wall && setHoverCell({ r, c })}
+              onMouseEnter={() => setHoverCell({ r, c })}
               onClick={() => {
                 if (state.submitted || wall) return
                 if (covered) return dispatch({ type: 'PICK_UP_TILE', tileId: covered })

@@ -60,12 +60,12 @@
 }
 
 .sg-cell--preview-valid {
-  background: color-mix(in srgb, var(--color-button) 35%, var(--color-background-loot-slot));
+  box-shadow: inset 0 0 0 100px color-mix(in srgb, var(--color-button) 35%, transparent);
   border-color: var(--color-button);
 }
 
 .sg-cell--preview-invalid {
-  background: color-mix(in srgb, #fc5454 35%, var(--color-background-loot-slot));
+  box-shadow: inset 0 0 0 100px color-mix(in srgb, #fc5454 35%, transparent);
   border-color: #fc5454;
 }
 

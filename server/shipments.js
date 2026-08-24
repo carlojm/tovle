@@ -244,7 +244,7 @@ const DEN_PILE_CHANCE = 0.15
 const DEN_PILE_MIN = 10
 
 function rollFillerItem(townLevel) {
-  const pool = TRADEABLE_ITEMS.filter(id => !WANT_ONLY_ITEMS.has(id))
+  const pool = TRADEABLE_ITEMS.filter(id => !WANT_ONLY_ITEMS.has(id) && id !== 'harbinger')
   const itemId = pool[Math.floor(Math.random() * pool.length)]
   const weight = ITEM_WEIGHTS[itemId]
   const baseQty = Math.max(1, Math.round(12 / Math.sqrt(weight)))
