@@ -83,7 +83,11 @@ export function footprintFor(cells, anchorR, anchorC) {
 export function anchorFromDropCell(cells, dropR, dropC) {
   const maxR = Math.max(...cells.map(c => c[0]))
   const maxC = Math.max(...cells.map(c => c[1]))
-  return { anchorR: dropR - maxR, anchorC: dropC - maxC }
+  // drop cell is the shape's center (rounded down for even-sized bounding
+  // boxes, so there's a consistent rule rather than ambiguity)
+  const centerR = Math.ceil(maxR / 2)
+  const centerC = Math.ceil(maxC / 2)
+  return { anchorR: dropR - centerR, anchorC: dropC - centerC }
 }
 
 

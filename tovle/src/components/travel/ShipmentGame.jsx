@@ -324,11 +324,11 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
 
   const itemAt = (r, c) => state.itemsByCell.find(([k]) => k === keyOf(r, c))?.[1] ?? null
 
-  function BoardItemContent({ item }) {
+  function BoardItemContent({ item, covered }) {
     if (item.kind === 'filler') {
       const itemDef = ITEM_MAP[item.item.itemId]
       return (
-        <div className="sg-tile-content">
+        <div className={`sg-tile-content ${covered ? 'sg-tile-content--covered' : ''}`}>
           {itemDef?.img ? (
             <img src={itemDef.img} alt="" className="sg-tile-icon-img" style={{ imageRendering: 'pixelated' }} />
           ) : (
@@ -341,7 +341,7 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
     const def = islesItems[item.item.itemKey]
     const slot = def ? getMainSlotForItemType(def.type) : null
     return (
-      <div className="sg-tile-content">
+      <div className={`sg-tile-content ${covered ? 'sg-tile-content--covered' : ''}`}>
         {/* placeholder letter until real slot icons exist — swap the span
             below for an <img> once those are ready, everything else here
             (sizing, badge position) stays the same */}
@@ -397,7 +397,7 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
                 if (state.selected) dispatch({ type: 'PLACE_TILE', tileId: state.selected, dropR: r, dropC: c })
               }}
             >
-              {!wall && item && !covered && <BoardItemContent item={item} />}
+              {!wall && item && <BoardItemContent item={item} covered={!!covered} />}
             </div>
           )
         })}

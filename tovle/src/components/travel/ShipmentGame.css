@@ -76,6 +76,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
+}
+
+.sg-tile-content--covered .sg-tile-icon-letter,
+.sg-tile-content--covered .sg-tile-badge {
+  color: var(--color-text-button);
+}
+.sg-tile-content--covered .sg-tile-icon-fallback {
+  opacity: 0.8;
 }
 
 .sg-tile-icon-letter {
