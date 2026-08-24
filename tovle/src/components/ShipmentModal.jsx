@@ -396,15 +396,6 @@ export default function ShipmentModal({ townId, onClose, onCollected }) {
                     onItemSelect={setSelectedItem}
                     onPositionsCalculated={setItemPositions}
                   />
-                  {/* placeholder — filler/den summary hasn't had a visual pass yet */}
-                  {(fillerSummary.items.length > 0 || fillerSummary.denPiecesGained > 0) && (
-                    <div className="sm-jackpot-info" style={{ marginTop: 8 }}>
-                      {fillerSummary.denPiecesGained > 0 && <span className="sm-jackpot-row">+{fillerSummary.denPiecesGained} den pieces</span>}
-                      {fillerSummary.items.map(f => (
-                        <span key={f.id} className="sm-jackpot-row">{f.quantity}x {f.itemId}</span>
-                      ))}
-                    </div>
-                  )}
                 </>
               )}
 
@@ -412,7 +403,7 @@ export default function ShipmentModal({ townId, onClose, onCollected }) {
             </div>
 
             <div className="sm-bottom">
-              {phase !== 'game' && (
+              {(phase === 'preroll' || phase === 'chestfall') && (
                 <div className="sm-chest-wrap">
                   <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <div ref={chestGlowRef} className="sm-chest-glow" style={{ opacity: 0 }} />
@@ -423,6 +414,15 @@ export default function ShipmentModal({ townId, onClose, onCollected }) {
                       className={`sm-chest-static ${phase === 'preroll' ? 'sm-chest-static--sway' : ''}`}
                     />
                   </div>
+                </div>
+              )}
+
+              {phase === 'reveal' && (fillerSummary.items.length > 0 || fillerSummary.denPiecesGained > 0) && (
+                <div className="sm-jackpot-info">
+                  {fillerSummary.denPiecesGained > 0 && <span className="sm-jackpot-row">+{fillerSummary.denPiecesGained} den pieces</span>}
+                  {fillerSummary.items.map(f => (
+                    <span key={f.id} className="sm-jackpot-row">{f.quantity}x {f.itemId}</span>
+                  ))}
                 </div>
               )}
 

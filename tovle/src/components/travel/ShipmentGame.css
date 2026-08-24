@@ -4,7 +4,8 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 4px 0;
+  padding: 6px 6px;
+  align-items: center;
 }
 
 .sg-instructions {
@@ -20,7 +21,7 @@
 .sg-board {
   display: grid;
   gap: 3px;
-  width: 100%;
+  width: 80%;
   aspect-ratio: 1 / 1;
   background: var(--color-background-loot-grid);
   border: 2px solid var(--color-border-loot-grid);
@@ -69,6 +70,7 @@
 }
 
 .sg-item-label {
+  position:absolute;
   font-size: 10px;
   font-weight: 700;
   color: var(--color-text);
