@@ -198,7 +198,7 @@ export function evaluateCut(cells, A, B) {
 // board just gets generated from the same item list; nothing is lost since
 // the item list itself is what pendingShipment protects.
 
-const BOARD_SIZES = [7, 8, 9]
+const BOARD_SIZES = [6, 7, 8, 9]
 const WALL_DENSITY = 0.18
 
 function keyOfBoard(r, c) {
@@ -295,11 +295,11 @@ export function placeItemsOnBoard(size, walls, items) {
 // walking real board cells, it's guaranteed to fit back where it grew,
 // no separate validity search needed. reservedSet is mutated so multiple
 // tiles generated in sequence don't claim overlapping guaranteed spots.
-function growTile(size, walls, reservedSet, targetSize) {
-  for (let attempt = 0; attempt < 60; attempt++) {
-    const start = [Math.floor(Math.random() * size), Math.floor(Math.random() * size)]
+function growTile(size, walls, reservedSet, targetSize, forcedStart = null) {
+  for (let attempt = 0; attempt < (forcedStart ? 1 : 60); attempt++) {
+    const start = forcedStart ?? [Math.floor(Math.random() * size), Math.floor(Math.random() * size)]
     const sk = keyOfBoard(...start)
-    if (walls.has(sk) || reservedSet.has(sk)) continue
+    if (walls.has(sk) || reservedSet.has(sk)) return null // forced start is already claimed — caller must know
 
     const shape = [start]
     const inShape = new Set([sk])
@@ -333,15 +333,50 @@ function growTile(size, walls, reservedSet, targetSize) {
 // tunable knobs for difficulty — see notes below.
 // cutUnlocked widens the max tile size, per Carlo: bigger tiles only make
 // sense once cutting exists to break them back down.
-export function generateTilePool(size, walls, tileCount, cutUnlocked) {
+
+// placements: Map of cellKey -> { kind, item } from placeItemsOnBoard.
+// sacrificeCount: how many equipment items are allowed to go unguaranteed —
+// this is the actual knob for "at least n-1 of equipment is collectible
+// with optimal play." 1 means exactly one equipment item can be left
+// uncoverable by design; 0 means every equipment item is guaranteed
+// reachable by some tile (though the player may still choose not to
+// collect it, or not have room to fit everything).
+export function generateTilePool(size, walls, tileCount, cutUnlocked, placements, sacrificeCount = 1) {
   const reserved = new Set()
-  const maxSize = cutUnlocked ? 10 : 7
+  const minSize = 5
+  const maxSize = cutUnlocked ? 10 : 8
   const tiles = []
-  for (let i = 0; i < tileCount; i++) {
-    const targetSize = 4 + Math.floor(Math.random() * (maxSize - 4 + 1))
-    const shape = growTile(size, walls, reserved, targetSize)
-    if (shape) tiles.push({ id: 'tile' + i, baseCells: shape, rotation: 0, available: true })
+
+  const equipmentCells = [...placements.entries()]
+    .filter(([, entry]) => entry.kind === 'equipment')
+    .map(([k]) => k.split('_').map(Number))
+
+  // shuffle so which item(s) get sacrificed varies board to board, not
+  // always "whichever was placed last"
+  for (let i = equipmentCells.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[equipmentCells[i], equipmentCells[j]] = [equipmentCells[j], equipmentCells[i]]
   }
+  const guaranteedCells = equipmentCells.slice(0, Math.max(0, equipmentCells.length - sacrificeCount))
+
+  let tileIndex = 0
+  for (const cell of guaranteedCells) {
+    if (tileIndex >= tileCount) break // ran out of tile budget before seeding everything — see note below
+    const targetSize = minSize + Math.floor(Math.random() * (maxSize - minSize + 1))
+    const shape = growTile(size, walls, reserved, targetSize, cell)
+    if (shape) tiles.push({ id: 'tile' + tileIndex++, baseCells: shape, rotation: 0, available: true })
+  }
+
+  // remaining tile budget grows freely, same as before — these are what
+  // give the player flexibility to also grab filler, or route around a
+  // guaranteed tile that didn't land where they'd have liked
+  while (tileIndex < tileCount) {
+    const targetSize = minSize + Math.floor(Math.random() * (maxSize - minSize + 1))
+    const shape = growTile(size, walls, reserved, targetSize)
+    if (shape) tiles.push({ id: 'tile' + tileIndex++, baseCells: shape, rotation: 0, available: true })
+    else break // no more room anywhere — stop rather than loop forever
+  }
+
   return tiles
 }
 
@@ -375,8 +410,8 @@ export function generateShipmentBoard(equipmentItems, fillerItems, cutUnlocked) 
   // tile count: enough to cover most but not all items — roughly half the
   // item count, minimum 3, with a little randomness so it doesn't feel
   // mechanically identical every day
-  const tileCount = Math.max(3, Math.round(combinedItems.length / 2) + Math.floor(Math.random() * 3) - 1)
-  const tiles = generateTilePool(size, walls, tileCount, cutUnlocked)
+  const tileCount = Math.max(3, Math.round(combinedItems.length / 3) + Math.floor(Math.random() * 2) - 1)
+  const tiles = generateTilePool(size, walls, tileCount, cutUnlocked, placements)
 
   return { size, walls: [...walls], placements: [...placements.entries()], tiles }
 }

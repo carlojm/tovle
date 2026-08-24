@@ -169,34 +169,45 @@ function shipmentReducer(state, action) {
     }
 
     case 'AUTOPLACE': {
-      let placements = new Map(state.placements)
-      let tiles = [...state.tiles]
+      // reset first — this is a shuffle button, not a "fill remaining gaps"
+      // button, so every press starts from an empty board rather than only
+      // ever adding to whatever's already placed
+      let placements = new Map()
+      let tiles = state.tiles.map(t => ({ ...t, available: true }))
       const itemCells = new Set(state.itemsByCell.map(([k]) => k))
 
-      for (const tile of tiles) {
-        if (!tile.available) continue
+      // process tiles in random order each press — otherwise tile[0] always
+      // gets first pick of the board regardless of how anchors are chosen
+      const order = [...tiles].sort(() => Math.random() - 0.5)
+
+      for (const tile of order) {
         const cells = rotateShape(tile.baseCells, tile.rotation)
-        let bestAnchor = null
-        outer:
+        const itemAnchors = []
+        const anyAnchors = []
+
         for (let r = 0; r < state.size; r++) {
           for (let c = 0; c < state.size; c++) {
             const free = (rr, cc) => !state.walls.has(keyOf(rr, cc)) && !placements.has(keyOf(rr, cc))
             if (!canPlaceTile(cells, r, c, state.size, state.size, free)) continue
             const fp = footprintFor(cells, r, c)
             const coversItem = fp.some(([rr, cc]) => itemCells.has(keyOf(rr, cc)) && !placements.has(keyOf(rr, cc)))
-            if (coversItem) { bestAnchor = [r, c]; break outer }
-            if (!bestAnchor) bestAnchor = [r, c]
+            ;(coversItem ? itemAnchors : anyAnchors).push([r, c])
           }
         }
-        if (bestAnchor) {
-          const fp = footprintFor(cells, bestAnchor[0], bestAnchor[1])
-          fp.forEach(([r, c]) => placements.set(keyOf(r, c), tile.id))
-          tiles = tiles.map(t => t.id === tile.id ? { ...t, available: false } : t)
-        }
+
+        // pick randomly among valid options, biased toward item-covering spots,
+        // rather than always taking whichever the scan happens to reach first
+        const pool = itemAnchors.length > 0 ? itemAnchors : anyAnchors
+        if (pool.length === 0) continue
+        const [ar, ac] = pool[Math.floor(Math.random() * pool.length)]
+
+        const fp = footprintFor(cells, ar, ac)
+        fp.forEach(([r, c]) => placements.set(keyOf(r, c), tile.id))
+        tiles = tiles.map(t => t.id === tile.id ? { ...t, available: false } : t)
       }
       return { ...state, placements, tiles }
     }
-
+    
     case 'SUBMIT':
       return { ...state, submitted: true }
 
