@@ -2,6 +2,9 @@ import { fileURLToPath } from 'url'
 import { readFileSync } from 'fs'
 import path from 'path'
 
+import { rollMultiplier } from './trades.js'
+import { ITEM_WEIGHTS, WANT_ONLY_ITEMS, TRADEABLE_ITEMS } from './data/itemWeights.js'
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const islesItems = JSON.parse(readFileSync(path.join(__dirname, 'data/islesItems.json'), 'utf-8'))
 
@@ -228,6 +231,85 @@ const generateItemId = (existingEquipment) => {
   return id
 }
 
+
+
+
+
+
+
+// ── Filler + currency rolling for the shipment board minigame ────────────
+
+const FILLER_QTY_DIVISOR = 5 // board quantities read smaller/more casual than trade-window asks
+const DEN_PILE_CHANCE = 0.15
+const DEN_PILE_MIN = 10
+
+function rollFillerItem(townLevel) {
+  const pool = TRADEABLE_ITEMS.filter(id => !WANT_ONLY_ITEMS.has(id))
+  const itemId = pool[Math.floor(Math.random() * pool.length)]
+  const weight = ITEM_WEIGHTS[itemId]
+  const baseQty = Math.max(1, Math.round(12 / Math.sqrt(weight)))
+  // Math.random is a valid drop-in for rollMultiplier's rng param — it just
+  // needs a no-arg function returning [0,1), same shape as the seeded rng
+  // trades.js normally passes in. No seeding needed here since this gets
+  // rolled once and committed to Firestore, unlike trade generation which
+  // has to regenerate identically within a trade window.
+  const multiplier = rollMultiplier(Math.random, townLevel)
+  const quantity = Math.max(1, Math.round((baseQty * multiplier) / FILLER_QTY_DIVISOR))
+  return { itemId, quantity }
+}
+
+function rollDenPile(reputation) {
+  // separate from den_piece_100 (the archaic Monumenta token) — this is the
+  // fiat currency, meant to show up here as one of the few non-combat ways
+  // to earn it
+  const luck = Math.min(1, Math.sqrt(reputation / MAX_REP))
+  const max = Math.round(DEN_PILE_MIN + 190 * luck) // 10 -> 200 as rep climbs
+  const quantity = DEN_PILE_MIN + Math.floor(Math.random() * (max - DEN_PILE_MIN + 1))
+  return { itemId: 'den_pieces', quantity }
+}
+
+function generateFillerId(existingFiller) {
+  const existingIds = new Set((existingFiller ?? []).map(f => f.id))
+  let id
+  do {
+    id = 'f' + Math.random().toString(36).slice(2, 10)
+  } while (existingIds.has(id))
+  return id
+}
+
+// rolls the filler pile set for a shipment board.
+// count scales with equipment count so bigger shipments get proportionally
+// more filler, with a little randomness so it doesn't feel mechanical —
+// minimum 3 regardless of equipment count.
+function rollShipmentFiller(reputation, townLevel, equipmentCount) {
+  const jitter = Math.floor(Math.random() * 5) - 2 // -2 to +2
+  const fillerCount = Math.max(3, Math.round(equipmentCount / 2) + jitter)
+
+  const filler = []
+  for (let i = 0; i < fillerCount; i++) {
+    const rolled = Math.random() < DEN_PILE_CHANCE
+      ? rollDenPile(reputation)
+      : rollFillerItem(townLevel)
+    filler.push({ id: generateFillerId(filler), ...rolled })
+  }
+  return filler
+}
+
+// top-level entry point for the shipment board minigame — rolls both
+// equipment and filler in one call. Board layout (walls, tiles, item
+// placement) is generated client-side from this list; this function only
+// owns the parts with real economic weight.
+const rollShipmentContents = (reputation, forumTier, townLevel, townId, existingEquipment, todayStr) => {
+  const equipment = rollShipment(reputation, forumTier, townId, existingEquipment, todayStr)
+  const filler = rollShipmentFiller(reputation, townLevel, equipment.length)
+  return { equipment, filler }
+}
+
+
+
+
+
+
 // rolls a full shipment for a town
 // returns array of equipment instances ready to add to playerData.equipment
 const rollShipment = (reputation, forumTier, townId, existingEquipment, todayStr) => {
@@ -260,7 +342,7 @@ const rollShipment = (reputation, forumTier, townId, existingEquipment, todayStr
 
 
 // exports for use in index.js
-export { rollShipment, getTierWeights, getShipmentSize }
+export { rollShipment, getTierWeights, getShipmentSize, rollShipmentContents}
 
 // ─── tester ───────────────────────────────────────────────────────────────────
 // run with: node server/shipments.js

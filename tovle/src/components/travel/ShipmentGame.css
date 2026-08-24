@@ -1,0 +1,205 @@
+/* ── Layout shell ─────────────────────────────────────────────────────────── */
+
+.sg-game {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 0;
+}
+
+.sg-instructions {
+  font-size: 12px;
+  color: var(--color-text);
+  opacity: 0.6;
+  margin: 0;
+  text-align: center;
+}
+
+/* ── Board ────────────────────────────────────────────────────────────────── */
+
+.sg-board {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--color-background-loot-grid);
+  border: 2px solid var(--color-border-loot-grid);
+  border-radius: 10px;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.sg-cell {
+  position: relative;
+  background: var(--color-background-loot-slot);
+  border: 1px solid var(--color-border-loot-slot);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  container-type: inline-size;
+}
+
+.sg-cell--wall {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--color-border-loot-slot) 0px,
+    var(--color-border-loot-slot) 3px,
+    var(--color-background-loot-grid) 3px,
+    var(--color-background-loot-grid) 7px
+  );
+  cursor: default;
+}
+
+.sg-cell--covered {
+  background: var(--color-button);
+  border-color: var(--color-button);
+}
+
+.sg-cell--preview-valid {
+  background: color-mix(in srgb, var(--color-button) 35%, var(--color-background-loot-slot));
+  border-color: var(--color-button);
+}
+
+.sg-cell--preview-invalid {
+  background: color-mix(in srgb, #fc5454 35%, var(--color-background-loot-slot));
+  border-color: #fc5454;
+}
+
+.sg-item-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text);
+  opacity: 0.8;
+  pointer-events: none;
+  user-select: none;
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* ── Tile tray ────────────────────────────────────────────────────────────── */
+
+.sg-tray {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sg-tray button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: none;
+  border: 2px solid var(--color-coords-border);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sg-tray button:hover:not(:disabled) {
+  border-color: var(--color-button);
+}
+
+.sg-tray button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.sg-tile--selected {
+  border-color: var(--color-button) !important;
+  background: var(--color-background-modal-inset);
+}
+
+/* ── Controls row ─────────────────────────────────────────────────────────── */
+
+.sg-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sg-controls button {
+  flex: 1;
+  min-width: 100px;
+  padding: 10px 12px;
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 999px;
+  border: 2px solid var(--color-coords-border);
+  background: none;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sg-controls button:hover:not(:disabled) {
+  border-color: var(--color-button);
+}
+
+.sg-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* submit is the primary action — matches .sm-roll-btn / .town-action-btn--primary */
+.sg-controls button:last-child {
+  background: var(--color-button);
+  color: var(--color-text-button);
+  border-color: var(--color-button);
+}
+
+.sg-controls button:last-child:hover:not(:disabled) {
+  background: var(--color-button-hover);
+  border-color: var(--color-button-hover);
+}
+
+/* ── Cut sub-view ─────────────────────────────────────────────────────────── */
+
+.sg-cut-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--color-background-modal-inset);
+  border: 1px solid var(--color-coords-border);
+  border-radius: 12px;
+}
+
+.sg-cut-cell {
+  position: absolute;
+  background: var(--color-button);
+  border-radius: 4px;
+}
+
+.sg-vertex {
+  fill: var(--color-text);
+  opacity: 0.35;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.sg-vertex:hover {
+  opacity: 0.7;
+}
+
+.sg-vertex--start {
+  fill: var(--color-button);
+  opacity: 1;
+}
+
+.sg-cut-msg {
+  font-size: 12px;
+  color: #fc5454;
+  margin: 0;
+  text-align: center;
+  min-height: 16px;
+}

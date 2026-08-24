@@ -276,7 +276,7 @@ const TownCard = ({ townId, tradesData, tradesLoading, windowIndex, onTradeExecu
           onClose={() => setActiveModal(null)}
           onCollected={() => {
             const todayStr = getEasternDateStr()
-            save({ [`travel.towns.${townId}.lastShipment`]: todayStr })
+            save({ [`travel.towns.${townId}.lastShipment`]: todayStr }, {localOnly: true})
             setActiveModal(null)
           }}
         />

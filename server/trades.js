@@ -184,6 +184,7 @@ export {
   getNumSlots,
   getTradeLimit,
   getSecondsUntilNextWindow,
+  rollMultiplier,
 }
 
 // Run with: node server/trades.js

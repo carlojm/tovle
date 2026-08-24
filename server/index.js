@@ -23,7 +23,7 @@ import {
   getSecondsUntilNextWindow
 } from './trades.js'
 
-import { rollShipment } from './shipments.js'
+import { rollShipmentContents } from './shipments.js'
 import { calcRecyclePrice } from './recycle.js'
 
 
@@ -728,7 +728,7 @@ app.post('/api/collect-shipment', async (req, res) => {
   }
 
   try {
-    let rolledItems = null
+    let responsePayload = null
 
     await db.runTransaction(async (t) => {
       const playerRef = db.collection('players').doc(uid)
@@ -742,12 +742,11 @@ app.post('/api/collect-shipment', async (req, res) => {
       const todayStr = getEasternDateString()
       const townData = playerData.travel?.towns?.[townId] ?? {}
 
-      // check town is unlocked
       if (!townData.unlocked) {
         throw Object.assign(new Error('Town not unlocked'), { status: 403 })
       }
 
-      // check hasn't already collected today
+      // already fully finalized today — real "come back tomorrow" case
       if (townData.lastShipment === todayStr) {
         throw Object.assign(
           new Error('Shipment already collected today'),
@@ -755,20 +754,112 @@ app.post('/api/collect-shipment', async (req, res) => {
         )
       }
 
-      // derive forum tier and reputation for rolling
+      // a board was already rolled today and hasn't been finalized yet
+      // this is a resume (reload, reopened modal, different device), not a
+      // fresh roll. Return the same committed item list; do NOT roll again.
+      const pending = townData.pendingShipment
+      if (pending?.rolledDate === todayStr) {
+        responsePayload = { equipment: pending.equipment, filler: pending.filler }
+        return // no writes needed, this is a read-only resume
+      }
+
+      // fresh roll
       const forumTier = playerData.travel?.forum?.tier ?? 1
       const reputation = townData.reputation ?? 0
+      const townLevel = getTownLevel(reputation)
       const existingEquipment = playerData.equipment ?? []
 
-      // roll the shipment
-      rolledItems = rollShipment(reputation, forumTier, townId, existingEquipment, todayStr)
+      const { equipment, filler } = rollShipmentContents(
+        reputation, forumTier, townLevel, townId, existingEquipment, todayStr
+      )
 
-      // build updated equipment array
-      const updatedEquipment = [...existingEquipment, ...rolledItems]
+      t.update(playerRef, {
+        [`travel.towns.${townId}.pendingShipment`]: { equipment, filler, rolledDate: todayStr },
+      })
 
-      // update equipmentCollection stats — one entry per unique item key
+      responsePayload = { equipment, filler }
+    })
+
+    res.json(responsePayload)
+
+  } catch (err) {
+    if (err.alreadyCollected) return res.status(409).json({ alreadyCollected: true })
+    if (err.status === 404) return res.status(404).json({ error: err.message })
+    if (err.status === 403) return res.status(403).json({ error: err.message })
+    console.error('Error collecting shipment:', err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+app.post('/api/finalize-shipment', async (req, res) => {
+  //TWO api calls for shipments now, one at the start to generate loot
+  //and one at the end to confirm which loot the player collected
+
+  const { uid, townId, collectedEquipmentIds, collectedFillerIds, extraTilesPurchased } = req.body
+
+  const VALID_TOWNS = ['alnera', 'frostgate', 'mistport', 'steelmeld']
+  if (!uid || !townId || !Array.isArray(collectedEquipmentIds) || !Array.isArray(collectedFillerIds)) {
+    return res.status(400).json({ error: 'Missing uid, townId, collectedEquipmentIds, or collectedFillerIds' })
+  }
+  const tilesPurchased = Math.max(0, Number.isInteger(extraTilesPurchased) ? extraTilesPurchased : 0)
+  if (!VALID_TOWNS.includes(townId)) {
+    return res.status(400).json({ error: 'Invalid town ID' })
+  }
+
+  try {
+    let result = null
+
+    await db.runTransaction(async (t) => {
+      const playerRef = db.collection('players').doc(uid)
+      const playerSnap = await t.get(playerRef)
+
+      if (!playerSnap.exists) {
+        throw Object.assign(new Error('Player not found'), { status: 404 })
+      }
+
+      const playerData = playerSnap.data()
+      const todayStr = getEasternDateString()
+      const townData = playerData.travel?.towns?.[townId] ?? {}
+      const pending = townData.pendingShipment
+
+      if (!pending || pending.rolledDate !== todayStr) {
+        throw Object.assign(new Error('No pending shipment to finalize'), { status: 409 })
+      }
+      // idempotency - a second finalize call for an already-finalized day
+      // shouldn't double-grant anything
+      if (townData.lastShipment === todayStr) {
+        throw Object.assign(new Error('Shipment already finalized today'), { status: 409, alreadyCollected: true })
+      }
+
+      // never trust the client's item data, only which ids it claims;
+      // cross-reference against what was actually rolled
+      const collectedEquipment = pending.equipment.filter(e => collectedEquipmentIds.includes(e.id))
+      const collectedFillerAll = pending.filler.filter(f => collectedFillerIds.includes(f.id))
+
+      // den_pieces is currency, not an inventory item; split it out
+      const collectedDenPiles = collectedFillerAll.filter(f => f.itemId === 'den_pieces')
+      const collectedFillerItems = collectedFillerAll.filter(f => f.itemId !== 'den_pieces')
+      const denPiecesGained = collectedDenPiles.reduce((sum, f) => sum + f.quantity, 0)
+
+      const existingEquipment = playerData.equipment ?? []
+      const updatedEquipment = [...existingEquipment, ...collectedEquipment]
+
+      // price doubles per purchase (100, 200, 400, ...)
+      const extraTileCost = tilesPurchased > 0 ? 100 * (Math.pow(2, tilesPurchased) - 1) : 0
+      const currentDenPiecesBeforeCost = playerData.inventory?.currencies?.denPieces ?? 0
+      if (currentDenPiecesBeforeCost < extraTileCost) {
+        throw Object.assign(new Error('Not enough den pieces for extra tiles purchased'), { status: 400 })
+      }
+      
+      const existingItems = playerData.inventory?.items ?? []
+      const updatedItems = mergeItems(existingItems, collectedFillerItems)
+
+      const currentDenPieces = currentDenPiecesBeforeCost - extraTileCost
+
+      // equipmentCollection stats; moved here from roll time, since we
+      // only know now what was actually collected
       const collectionUpdates = {}
-      for (const item of rolledItems) {
+      for (const item of collectedEquipment) {
         const existing = playerData.stats?.equipmentCollection?.[item.itemKey] ?? null
         collectionUpdates[`stats.equipmentCollection.${item.itemKey}`] = {
           totalFound: (existing?.totalFound ?? 0) + 1,
@@ -780,23 +871,27 @@ app.post('/api/collect-shipment', async (req, res) => {
 
       t.update(playerRef, {
         equipment: updatedEquipment,
+        'inventory.items': updatedItems,
+        'inventory.currencies.denPieces': currentDenPieces + denPiecesGained,
         [`travel.towns.${townId}.lastShipment`]: todayStr,
+        [`travel.towns.${townId}.pendingShipment`]: admin.firestore.FieldValue.delete(),
         'stats.totalShipmentsOpened': admin.firestore.FieldValue.increment(1),
         ...collectionUpdates,
       })
+
+      result = { equipment: collectedEquipment, filler: collectedFillerItems, denPiecesGained }
     })
 
-    res.json({ items: rolledItems })
+    res.json(result)
 
   } catch (err) {
     if (err.alreadyCollected) return res.status(409).json({ alreadyCollected: true })
     if (err.status === 404) return res.status(404).json({ error: err.message })
-    if (err.status === 403) return res.status(403).json({ error: err.message })
-    console.error('Error collecting shipment:', err)
+    if (err.status === 409) return res.status(409).json({ error: err.message })
+    console.error('Error finalizing shipment:', err)
     res.status(500).json({ error: 'Internal server error' })
   }
 })
-
 
 app.post('/api/recycle-equipment', async (req, res) => {
   const { uid, itemId } = req.body
