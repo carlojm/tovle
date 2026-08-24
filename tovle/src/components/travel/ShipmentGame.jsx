@@ -1,6 +1,7 @@
 import { useReducer, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import islesItems from '../../data/islesItems.json'
+import { ITEM_MAP } from '../../data/itemMap'
 import {
   TIER_BADGE,
   SLOT_LETTER,
@@ -323,11 +324,31 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
 
   const itemAt = (r, c) => state.itemsByCell.find(([k]) => k === keyOf(r, c))?.[1] ?? null
 
-  const renderTileLabel = (item) => {
-    if (item.kind === 'filler') return item.item.itemId === 'den_pieces' ? `${item.item.quantity}` : `${item.item.quantity}x`
+  function BoardItemContent({ item }) {
+    if (item.kind === 'filler') {
+      const itemDef = ITEM_MAP[item.item.itemId]
+      return (
+        <div className="sg-tile-content">
+          {itemDef?.img ? (
+            <img src={itemDef.img} alt="" className="sg-tile-icon-img" style={{ imageRendering: 'pixelated' }} />
+          ) : (
+            <span className="sg-tile-icon-fallback">?</span>
+          )}
+          <span className="sg-tile-badge">{item.item.quantity}</span>
+        </div>
+      )
+    }
     const def = islesItems[item.item.itemKey]
     const slot = def ? getMainSlotForItemType(def.type) : null
-    return `${SLOT_LETTER[slot] ?? '?'}·${TIER_BADGE[item.item.tier] ?? ''}`
+    return (
+      <div className="sg-tile-content">
+        {/* placeholder letter until real slot icons exist — swap the span
+            below for an <img> once those are ready, everything else here
+            (sizing, badge position) stays the same */}
+        <span className="sg-tile-icon-letter">{SLOT_LETTER[slot] ?? '?'}</span>
+        <span className="sg-tile-badge">{TIER_BADGE[item.item.tier] ?? ''}</span>
+      </div>
+    )
   }
 
   if (state.cutMode && state.cutTargetId) {
@@ -376,9 +397,7 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
                 if (state.selected) dispatch({ type: 'PLACE_TILE', tileId: state.selected, dropR: r, dropC: c })
               }}
             >
-              {!wall && item && !covered && (
-                <span className="sg-item-label">{renderTileLabel(item)}</span>
-              )}
+              {!wall && item && !covered && <BoardItemContent item={item} />}
             </div>
           )
         })}
