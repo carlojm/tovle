@@ -323,3 +323,30 @@
   padding: 4px 20px;
   margin: 0;
 }
+
+
+
+/*filler item icons in final section*/
+.sm-filler-summary {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sm-filler-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sm-filler-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.sm-filler-qty {
+  font-size: 12px;
+  font-weight: 600;
+}

@@ -66,5 +66,5 @@ export const ITEM_MAP = {
   prismarine_shard:    { img: prismarineShard },
   heart_of_the_sea:    { img: heartOfTheSea },
 
-  den_piece: {img: denPiece},
+  den_pieces: {img: denPiece},
 }

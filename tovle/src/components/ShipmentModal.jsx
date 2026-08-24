@@ -19,6 +19,7 @@ import { getTownLevel } from '../utils/townUtils'
 import { getEasternDateStr } from '../utils/dates'
 import './ShipmentModal.css'
 import islesItems from '../data/islesItems.json'
+import { ITEM_MAP } from '../data/itemMap'
 
 const CLOUD_FRACTION = 0.67
 const ITEM_SIZE      = 48
@@ -425,15 +426,31 @@ export default function ShipmentModal({ townId, onClose, onCollected }) {
                 </div>
               )}
 
-              {phase === 'reveal' && (fillerSummary.items.length > 0 || fillerSummary.denPiecesGained > 0) && (
-                <div className="sm-jackpot-info">
+              {phase === 'reveal' && (fillerSummary.items.length > 0 || fillerSummary.netDenPieces !== 0) && (
+                <div className="sm-jackpot-info sm-filler-summary">
                   {fillerSummary.netDenPieces !== 0 && (
-                    <span className="sm-jackpot-row">
-                      {fillerSummary.netDenPieces > 0 ? '+' : ''}{fillerSummary.netDenPieces} den pieces
-                    </span>
+                    <div className="sm-filler-row">
+                      <img
+                        src={ITEM_MAP['den_pieces']?.img}
+                        alt=""
+                        className="sm-filler-icon"
+                        style={{ imageRendering: 'pixelated' }}
+                      />
+                      <span className="sm-filler-qty">
+                        {fillerSummary.netDenPieces > 0 ? '+' : ''}{fillerSummary.netDenPieces}
+                      </span>
+                    </div>
                   )}
                   {fillerSummary.items.map(f => (
-                    <span key={f.id} className="sm-jackpot-row">{f.quantity}x {f.itemId}</span>
+                    <div key={f.id} className="sm-filler-row">
+                      <img
+                        src={ITEM_MAP[f.itemId]?.img}
+                        alt=""
+                        className="sm-filler-icon"
+                        style={{ imageRendering: 'pixelated' }}
+                      />
+                      <span className="sm-filler-qty">{f.quantity}</span>
+                    </div>
                   ))}
                 </div>
               )}
