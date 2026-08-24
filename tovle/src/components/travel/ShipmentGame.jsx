@@ -207,8 +207,12 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
       else collectedFillerIds.push(entry.item.id)
     }
 
+    //only charge the player for 1x1s that actually got placed
+    //buying one and not using it will cost nothing
+    const extraTilesUsed = state.tiles.filter(t => t.id.startsWith('extra') && !t.available).length
+
     clearShipmentBoard(townId)
-    onSubmit({ collectedEquipmentIds, collectedFillerIds, extraTilesPurchased: state.extraTilesPurchased })
+    onSubmit({ collectedEquipmentIds, collectedFillerIds, extraTilesUsed })
   }, [state.submitted])
 
   const itemAt = (r, c) => state.itemsByCell.find(([k]) => k === keyOf(r, c))?.[1] ?? null

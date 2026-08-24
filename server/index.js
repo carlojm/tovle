@@ -795,13 +795,13 @@ app.post('/api/finalize-shipment', async (req, res) => {
   //TWO api calls for shipments now, one at the start to generate loot
   //and one at the end to confirm which loot the player collected
 
-  const { uid, townId, collectedEquipmentIds, collectedFillerIds, extraTilesPurchased } = req.body
+  const { uid, townId, collectedEquipmentIds, collectedFillerIds, extraTilesUsed } = req.body
 
   const VALID_TOWNS = ['alnera', 'frostgate', 'mistport', 'steelmeld']
   if (!uid || !townId || !Array.isArray(collectedEquipmentIds) || !Array.isArray(collectedFillerIds)) {
     return res.status(400).json({ error: 'Missing uid, townId, collectedEquipmentIds, or collectedFillerIds' })
   }
-  const tilesPurchased = Math.max(0, Number.isInteger(extraTilesPurchased) ? extraTilesPurchased : 0)
+  const tilesUsed = Math.max(0, Number.isInteger(extraTilesUsed) ? extraTilesUsed : 0)
   if (!VALID_TOWNS.includes(townId)) {
     return res.status(400).json({ error: 'Invalid town ID' })
   }
@@ -845,7 +845,7 @@ app.post('/api/finalize-shipment', async (req, res) => {
       const updatedEquipment = [...existingEquipment, ...collectedEquipment]
 
       // price doubles per purchase (100, 200, 400, ...)
-      const extraTileCost = tilesPurchased > 0 ? 100 * (Math.pow(2, tilesPurchased) - 1) : 0
+      const extraTileCost = tilesUsed > 0 ? 100 * (Math.pow(2, tilesUsed) - 1) : 0
       const currentDenPiecesBeforeCost = playerData.inventory?.currencies?.denPieces ?? 0
       if (currentDenPiecesBeforeCost < extraTileCost) {
         throw Object.assign(new Error('Not enough den pieces for extra tiles purchased'), { status: 400 })
@@ -879,7 +879,13 @@ app.post('/api/finalize-shipment', async (req, res) => {
         ...collectionUpdates,
       })
 
-      result = { equipment: collectedEquipment, filler: collectedFillerItems, denPiecesGained }
+      result = { 
+        equipment: collectedEquipment, 
+        filler: collectedFillerItems, 
+        denPiecesGained, 
+        extraTileCost, 
+        netDenPieces: denPiecesGained - extraTileCost 
+      }
     })
 
     res.json(result)

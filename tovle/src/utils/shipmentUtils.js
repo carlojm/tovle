@@ -374,7 +374,10 @@ export function getExtraTileCost(purchaseCount) {
   return 100 * Math.pow(2, purchaseCount)
 }
 
-
+// Total cost if all `count` purchased extra tiles end up used
+export function getCumulativeExtraTileCost(count) {
+  return count > 0 ? 100 * (Math.pow(2, count) - 1) : 0
+}
 
 
 

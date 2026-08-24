@@ -315,11 +315,11 @@ export default function ShipmentModal({ townId, onClose, onCollected }) {
       save({
         equipment: [...existingEquipment, ...data.equipment],
         'inventory.items': mergedItems,
-        'inventory.currencies.denPieces': denPieces + data.denPiecesGained,
+        'inventory.currencies.denPieces': denPieces + data.netDenPieces,
       }, { localOnly: true })
 
       setRevealItems(data.equipment)
-      setFillerSummary({ items: data.filler, denPiecesGained: data.denPiecesGained })
+      setFillerSummary({ items: data.filler, netDenPieces: data.netDenPieces })
       setPhase('reveal')
     } catch (err) {
       setError('Failed to connect. Try again.')
@@ -427,7 +427,11 @@ export default function ShipmentModal({ townId, onClose, onCollected }) {
 
               {phase === 'reveal' && (fillerSummary.items.length > 0 || fillerSummary.denPiecesGained > 0) && (
                 <div className="sm-jackpot-info">
-                  {fillerSummary.denPiecesGained > 0 && <span className="sm-jackpot-row">+{fillerSummary.denPiecesGained} den pieces</span>}
+                  {fillerSummary.netDenPieces !== 0 && (
+                    <span className="sm-jackpot-row">
+                      {fillerSummary.netDenPieces > 0 ? '+' : ''}{fillerSummary.netDenPieces} den pieces
+                    </span>
+                  )}
                   {fillerSummary.items.map(f => (
                     <span key={f.id} className="sm-jackpot-row">{f.quantity}x {f.itemId}</span>
                   ))}
