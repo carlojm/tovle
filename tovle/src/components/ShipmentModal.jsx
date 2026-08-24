@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { animate } from 'animejs'
+import { motion, AnimatePresence } from 'framer-motion'
 import { usePlayer } from '../context/PlayerContext'
 import ItemConfetti from './ItemConfetti'
 import chestPng from '../assets/chest.png'
@@ -345,59 +346,66 @@ export default function ShipmentModal({ townId, onClose, onCollected }) {
 
           <div className="sm-body" ref={bodyRef}>
             <div className="sm-top-zone">
-              {phase === 'preroll' && (
-                <div className="sm-preroll-info">
-                  <p className="sm-subtitle">Distribution based on Forum tier and {reputation} reputation</p>
-                  <div className="sm-tier-table">
-                    {displayTiers.map(tier => {
-                      const pct = (effective[tier] ?? 0) * 100
-                      const barWidth = maxPct > 0 ? (effective[tier] ?? 0) / maxPct * 100 : 0
-                      return (
-                        <div key={tier} className="sm-tier-row">
-                          <span className={`sm-tier-label ${TIER_LABEL_CLASS[tier] ?? ''}`}>{tier}</span>
-                          <div className="sm-tier-bar-track">
-                            <div className="sm-tier-bar-fill" style={{ width: `${barWidth}%` }} />
-                          </div>
-                          <span className="sm-tier-pct">{pct.toFixed(1)}%</span>
+
+              <AnimatePresence mode="wait">
+                {phase === 'preroll' && (
+                  <motion.div key="preroll" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
+                    <div className="sm-preroll-info">
+                      <p className="sm-subtitle">Distribution based on Forum tier and {reputation} reputation</p>
+                      <div className="sm-tier-table">
+                        {displayTiers.map(tier => {
+                          const pct = (effective[tier] ?? 0) * 100
+                          const barWidth = maxPct > 0 ? (effective[tier] ?? 0) / maxPct * 100 : 0
+                          return (
+                            <div key={tier} className="sm-tier-row">
+                              <span className={`sm-tier-label ${TIER_LABEL_CLASS[tier] ?? ''}`}>{tier}</span>
+                              <div className="sm-tier-bar-track">
+                                <div className="sm-tier-bar-fill" style={{ width: `${barWidth}%` }} />
+                              </div>
+                              <span className="sm-tier-pct">{pct.toFixed(1)}%</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+                      {(jackpots.Rare || jackpots.Artifact) && (
+                        <div className="sm-jackpot-info">
+                          <span className="sm-jackpot-title">Jackpot Chances</span>
+                          {jackpots.Rare && <span className="sm-jackpot-row monumenta-rare">Rare: {(jackpots.Rare * 100).toFixed(1)}%</span>}
+                          {jackpots.Artifact && <span className="sm-jackpot-row monumenta-artifact">Artifact: {(jackpots.Artifact * 100).toFixed(2)}%</span>}
                         </div>
-                      )
-                    })}
-                  </div>
-                  {(jackpots.Rare || jackpots.Artifact) && (
-                    <div className="sm-jackpot-info">
-                      <span className="sm-jackpot-title">Jackpot Chances</span>
-                      {jackpots.Rare && <span className="sm-jackpot-row monumenta-rare">Rare: {(jackpots.Rare * 100).toFixed(1)}%</span>}
-                      {jackpots.Artifact && <span className="sm-jackpot-row monumenta-artifact">Artifact: {(jackpots.Artifact * 100).toFixed(2)}%</span>}
+                      )}
                     </div>
-                  )}
-                </div>
-              )}
+                  </motion.div>
+                )}
 
-              {phase === 'game' && (
-                <ShipmentGame
-                  equipment={rolledEquipment}
-                  filler={rolledFiller}
-                  townId={townId}
-                  rolledDate={todayStr}
-                  cutUnlocked={cutUnlocked}
-                  autoplaceUnlocked={autoplaceUnlocked}
-                  denPieces={denPieces}
-                  onSubmit={handleGameSubmit}
-                />
-              )}
+                {phase === 'game' && (
+                  <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
+                    <ShipmentGame
+                      equipment={rolledEquipment}
+                      filler={rolledFiller}
+                      townId={townId}
+                      rolledDate={todayStr}
+                      cutUnlocked={cutUnlocked}
+                      autoplaceUnlocked={autoplaceUnlocked}
+                      denPieces={denPieces}
+                      onSubmit={handleGameSubmit}
+                    />
+                  </motion.div>
+                )}
 
-              {phase === 'reveal' && (
-                <>
-                  <RevealStage
-                    items={revealItems}
-                    bodyRef={bodyRef}
-                    onComplete={handleRevealComplete}
-                    onJackpot={handleJackpot}
-                    onItemSelect={setSelectedItem}
-                    onPositionsCalculated={setItemPositions}
-                  />
-                </>
-              )}
+                {phase === 'reveal' && (
+                  <motion.div key="reveal" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
+                    <RevealStage
+                      items={revealItems}
+                      bodyRef={bodyRef}
+                      onComplete={handleRevealComplete}
+                      onJackpot={handleJackpot}
+                      onItemSelect={setSelectedItem}
+                      onPositionsCalculated={setItemPositions}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {error && <p className="sm-error">{error}</p>}
             </div>
