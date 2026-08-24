@@ -24,7 +24,7 @@ const keyOf = (r, c) => r + '_' + c
 
 // ── Shape preview — used in the tray button and the drag ghost ──────────
 
-function TileShapePreview({ cells, cellSize = 10 }) {
+function TileShapePreview({ cells, cellSize = 10, shade = 1 }) {
   const maxR = Math.max(...cells.map(c => c[0])) + 1
   const maxC = Math.max(...cells.map(c => c[1])) + 1
   return (
@@ -33,6 +33,7 @@ function TileShapePreview({ cells, cellSize = 10 }) {
       style={{
         gridTemplateColumns: `repeat(${maxC}, ${cellSize}px)`,
         gridTemplateRows: `repeat(${maxR}, ${cellSize}px)`,
+        filter: `hue-rotate(${shade}deg) saturate(1.1)`,
       }}
     >
       {Array.from({ length: maxR * maxC }, (_, i) => {
@@ -151,6 +152,7 @@ function shipmentReducer(state, action) {
         baseCells: normalizeShape(piece),
         rotation: 0,
         available: true,
+        shade: -30 + Math.random() * 60,
       }))
       return {
         ...state,
@@ -164,7 +166,7 @@ function shipmentReducer(state, action) {
     }
 
     case 'BUY_EXTRA_TILE': {
-      const newTile = { id: 'extra' + state.extraTilesPurchased, baseCells: [[0, 0]], rotation: 0, available: true }
+      const newTile = { id: 'extra' + state.extraTilesPurchased, baseCells: [[0, 0]], rotation: 0, available: true, shade: -20 + Math.random() * 40 }
       return { ...state, tiles: [...state.tiles, newTile], extraTilesPurchased: state.extraTilesPurchased + 1 }
     }
 
@@ -207,7 +209,7 @@ function shipmentReducer(state, action) {
       }
       return { ...state, placements, tiles }
     }
-    
+
     case 'SUBMIT':
       return { ...state, submitted: true }
 
@@ -366,6 +368,7 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
               data-row={r}
               data-col={c}
               className={`sg-cell ${wall ? 'sg-cell--wall' : ''} ${covered ? 'sg-cell--covered' : ''} ${previewClass}`}
+              style={covered ? { filter: `hue-rotate(${state.tiles.find(t => t.id === covered)?.shade ?? 0}deg) saturate(1.1)` } : undefined}
               onMouseEnter={() => !wall && setHoverCell({ r, c })}
               onClick={() => {
                 if (state.submitted || wall) return
@@ -402,7 +405,7 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
                 dispatch({ type: 'SELECT_TILE', id: tile.id })
               }}
             >
-              <TileShapePreview cells={cells} />
+              <TileShapePreview cells={cells} shade={tile.shade ?? 1} />
             </button>
           )
         })}
@@ -436,7 +439,7 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
           zIndex: 9999,
           opacity: 0.85,
         }}>
-          <TileShapePreview cells={dragState.cells} cellSize={16} />
+          <TileShapePreview cells={dragState.cells} cellSize={16} shade={dragState.shade ?? 1} />
         </div>,
         document.body
       )}

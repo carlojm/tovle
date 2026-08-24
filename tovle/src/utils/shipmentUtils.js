@@ -364,7 +364,7 @@ export function generateTilePool(size, walls, tileCount, cutUnlocked, placements
     if (tileIndex >= tileCount) break // ran out of tile budget before seeding everything — see note below
     const targetSize = minSize + Math.floor(Math.random() * (maxSize - minSize + 1))
     const shape = growTile(size, walls, reserved, targetSize, cell)
-    if (shape) tiles.push({ id: 'tile' + tileIndex++, baseCells: shape, rotation: 0, available: true })
+    if (shape) tiles.push({ id: 'tile' + tileIndex++, baseCells: shape, rotation: 0, available: true, shade: -30 + Math.random() * 60 })
   }
 
   // remaining tile budget grows freely, same as before — these are what
@@ -373,7 +373,7 @@ export function generateTilePool(size, walls, tileCount, cutUnlocked, placements
   while (tileIndex < tileCount) {
     const targetSize = minSize + Math.floor(Math.random() * (maxSize - minSize + 1))
     const shape = growTile(size, walls, reserved, targetSize)
-    if (shape) tiles.push({ id: 'tile' + tileIndex++, baseCells: shape, rotation: 0, available: true })
+    if (shape) tiles.push({ id: 'tile' + tileIndex++, baseCells: shape, rotation: 0, available: true, shade: -30 + Math.random() * 60 })
     else break // no more room anywhere — stop rather than loop forever
   }
 
@@ -410,7 +410,7 @@ export function generateShipmentBoard(equipmentItems, fillerItems, cutUnlocked) 
   // tile count: enough to cover most but not all items — roughly half the
   // item count, minimum 3, with a little randomness so it doesn't feel
   // mechanically identical every day
-  const tileCount = Math.max(3, Math.round(combinedItems.length / 3) + Math.floor(Math.random() * 2) - 1)
+  const tileCount = Math.max(3, Math.round(combinedItems.length / 3) + Math.floor(Math.random() * 3) - 1)
   const tiles = generateTilePool(size, walls, tileCount, cutUnlocked, placements)
 
   return { size, walls: [...walls], placements: [...placements.entries()], tiles }
