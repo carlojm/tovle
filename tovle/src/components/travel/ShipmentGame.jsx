@@ -70,6 +70,8 @@ function buildInitialState({ equipment, filler, townId, rolledDate, cutUnlocked 
     cutMode: false,
     cutTargetId: null,
     cutStart: null,
+    cutEnd: null,
+    cutPreviewResult: null,
     cutUsed: false,
     extraTilesPurchased: 0,
     submitted: false,
@@ -128,32 +130,42 @@ function shipmentReducer(state, action) {
 
     case 'TOGGLE_CUT_MODE':
       if (state.cutUsed) return state
-      return { ...state, cutMode: !state.cutMode, cutTargetId: null, cutStart: null, selected: null }
+      return { ...state, cutMode: !state.cutMode, cutTargetId: null, cutStart: null, cutEnd: null, cutPreviewResult: null, selected: null }
 
     case 'SELECT_CUT_TARGET': {
       const tile = state.tiles.find(t => t.id === action.id)
       if (!tile || !tile.available) return state
-      return { ...state, cutTargetId: action.id, cutStart: null }
+      return { ...state, cutTargetId: action.id, cutStart: null, cutEnd: null, cutPreviewResult: null }
     }
 
     case 'BACK_FROM_CUT_TARGET':
-      return { ...state, cutTargetId: null, cutStart: null }
+      return { ...state, cutTargetId: null, cutStart: null, cutEnd: null, cutPreviewResult: null }
 
     case 'SET_CUT_START':
-      return { ...state, cutStart: action.point }
+      return { ...state, cutStart: action.point, cutEnd: null, cutPreviewResult: null }
 
-    case 'PERFORM_CUT': {
+    // Second point selected — compute and store the result rather than
+    // committing immediately, so the player can see the piece preview and
+    // back out before it's final.
+    case 'SET_CUT_END': {
       const tile = state.tiles.find(t => t.id === state.cutTargetId)
       if (!tile || !state.cutStart) return state
       const cells = rotateShape(tile.baseCells, tile.rotation)
       const result = evaluateCut(cells, state.cutStart, action.point)
-      if (!result.valid) return { ...state, cutStart: null, cutMessage: result.reason }
-      const newTiles = result.pieces.map((piece, i) => ({
+      return { ...state, cutEnd: action.point, cutPreviewResult: result }
+    }
+
+    // Only fires from the Submit button now, using the already-computed
+    // preview rather than recomputing from a passed-in point.
+    case 'PERFORM_CUT': {
+      const tile = state.tiles.find(t => t.id === state.cutTargetId)
+      if (!tile || !state.cutPreviewResult?.valid) return state
+      const newTiles = state.cutPreviewResult.pieces.map((piece, i) => ({
         id: tile.id + '_cut' + i,
         baseCells: normalizeShape(piece),
         rotation: 0,
         available: true,
-        shade: -30 + Math.random() * 60,
+        shade: -20 + Math.random() * 40,
       }))
       return {
         ...state,
@@ -161,7 +173,8 @@ function shipmentReducer(state, action) {
         cutMode: false,
         cutTargetId: null,
         cutStart: null,
-        cutMessage: null,
+        cutEnd: null,
+        cutPreviewResult: null,
         cutUsed: true,
       }
     }
@@ -465,18 +478,44 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
 
       {state.cutMode && state.cutTargetId && (() => {
         const tile = state.tiles.find(t => t.id === state.cutTargetId)
+        const cells = rotateShape(tile.baseCells, tile.rotation)
+        const canSubmit = state.cutEnd && state.cutPreviewResult?.valid
+
+        const instructions = !state.cutStart
+          ? 'Tap a point to start your cut.'
+          : !state.cutEnd
+          ? 'Tap a second point to preview your cut.'
+          : state.cutPreviewResult?.valid
+          ? 'Confirm to split this tile.'
+          : (state.cutPreviewResult?.reason ?? 'That cut doesn\'t work.')
+
         return (
           <div className="sg-cut-overlay">
             <div className="sg-cut-overlay-panel">
-              <p className="sg-instructions">Click a point on the shape, then a second point to draw your cut.</p>
+              <p className="sg-instructions">{instructions}</p>
               <CutCanvas
-                cells={rotateShape(tile.baseCells, tile.rotation)}
+                cells={cells}
                 cutStart={state.cutStart}
-                onSetStart={(pt) => dispatch({ type: 'SET_CUT_START', point: pt })}
-                onCommit={(pt) => dispatch({ type: 'PERFORM_CUT', point: pt })}
+                cutEnd={state.cutEnd}
+                cutValid={state.cutPreviewResult?.valid ?? false}
+                onVertexClick={(pt) => {
+                  if (!state.cutStart) dispatch({ type: 'SET_CUT_START', point: pt })
+                  else if (!state.cutEnd) dispatch({ type: 'SET_CUT_END', point: pt })
+                }}
               />
-              {state.cutMessage && <p className="sg-cut-msg">{state.cutMessage}</p>}
-              <button onClick={() => dispatch({ type: 'BACK_FROM_CUT_TARGET' })}>Back</button>
+              {canSubmit && (
+                <div className="sg-cut-result-tray">
+                  {state.cutPreviewResult.pieces.map((piece, i) => (
+                    <div key={i} className="sg-cut-result-tile">
+                      <TileShapePreview cells={normalizeShape(piece)} />
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="sg-controls">
+                <button onClick={() => dispatch({ type: 'BACK_FROM_CUT_TARGET' })}>Back</button>
+                <button disabled={!canSubmit} onClick={() => dispatch({ type: 'PERFORM_CUT' })}>Submit</button>
+              </div>
             </div>
           </div>
         )
@@ -485,33 +524,62 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
   )
 }
 
-function CutCanvas({ cells, cutStart, onSetStart, onCommit }) {
+function CutCanvas({ cells, cutStart, cutEnd, cutValid, onVertexClick }) {
+  const [hover, setHover] = useState(null)
   const maxR = Math.max(...cells.map(c => c[0])) + 1
   const maxC = Math.max(...cells.map(c => c[1])) + 1
   const CS = 28
+  const PAD = 14 // keeps edge vertices' hit circles from being clipped by the SVG bounds
+
+  const width = maxC * CS + PAD * 2
+  const height = maxR * CS + PAD * 2
+  const px = (c) => c * CS + PAD
+  const py = (r) => r * CS + PAD
+
+  const locked = !!cutEnd
+  const lineEnd = cutEnd ?? hover
+  const showLine = cutStart && lineEnd
+  const lineValid = cutEnd ? cutValid : (cutStart && hover ? evaluateCut(cells, cutStart, hover).valid : false)
 
   return (
-    <div style={{ position: 'relative', width: maxC * CS, height: maxR * CS }}>
+    <div style={{ position: 'relative', width, height }}>
       {cells.map(([r, c], i) => (
         <div
           key={i}
           className="sg-cut-cell"
-          style={{ position: 'absolute', left: c * CS + 2, top: r * CS + 2, width: CS - 4, height: CS - 4 }}
+          style={{ position: 'absolute', left: px(c) + 2, top: py(r) + 2, width: CS - 4, height: CS - 4 }}
         />
       ))}
-      <svg width={maxC * CS} height={maxR * CS} style={{ position: 'absolute', left: 0, top: 0 }}>
+      <svg width={width} height={height} style={{ position: 'absolute', left: 0, top: 0 }}>
+        {showLine && (
+          <line
+            x1={px(cutStart.c)} y1={py(cutStart.r)}
+            x2={px(lineEnd.c)} y2={py(lineEnd.r)}
+            className={lineValid ? 'sg-cut-line--valid' : 'sg-cut-line--invalid'}
+          />
+        )}
         {Array.from({ length: (maxR + 1) * (maxC + 1) }, (_, i) => {
           const r = Math.floor(i / (maxC + 1)), c = i % (maxC + 1)
           const isStart = cutStart && cutStart.r === r && cutStart.c === c
           return (
-            <circle
-              key={i}
-              cx={c * CS}
-              cy={r * CS}
-              r={isStart ? 6 : 4}
-              className={isStart ? 'sg-vertex--start' : 'sg-vertex'}
-              onClick={() => cutStart ? onCommit({ r, c }) : onSetStart({ r, c })}
-            />
+            <g key={i}>
+              {/* invisible, oversized hit target — this is what actually
+                  catches hover/click, kept separate from the visible dot
+                  so the click area can be much bigger than what's drawn */}
+              <circle
+                cx={px(c)} cy={py(r)} r={10}
+                className="sg-vertex-hit"
+                style={{ pointerEvents: locked ? 'none' : 'auto' }}
+                onMouseEnter={() => !locked && setHover({ r, c })}
+                onMouseLeave={() => setHover(null)}
+                onClick={() => !locked && onVertexClick({ r, c })}
+              />
+              <circle
+                cx={px(c)} cy={py(r)} r={isStart ? 6 : 4}
+                className={isStart ? 'sg-vertex--start' : 'sg-vertex'}
+                style={{ pointerEvents: 'none' }}
+              />
+            </g>
           )
         })}
       </svg>

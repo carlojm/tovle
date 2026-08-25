@@ -269,3 +269,34 @@
   text-align: center;
   min-height: 16px;
 }
+
+.sg-vertex-hit {
+  fill: transparent;
+  cursor: pointer;
+}
+
+.sg-cut-line--valid {
+  stroke: var(--color-button);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.sg-cut-line--invalid {
+  stroke: #fc5454;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.sg-cut-result-tray {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.sg-cut-result-tile {
+  padding: 8px;
+  background: var(--color-background-loot-slot);
+  border: 1px solid var(--color-border-loot-slot);
+  border-radius: 8px;
+}
