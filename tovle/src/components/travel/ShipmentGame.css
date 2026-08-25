@@ -300,3 +300,26 @@
   border: 1px solid var(--color-border-loot-slot);
   border-radius: 8px;
 }
+
+
+
+/* buy butotn */
+
+.sg-buy-tile-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.sg-buy-tile-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.sg-buy-tile-arrow {
+  opacity: 0.5;
+  font-size: 12px;
+}

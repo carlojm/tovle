@@ -405,7 +405,7 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
               style={covered ? { filter: `hue-rotate(${state.tiles.find(t => t.id === covered)?.shade ?? 0}deg) saturate(1.1)` } : undefined}
               onMouseEnter={() => setHoverCell({ r, c })}
               onClick={() => {
-                if (state.submitted || wall) return
+                if (state.submitted) return
                 if (covered) return dispatch({ type: 'PICK_UP_TILE', tileId: covered })
                 if (state.selected) dispatch({ type: 'PLACE_TILE', tileId: state.selected, dropR: r, dropC: c })
               }}
@@ -450,10 +450,14 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
           </button>
         )}
         <button
+          className="sg-buy-tile-btn"
           disabled={denPieces < getCumulativeExtraTileCost(state.extraTilesPurchased + 1)}
           onClick={() => dispatch({ type: 'BUY_EXTRA_TILE' })}
         >
-          Buy 1x1 tile ({getExtraTileCost(state.extraTilesPurchased)} den pieces)
+          <img src={ITEM_MAP['den_pieces']?.img} alt="" className="sg-buy-tile-icon" style={{ imageRendering: 'pixelated' }} />
+          <span>{getExtraTileCost(state.extraTilesPurchased)}</span>
+          <span className="sg-buy-tile-arrow">→</span>
+          <TileShapePreview cells={[[0, 0]]} cellSize={14} />
         </button>
         {autoplaceUnlocked && (
           <button onClick={() => dispatch({ type: 'AUTOPLACE' })}>Auto-place</button>
