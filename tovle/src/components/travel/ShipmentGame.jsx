@@ -351,22 +351,22 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
     )
   }
 
-  if (state.cutMode && state.cutTargetId) {
-    const tile = state.tiles.find(t => t.id === state.cutTargetId)
-    return (
-      <div className="sg-cut-view">
-        <p className="sg-instructions">Click a point on the shape, then a second point to draw your cut.</p>
-        <CutCanvas
-          cells={rotateShape(tile.baseCells, tile.rotation)}
-          cutStart={state.cutStart}
-          onSetStart={(pt) => dispatch({ type: 'SET_CUT_START', point: pt })}
-          onCommit={(pt) => dispatch({ type: 'PERFORM_CUT', point: pt })}
-        />
-        {state.cutMessage && <p className="sg-cut-msg">{state.cutMessage}</p>}
-        <button onClick={() => dispatch({ type: 'BACK_FROM_CUT_TARGET' })}>Back</button>
-      </div>
-    )
-  }
+  // if (state.cutMode && state.cutTargetId) {
+  //   const tile = state.tiles.find(t => t.id === state.cutTargetId)
+  //   return (
+  //     <div className="sg-cut-view">
+  //       <p className="sg-instructions">Click a point on the shape, then a second point to draw your cut.</p>
+  //       <CutCanvas
+  //         cells={rotateShape(tile.baseCells, tile.rotation)}
+  //         cutStart={state.cutStart}
+  //         onSetStart={(pt) => dispatch({ type: 'SET_CUT_START', point: pt })}
+  //         onCommit={(pt) => dispatch({ type: 'PERFORM_CUT', point: pt })}
+  //       />
+  //       {state.cutMessage && <p className="sg-cut-msg">{state.cutMessage}</p>}
+  //       <button onClick={() => dispatch({ type: 'BACK_FROM_CUT_TARGET' })}>Back</button>
+  //     </div>
+  //   )
+  // }
 
   return (
     <div className="sg-game">
@@ -462,6 +462,25 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
         </div>,
         document.body
       )}
+
+      {state.cutMode && state.cutTargetId && (() => {
+        const tile = state.tiles.find(t => t.id === state.cutTargetId)
+        return (
+          <div className="sg-cut-overlay">
+            <div className="sg-cut-overlay-panel">
+              <p className="sg-instructions">Click a point on the shape, then a second point to draw your cut.</p>
+              <CutCanvas
+                cells={rotateShape(tile.baseCells, tile.rotation)}
+                cutStart={state.cutStart}
+                onSetStart={(pt) => dispatch({ type: 'SET_CUT_START', point: pt })}
+                onCommit={(pt) => dispatch({ type: 'PERFORM_CUT', point: pt })}
+              />
+              {state.cutMessage && <p className="sg-cut-msg">{state.cutMessage}</p>}
+              <button onClick={() => dispatch({ type: 'BACK_FROM_CUT_TARGET' })}>Back</button>
+            </div>
+          </div>
+        )
+      })()}
     </div>
   )
 }

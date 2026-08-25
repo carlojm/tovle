@@ -212,9 +212,9 @@ export default function ShipmentModal({ townId, onClose, onCollected }) {
   const townLevel  = getTownLevel(reputation)
   const todayStr   = getEasternDateStr()
 
-  const cutUnlocked      = playerData?.upgrades?.cutUnlocked ?? false
+  const cutUnlocked = Boolean(playerData?.upgrades?.cutUnlocked)
   const autoplaceUnlocked = townLevel >= 5
-  const denPieces        = playerData?.inventory?.currencies?.denPieces ?? 0
+  const denPieces = playerData?.inventory?.currencies?.denPieces ?? 0
 
   const [phase, setPhase]             = useState('preroll') // preroll | chestfall | game | reveal
   const [rolling, setRolling]         = useState(false)

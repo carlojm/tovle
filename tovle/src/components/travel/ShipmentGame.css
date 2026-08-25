@@ -6,6 +6,7 @@
   gap: 14px;
   padding: 6px 6px;
   align-items: center;
+  position: relative;
 }
 
 .sg-instructions {
@@ -216,15 +217,27 @@
 
 /* ── Cut sub-view ─────────────────────────────────────────────────────────── */
 
-.sg-cut-view {
+.sg-cut-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  border-radius: 10px;
+}
+
+.sg-cut-overlay-panel {
+  background: var(--color-background-modal);
+  border: 2px solid var(--color-border-modal-visit);
+  border-radius: 14px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background: var(--color-background-modal-inset);
-  border: 1px solid var(--color-coords-border);
-  border-radius: 12px;
+  gap: 10px;
+  max-width: 90%;
 }
 
 .sg-cut-cell {
