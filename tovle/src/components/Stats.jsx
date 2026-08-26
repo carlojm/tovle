@@ -42,6 +42,7 @@ const Stats = () => {
   //travel stats
   const towns = playerData?.travel?.towns ?? {}
   const axolotls = playerData?.axolotls ?? []
+  const depthsle = playerData?.depthsle ?? {}
   const totalAxolotlLevels = axolotls.reduce((sum, a) => sum + a.level, 0)
   const tradesByTown = stats?.tradesByTown ?? {}
 
@@ -120,10 +121,6 @@ const Stats = () => {
           <span>{stats.totalTradesExecuted ?? 0}</span>
         </div>
         <div className="stats-list-row">
-          <span>Shipments Opened</span>
-          <span>{stats.totalShipmentsOpened ?? 0}</span>
-        </div>
-        <div className="stats-list-row">
           <span>Construction Runs</span>
           <span>{stats.totalForumRuns ?? 0}</span>
         </div>
@@ -163,6 +160,42 @@ const Stats = () => {
         </div>
       </div>
 
+      {/* shipment stats */}
+      <h2>Shipments</h2>
+      <div className="stats-list selectable">
+        <div className="stats-list-row">
+          <span>Shipments Opened</span>
+          <span>{stats.totalShipmentsOpened ?? 0}</span>
+        </div>
+        <div className="stats-list-row">
+          <span>Shipment Equipment Collected</span>
+          <span>{stats.totalShipmentEquipmentCollected ?? 0}</span>
+        </div>
+        <div className="stats-list-row">
+          <span>Shipment Equipment Left Behind</span>
+          <span>{stats.totalShipmentEquipmentLeftBehind ?? 0}</span>
+        </div>
+        <div className="stats-list-row">
+          <span>Shipment Tiles Placed</span>
+          <span>{stats.totalTilesPlaced ?? 0}</span>
+        </div>
+        <div className="stats-list-row">
+          <span>Extra Tiles Bought</span>
+          <span>{stats.totalExtraTilesBought ?? 0}</span>
+        </div>
+        <div className="stats-list-row">
+          <span>Den Pieces Spent on Extra Tiles</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <img src={ITEM_MAP.den_pieces.img} style={{ width: 14, height: 14, imageRendering: 'pixelated' }} />
+            {stats.totalDenSpentOnExtraTiles ?? 0}
+          </span>
+        </div>
+        <div className="stats-list-row">
+          <span>Shipment Cuts Used</span>
+          <span>{stats.totalCutsUsed ?? 0}</span>
+        </div>
+      </div>
+
 
       <h2>Towns</h2>
       <div className="stats-list selectable">
@@ -179,6 +212,23 @@ const Stats = () => {
             </div>
           )
         })}
+      </div>
+
+
+      <h2>Depthsle</h2>
+      <div className="stats-list selectable">
+        <div className="stats-list-row">
+          <span>Total Runs</span>
+          <span>{depthsle.totalRuns ?? 0}</span>
+        </div>
+        <div className="stats-list-row">
+          <span>Best Rooms Cleared</span>
+          <span>{depthsle.bestRooms ?? 0}</span>
+        </div>
+        <div className="stats-list-row">
+          <span>Best Treasure Score</span>
+          <span>{depthsle.bestScore ?? 0}</span>
+        </div>
       </div>
 
 
