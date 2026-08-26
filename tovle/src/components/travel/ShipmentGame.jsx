@@ -2,6 +2,12 @@ import { useReducer, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import islesItems from '../../data/islesItems.json'
 import { ITEM_MAP } from '../../data/itemMap'
+import helmetIcon from '../../assets/shipment_icons/helmet.png'
+import chestplateIcon from '../../assets/shipment_icons/chestplate.png'
+import leggingsIcon from '../../assets/shipment_icons/leggings.png'
+import bootsIcon from '../../assets/shipment_icons/boots.png'
+import mainhandIcon from '../../assets/shipment_icons/mainhand.png'
+import offhandIcon from '../../assets/shipment_icons/offhand.png'
 import {
   TIER_BADGE,
   SLOT_LETTER,
@@ -20,6 +26,15 @@ import {
   clearShipmentBoard,
 } from '../../utils/shipmentUtils'
 import './ShipmentGame.css'
+
+const SLOT_ICON = {
+  helmet: helmetIcon,
+  chestplate: chestplateIcon,
+  leggings: leggingsIcon,
+  boots: bootsIcon,
+  mainhand: mainhandIcon,
+  offhand: offhandIcon,
+}
 
 const keyOf = (r, c) => r + '_' + c
 
@@ -363,10 +378,11 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
     const slot = def ? getMainSlotForItemType(def.type) : null
     return (
       <div className={`sg-tile-content ${covered ? 'sg-tile-content--covered' : ''}`}>
-        {/* placeholder letter until real slot icons exist — swap the span
-            below for an <img> once those are ready, everything else here
-            (sizing, badge position) stays the same */}
-        <span className="sg-tile-icon-letter">{SLOT_LETTER[slot] ?? '?'}</span>
+        {SLOT_ICON[slot] ? (
+          <img src={SLOT_ICON[slot]} alt="" className="sg-tile-icon-silhouette" />
+        ) : (
+          <span className="sg-tile-icon-letter">{SLOT_LETTER[slot] ?? '?'}</span>
+        )}
         <span className="sg-tile-badge">{TIER_BADGE[item.item.tier] ?? ''}</span>
       </div>
     )

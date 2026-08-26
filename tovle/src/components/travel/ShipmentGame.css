@@ -171,6 +171,14 @@
   opacity: 0.8;
 }
 
+.sg-tile-icon-silhouette {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: brightness(0);
+}
+
 /* ── Controls row ─────────────────────────────────────────────────────────── */
 
 .sg-controls {
