@@ -355,8 +355,6 @@ export function generateTilePool(size, walls, tileCount, cutUnlocked, placements
     .filter(([, entry]) => entry.kind === 'equipment')
     .map(([k]) => k.split('_').map(Number))
 
-  // shuffle so which item(s) get sacrificed varies board to board, not
-  // always "whichever was placed last"
   for (let i = equipmentCells.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[equipmentCells[i], equipmentCells[j]] = [equipmentCells[j], equipmentCells[i]]
@@ -364,21 +362,31 @@ export function generateTilePool(size, walls, tileCount, cutUnlocked, placements
   const guaranteedCells = equipmentCells.slice(0, Math.max(0, equipmentCells.length - sacrificeCount))
 
   let tileIndex = 0
+
+  // Seed from equipment cells where possible. A forced start only ever
+  // tries the exact cell it's given — if an earlier tile's growth already
+  // claimed it (which can legitimately happen; growth isn't required to
+  // avoid other items' cells), fall back to a normal free placement
+  // instead of losing this slot outright. This item loses its explicit
+  // guarantee in that case, but tileCount is still honored.
   for (const cell of guaranteedCells) {
-    if (tileIndex >= tileCount) break // ran out of tile budget before seeding everything — see note below
+    if (tileIndex >= tileCount) break
     const targetSize = minSize + Math.floor(Math.random() * (maxSize - minSize + 1))
-    const shape = growTile(size, walls, reserved, targetSize, cell)
-    if (shape) tiles.push({ id: 'tile' + tileIndex++, baseCells: shape, rotation: 0, available: true, shade: -30 + Math.random() * 60 })
+    let shape = growTile(size, walls, reserved, targetSize, cell)
+    if (!shape) shape = growTile(size, walls, reserved, targetSize)
+    if (shape) tiles.push({ id: 'tile' + tileIndex++, baseCells: shape, rotation: 0, available: true, shade: -20 + Math.random() * 40 })
   }
 
-  // remaining tile budget grows freely, same as before — these are what
-  // give the player flexibility to also grab filler, or route around a
-  // guaranteed tile that didn't land where they'd have liked
+  // Fill remaining slots, shrinking the target size on failure instead of
+  // aborting on the first dead-end — a tight board can run out of the
+  // *preferred* size well before it runs out of room entirely.
   while (tileIndex < tileCount) {
-    const targetSize = minSize + Math.floor(Math.random() * (maxSize - minSize + 1))
-    const shape = growTile(size, walls, reserved, targetSize)
-    if (shape) tiles.push({ id: 'tile' + tileIndex++, baseCells: shape, rotation: 0, available: true, shade: -30 + Math.random() * 60 })
-    else break // no more room anywhere — stop rather than loop forever
+    let shape = null
+    for (let s = maxSize; s >= 2 && !shape; s--) {
+      shape = growTile(size, walls, reserved, s)
+    }
+    if (!shape) break // genuinely no room left anywhere
+    tiles.push({ id: 'tile' + tileIndex++, baseCells: shape, rotation: 0, available: true, shade: -20 + Math.random() * 40 })
   }
 
   return tiles
