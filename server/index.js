@@ -795,13 +795,17 @@ app.post('/api/finalize-shipment', async (req, res) => {
   //TWO api calls for shipments now, one at the start to generate loot
   //and one at the end to confirm which loot the player collected
 
-  const { uid, townId, collectedEquipmentIds, collectedFillerIds, extraTilesUsed } = req.body
+  const { uid, townId, collectedEquipmentIds, collectedFillerIds, extraTilesUsed, extraTilesPurchased, cutUsed, tilesPlaced } = req.body
 
   const VALID_TOWNS = ['alnera', 'frostgate', 'mistport', 'steelmeld']
   if (!uid || !townId || !Array.isArray(collectedEquipmentIds) || !Array.isArray(collectedFillerIds)) {
     return res.status(400).json({ error: 'Missing uid, townId, collectedEquipmentIds, or collectedFillerIds' })
   }
+  //statistics
   const tilesUsed = Math.max(0, Number.isInteger(extraTilesUsed) ? extraTilesUsed : 0)
+  const tilesBought = Math.max(0, Number.isInteger(extraTilesPurchased) ? extraTilesPurchased : 0)
+  const didUseCut = Boolean(cutUsed)
+  const tilesPlacedCount = Math.max(0, Number.isInteger(tilesPlaced) ? tilesPlaced : 0)
   if (!VALID_TOWNS.includes(townId)) {
     return res.status(400).json({ error: 'Invalid town ID' })
   }
@@ -835,6 +839,7 @@ app.post('/api/finalize-shipment', async (req, res) => {
       // cross-reference against what was actually rolled
       const collectedEquipment = pending.equipment.filter(e => collectedEquipmentIds.includes(e.id))
       const collectedFillerAll = pending.filler.filter(f => collectedFillerIds.includes(f.id))
+      const equipmentLeftBehind = pending.equipment.length - collectedEquipment.length //used for stats
 
       // den_pieces is currency, not an inventory item; split it out
       const collectedDenPiles = collectedFillerAll.filter(f => f.itemId === 'den_pieces')
@@ -876,6 +881,12 @@ app.post('/api/finalize-shipment', async (req, res) => {
         [`travel.towns.${townId}.lastShipment`]: todayStr,
         [`travel.towns.${townId}.pendingShipment`]: admin.firestore.FieldValue.delete(),
         'stats.totalShipmentsOpened': admin.firestore.FieldValue.increment(1),
+        'stats.totalShipmentEquipmentCollected': admin.firestore.FieldValue.increment(collectedEquipment.length),
+        'stats.totalShipmentEquipmentLeftBehind': admin.firestore.FieldValue.increment(equipmentLeftBehind),
+        'stats.totalCutsUsed': admin.firestore.FieldValue.increment(didUseCut ? 1 : 0),
+        'stats.totalExtraTilesBought': admin.firestore.FieldValue.increment(tilesBought),
+        'stats.totalDenSpentOnExtraTiles': admin.firestore.FieldValue.increment(extraTileCost),
+        'stats.totalTilesPlaced': admin.firestore.FieldValue.increment(tilesPlacedCount),
         ...collectionUpdates,
       })
 

@@ -262,9 +262,17 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
       else collectedFillerIds.push(entry.item.id)
     }
     const extraTilesUsed = state.tiles.filter(t => t.id.startsWith('extra') && !t.available).length
+    const tilesPlaced = state.tiles.filter(t => !t.available).length
 
     clearShipmentBoard(townId)
-    onSubmit({ collectedEquipmentIds, collectedFillerIds, extraTilesUsed })
+    onSubmit({
+      collectedEquipmentIds,
+      collectedFillerIds,
+      extraTilesUsed,
+      extraTilesPurchased: state.extraTilesPurchased,
+      cutUsed: state.cutUsed,
+      tilesPlaced,
+    })
   }, [state.submitted])
 
   // ── Drag tracking — same pattern as CombatScreen: unified mouse/touch

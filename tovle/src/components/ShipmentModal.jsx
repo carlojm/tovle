@@ -289,12 +289,12 @@ export default function ShipmentModal({ townId, onClose, onCollected }) {
     }
   }
 
-  const handleGameSubmit = async ({ collectedEquipmentIds, collectedFillerIds, extraTilesUsed }) => {
+  const handleGameSubmit = async ({ collectedEquipmentIds, collectedFillerIds, extraTilesUsed, extraTilesPurchased, cutUsed, tilesPlaced }) => {
     try {
       const res = await fetch('/api/finalize-shipment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ uid, townId, collectedEquipmentIds, collectedFillerIds, extraTilesUsed }),
+        body: JSON.stringify({ uid, townId, collectedEquipmentIds, collectedFillerIds, extraTilesUsed, extraTilesPurchased, cutUsed, tilesPlaced }),
       })
       const data = await res.json()
       if (!res.ok) {
