@@ -35,10 +35,9 @@
 }
 
 .go-abilities {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 6px;
 }
 
 .go-ability-row {
@@ -130,4 +129,68 @@
 
 .go-share-btn:hover {
   background: var(--color-background-coords-display);
+}
+
+
+.go-bonus-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.go-bonus-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--color-coords-border);
+}
+
+.go-bonus-row--highlight {
+  border-color: var(--color-button);
+  background: var(--color-background-modal-inset);
+}
+
+.go-bonus-tree-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.go-bonus-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.go-bonus-tree-name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.go-bonus-detail {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.go-bonus-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.go-bonus-item-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.go-bonus-pct {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-button);
 }

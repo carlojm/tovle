@@ -20,6 +20,7 @@ import steelsageIcon    from '../../assets/talismans/steelsage_talisman.png'
 import windwalkerIcon   from '../../assets/talismans/windwalker_talisman.png'
 
 import { usePlayer } from '../../context/PlayerContext.jsx'
+import { ITEM_MAP } from '../../data/itemMap'
 
 import ShareCard from './ShareCard.jsx'
 
@@ -34,6 +35,39 @@ const TREE_ICONS = {
 }
 
 const UNKNOWN_ICON = 'ability-icon--windwalker-unknown-ability'
+
+// mirrors TREE_TO_ITEM and the +2%/room formula in server/loot.js
+const TREE_TO_ITEM = {
+  dawnbringer: 'hyperexperience',
+  frostborn: 'hypercrystalline_shard',
+  earthbound: 'celsian_fragment',
+  windwalker: 'gleaming_seashell',
+  steelsage: 'pulsating_emerald',
+  shadowdancer: 'twisted_strand',
+  flamecaller: 'ade',
+}
+function BonusRow({ treeId, rooms, highlighted }) {
+  const itemId = TREE_TO_ITEM[treeId]
+  const itemDef = ITEM_MAP[itemId]
+  const tree = ABILITY_TREES[treeId]
+  const bonusPct = Math.round(rooms * 2)
+
+  return (
+    <div className={`go-bonus-row ${highlighted ? 'go-bonus-row--highlight' : ''}`}>
+      <img src={TREE_ICONS[treeId]} alt="" className="go-bonus-tree-icon" />
+      <div className="go-bonus-info">
+        <span className="go-bonus-tree-name">{tree?.name}</span>
+        <span className="go-bonus-detail">Best: {rooms} room{rooms === 1 ? '' : 's'}</span>
+      </div>
+      <div className="go-bonus-item">
+        {itemDef?.img && (
+          <img src={itemDef.img} alt="" className="go-bonus-item-icon" style={{ imageRendering: 'pixelated' }} />
+        )}
+        <span className="go-bonus-pct">+{bonusPct}%</span>
+      </div>
+    </div>
+  )
+}
 
 function StatRow({ label, value }) {
   return (
@@ -61,6 +95,11 @@ export default function GameOver({ state, onRestart }) {
   ].filter(Boolean).join('\n')
 
   const { uid, playerData } = usePlayer()
+
+  const bestRoomsByTree = playerData?.depthsle?.bestRoomsByTree ?? {}
+  // played tree first so the player immediately sees whether this run
+  // moved their own bonus, other trees follow for context
+  const orderedTrees = [state.mainTree, ...Object.keys(TREE_TO_ITEM).filter(t => t !== state.mainTree)]
 
   const handleShare = async () => {
     setShareState('generating')
@@ -200,10 +239,10 @@ export default function GameOver({ state, onRestart }) {
                   <div className="go-ability-info">
                     <span className="go-ability-name">{ability.name}</span>
                     <span className="go-ability-tree">{tree?.name}</span>
+                    <span className={`go-ability-rarity go-rarity--${ability.rarity}`}>
+                      {['Common','Uncommon','Rare','Epic','Legendary'][ability.rarity]}
+                    </span>
                   </div>
-                  <span className={`go-ability-rarity go-rarity--${ability.rarity}`}>
-                    {['Common','Uncommon','Rare','Epic','Legendary'][ability.rarity]}
-                  </span>
                 </div>
               )
             })}
@@ -229,6 +268,26 @@ export default function GameOver({ state, onRestart }) {
           <span className="travel-section-caption">Embedded when you share your result</span>
         </div>
         <ShareCard state={state} />
+      </div>
+
+      {/* ── Class bonuses ── */}
+      <div className="ds-section">
+        <div className="travel-section-header">
+          <h2 className="travel-section-title">Permanent Buffs</h2>
+          <span className="travel-section-caption">
+            Your personal best with each class provides a permanent cache loot bonus to certain items.
+          </span>
+        </div>
+        <div className="go-bonus-list">
+          {orderedTrees.map(treeId => (
+            <BonusRow
+              key={treeId}
+              treeId={treeId}
+              rooms={bestRoomsByTree[treeId] ?? 0}
+              highlighted={treeId === state.mainTree}
+            />
+          ))}
+        </div>
       </div>
 
     </div>

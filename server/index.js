@@ -8,7 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
 
 import { createAxolotl, generateLevelRequirements } from './axolotl.js'
-import { rollLoot, scoreToLuckMultiplier, placeInGrid } from './loot.js'
+import { rollLoot, scoreToLuckMultiplier, placeInGrid, getDepthsleItemBonuses } from './loot.js'
 import { admin, db } from './firebase.js'
 
 import { cleanupOldOgImages } from './r2.js'
@@ -307,7 +307,7 @@ app.post('/api/open-cache', async(req, res) => {
       const multipliers = {
         global: (1.0 + (playerData.upgrades?.luckTier ?? 0)) * hemisphereMultiplier,
         cache: scoreToLuckMultiplier(cacheScore),
-        items: {} //item specific multipliers TODO
+        items: getDepthsleItemBonuses(playerData.depthsle?.bestRoomsByTree ?? {}),
       }
       //roll loot
       const isAxolotlCache = String(cacheId).startsWith('axolotl_')
@@ -379,7 +379,7 @@ app.post('/api/open-all-caches', async (req, res) => {
         const multipliers = {
           global: (1.0 + (playerData.upgrades?.luckTier ?? 0)) * hemisphereMultiplier,
           cache: scoreToLuckMultiplier(cacheScore),
-          items: {}
+          items: getDepthsleItemBonuses(playerData.depthsle?.bestRoomsByTree ?? {}),
         }
 
         const lootResult = rollLoot(multipliers, playerData.upgrades ?? {}, isAxolotlCache ? 'axolotl' : 'cache')

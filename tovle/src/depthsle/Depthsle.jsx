@@ -106,6 +106,7 @@ export default function Depthsle({ onExit, gameDate }) {
       'depthsle.totalRuns': (playerData?.depthsle?.totalRuns ?? 0) + 1,
       'depthsle.bestScore': Math.max(playerData?.depthsle?.bestScore ?? 0, state.treasureScore),
       'depthsle.bestRooms': Math.max(playerData?.depthsle?.bestRooms ?? 0, state.roomsCleared),
+      [`depthsle.bestRoomsByTree.${state.mainTree}`]: Math.max(playerData?.depthsle?.bestRoomsByTree?.[state.mainTree] ?? 0, state.roomsCleared),
       'depthsle.totalTreasureScore': (playerData?.depthsle?.totalTreasureScore ?? 0) + state.treasureScore,
       'depthsle.totalRoomsCleared': (playerData?.depthsle?.totalRoomsCleared ?? 0) + state.roomsCleared,
       'depthsle.lastResult': {
