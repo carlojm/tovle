@@ -5,7 +5,7 @@ import TravelMap from './TravelMap'
 import TravelForum from './TravelForum'
 import './Travel.css'
 import TownCard from './TownCard'
-import { isTownUnlocked } from '../../utils/forumUtils'
+import { isTownUnlocked, getForumTier } from '../../utils/forumUtils'
 import DungeonCard from './DungeonCard'
 
 // this import is for the depthsle reset debug button
@@ -177,20 +177,25 @@ const Travel = ({onEnterDungeon}) => {
 
 
 
-      <div className="travel-section-header">
-        <h2 className="travel-section-title">Dungeons</h2>
-        <span className="travel-section-caption">Runs refresh every day</span>
-      </div>
+      {getForumTier(playerData) >= 2 && (
+      <>
+        <div className="travel-section-header">
+          <h2 className="travel-section-title">Dungeons</h2>
+          <span className="travel-section-caption">Runs refresh every day</span>
+        </div>
 
-      <DungeonCard onEnter={onEnterDungeon} />
+        <DungeonCard onEnter={onEnterDungeon} />
+      </>
+    )}
 
       {(import.meta.env.DEV || import.meta.env.VITE_SHOW_DEBUG === 'true') && (
       <div>
-        {/* <button onClick={handleDebugCurrencies} className="cache-entry-button">Debug: 999 Forum currencies</button> */}
         {/* <button onClick={handleDebugResetTree} className="cache-entry-button">Debug: Reset upgrade tree</button> */}
         <button onClick={handleDebugResetTrades} className="cache-entry-button">Debug: Reset trade cooldown</button>
         <button onClick={handleDebugResetShipments} className="cache-entry-button">Debug: Reset shipment cooldown</button>
         <button onClick={handleDebugResetDepthsle} className="cache-entry-button">Debug: Reset Depthsle cooldown</button>
+        <button onClick={handleDebugCurrencies} className="cache-entry-button">Debug: 999 Forum currencies</button>
+
       </div>
       )}
 

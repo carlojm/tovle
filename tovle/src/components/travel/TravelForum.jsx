@@ -18,7 +18,7 @@ import ItemConfetti from '../ItemConfetti'
 const TIER_BONUSES = {
   0: [],
   1: ['Tier 1 equipment can be found in shipments'],
-  2: ['Tier 2 equipment can be found in shipments', 'Trades can be performed 2 times per cycle.'],
+  2: ['Tier 2 equipment can be found in shipments', 'Trades can be performed 2 times per cycle. Darkest Depths is now open!'],
   3: ['Tier 3 equipment can be found in shipments', 'Trades can be performed 3 times per cycle.'],
   4: ['Tier 4 equipment can be found in shipments', 'Trades can be performed 4 times per cycle.'],
   5: ['Tier 5 equipment can be found in shipments', 'Trades can be performed 5 times per cycle.'],
