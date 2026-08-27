@@ -17,9 +17,9 @@ export const NYRA_DIALOGUE = {
       speaker: 'Archivist Nyra',
       text: 
       `A visitor, welcome. I am Nyra, keeper of Alnera's records. 
-      You must be the next adventurer to cause a commotion at the old Forum.`,
+      You must be the next adventurer causing a commotion at the Forum.`,
       options: [
-        { label: 'That\'s me. What do you do here?', next: 'about_nyra' },
+        { label: 'That\'s me!', next: 'about_nyra' },
       ],
     },
 
