@@ -31,7 +31,7 @@ export const FORUM_TIERS = [
         target: 25,
         label: 'Discover 25 unique Tier 1 items',
       },
-      { type: 'best_equip_stat', stat: 'armor', target: 12, label: 'Reach stat: 12 Armor' },
+      { type: 'best_equip_stat_any', stats: ['armor', 'agility'], target: 12, label: 'Reach stat: 12 Armor or Agility' },
     ],
     optional: [
       { type: 'caches_opened', target: 50, label: 'Open 50 caches' },

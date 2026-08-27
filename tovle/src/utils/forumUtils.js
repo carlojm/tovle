@@ -53,6 +53,13 @@ export const checkGoal = (goal, playerData) => {
       current = playerData?.stats?.bestEquipStats?.[goal.stat] ?? 0
       break
     }
+    case 'best_equip_stat_any': {
+      // met if ANY of goal.stats clears target; current is reported as
+      // whichever one is highest
+      const values = (goal.stats ?? []).map(stat => playerData?.stats?.bestEquipStats?.[stat] ?? 0)
+      current = Math.max(0, ...values)
+      break
+    }
     case 'depthsle_best_rooms': {
       current = playerData?.depthsle?.bestRooms ?? 0
       break
