@@ -251,6 +251,9 @@ export default function Depthsle({ onExit, gameDate }) {
           <p style={{ opacity: 0.6, fontSize: "0.8rem", marginTop: "4px" }}>
             Dungeon resets in: <strong><DayTimer /></strong>
           </p>
+          <p style={{marginTop: "8px"}}>WIP NOTE: enemies are placeholders and like half of the abilities do not work and have incorrect descriptions but the game is playable</p>
+          <p style={{marginTop: "8px"}}>instructions until i add a tutorial: drag abilities onto the grid to kill mobs and clear the floor. mobs take a turn after you do. mobs move from the top of the grid to the bottom, where they are in range to attack you (except for ranged mobs like skeletons).</p>
+
         </div>
       </div>
 
@@ -258,7 +261,7 @@ export default function Depthsle({ onExit, gameDate }) {
       <div className="ds-section">
         <div className="travel-section-header">
           <h2 className="travel-section-title">Loadout</h2>
-          <span className="travel-section-caption">Your equipment determines your base stats</span>
+          <span className="travel-section-caption">Your combat stats are determined by your equipment.</span>
         </div>
         <div className="ds-loadout-card">
 

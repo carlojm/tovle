@@ -8,6 +8,9 @@ import TownCard from './TownCard'
 import { isTownUnlocked } from '../../utils/forumUtils'
 import DungeonCard from './DungeonCard'
 
+// this import is for the depthsle reset debug button
+import { clearRunFromStorage } from '../../depthsle/engine/persistence'
+
 const Travel = ({onEnterDungeon}) => {
   const { uid, playerData, save } = usePlayer()
   const [showTree, setShowTree] = useState(false)
@@ -117,17 +120,20 @@ const Travel = ({onEnterDungeon}) => {
     })
   }
 
+  const handleDebugResetDepthsle = () => {
+    save({
+      'depthsle.lastPlayed': null,
+      'depthsle.lastResult': null,
+    })
+    clearRunFromStorage()
+  }
+
   return (
     <div className="travel-container">
 
       {/* <TravelMap /> */}
       <TravelForum/>
       {/* <ForumGame /> */}
-
-      <button onClick={handleDebugCurrencies}>Debug: 999 currencies</button>
-      <button onClick={handleDebugResetTree}>Debug: Reset tree</button>
-      <button onClick={handleDebugResetTrades}>Debug: Reset trade window</button>
-      <button onClick={handleDebugResetShipments}>Debug: Reset All Shipments</button>
 
 
       {unlockedTowns.length === 0 && (
@@ -178,6 +184,15 @@ const Travel = ({onEnterDungeon}) => {
 
       <DungeonCard onEnter={onEnterDungeon} />
 
+      {(import.meta.env.DEV || import.meta.env.VITE_SHOW_DEBUG === 'true') && (
+      <div>
+        {/* <button onClick={handleDebugCurrencies} className="cache-entry-button">Debug: 999 Forum currencies</button> */}
+        {/* <button onClick={handleDebugResetTree} className="cache-entry-button">Debug: Reset upgrade tree</button> */}
+        <button onClick={handleDebugResetTrades} className="cache-entry-button">Debug: Reset trade cooldown</button>
+        <button onClick={handleDebugResetShipments} className="cache-entry-button">Debug: Reset shipment cooldown</button>
+        <button onClick={handleDebugResetDepthsle} className="cache-entry-button">Debug: Reset Depthsle cooldown</button>
+      </div>
+      )}
 
     </div>
   )

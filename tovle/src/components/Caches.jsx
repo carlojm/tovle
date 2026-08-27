@@ -330,6 +330,13 @@ const Caches = ({ }) => {
     save({ today: null })
   }
 
+  const handleDebugAddTornCanvas = () => {
+    const mergedItems = mergeItems(playerData?.inventory?.items ?? [], [
+      { itemId: 'torn_canvas', name: 'Torn Canvas', quantity: 10 },
+    ])
+    save({ 'inventory.items': mergedItems })
+  }
+
   return (
     <div className="caches-container">
 
@@ -488,20 +495,23 @@ const Caches = ({ }) => {
       )}
 
 
-      {/* {import.meta.env.DEV && ( */}
+      {(import.meta.env.DEV || import.meta.env.VITE_SHOW_DEBUG === 'true') && (
       <div style={{gap:"px"}}>
         <button onClick={handleDebugAddCache} className="cache-entry-button">
           [DEBUG] Add Unopened Cache
         </button>
         <button onClick={() => handleDebugAddCache(10000)} className="cache-entry-button">
-          [DEBUG] Add Unopened Cache Score = 100x
+          [DEBUG] Add Unopened Cache w/ 100x loot
         </button>
-        <button onClick={handleDebugResetUpgrades} className="cache-entry-button">
+        <button onClick={handleDebugAddTornCanvas} className="cache-entry-button">
+          [DEBUG] Add 10 Torn Canvas to inventory
+        </button>
+        {/* <button onClick={handleDebugResetUpgrades} className="cache-entry-button">
           [DEBUG] Reset Upgrades
-        </button>
-        <button onClick={handleDebugResetAxolotlCollection} className="cache-entry-button">
+        </button> */}
+        {/* <button onClick={handleDebugResetAxolotlCollection} className="cache-entry-button">
           [DEBUG] Reset Axolotl Collection Timer
-        </button>
+        </button> */}
         {/* <button onClick={handleDebugDeduplicateOpenedCaches} className="cache-entry-button">
           [DEBUG] Clean inv.openedCaches on server side, remove dupes
         </button> */}
@@ -509,13 +519,13 @@ const Caches = ({ }) => {
           [DEBUG] Show UID
         </button>
         <button onClick={handleDebugClearToday} className="cache-entry-button">
-          [DEBUG] Reset Today's Game
+          [DEBUG] Reset Today's Tovle (refresh)
         </button>
-        <button onClick={handleDebugBreakStreak} className="cache-entry-button">
+        {/* <button onClick={handleDebugBreakStreak} className="cache-entry-button">
           [DEBUG] Simulate Broken Streak
-        </button>
+        </button> */}
       </div>
-      {/* )} */}
+      )}
 
       {/* <div style={{ display: 'flex', gap: '8px', padding: '16px' }}>
         <ItemIcon itemKey="Moon's Chime" />
