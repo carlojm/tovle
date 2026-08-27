@@ -311,8 +311,8 @@ const TravelForum = () => {
         <div className="forum-game-overlay">
           <div className="forum-game-modal">
             <div className="forum-game-header">
-              <span className="forum-game-title">Stats here</span>
-              <button className="forum-game-close" onClick={() => setGameConfig(null)}>×</button>
+              <span className="forum-game-title">Forum Construction</span>
+              {/* <button className="forum-game-close" onClick={() => setGameConfig(null)}>×</button> */}
             </div>
             <div className="forum-game-canvas-wrap">
               <ForumGame

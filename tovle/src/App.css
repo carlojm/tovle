@@ -30,6 +30,12 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Jersey 15';
+  src: url('/fonts/Jersey15.woff2') format('woff2');
+  font-display: block;
+}
+
 * {
   margin: 0;
   padding: 0;

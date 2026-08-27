@@ -43,29 +43,29 @@ export const computeForumUnlocks = (upgrades = {}) => {
 
   // anchor chance — 0 before unlock, 5% base after unlock, +3% per level
   const anchorUnlocked = level('anchor_unlock') >= 1
-  const anchorChance = anchorUnlocked ? (0.05 + level('anchor_chance_1') * 0.05) + luckMultiplierPermanent : 0
+  const anchorChance = anchorUnlocked ? (0.05 + level('anchor_chance_1') * 0.05) * luckMultiplierPermanent : 0
 
   // perfect placement
   const perfectPlacementUnlocked = level('perfect_placement') >= 1
   const perfectThreshold = perfectPlacementUnlocked
-    ? 0.05 + level('perfect_threshold_1') * 0.0075  // 0.05 to 0.875 over 5 levels
+    ? 0.05 + level('perfect_threshold_1') * 0.0075  // 0.05 to 0.0875 over 5 levels
     : 0.05 // default threshold even without unlock, just no width preservation
 
   // perfect anchor
   // triggers on perfect placement, grows the block
   const perfectAnchorUnlocked = level('perfect_anchor') >= 1
-  const perfectAnchorChance = perfectAnchorUnlocked ? (0.1 + level('perfect_anchor_chance_1') * 0.1) + luckMultiplierPermanent : 0
+  const perfectAnchorChance = perfectAnchorUnlocked ? (0.1 + level('perfect_anchor_chance_1') * 0.1) * luckMultiplierPermanent : 0
   const perfectAnchorGrowthFactor = 0.1 + level('perfect_anchor_growth_1') * 0.05 // 0.1 to 0.35
 
   // bubbles / crits
   const bubblesUnlocked = level('bubble_unlock') >= 1
-  const bubbleChance = bubblesUnlocked ? (0.2 + level('bubble_chance_1') * 0.10) + luckMultiplierPermanent : 0
+  const bubbleChance = bubblesUnlocked ? (0.2 + level('bubble_chance_1') * 0.10) * luckMultiplierPermanent : 0
   const bubbleAmount = bubblesUnlocked ? 1 + level('bubble_amount_1') : 0
-  const critChainChance = bubblesUnlocked ? (level('crit_chain_1') * 0.1) + luckMultiplierPermanent : 0
+  const critChainChance = bubblesUnlocked ? (level('crit_chain_1') * 0.1) * luckMultiplierPermanent : 0
 
   // crit anchor
   const critAnchorUnlocked = level('crit_anchor_unlock') >= 1
-  const critAnchorChance = critAnchorUnlocked ? (0.1 + level('crit_anchor_chance_1') * 0.1) + luckMultiplierPermanent : 0
+  const critAnchorChance = critAnchorUnlocked ? (0.1 + level('crit_anchor_chance_1') * 0.1) * luckMultiplierPermanent : 0
   const critAnchorGrowth = critAnchorUnlocked ? 0.1 + level('crit_anchor_growth_1') * 0.05 : 0
 
   // starting width

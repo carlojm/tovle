@@ -512,7 +512,7 @@ export default function ForumTreeModal({ onClose }) {
                 {heartsPreview} obtained on prestige
               </span>
               <span className="ftm-prestige-sub">
-                Resets currencies and non-prestige upgrades. See stats page for gain formula.
+                Resets currencies and non-prestige upgrades. Gain Hearts of the Sea based on progress in current prestige.
               </span>
             </div>
             <button
