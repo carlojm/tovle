@@ -180,7 +180,7 @@ export const FORUM_NODES = [
   {
     id: 'revive',
     label: 'Revive',
-    description: 'Revive once per game.',
+    description: 'Game continues after first missed block.',
     icon: 'revive',
     direction: 'N',
     parent: ['hearts_unlock'],
