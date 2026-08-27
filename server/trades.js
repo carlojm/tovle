@@ -203,7 +203,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
           ? ` + ${trade.offer.items.map(i => `${i.quantity}x ${i.itemId}`).join(', ')}`
           : ''
         console.log(
-          `  ${trade.want.quantity}x ${trade.want.itemId} (x${trade.multiplier.toFixed(2)})` +
+          `  ${trade.want.quantity}x ${trade.want.itemId} (x${trade.want.multiplier.toFixed(2)})` +
           ` → ${trade.offer.reputation} rep${offerItems}`
         )
       }

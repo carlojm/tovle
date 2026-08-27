@@ -53,6 +53,30 @@ export const checkGoal = (goal, playerData) => {
       current = playerData?.stats?.bestEquipStats?.[goal.stat] ?? 0
       break
     }
+    case 'depthsle_best_rooms': {
+      current = playerData?.depthsle?.bestRooms ?? 0
+      break
+    }
+    case 'depthsle_best_score': {
+      current = playerData?.depthsle?.bestScore ?? 0
+      break
+    }
+    case 'depthsle_total_runs': {
+      current = playerData?.depthsle?.totalRuns ?? 0
+      break
+    }
+    case 'depthsle_total_treasure_score': {
+      current = playerData?.depthsle?.totalTreasureScore ?? 0
+      break
+    }
+    case 'depthsle_total_rooms_cleared': {
+      current = playerData?.depthsle?.totalRoomsCleared ?? 0
+      break
+    }
+    case 'crystals_earned_total': {
+      current = playerData?.stats?.totalCrystalsEarned ?? 0
+      break
+    }
     default:
       current = 0
   }
