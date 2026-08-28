@@ -495,36 +495,38 @@ const Caches = ({ }) => {
       )}
 
 
-      {(import.meta.env.DEV || import.meta.env.VITE_SHOW_DEBUG === 'true') && (
-      <div style={{gap:"px"}}>
-        <button onClick={handleDebugAddCache} className="cache-entry-button">
-          [DEBUG] Add Unopened Cache
-        </button>
-        <button onClick={() => handleDebugAddCache(10000)} className="cache-entry-button">
-          [DEBUG] Add Unopened Cache w/ 100x loot
-        </button>
-        <button onClick={handleDebugAddTornCanvas} className="cache-entry-button">
-          [DEBUG] Add 10 Torn Canvas to inventory
-        </button>
-        {/* <button onClick={handleDebugResetUpgrades} className="cache-entry-button">
-          [DEBUG] Reset Upgrades
-        </button> */}
-        {/* <button onClick={handleDebugResetAxolotlCollection} className="cache-entry-button">
-          [DEBUG] Reset Axolotl Collection Timer
-        </button> */}
-        {/* <button onClick={handleDebugDeduplicateOpenedCaches} className="cache-entry-button">
-          [DEBUG] Clean inv.openedCaches on server side, remove dupes
-        </button> */}
-        <button onClick={handleDebugShowUid} className="cache-entry-button">
-          [DEBUG] Show UID
-        </button>
-        <button onClick={handleDebugClearToday} className="cache-entry-button">
-          [DEBUG] Reset Today's Tovle (refresh)
-        </button>
-        {/* <button onClick={handleDebugBreakStreak} className="cache-entry-button">
-          [DEBUG] Simulate Broken Streak
-        </button> */}
-      </div>
+      
+      {/* {(import.meta.env.DEV || import.meta.env.VITE_SHOW_DEBUG === 'true') && ( */}
+      {(false) && (
+        <div style={{gap:"px"}}>
+          <button onClick={handleDebugAddCache} className="cache-entry-button">
+            [DEBUG] Add Unopened Cache
+          </button>
+          <button onClick={() => handleDebugAddCache(10000)} className="cache-entry-button">
+            [DEBUG] Add Unopened Cache w/ 100x loot
+          </button>
+          <button onClick={handleDebugAddTornCanvas} className="cache-entry-button">
+            [DEBUG] Add 10 Torn Canvas to inventory
+          </button>
+          {/* <button onClick={handleDebugResetUpgrades} className="cache-entry-button">
+            [DEBUG] Reset Upgrades
+          </button> */}
+          {/* <button onClick={handleDebugResetAxolotlCollection} className="cache-entry-button">
+            [DEBUG] Reset Axolotl Collection Timer
+          </button> */}
+          {/* <button onClick={handleDebugDeduplicateOpenedCaches} className="cache-entry-button">
+            [DEBUG] Clean inv.openedCaches on server side, remove dupes
+          </button> */}
+          <button onClick={handleDebugShowUid} className="cache-entry-button">
+            [DEBUG] Show UID
+          </button>
+          <button onClick={handleDebugClearToday} className="cache-entry-button">
+            [DEBUG] Reset Today's Tovle (refresh)
+          </button>
+          {/* <button onClick={handleDebugBreakStreak} className="cache-entry-button">
+            [DEBUG] Simulate Broken Streak
+          </button> */}
+        </div>
       )}
 
       {/* <div style={{ display: 'flex', gap: '8px', padding: '16px' }}>

@@ -191,7 +191,8 @@ const Travel = ({onEnterDungeon}) => {
       </>
     )}
 
-      {(import.meta.env.DEV || import.meta.env.VITE_SHOW_DEBUG === 'true') && (
+      {/* {(import.meta.env.DEV || import.meta.env.VITE_SHOW_DEBUG === 'true') && ( */}
+      {(false) && (
       <div>
         {/* <button onClick={handleDebugResetTree} className="cache-entry-button">Debug: Reset upgrade tree</button> */}
         <button onClick={handleDebugResetTrades} className="cache-entry-button">Debug: Reset trade cooldown</button>
