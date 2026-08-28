@@ -1,0 +1,246 @@
+.town-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--color-background-coords-display);
+  border: 2px solid var(--color-coords-border);
+  border-radius: 10px;
+  width: 100%;
+}
+
+.town-header {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.town-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--color-coords-border);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background);
+}
+
+.town-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.town-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.town-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.town-name {
+  font-weight: 700;
+  font-size: clamp(13px, 3vw, 15px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.town-level {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.town-coords {
+  font-size: 12px;
+  opacity: 0.4;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.town-description {
+  font-size: clamp(11px, 2.5vw, 12px);
+  opacity: 0.7;
+  margin: 0;
+}
+
+
+
+.town-refresh-notice {
+  font-size: 12px;
+  color: var(--color-button);
+  margin: 0;
+  animation: fadeout 3s ease forwards;
+}
+
+@keyframes fadeout {
+  0%   { opacity: 1; }
+  60%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+
+
+.town-rep-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.town-label {
+  font-size: 12px;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.town-rep-track {
+  flex: 1;
+  height: 8px;
+  background: var(--color-bar-background);
+  border-radius: 4px;
+  overflow: hidden;
+  opacity: 85%;
+
+}
+
+.town-rep-fill {
+  height: 100%;
+  background: var(--color-bar-fill);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.town-rep-num {
+  font-size: 12px;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+
+.town-trades-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.town-trade-slot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: none;
+  border: 1px solid var(--color-coords-border);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--color-text);
+  transition: all 0.2s;
+  font-family: "Open Runde", system-ui, sans-serif;
+}
+
+.town-trade-slot:hover {
+  border-color: var(--color-button);
+}
+
+.town-trade-want,
+.town-trade-offer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.town-trade-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.town-trade-qty {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.town-trade-arrow {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.town-trade-rep {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.town-trade-done {
+  font-size: 11px;
+  color: var(--color-button);
+  margin-left: 2px;
+}
+
+
+.town-trade-slot--locked {
+  opacity: 0.4;
+  cursor: default;
+  border-style: dashed;
+}
+
+.town-trade-locked-label {
+  /* font-size: 12px; */
+  opacity: 0.8;
+}
+
+
+
+
+
+.town-card-actions {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.town-action-btn {
+  flex: 1;
+  padding: 10px 8px;
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 0; /* allows shrinking */
+}
+
+.town-action-btn--primary {
+  background: var(--color-button);
+  color: var(--color-text-button);
+  border: 2px solid var(--color-button);
+}
+
+.town-action-btn--primary:hover:not(:disabled) {
+  background: var(--color-button-hover);
+  border-color: var(--color-button-hover);
+}
+
+.town-action-btn--secondary {
+  background: none;
+  color: var(--color-text);
+  border: 2px solid var(--color-coords-border);
+}
+
+.town-action-btn--secondary:hover {
+  border-color: var(--color-button);
+}
+
+.town-action-btn--disabled {
+  opacity: 0.5;
+  cursor: default;
+}

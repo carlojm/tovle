@@ -172,6 +172,27 @@ const FILLER_BLOCKS = [
   { itemId: 'warped_hyphae',     name: 'Warped Hyphae',     weight: 15 },
 ]
 
+const TREE_TO_ITEM = {
+  dawnbringer: 'hyperexperience',
+  frostborn: 'hypercrystalline_shard',
+  earthbound: 'celsian_fragment',
+  windwalker: 'gleaming_seashell',
+  steelsage: 'pulsating_emerald',
+  shadowdancer: 'twisted_strand',
+  flamecaller: 'ade',
+}
+// +2% per room cleared in rooms cleared PB per tree
+// ex. +40% at 20 room personal best
+const getDepthsleItemBonuses = (bestRoomsByTree) => {
+  const bonuses = {}
+  for (const [tree, itemId] of Object.entries(TREE_TO_ITEM)) {
+    const rooms = bestRoomsByTree[tree] ?? 0
+    const bonusPct = rooms * 0.02
+    bonuses[itemId] = 1 + bonusPct
+  }
+  return bonuses
+}
+
 const FILLER_MIN = 9
 const FILLER_MAX = 12
 const FILLER_BLOCK_MAX = 4
@@ -350,4 +371,4 @@ const scoreToLuckMultiplier = (score) => {
   return 0.8 + (score / 100) * 0.6
 }
 
-module.exports = { rollLoot, scoreToLuckMultiplier }
+export { rollLoot, scoreToLuckMultiplier, placeInGrid, getDepthsleItemBonuses }

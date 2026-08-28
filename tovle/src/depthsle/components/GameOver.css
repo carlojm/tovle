@@ -1,0 +1,196 @@
+.go-tree-icon {
+  width: 52px;
+  height: 52px;
+  image-rendering: pixelated;
+  object-fit: contain;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.go-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  background: var(--color-background-loot-grid);
+  border: 2px solid var(--color-border-loot-grid);
+  border-radius: 10px;
+  width: 100%;
+}
+
+.go-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.go-stat-label {
+  font-size: 13px;
+  opacity: 0.55;
+}
+
+.go-stat-value {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.go-abilities {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 6px;
+}
+
+.go-ability-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--color-background-loot-grid);
+  border: 2px solid var(--color-border-loot-grid);
+  border-radius: 10px;
+}
+
+.go-ability-icon-wrap {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.go-ability-icon-wrap .ability-icon {
+  width: 48px;
+  height: 48px;
+  transform: scale(0.75);
+  transform-origin: top left;
+}
+
+.go-ability-border {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 54px;
+  height: 54px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.go-ability-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.go-ability-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.go-ability-tree {
+  font-size: 11px;
+  opacity: 0.45;
+}
+
+.go-ability-rarity {
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.go-rarity--0 { color: #888; }
+.go-rarity--1 { color: #7df; }
+.go-rarity--2 { color: #f90; }
+.go-rarity--3 { color: #f4f; }
+.go-rarity--4 { color: #fa0; }
+
+
+
+.go-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.go-share-btn {
+  width: 100%;
+  padding: 13px;
+  background: none;
+  color: var(--color-text);
+  border: 2px solid var(--color-coords-border);
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: "Open Runde", system-ui, sans-serif;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.go-share-btn:hover {
+  background: var(--color-background-coords-display);
+}
+
+
+.go-bonus-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.go-bonus-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--color-coords-border);
+}
+
+.go-bonus-row--highlight {
+  border-color: var(--color-button);
+  background: var(--color-background-modal-inset);
+}
+
+.go-bonus-tree-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.go-bonus-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.go-bonus-tree-name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.go-bonus-detail {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.go-bonus-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.go-bonus-item-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.go-bonus-pct {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-button);
+}

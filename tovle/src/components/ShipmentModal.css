@@ -1,0 +1,354 @@
+/* ── Backdrop + modal shell ───────────────────────────────────────────────── */
+
+.sm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.sm-modal {
+  width: min(480px, 92vw);
+  min-height: min(500px, 60vh);
+  max-height: min(600px, 85vh);
+  background: var(--color-background-modal);
+  border: 2px solid var(--color-border-modal-visit);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+
+.sm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px 12px 20px;
+  border-bottom: 1px solid var(--color-coords-border);
+  flex-shrink: 0;
+}
+
+.sm-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.sm-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+  opacity: 0.6;
+  font-size: 20px;
+  line-height: 1;
+  transition: opacity 0.2s;
+}
+
+.sm-close-btn:hover { opacity: 1; }
+
+/* ── Body ────────────────────────────────────────────────────────────────── */
+
+.sm-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+}
+
+/* ── Preroll info ────────────────────────────────────────────────────────── */
+
+.sm-preroll-info {
+  flex: 1;
+  padding: 16px 20px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.sm-subtitle {
+  font-size: 12px;
+  color: var(--color-text);
+  opacity: 0.5;
+  margin: 0;
+}
+
+.sm-tier-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sm-tier-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sm-tier-label {
+  font-size: 12px;
+  width: 80px;
+  flex-shrink: 0;
+  color: var(--color-text);
+  opacity: 0.7;
+}
+
+.sm-tier-bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--color-bar-background);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.sm-tier-bar-fill {
+  background: var(--color-bar-fill);
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+.sm-tier-pct {
+  font-size: 11px;
+  width: 36px;
+  text-align: right;
+  color: var(--color-text);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.sm-jackpot-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--color-background-modal-inset);
+  border: 1px solid var(--color-coords-border);
+  border-radius: 8px;
+}
+
+.sm-jackpot-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text);
+  opacity: 0.6;
+  text-transform: uppercase;
+  /* letter-spacing: 0.05em; */
+}
+
+.sm-jackpot-row {
+  font-size: 12px;
+}
+
+/* ── Cloud — animation and inspect items float here ──────────────────────── */
+
+.sm-cloud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* height is CLOUD_FRACTION of sm-body — set via inline style or here as % */
+  /* height: 67%; */
+  pointer-events: none; /* items inside have their own pointer-events */
+}
+
+.sm-cloud .sm-item {
+  pointer-events: all;
+}
+
+/* ── Batch label ─────────────────────────────────────────────────────────── */
+
+.sm-batch-label {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: var(--color-text);
+  opacity: 0.6;
+  white-space: nowrap;
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* ── Floating items ──────────────────────────────────────────────────────── */
+
+.sm-item {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.sm-item-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sm-item-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  filter: blur(10px);
+  pointer-events: none;
+  z-index: -1;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+
+.sm-item-bob {
+  animation: sm-bob 2.4s ease-in-out infinite;
+}
+
+@keyframes sm-bob {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-5px); }
+}
+
+
+/* top */
+
+.sm-top-zone {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow-y: auto;
+}
+
+/* ── Bottom — chest + button, always mounted, never moves ────────────────── */
+
+.sm-bottom {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px 16px;
+  /* height matches 1 - CLOUD_FRACTION of body */
+  /* height: 33%; */
+  justify-content: center;
+
+  overflow: visible;
+}
+
+.sm-chest-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sm-chest-static {
+  image-rendering: pixelated;
+  width: 150px;
+  height: 150px;
+  transition: opacity 0.2s;
+  position:relative;
+  z-index: 2;
+  transform-origin: center 78%;
+}
+
+.sm-chest-static--sway {
+  animation: sm-idle-sway 3s ease-in-out infinite;
+}
+
+@keyframes sm-idle-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50%       { transform: rotate(2deg); }
+}
+
+.sm-chest-glow {
+  position: absolute;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  filter: blur(18px);
+  pointer-events: none;
+  z-index: 1;
+  transition: background 0.3s ease;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+@keyframes sm-chest-throw {
+  0%   { transform: translateX(0) translateY(0) rotate(0deg); opacity: 1; }
+  25%  { transform: translateX(var(--throw-x-half)) translateY(-50px) rotate(var(--throw-rot-half)); opacity: 1; }
+  100% { transform: translateX(var(--throw-x)) translateY(300px) rotate(var(--throw-rot)); opacity: 0; }
+}
+
+/* ── Roll / collect button ───────────────────────────────────────────────── */
+
+.sm-roll-btn {
+  width: 100%;
+  padding: 11px;
+  border-radius: 999px;
+  border: 2px solid var(--color-button);
+  background: var(--color-button);
+  color: var(--color-text-button);
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  /* margin-bottom: 12px; */
+}
+
+.sm-roll-btn:hover:not(:disabled) {
+  background: var(--color-button);
+  border-color: var(--color-button);
+}
+
+.sm-roll-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Error ───────────────────────────────────────────────────────────────── */
+
+.sm-error {
+  color: #fc5454;
+  font-size: 13px;
+  padding: 4px 20px;
+  margin: 0;
+}
+
+
+
+/*filler item icons in final section*/
+.sm-filler-summary {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sm-filler-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sm-filler-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.sm-filler-qty {
+  font-size: 12px;
+  font-weight: 600;
+}

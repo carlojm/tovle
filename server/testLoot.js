@@ -1,4 +1,4 @@
-const { rollLoot, scoreToLuckMultiplier } = require('./loot')
+import { rollLoot, scoreToLuckMultiplier } from './loot.js'
 
 const printGrid = (grid) => {
   console.log('\n--- GRID (3x9) ---')

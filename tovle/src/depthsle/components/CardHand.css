@@ -1,0 +1,231 @@
+.ch-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: visible;
+  /* margin-top:8px; */
+}
+
+.ch-container--empty {
+  align-items: center;
+  padding: 12px 0;
+}
+
+.ch-empty-label {
+  font-size: 12px;
+  opacity: 0.35;
+}
+
+/* ── Scroll row ── */
+.ch-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-bottom: 4px;
+  padding-top: 8px;
+  /* hide scrollbar but keep scroll */
+  scrollbar-width: none;
+}
+
+.ch-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Card ── */
+.ch-card {
+  flex-shrink: 0;
+  width: 80px;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background-loot-slot);
+  border: 2px solid var(--color-border-loot-slot-filled);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Open Runde", system-ui, sans-serif;
+  color: var(--color-text);
+  overflow: hidden;
+  transition: border-color 0.12s, background 0.12s, transform 0.1s;
+  padding: 0;
+  text-align: left;
+}
+
+.ch-card:hover:not(:disabled) {
+  border-color: var(--color-button);
+  transform: translateY(-3px);
+}
+
+.ch-card--selected {
+  border-color: var(--color-button);
+  background: var(--color-background-loot-slot-hover);
+  transform: translateY(-6px);
+}
+
+.ch-card--disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.ch-card--basic {
+  border-style: dashed;
+}
+
+/* colour stripe at top */
+.ch-card-stripe {
+  height: 3px;
+  width: 100%;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.ch-card-body {
+  padding: 6px 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.ch-card-name {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.ch-card-type {
+  font-size: 9px;
+  font-weight: 600;
+  opacity: 0.8;
+  /* text-transform: uppercase; */
+  letter-spacing: 0.05em;
+}
+
+.ch-card-rarity {
+  /* font-size: 9px; */
+  font-weight: 700;
+  margin-top: auto;
+}
+
+.ch-card-rarity--1 { color: #7df; }
+.ch-card-rarity--2 { color: #f90; }
+.ch-card-rarity--3 { color: #f4f; }
+.ch-card-rarity--4 { color: #fa0; }
+
+/* ── Hint ── */
+.ch-hint {
+  font-size: 12px;
+  opacity: 0.45;
+  text-align: center;
+  margin: 0;
+}
+
+
+
+
+
+
+
+
+
+.ch-card--charging {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.ch-card--ready {
+  opacity: 1;
+}
+
+.ch-cd-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: auto;
+}
+
+.ch-cd-fill {
+  height: 100%;
+  background: var(--color-button);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.ch-card-cd-label {
+  font-size: 14px;
+  font-weight: 700;
+  opacity: 0.7;
+  text-align: center;
+  margin-top: auto;
+}
+
+.ch-card-icon-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.ch-card-border {
+  position: absolute;
+  top: -3px;
+  left: -5px;
+  width: 72px;
+  height: 72px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+
+
+
+
+.ch-selected-info {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 4px;
+  padding: 8px 12px;
+  /* background: var(--color-background-loot-grid); */
+  /* border: 2px solid var(--color-border-loot-grid); */
+  /* border-radius: 8px; */
+  width: 100%;
+}
+
+.ch-selected-name {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ch-selected-desc {
+  font-size: 11px;
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+.ch-hint {
+  font-size: 11px;
+  opacity: 0.45;
+  margin: 0;
+}
+
+
+
+.ch-basic-icon {
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+  object-fit: contain;
+}
+
+
+.ch-selected-cd {
+  font-size: 11px;
+  opacity: 0.5;
+  font-weight: 400;
+  margin-left: 4px;
+}

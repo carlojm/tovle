@@ -8,12 +8,12 @@ const LootGrid = ({ grid, isInventory = false, revealing=false }) => {
   const [tooltip, setTooltip] = useState(null)
 
   const slots = isInventory
-    ? (() => {
-        const g = Array(27).fill(null)
-        grid.slice(0, 27).forEach((item, i) => { g[i] = item })
-        return g
-      })()
-    : grid
+  ? (() => {
+      const g = Array(27).fill(null)
+      grid.slice(0, 27).forEach((item, i) => { g[i] = item })
+      return g
+    })()
+  : grid
 
   const handleMouseEnter = (e, slot) => {
     if (!slot) return

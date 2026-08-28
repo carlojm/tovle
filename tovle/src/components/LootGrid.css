@@ -25,6 +25,8 @@
   justify-content: center;
   position: relative;
 
+  container-type: inline-size;
+
   /* for animation */
   animation-duration: 0.25s;
   animation-timing-function: ease-out;

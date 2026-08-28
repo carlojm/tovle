@@ -1,0 +1,140 @@
+.rsg-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* ── Grid ── */
+.rsg-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 4px;
+  width: 100%;
+  background: var(--color-background-loot-grid);
+  border: 2px solid var(--color-border-loot-grid);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.rsg-slot {
+  aspect-ratio: 1;
+  background: var(--color-background-loot-slot);
+  border: 2px solid var(--color-border-loot-slot);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.rsg-slot--filled {
+  border-color: var(--color-border-loot-slot-filled);
+  cursor: pointer;
+}
+
+.rsg-slot--filled:hover {
+  border-color: var(--color-button);
+  background: var(--color-background-loot-slot-hover);
+}
+
+.rsg-slot--selected {
+  border-color: var(--color-button);
+  background: var(--color-background-loot-slot-hover);
+}
+
+.rsg-slot-icon {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+/* ── Info card ── */
+.rsg-info-card {
+  background: var(--color-background-loot-grid);
+  border: 2px solid var(--color-border-loot-grid);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 110px;
+  transition: border-color 0.15s;
+}
+
+.rsg-info-card--visible {
+  border-color: var(--color-button);
+}
+
+.rsg-info-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rsg-info-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rsg-info-label {
+  font-size: 11px;
+  opacity: 0.5;
+  font-weight: 600;
+  /* text-transform: uppercase; */
+  /* letter-spacing: 0.06em; */
+}
+
+.rsg-info-name {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.rsg-elite-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--color-button);
+  color: var(--color-text-button);
+  opacity: 0.9;
+  flex-shrink: 0;
+}
+
+.rsg-info-desc {
+  font-size: 13px;
+  opacity: 0.65;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.rsg-info-placeholder {
+  font-size: 13px;
+  opacity: 0.35;
+  margin: auto;
+  text-align: center;
+}
+
+.rsg-confirm-btn {
+  margin-top: auto;
+  padding: 10px 14px;
+  background: var(--color-button);
+  color: var(--color-text-button);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: "Open Runde", system-ui, sans-serif;
+  cursor: pointer;
+  transition: background 0.15s;
+  align-self: flex-end;
+}
+
+.rsg-confirm-btn:hover {
+  background: var(--color-button-hover);
+}

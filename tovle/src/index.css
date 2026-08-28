@@ -47,6 +47,10 @@
   --muted-slate: #4a4a6a;
   --light-slate: #5a5a7a;
 
+  --golden: #bd9831;
+  --light-golden: #bd9f4c;
+
+
   --color-background-loot-grid: var(--void-navy);
   --color-border-loot-grid: var(--muted-slate);
   --color-background-loot-slot: var(--dark-slate);
@@ -56,7 +60,6 @@
   --color-background-loot-slot-tooltip: var(--dark-slate);
   --color-text-loot-display: var(--white-smoke);
   --color-text-shadow-loot-display: var(--deepest-ocean);
-
 
   --color-navbar-background: var(--deep-ocean);
   /* --color-navbar-background: var(--dark-cyan); */
@@ -80,7 +83,21 @@
   --color-background-coords-display: rgba(255, 255, 255, 0.08);
 
 
+  --color-background-modal: var(--deepest-ocean);
+  --color-background-modal-inset: #181c2c;
+  --color-background-modal-inset-tree: var(--void-navy);
+  --color-border-modal-visit: var(--lighter-teal);
+  --color-background-node: #092125;
+  --color-background-node-maxed: #03181b;
+  --color-border-node-selected: var(--lighterer-teal);
+  --color-border-node-maxed: var(--darker-teal);
 
+  --text-currency-crystal: #9fd7e6;
+  --text-currency-shard: #a0d4b0;
+  --text-currency-heart: #a37de8;
+
+  --color-bar-background: var(--dark-teal);
+  --color-bar-fill: var(--lighterer-teal);
 
 }
 
@@ -108,6 +125,7 @@
 
   --color-background-toggle: rgba(0, 0, 0, 0.08);
   --color-background-coords-display: rgba(148, 207, 255, 0.226);
+
 
 
   /* --void-navy: #dce8f0; */
@@ -141,5 +159,69 @@
   --color-text-loot-display: var(--deepest-ocean);
   --color-text-shadow-loot-display: var(--white-smoke);
   
+  --color-background-modal: rgb(198, 217, 255);
+  --color-background-modal-inset: rgb(222, 232, 255);
+  --color-background-modal-inset-tree: rgb(110, 185, 252);
+  --color-border-modal-visit: none;
+  --color-background-node: rgb(181, 222, 255);
+  --color-background-node-maxed: rgb(141, 200, 248);
+  --color-border-node-selected: var(--darker-teal);
+  --color-border-node-maxed: var(--dark-teal);
 
+  --text-currency-crystal: #2d7285;
+  --text-currency-shard: #347448;
+  --text-currency-heart: #4f2799;
+
+  --color-bar-background: var(--darker-cyan);
+  --color-bar-fill: var(--dark-cyan);
+
+
+}
+
+
+
+
+:root {
+  --deep-purple: #1a0a2e;
+  --deepish-purple: #260e44;
+
+  --deeper-purple: #130820;
+  --darkest-purple: #0e0618;
+  --mid-purple: #4a2a7a;
+  --light-purple: #6a3a9a;
+  --lighter-purple: #7a4aaa;
+}
+
+:root.depthsle {
+  --color-navbar-background: var(--mid-purple);
+  --color-navbar-dropdown: var(--deepish-purple);
+
+  --color-background: var(--darkest-purple);
+  --color-button: var(--light-purple);
+  --color-button-hover: var(--lighter-purple);
+  --color-coords-border: var(--lighter-purple);
+
+  --color-background-loot-grid: #1a0f2e;
+  --color-border-loot-grid: #3a2a5a;
+  --color-background-loot-slot: #120a22;
+  --color-border-loot-slot: #2a1a4a;
+  --color-border-loot-slot-filled: #5a3a8a;
+  --color-background-loot-slot-hover: #2a1a4a;
+}
+
+:root.depthsle.light {
+  --color-navbar-background: var(--mid-purple);
+  --color-navbar-dropdown: var(--deepish-purple);
+
+  --color-background: #e5d8f8;
+  --color-button: var(--mid-purple);
+  --color-button-hover: var(--light-purple);
+  --color-coords-border: var(--mid-purple);
+
+  --color-background-loot-grid: #e8dff5;
+  --color-border-loot-grid: #c4aae0;
+  --color-background-loot-slot: #d8ccee;
+  --color-border-loot-slot: #b89ad8;
+  --color-border-loot-slot-filled: #7a4aaa;
+  --color-background-loot-slot-hover: #c9b8e8;
 }

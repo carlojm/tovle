@@ -20,9 +20,7 @@ const DayTimer = () => {
   }, []);
 
   return (
-    <p style={{ opacity: 0.7, fontSize: "0.85rem" }}>
-      Caches wash away in: <strong>{timeLeft}</strong>
-    </p>
+    <span>{timeLeft}</span>
   );
 }
 

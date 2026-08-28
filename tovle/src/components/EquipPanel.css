@@ -1,0 +1,314 @@
+.ep-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--color-background-loot-grid);
+  border: 2px solid var(--color-border-loot-grid);
+  border-radius: 8px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+/* ── Main 6 slots row ── */
+.ep-main {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* 2-column, 4-row explicit grid.
+   Col 1 = armor (all 4 rows). Col 2 = offhand (row 1), empty (rows 2-3), mainhand (row 4). */
+.ep-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 52px);
+  grid-template-rows: repeat(4, 52px);
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.ep-slot--helmet     { grid-column: 1; grid-row: 1; }
+.ep-slot--chestplate { grid-column: 1; grid-row: 2; }
+.ep-slot--leggings   { grid-column: 1; grid-row: 3; }
+.ep-slot--boots      { grid-column: 1; grid-row: 4; }
+.ep-slot--offhand    { grid-column: 2; grid-row: 1; }
+.ep-slot--mainhand   { grid-column: 2; grid-row: 4; }
+
+/* ── Individual slot ── */
+.ep-slot {
+  width: 52px;
+  height: 52px;
+  background: var(--color-background-loot-slot);
+  border: 2px solid var(--color-border-loot-slot);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  container-type: inline-size;
+  transition: border-color 0.15s, background 0.15s;
+  box-sizing: border-box;
+}
+
+.ep-slot--filled {
+  border-color: var(--color-border-loot-slot-filled);
+}
+
+.ep-slot--filled:hover {
+  border-color: var(--color-button);
+  background: var(--color-background-loot-slot-hover);
+}
+
+.ep-slot--empty:hover {
+  border-color: var(--color-button);
+}
+
+/* slot type label shown when empty */
+.ep-slot-label {
+  font-size: 8px;
+  font-weight: 600;
+  color: var(--color-text);
+  opacity: 0.4;
+  text-align: center;
+  line-height: 1.2;
+  padding: 2px;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* tier badge — smaller than eq-badge since slots are smaller */
+.ep-tier-badge {
+  font-size: 8px;
+}
+
+/* empty spacer cell to hold the grid shape */
+.ep-slot-spacer {
+  width: 52px;
+  height: 52px;
+}
+
+/* ── Stats panel ── */
+
+.ep-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.ep-stat-label {
+  font-size: 12px;
+  color: var(--color-text);
+  opacity: 0.7;
+}
+
+.ep-stat-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* ── Bonus slots ── */
+.ep-bonus {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.ep-bonus-divider {
+  height: 1px;
+  background: var(--color-border-loot-grid);
+  margin: 4px 0;
+  opacity: 0.5;
+}
+
+.ep-bonus-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+
+
+.ep-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.ep-section {
+  background: var(--color-background-loot-slot);
+  border: 1px solid var(--color-border-loot-slot);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.ep-section-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  /* text-transform: uppercase; */
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+
+.ep-section-header:hover {
+  opacity: 1;
+}
+
+.ep-section-chevron {
+  font-size: 14px;
+  opacity: 0.5;
+  line-height: 1;
+}
+
+.ep-section-rows {
+  padding: 2px 8px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ep-section-divider {
+  height: 1px;
+  background: var(--color-border-loot-slot);
+  margin: 4px 0;
+  opacity: 0.5;
+}
+
+
+
+.ep-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  height: 220px; /* matches 4-row slot grid: 4×52px + 3×4px gap */
+}
+
+.ep-headline {
+  display: flex;
+  gap: 4px;
+}
+
+.ep-headline-card {
+  flex: 1;
+  background: var(--color-background-loot-slot);
+  border: 1px solid var(--color-border-loot-slot);
+  border-radius: 6px;
+  padding: 5px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.ep-headline-label {
+  font-size: 9px;
+  color: var(--color-text);
+  opacity: 0.7;
+  font-weight: 600;
+  white-space: nowrap;
+  /* overflow: hidden; */
+  /* text-overflow: ellipsis; */
+}
+
+.ep-headline-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  /* text-overflow: ellipsis; */
+}
+
+.ep-minor {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px 12px;
+  background: var(--color-background-loot-slot);
+  border: 1px solid var(--color-border-loot-slot);
+  border-radius: 6px;
+  padding: 5px 8px;
+}
+
+.ep-minor-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+  /* text-overflow: ellipsis; */
+}
+
+.ep-minor-label {
+  font-size: 10px;
+  color: var(--color-text);
+  opacity: 0.7;
+  white-space: nowrap;
+  /* overflow: hidden; */
+  /* text-overflow: ellipsis; */
+}
+
+.ep-minor-value {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.ep-namelist {
+  flex: 1; 
+  min-height: 0;
+  background: var(--color-background-loot-slot);
+  border: 1px solid var(--color-border-loot-slot);
+  border-radius: 6px;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* gap: 2px; */
+}
+
+.ep-namelist-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.ep-namelist-label {
+  font-size: 10px;
+  color: var(--color-text);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.ep-namelist-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+.ep-namelist-empty {
+  opacity: 0.3;
+  font-weight: 400;
+}

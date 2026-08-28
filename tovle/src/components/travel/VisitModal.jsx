@@ -1,0 +1,268 @@
+import { useState, useRef, useLayoutEffect } from 'react'
+import { motion, AnimatePresence, useAnimate } from 'framer-motion'
+import { usePlayer } from '../../context/PlayerContext'
+import { TOWN_CONFIG } from '../../data/townConfig'
+import { resolveEntryNode, resolveText } from '../../utils/dialogueUtils'
+import { NYRA_DIALOGUE, NYRA_CONDITIONS } from '../../data/dialogue/nyra'
+import { DINA_DIALOGUE, DINA_CONDITIONS } from '../../data/dialogue/dina'
+import nyraImage from '../../assets/npcs/nyra.png'
+import dinaImage from '../../assets/npcs/dina.png'
+
+import './VisitModal.css'
+
+const NPC_DIALOGUE = {
+  nyra: { dialogue: NYRA_DIALOGUE, conditions: NYRA_CONDITIONS },
+  dina: { dialogue: DINA_DIALOGUE, conditions: DINA_CONDITIONS },
+}
+const NPC_IMAGES = {
+  nyra: nyraImage,
+  dina: dinaImage,
+}
+
+const VisitModal = ({ townId, onClose, onViewMap }) => {
+  const { playerData, save } = usePlayer()
+  const config = TOWN_CONFIG[townId]
+  const flags = playerData?.travel?.dialogueFlags ?? {}
+
+  const [mode, setMode] = useState('browse')
+  const [activeNpc, setActiveNpc] = useState(null)
+  const [currentNode, setCurrentNode] = useState(null)
+
+  const [bodyScope, animateBody] = useAnimate()
+  const contentRef = useRef(null)
+
+  // After each render, measure the content and animate the body to match
+  useLayoutEffect(() => {
+    if (!contentRef.current || !bodyScope.current) return
+    const contentHeight = contentRef.current.scrollHeight
+    animateBody(bodyScope.current, { height: contentHeight }, { duration: 0.3, ease: 'easeInOut' })
+  })
+
+  const isDark = !document.documentElement.classList.contains('light')
+
+  if (!config) return null
+
+  const handleTalk = (npc) => {
+    const { dialogue, conditions } = NPC_DIALOGUE[npc.id] ?? {}
+    if (!dialogue) return
+
+    const entryNode = resolveEntryNode(dialogue, conditions, playerData, flags)
+    const node = dialogue.nodes[entryNode]
+
+    if (node.setsFlag) {
+      save({ [`travel.dialogueFlags.${node.setsFlag}`]: true })
+    }
+
+    setActiveNpc({ ...npc, dialogue, conditions })
+    setCurrentNode(entryNode)
+    setMode('talk')
+  }
+
+  const handleOption = (option) => {
+    if (option.next === null) {
+      handleBack()
+      return
+    }
+
+    const node = activeNpc.dialogue.nodes[option.next]
+    if (!node) return
+
+    if (node.setsFlag) {
+      save({ [`travel.dialogueFlags.${node.setsFlag}`]: true })
+    }
+
+    setCurrentNode(option.next)
+  }
+
+  const handleBack = () => {
+    setMode('browse')
+    setActiveNpc(null)
+    setCurrentNode(null)
+  }
+
+  const currentNodeData = activeNpc && currentNode
+    ? activeNpc.dialogue.nodes[currentNode]
+    : null
+
+  return (
+    <div className="visit-backdrop" onClick={onClose}>
+      <div
+        className="visit-modal"
+        onClick={e => e.stopPropagation()}
+      >
+
+        <AnimatePresence>
+          {mode === 'talk' && (
+            <motion.img
+              src={NPC_IMAGES[activeNpc?.id] ?? nyraImage}
+              className="visit-npc-image"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.2 }}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* banner */}
+        <div className="visit-banner">
+          {/* base banner — always rendered */}
+          <div
+            className="visit-banner-bg"
+            style={{
+              backgroundImage: `url(${isDark ? config.bannerDark : config.bannerLight})`,
+            }}
+          />
+
+          {/* talk banner — fades in over base when in talk mode */}
+          <AnimatePresence>
+            {mode === 'talk' && activeNpc?.banner && (
+              <motion.div
+                className="visit-banner-bg"
+                style={{ backgroundImage: `url(${activeNpc.banner})` }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              />
+            )}
+          </AnimatePresence>
+
+          {/* back button + close button */}
+          <div className="visit-banner-btns">
+            <AnimatePresence>
+              {mode === 'talk' && (
+                <motion.button
+                  className="visit-back-btn"
+                  onClick={handleBack}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  ←
+                </motion.button>
+              )}
+            </AnimatePresence>
+            <button className="visit-close-btn" onClick={onClose}>×</button>
+          </div>
+
+          {/* town info — only in browse mode */}
+          <AnimatePresence>
+            {mode === 'browse' && (
+              <motion.div
+                className="visit-banner-text"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <h2 className="visit-town-name">{config.name}</h2>
+                <p className="visit-town-coords">x: {config.coordinates.x}, z: {config.coordinates.z}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* body — height is animated explicitly via useAnimate; overflow hidden so it clips during transition */}
+        <motion.div ref={bodyScope} className="visit-body" style={{ overflow: 'hidden' }}>
+          {/* inner wrapper is what we measure — padding lives here so scrollHeight is accurate */}
+          <div ref={contentRef} className="visit-body-inner">
+          <AnimatePresence mode="wait">
+
+            {/* browse mode */}
+            {mode === 'browse' && (
+              <motion.div
+                key="browse"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="visit-browse"
+              >
+                <p className="visit-description">{config.description}</p>
+
+                {config.npcs?.map(npc => (
+                  <div key={npc.id} className="visit-npc-card">
+                    <div className="visit-npc-header">
+                      <span className="visit-npc-name">{npc.name}</span>
+                      <span className="visit-npc-title">{npc.title}</span>
+                    </div>
+                    <p className="visit-npc-desc">{npc.description}</p>
+                    <div className="visit-npc-actions">
+                      {npc.actions.map(action => (
+                        <button
+                          key={action.id}
+                          className="visit-npc-btn"
+                          onClick={() => {
+                            if (action.id === 'talk') handleTalk(npc)
+                            if (action.id === 'view_map') onViewMap()
+                          }}
+                        >
+                          {action.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            )}
+
+            {/* talk mode */}
+            {mode === 'talk' && currentNodeData && (
+              <motion.div
+                key="talk"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="visit-dialogue-card"
+              >
+                <span className="visit-dialogue-speaker">{currentNodeData.speaker}</span>
+
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={currentNode}
+                    className="visit-dialogue-text"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.2, exit: { duration: 0.12 } }}
+                  >
+                    {resolveText(currentNodeData.text, playerData)}
+                  </motion.p>
+                </AnimatePresence>
+
+                <div className="visit-dialogue-options">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentNode + '_options'}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2, exit: { duration: 0.12 } }}
+                    >
+                      {currentNodeData.options.map((option, i) => (
+                        <button
+                          key={i}
+                          className="visit-dialogue-option"
+                          onClick={() => handleOption(option)}
+                        >
+                          &gt; {option.label}
+                        </button>
+                      ))}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            )}
+
+          </AnimatePresence>
+          </div>
+        </motion.div>
+
+      </div>
+    </div>
+  )
+}
+
+export default VisitModal

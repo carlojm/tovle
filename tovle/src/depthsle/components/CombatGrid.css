@@ -1,0 +1,209 @@
+.cg-wrapper {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.cg-grid {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  /* Square cells via aspect-ratio on wrapper */
+}
+
+/* ── Cell base ── */
+.cg-cell {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  transition: background 0.1s, border-color 0.1s;
+  border: 2px solid transparent;
+  /* prevent content from breaking square */
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+}
+
+
+/* ── Margin cells ── */
+.cg-cell--margin {
+  background: var(--color-background-loot-grid);
+  border-color: transparent;
+  opacity: 0.6;
+}
+
+.cg-cell--player,
+.cg-cell--exit {
+  opacity: 1;
+}
+
+.cg-player-icon {
+  color: var(--color-text);
+  opacity: 0.8;
+  width: 60%;
+  height: 60%;
+}
+
+.cg-exit-icon {
+  width: 65%;
+  height: 65%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  opacity: 0.9;
+}
+
+/* ── Room cells ── */
+.cg-cell--room {
+  background: var(--color-background-loot-slot);
+  border-color: var(--color-border-loot-slot);
+}
+
+.cg-cell--frozen {
+  background: #0d2a4a;
+  border-color: #2a5a8a;
+}
+
+.cg-cell--has-enemy {
+  border-color: var(--color-border-loot-slot-filled);
+}
+
+/* targeting mode — show cursor on room cells */
+.cg-cell--targeting.cg-cell--room {
+  cursor: crosshair;
+}
+
+.cg-cell--highlighted {
+  background: rgba(100, 160, 255, 0.15);
+  border-color: rgba(100, 160, 255, 0.5);
+}
+
+.cg-cell--highlighted.cg-cell--has-enemy {
+  background: rgba(255, 100, 100, 0.2);
+  border-color: rgba(255, 100, 100, 0.6);
+}
+
+
+.cg-cell--pending {
+  background: rgba(100, 160, 255, 0.35);
+  border-color: rgba(100, 160, 255, 0.9);
+  box-shadow: 0 0 0 2px rgba(100, 160, 255, 0.4);
+}
+
+.cg-cell--pending.cg-cell--has-enemy {
+  background: rgba(255, 100, 100, 0.35);
+  border-color: rgba(255, 100, 100, 0.9);
+  box-shadow: 0 0 0 2px rgba(255, 100, 100, 0.4);
+}
+
+/* ── Enemy display ── */
+.cg-enemy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 2px;
+}
+.cg-enemy-emoji {
+  font-size: clamp(12px, 3vw, 22px);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.cg-enemy-stack {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  font-size: 8px;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.cg-enemy-enraged {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  font-size: 9px;
+  font-weight: 900;
+  color: #f44;
+}
+
+/* HP and action bars */
+.cg-enemy-bars {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.cg-bar-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.cg-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.2s ease;
+}
+
+.cg-bar-action {
+  background: #aaa;
+  opacity: 0.6;
+}
+
+/* status dots */
+.cg-status-dots {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cg-status-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cg-status-dot--burn     { background: #f60; }
+.cg-status-dot--stun     { background: #fc0; }
+.cg-status-dot--root     { background: #6c4; }
+.cg-status-dot--silence  { background: #aac; }
+.cg-status-dot--slow     { background: #6af; }
+.cg-status-dot--weakness { background: #c6f; }
+
+/* ── Token ── */
+.cg-token {
+  font-size: clamp(10px, 2.5vw, 16px);
+  opacity: 0.8;
+}
+
+
+
+
+.cg-enemy-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 2px;
+  pointer-events: none;
+  z-index: 2;
+  align-self: stretch;
+  justify-self: stretch;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}

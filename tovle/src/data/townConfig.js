@@ -1,0 +1,95 @@
+// src/data/townConfig.js
+import alnera from '../assets/alnera.png'
+import frostgate from '../assets/frostgate.png'
+import mistport from '../assets/mistport.png'
+import steelmeld from '../assets/steelmeld.png'
+
+import alneraBgDark from '../assets/bgs/alnera_bg_dark.png'
+import alneraBgLight from '../assets/bgs/alnera_bg_light.png'
+import alneraBgLibrary from '../assets/bgs/alnera_bg_library.png'
+import alneraBgTreasury from '../assets/bgs/alnera_bg_treasury.png'
+
+import frostgateBgDark from '../assets/bgs/frostgate_bg_dark.png'
+import frostgateBgLight from '../assets/bgs/frostgate_bg_light.png'
+import mistportBgDark from '../assets/bgs/mistport_bg_dark.png'
+import mistportBgLight from '../assets/bgs/mistport_bg_light.png'
+import steelmeldBgDark from '../assets/bgs/steelmeld_bg_dark.png'
+import steelmeldBgLight from '../assets/bgs/steelmeld_bg_light.png'
+
+
+export const TOWN_CONFIG = {
+  alnera: {
+    id: 'alnera',
+    name: 'Alnera',
+    description: 'The bustling capital of the Ishnir Empire. Boosts from Alnera affect the East half of the map.',
+    coordinates: { x: 380, z: 760 },
+    hemisphere: 'east',
+    image: alnera,
+    favoriteItems: [], // fill in later
+    bannerGradient: 'linear-gradient(135deg, #c2956a 0%, #e8c07a 40%, #a0724a 100%)', //placeholder
+    bannerDark: alneraBgDark,
+    bannerLight: alneraBgLight,
+    npcs: [
+      {
+        id: 'nyra',
+        name: 'Archivist Nyra',
+        title: 'Royal Archivist',
+        banner: alneraBgLibrary,
+        description: `Nyra's duty under the Pharoah is to maintain records of the world.
+        She keeps a detailed map of the empire's trade routes and their influence.`,
+        actions: [
+          { id: 'talk', label: 'Talk' },
+          { id: 'view_map', label: 'View Map' },
+        ]
+      },
+      {
+        id: 'dina',
+        name: 'Treasurer Dina',
+        title: 'Head of the Treasury',
+        banner: alneraBgTreasury,
+        description: `Dina serves as Head of the Treasury of the Pharoah in Alnera.
+        She oversees trade and shipment distribution in the capital.`,
+        actions: [
+          { id: 'talk', label: 'Talk' },
+          // { id: 'view_map', label: 'View Map' },
+        ]
+      },
+    ]
+  },
+  frostgate: {
+    id: 'frostgate',
+    name: 'Frostgate',
+    description: 'An oceanside citadel serving as the capital of the Chillwind Empire. Boosts from Frostgate affect the West half of the map.',
+    coordinates: { x: -1500, z: 970 },
+    hemisphere: 'west',
+    image: frostgate,
+    favoriteItems: [],
+    bannerDark: frostgateBgDark,
+    bannerLight: frostgateBgLight,
+  },
+  mistport: {
+    id: 'mistport',
+    name: 'Mistport',
+    description: 'An island town of pirates. Yarrr! Boosts from Mistport affect the South half of the map.',
+    coordinates: { x: -750, z: 1340 },
+    hemisphere: 'south',
+    image: mistport,
+    favoriteItems: [],
+    bannerDark: mistportBgDark,
+    bannerLight: mistportBgLight,
+  },
+  steelmeld: {
+    id: 'steelmeld',
+    name: 'Steelmeld',
+    description: 'An isolated underground settlement built long ago, now serving as a research site. Boosts from Steelmeld affect the North half of the map.',
+    coordinates: { x: -420, z: -460 },
+    hemisphere: 'north',
+    image: steelmeld,
+    favoriteItems: [],
+    bannerDark: steelmeldBgDark,
+    bannerLight: steelmeldBgLight,
+  },
+}
+
+// unlock order — tied to forum tier progression
+export const TOWN_UNLOCK_ORDER = ['alnera', 'frostgate', 'mistport', 'steelmeld']

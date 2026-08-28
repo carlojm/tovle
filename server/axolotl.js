@@ -50,4 +50,4 @@ const createAxolotl = () => {
   }
 }
 
-module.exports = { createAxolotl, generateLevelRequirements }
+export { createAxolotl, generateLevelRequirements }

@@ -108,11 +108,8 @@ const PlayTab = ({
   const updateDelvePoints = (newPoints) => {
     setDelvePoints(newPoints)
     save({
-      today: {
-        ...playerData.today,
-        date: gameDate,
-        delvePoints: newPoints,
-      }
+      'today.date': gameDate,
+      'today.delvePoints': newPoints,
     })
   }
 
@@ -209,16 +206,11 @@ const PlayTab = ({
     }
 
     save({
-      today: {
-        date: gameDate,
-        caches: [...existingCaches, inProgressCache],
-
-        //if first guess, save time for timer
-        ...(currentCacheIndex === 0 && numGuesses === 0 && !playerData?.today?.firstGuessAt && {
-          firstGuessAt: guessTime,
-        }),
-        
-      }
+      'today.date': gameDate,
+      'today.caches': [...existingCaches, inProgressCache],
+      ...(currentCacheIndex === 0 && numGuesses === 0 && !playerData?.today?.firstGuessAt && {
+        'today.firstGuessAt': guessTime,
+      }),
     })
   }
 
@@ -471,11 +463,9 @@ const PlayTab = ({
                           overlayDismissed: true,
                         }
                         save({
-                          today: {
-                            date: gameDate,
-                            caches: [...existingCaches, inProgressCache],
-                            delvePoints: delvePoints,
-                          }
+                          'today.date': gameDate,
+                          'today.caches': [...existingCaches, inProgressCache],
+                          'today.delvePoints': delvePoints,
                         })
                       }}
                     >
@@ -658,7 +648,7 @@ const PlayTab = ({
           setDelvePoints={updateDelvePoints}
           onClose={() => setShowDelveModal(false)}
           onSaveDefaults={() => {
-            save({ upgrades: { ...playerData.upgrades, delveDefaults: delvePoints } })
+            save({ 'upgrades.delveDefaults': delvePoints })
             setShowDelveModal(false)
           }}
         />

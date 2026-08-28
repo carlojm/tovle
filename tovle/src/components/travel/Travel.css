@@ -1,0 +1,35 @@
+.travel-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: min(90vw, 600px);
+  padding: 12px 0;
+}
+
+.travel-container h2 {
+  font-size: clamp(14px, 3vw, 18px);
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+
+.travel-section-header {
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 8px;
+}
+
+.travel-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.travel-section-caption {
+  font-size: 12px;
+  opacity: 0.5;
+  margin: 0;
+}

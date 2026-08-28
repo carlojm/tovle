@@ -4,8 +4,17 @@ import './Navbar.css'
 import { Sun, Moon } from 'lucide-react'
 import Logo from './Logo'
 
-export default function Navbar({ theme, onToggleTheme, onNavigate }) {
+import { motion, AnimatePresence } from 'framer-motion'
+import { usePlayer } from '../context/PlayerContext'
+import denPieceImg from '../assets/den_piece.png'
+import depthsleLogo from '../assets/depthsle_logo.png'
+
+
+export default function Navbar({ theme, onToggleTheme, onNavigate, activeTab }) {
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const { playerData } = usePlayer() 
+  const denPieces = playerData?.inventory?.currencies?.denPieces ?? 0
 
   function handleNavigate(tabId) {
     onNavigate(tabId)
@@ -14,8 +23,66 @@ export default function Navbar({ theme, onToggleTheme, onNavigate }) {
 
   return (
     <nav className="navbar">
-      <Logo />
+      {/* logo */}
+      <AnimatePresence mode="wait">
+        {activeTab === 'depthsle' ? (
+          <motion.img
+            key="depthsle"
+            src={depthsleLogo}
+            alt="Depthsle"
+            className="navbar-depthsle-logo"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          />
+        ) : (
+          <motion.div
+            key="tovle"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Logo />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* {import.meta.env.VITE_BETA === '1' && (
+        <h1>BETA</h1>
+      )} */}
+
       <div className="navbar-buttons">
+
+        {/* den piece chip — only shown when player has any */}
+        <AnimatePresence>
+          {denPieces > 0 && (
+            <motion.div
+              className="den-chip"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2 }}
+            >
+              <img src={denPieceImg} alt="den pieces" className="den-chip-icon" />
+              {/* key on denPieces so the number pops every time it changes */}
+              <AnimatePresence mode="popLayout">
+                <motion.span
+                  key={denPieces}
+                  className="den-chip-count"
+                  initial={{ opacity: 0, y: -6, scale: 1.3 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.8 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                >
+                  {denPieces.toLocaleString()}
+                </motion.span>
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <button className="theme-toggle" onClick={onToggleTheme}>
           {theme === 'dark'
             ? <Sun size={20} color="var(--color-text-button" />
@@ -33,6 +100,7 @@ export default function Navbar({ theme, onToggleTheme, onNavigate }) {
       {menuOpen && createPortal(
         <div className="navbar-menu">
           <button className="navbar-menu-btn" onClick={() => handleNavigate('info')}>Info</button>
+          <button className="navbar-menu-btn" onClick={() => handleNavigate('collection')}>Collection</button>
           <button className="navbar-menu-btn" onClick={() => handleNavigate('data')}>Save Data</button>
         </div>,
         document.body

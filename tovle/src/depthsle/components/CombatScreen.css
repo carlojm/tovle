@@ -1,0 +1,73 @@
+.cs-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: min(90vw, 600px);
+  padding: 12px 0 48px;
+}
+
+/* ── Room bar ── */
+.cs-room-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cs-room-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cs-room-number {
+  font-size: 13px;
+  opacity: 0.45;
+}
+
+.cs-room-type {
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cs-elite-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--color-button);
+  color: var(--color-text-button);
+}
+
+.cs-kills-label {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+/* ── End turn ── */
+.cs-end-turn {
+  width: 100%;
+  padding: 13px;
+  background: var(--color-button);
+  color: var(--color-text-button);
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: "Open Runde", system-ui, sans-serif;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cs-end-turn:hover:not(:disabled) {
+  background: var(--color-button-hover);
+}
+
+.cs-end-turn--disabled {
+  opacity: 0.5;
+  cursor: default;
+}

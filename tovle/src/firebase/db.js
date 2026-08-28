@@ -1,4 +1,4 @@
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore"
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import app from "./config"
 
 const db = getFirestore(app) //gets a reference to the firestore database
@@ -27,6 +27,11 @@ export async function savePlayerData(uid, data) {
   //write data to document
   //merge:true = only update the fields we included and leave everything else untouched.
   const ref = getPlayerDocRef(uid)
-  await setDoc(ref, data, {merge:true})
+  const snapshot = await getDoc(ref)
+  if (snapshot.exists()) {
+    await updateDoc(ref, data)
+  } else {
+    await setDoc(ref, data)
+  }
 }
 

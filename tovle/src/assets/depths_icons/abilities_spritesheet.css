@@ -1,0 +1,328 @@
+/* Auto-generated ability icon spritesheet CSS */
+/* Do not edit manually — regenerate with make_spritesheet.py */
+
+.ability-icon {
+  background-image: url("./abilities_spritesheet.png");
+  background-size: 512px 640px;
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.ability-icon--dawnbringer-bottled-sunlight {
+  background-position: -0px -0px;
+}
+
+.ability-icon--dawnbringer-divine-beam {
+  background-position: -64px -0px;
+}
+
+.ability-icon--dawnbringer-eternal-savior {
+  background-position: -128px -0px;
+}
+
+.ability-icon--dawnbringer-lightning-bottle {
+  background-position: -192px -0px;
+}
+
+.ability-icon--dawnbringer-radiant-blessing {
+  background-position: -256px -0px;
+}
+
+.ability-icon--dawnbringer-spark-of-inspiration {
+  background-position: -320px -0px;
+}
+
+.ability-icon--dawnbringer-totem-of-salvation {
+  background-position: -384px -0px;
+}
+
+.ability-icon--dawnbringer-ward-of-light {
+  background-position: -448px -0px;
+}
+
+.ability-icon--earthbound-bulwark {
+  background-position: -0px -64px;
+}
+
+.ability-icon--earthbound-crushing-earth {
+  background-position: -64px -64px;
+}
+
+.ability-icon--earthbound-earthen-wrath {
+  background-position: -128px -64px;
+}
+
+.ability-icon--earthbound-earthquake {
+  background-position: -192px -64px;
+}
+
+.ability-icon--earthbound-iron-grip {
+  background-position: -256px -64px;
+}
+
+.ability-icon--earthbound-stone-skin {
+  background-position: -320px -64px;
+}
+
+.ability-icon--earthbound-taunt {
+  background-position: -384px -64px;
+}
+
+.ability-icon--flamecaller-apocalypse {
+  background-position: -448px -64px;
+}
+
+.ability-icon--flamecaller-detonation {
+  background-position: -0px -128px;
+}
+
+.ability-icon--flamecaller-fireball {
+  background-position: -64px -128px;
+}
+
+.ability-icon--flamecaller-flame-spirit {
+  background-position: -128px -128px;
+}
+
+.ability-icon--flamecaller-flamestrike {
+  background-position: -192px -128px;
+}
+
+.ability-icon--flamecaller-igneous-rune {
+  background-position: -256px -128px;
+}
+
+.ability-icon--flamecaller-pyroblast {
+  background-position: -320px -128px;
+}
+
+.ability-icon--flamecaller-ring-of-flames {
+  background-position: -384px -128px;
+}
+
+.ability-icon--flamecaller-volcanic-combos {
+  background-position: -448px -128px;
+}
+
+.ability-icon--flamecaller-volcanic-meteor {
+  background-position: -0px -192px;
+}
+
+.ability-icon--frostborn-avalanche {
+  background-position: -64px -192px;
+}
+
+.ability-icon--frostborn-cryobox {
+  background-position: -128px -192px;
+}
+
+.ability-icon--frostborn-frigid-combos {
+  background-position: -192px -192px;
+}
+
+.ability-icon--frostborn-frost-nova {
+  background-position: -256px -192px;
+}
+
+.ability-icon--frostborn-frozen-domain {
+  background-position: -320px -192px;
+}
+
+.ability-icon--frostborn-ice-barrier {
+  background-position: -384px -192px;
+}
+
+.ability-icon--frostborn-ice-barrier-primed {
+  background-position: -448px -192px;
+}
+
+.ability-icon--frostborn-ice-lance {
+  background-position: -0px -256px;
+}
+
+.ability-icon--frostborn-icebreaker {
+  background-position: -64px -256px;
+}
+
+.ability-icon--frostborn-permafrost {
+  background-position: -128px -256px;
+}
+
+.ability-icon--frostborn-piercing-cold {
+  background-position: -192px -256px;
+}
+
+.ability-icon--frostborn-snowstorm {
+  background-position: -256px -256px;
+}
+
+.ability-icon--prismatic-chroma-blade {
+  background-position: -320px -256px;
+}
+
+.ability-icon--prismatic-color-splash {
+  background-position: -384px -256px;
+}
+
+.ability-icon--prismatic-convergence {
+  background-position: -448px -256px;
+}
+
+.ability-icon--prismatic-disco-ball {
+  background-position: -0px -320px;
+}
+
+.ability-icon--prismatic-encore {
+  background-position: -64px -320px;
+}
+
+.ability-icon--prismatic-rebirth {
+  background-position: -128px -320px;
+}
+
+.ability-icon--prismatic-refraction {
+  background-position: -192px -320px;
+}
+
+.ability-icon--prismatic-solar-ray {
+  background-position: -256px -320px;
+}
+
+.ability-icon--shadowdancer-advancing-shadows {
+  background-position: -320px -320px;
+}
+
+.ability-icon--shadowdancer-blade-flurry {
+  background-position: -384px -320px;
+}
+
+.ability-icon--shadowdancer-brutalize {
+  background-position: -448px -320px;
+}
+
+.ability-icon--shadowdancer-chaos-dagger {
+  background-position: -0px -384px;
+}
+
+.ability-icon--shadowdancer-cloak-of-shadows {
+  background-position: -64px -384px;
+}
+
+.ability-icon--shadowdancer-deadly-strike {
+  background-position: -128px -384px;
+}
+
+.ability-icon--shadowdancer-dummy-decoy {
+  background-position: -192px -384px;
+}
+
+.ability-icon--shadowdancer-escape-artist {
+  background-position: -256px -384px;
+}
+
+.ability-icon--steelsage-firework-blast {
+  background-position: -320px -384px;
+}
+
+.ability-icon--steelsage-gravity-bomb {
+  background-position: -384px -384px;
+}
+
+.ability-icon--steelsage-metalmancy {
+  background-position: -448px -384px;
+}
+
+.ability-icon--steelsage-precision-strike {
+  background-position: -0px -448px;
+}
+
+.ability-icon--steelsage-rapid-fire {
+  background-position: -64px -448px;
+}
+
+.ability-icon--steelsage-scrapshot {
+  background-position: -128px -448px;
+}
+
+.ability-icon--steelsage-sharpshooter {
+  background-position: -192px -448px;
+}
+
+.ability-icon--steelsage-sidearm {
+  background-position: -256px -448px;
+}
+
+.ability-icon--steelsage-steel-stallion {
+  background-position: -320px -448px;
+}
+
+.ability-icon--steelsage-volley {
+  background-position: -384px -448px;
+}
+
+.ability-icon--windwalker-aeroblast {
+  background-position: -448px -448px;
+}
+
+.ability-icon--windwalker-dodging {
+  background-position: -0px -512px;
+}
+
+.ability-icon--windwalker-guarding-bolt {
+  background-position: -64px -512px;
+}
+
+.ability-icon--windwalker-howling-winds {
+  background-position: -128px -512px;
+}
+
+.ability-icon--windwalker-last-breath {
+  background-position: -192px -512px;
+}
+
+.ability-icon--windwalker-one-with-the-wind {
+  background-position: -256px -512px;
+}
+
+.ability-icon--windwalker-one-with-the-wind-active {
+  background-position: -320px -512px;
+}
+
+.ability-icon--windwalker-restoring-draft {
+  background-position: -384px -512px;
+}
+
+.ability-icon--windwalker-skyhook {
+  background-position: -448px -512px;
+}
+
+.ability-icon--windwalker-slipstream {
+  background-position: -0px -576px;
+}
+
+.ability-icon--windwalker-thundercloud-form {
+  background-position: -64px -576px;
+}
+
+.ability-icon--windwalker-unknown-ability {
+  background-position: -128px -576px;
+}
+
+.ability-icon--windwalker-updraft {
+  background-position: -192px -576px;
+}
+
+.ability-icon--windwalker-whirlwind {
+  background-position: -256px -576px;
+}
+
+.ability-icon--windwalker-wind-walk {
+  background-position: -320px -576px;
+}
+
+.ability-icon--windwalker-windswept-combos {
+  background-position: -384px -576px;
+}

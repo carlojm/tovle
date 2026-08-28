@@ -1,0 +1,159 @@
+.eq-card-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 300;
+}
+
+.eq-card-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 301;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: min(320px, 90vw);
+}
+
+.eq-card-actions {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  background: var(--color-background-modal);
+  border: 2px solid var(--color-coords-border);
+  border-radius: 999px;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.eq-action-btn {
+  flex: 1;
+  padding: 7px 4px;
+  border-radius: 999px;
+  border: 2px solid var(--color-coords-border);
+  background: none;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.eq-action-btn:hover:not(:disabled) {
+  border-color: var(--color-button);
+}
+
+.eq-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* .eq-action-btn--danger:hover:not(:disabled) {
+  border-color: #8b0000;
+  color: #fc5454;
+} */
+
+
+
+.eq-card-meta {
+  position: absolute;
+  top: 100%;
+  margin-top: 8px; /* match the wrapper gap */
+  width: 100%;
+  perspective: 600px;
+}
+
+/* Inner wrapper that Framer Motion animates.
+   transform-style preserve-3d lets the rotateX actually look 3D. */
+.eq-card-meta-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--color-text);
+  background: var(--color-background-modal);
+  border: 2px solid var(--color-coords-border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  width: 100%;
+  box-sizing: border-box;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* Confirm/cancel button row inside the meta box */
+.eq-meta-confirm-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.eq-meta-btn {
+  padding: 4px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--color-coords-border);
+  background: none;
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.eq-meta-btn--cancel:hover {
+  border-color: var(--color-button);
+}
+
+.eq-meta-btn--confirm:hover {
+  border-color: #e06c6c;
+  color: #e06c6c;
+}
+
+
+
+/* slot comparison row in equip view */
+.eq-meta-compare {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.eq-meta-compare-slot {
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--color-coords-border);
+  border-radius: 6px;
+  background: var(--color-background-loot-slot);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: var(--color-text);
+  opacity: 0.6;
+}
+
+.eq-meta-compare-slot--new {
+  border-color: var(--color-button);
+  opacity: 1;
+}
+
+.eq-meta-compare-arrow {
+  font-size: 16px;
+  opacity: 0.5;
+  color: var(--color-text);
+}
+
+/* slot navigator for multiple valid slots */
+.eq-meta-slot-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}

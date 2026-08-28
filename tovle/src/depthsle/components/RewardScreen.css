@@ -1,0 +1,148 @@
+/* ── Stats line ── */
+.rs-stats {
+  font-size: 12px;
+  opacity: 0.5;
+  margin: 4px 0 0;
+}
+
+/* ── Choices list ── */
+.rs-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+/* ── Ability card ── */
+.rs-ability-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background: var(--color-background-loot-grid);
+  border: 2px solid var(--color-border-loot-grid);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--color-text);
+  font-family: "Open Runde", system-ui, sans-serif;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.rs-ability-card:hover {
+  border-color: var(--color-button);
+  background: var(--color-background-loot-slot);
+}
+
+.rs-ability-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rs-ability-icon {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.rs-ability-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rs-ability-rarity {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.rs-ability-name {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.rs-ability-tree {
+  font-size: 11px;
+  opacity: 0.45;
+}
+
+.rs-ability-desc {
+  font-size: 12px;
+  opacity: 0.7;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.rs-ability-cooldown {
+  font-size: 12px;
+  opacity: 0.6;
+  margin: 0;
+}
+
+/* ── Upgrade card ── */
+.rs-upgrade-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  background: var(--color-background-loot-grid);
+  border: 2px solid var(--color-border-loot-grid);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--color-text);
+  font-family: "Open Runde", system-ui, sans-serif;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.rs-upgrade-card:hover {
+  border-color: var(--color-button);
+  background: var(--color-background-loot-slot);
+}
+
+.rs-upgrade-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-button);
+}
+
+.rs-upgrade-desc {
+  font-size: 12px;
+  opacity: 0.6;
+  /* line-height: 1.5; */
+}
+
+
+
+
+
+.rs-ability-icon-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.rs-ability-border {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 84px;
+  height: 84px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+
+
+
+

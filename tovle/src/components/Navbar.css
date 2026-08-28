@@ -24,6 +24,9 @@
 
   overflow: visible;
 
+  /* background color transition for depthsle */
+  transition: background-color 0.3s ease;
+
 }
 
 .navbar-title {
@@ -148,4 +151,44 @@
   text-align: left;
   /* width: 100%; */
   display: block;
+}
+
+
+
+
+
+.den-chip {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  background: var(--color-navbar-dropdown);
+  /* border: 2px solid var(--color-coords-border); */
+  border-radius: 999px;
+  padding: 0px 8px 0px 2px;
+  overflow: hidden; /* clips the number animation */
+}
+
+.den-chip-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  image-rendering: pixelated; /* keeps the pixel art crisp */
+  flex-shrink: 0;
+}
+
+.den-chip-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-button);
+  line-height: 1;
+  display: block;
+  min-width: 1ch; /* prevents chip from collapsing during number transition */
+}
+
+
+
+.navbar-depthsle-logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
 }

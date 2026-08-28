@@ -9,16 +9,26 @@ import PlayTab from './components/Playtab'
 import Caches from './components/Caches'
 import Info from './components/Info'
 import DataTab from './components/DataTab'
+import Travel from './components/travel/Travel.jsx'
+import Collection from './components/Collection.jsx'
+import Depthsle from './depthsle/Depthsle.jsx'
 
 import { formatDuration } from './utils/dates.js'
 
 import { IMAGE_BASE_URL_STANDARD, IMAGE_BASE_URL_CUSTOM } from './data/constants.js'
+
+import DepthsleDevConsole from './depthsle/DepthsleDevConsole.jsx'
+
+const IS_DEPTHSLE_DEV = new URLSearchParams(window.location.search).get('dev') === '1'
+  || localStorage.getItem('depthsle_dev') === '1'
 
 const TABS = [
   { id: 'play',   label: 'Play' },
   { id: 'caches', label: 'Caches' },
   { id: 'info',   label: 'Info' },
   { id: 'data',   label: 'Data' },
+  { id: 'collection',   label: 'Collection' },
+  { id: 'depthsle',   label: 'Depthsle' },
 ]
 
 const App = () => {
@@ -65,6 +75,13 @@ const App = () => {
       : `${IMAGE_BASE_URL_STANDARD}/${String(currentCache.id).padStart(3, '0')}.webp`
     : null
   const correctCoords = currentCache?.coordinates ?? null
+
+  const hasTravel = playerData?.upgrades?.unlockTravel ?? false
+  const activeTabs = TABS.map(tab =>
+    tab.id === 'info' && hasTravel
+      ? { id: 'travel', label: 'Travel' }
+      : tab
+  )
 
   useEffect(() => {
     //dont run effect until firebase finishing loading player data
@@ -212,6 +229,17 @@ const App = () => {
       document.documentElement.classList.remove('light')
     }
   }, [theme])
+
+  useEffect(() => {
+    if (activeTab === 'depthsle') {
+      document.documentElement.classList.add('depthsle')
+      // document.documentElement.scrollTop = -40
+      // document.body.scrollTop = -40 // Safari
+      window.scrollTo({ top: -40, behavior: 'smooth' })
+    } else {
+      document.documentElement.classList.remove('depthsle')
+    }
+  }, [activeTab])
 
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark'
@@ -448,11 +476,13 @@ const App = () => {
 
   if (!ready) return null
 
+  if (IS_DEPTHSLE_DEV) return <DepthsleDevConsole />
+
   return (
     <div className="full-container">
       <div className="app-container">
-        <Navbar theme={theme} onToggleTheme={toggleTheme} onNavigate={setActiveTab}/>
-        <Toggle tabs={TABS.slice(0,3)} activeTab={activeTab} onChange={setActiveTab} />
+        <Navbar theme={theme} onToggleTheme={toggleTheme} onNavigate={setActiveTab} activeTab={activeTab}/>
+        <Toggle tabs={activeTabs.slice(0,3)} activeTab={activeTab} onChange={setActiveTab} />
 
         {activeTab === 'play' && (
           <PlayTab
@@ -493,7 +523,11 @@ const App = () => {
         )}
         {activeTab === 'caches' && <Caches />}
         {activeTab === 'info' && <Info onNavigate={setActiveTab} />}
+        {activeTab === 'travel' && <Travel onEnterDungeon={() => setActiveTab('depthsle')} />}
         {activeTab === 'data' && <DataTab />}
+        {activeTab === 'collection' && <Collection />}
+        {activeTab === 'depthsle' && gameDate && <Depthsle gameDate={gameDate} />}
+
       </div>
     </div>
   )

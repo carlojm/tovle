@@ -9,7 +9,24 @@ import CacheAnimation from './CacheAnimation'
 import { AnimatePresence, motion } from 'framer-motion'
 import AxolotlTooltip from './AxolotlTooltip'
 
+import ItemIcon from './ItemIcon'
+import EquipmentGrid from './EquipmentGrid'
+import EquipPanel from './EquipPanel'
+
 import debounce from 'lodash.debounce'
+
+const SLOT_TO_FILTER = {
+  helmet: 'Helmet',
+  chestplate: 'Chestplate',
+  leggings: 'Leggings',
+  boots: 'Boots',
+  mainhand: 'group:mainhand',
+  offhand: 'group:offhand',
+  blade: 'group:blade',
+  magic: 'Wand',
+  ranged: 'group:ranged',
+  tool: 'group:tool',
+}
 
 const mergeItems = (existing, incoming) => {
   const merged = {}
@@ -46,6 +63,9 @@ const Caches = ({ }) => {
   const [pendingItems, setPendingItems] = useState([]) //items to use in cache animation
   const [openingCacheKey, setOpeningCacheKey] = useState(null) //cache being animated
   const [isRevealing, setIsRevealing] = useState(false)
+
+  //used for equipmentgrid filtering
+  const [filterType, setFilterType] = useState('')
 
   //used to "freeze" the list of unopenedcaches while we are animating one opening
   //we save the list before opening the cache and only go back to real list when done animating
@@ -113,7 +133,7 @@ const Caches = ({ }) => {
         const updatedUnopenedCaches = unopenedCaches.filter(
           c => !(c.cacheId === cacheEntry.cacheId && c.date === cacheEntry.date)
         )
-        save({ inventory: { ...playerData.inventory, unopenedCaches: updatedUnopenedCaches } })
+        save({ 'inventory.unopenedCaches': updatedUnopenedCaches })
         setError(data.error ?? 'Cache already opened')
         setOpeningCacheKey(null)
         return
@@ -143,23 +163,68 @@ const Caches = ({ }) => {
       setDisplayInventory(playerData?.inventory?.items ?? [])
 
       save({
-        inventory: {
-          ...playerData.inventory,
-          unopenedCaches: updatedUnopenedCaches,
-          openedCaches: [...existingOpenedCaches, { cacheId: cacheEntry.cacheId, date: cacheEntry.date }],
-          items: mergedItems,
-        },
-        stats: {
-          ...playerData.stats,
-          totalCachesOpened: (playerData.stats?.totalCachesOpened ?? 0) + 1,
-          totalItemsCollected: (playerData.stats?.totalItemsCollected ?? 0) + totalItems,
-        }
+        'inventory.unopenedCaches': updatedUnopenedCaches,
+        'inventory.openedCaches': [...existingOpenedCaches, { cacheId: cacheEntry.cacheId, date: cacheEntry.date }],
+        'inventory.items': mergedItems,
+        'stats.totalCachesOpened': (playerData.stats?.totalCachesOpened ?? 0) + 1,
+        'stats.totalItemsCollected': (playerData.stats?.totalItemsCollected ?? 0) + totalItems,
       })
 
       setActiveGrid(data.grid)
 
     } catch (err) {
       setError('Failed to open cache. Try again.')
+      setOpeningCacheKey(null)
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleOpenAllCaches = async () => {
+    if (pendingItems.length > 0 || loading) return
+    flushSave()
+
+    setLoading(true)
+    setError(null)
+    setActiveGrid(null)
+    setOpeningCacheKey('bulk')
+
+    try {
+      const res = await fetch('/api/open-all-caches', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uid })
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error ?? 'Something went wrong')
+        setOpeningCacheKey(null)
+        return
+      }
+
+      const mergedItems = mergeItems(playerData?.inventory?.items ?? [], data.items)
+      const totalItems = data.items.reduce((sum, item) => sum + item.quantity, 0)
+      const existingOpenedCaches = playerData?.inventory?.openedCaches ?? []
+      const unopened = playerData?.inventory?.unopenedCaches ?? []
+
+      setPendingItems(data.items)
+      setDisplayInventory(playerData?.inventory?.items ?? [])
+
+      save({
+        'inventory.unopenedCaches': [],
+        'inventory.openedCaches': [...existingOpenedCaches, ...unopened.map(c => ({ cacheId: c.cacheId, date: c.date }))],
+        'inventory.items': mergedItems,
+        'stats.totalCachesOpened': (playerData.stats?.totalCachesOpened ?? 0) + data.cacheCount,
+        'stats.totalItemsCollected': (playerData.stats?.totalItemsCollected ?? 0) + totalItems,
+      })
+
+      setActiveGrid(data.grid)
+
+    } catch (err) {
+      setError('Failed to open caches. Try again.')
       setOpeningCacheKey(null)
       console.error(err)
     } finally {
@@ -184,37 +249,32 @@ const Caches = ({ }) => {
     unfreeze()
   }
 
-  const handleDebugAddCache = () => {
+  const handleDebugAddCache = (score) => {
+    if (typeof score !== 'number') score = 70
     const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     const newUnopenedCache = {
       cacheId: Math.round(Math.random()*999)+10000,
       date: todayStr,
       guessCount: 3,
-      score: 70,
+      score:score,
     }
     save({
-      inventory: {
-        ...playerData.inventory,
-        unopenedCaches: [...(playerData.inventory?.unopenedCaches ?? []), newUnopenedCache],
-      }
+      'inventory.unopenedCaches': [...(playerData.inventory?.unopenedCaches ?? []), newUnopenedCache],
     })
   }
 
   const handleDebugResetUpgrades = () => {
     save({
-      upgrades: {
-        ...playerData.upgrades,
-        craftingTable: 0,
-        streakRestore: 0,
-        luckTier: 0,
-        distancePrecision: 0,
-        directionArrows: 0,
-        fishingNet: 0,
-        buildHabitat: 0,
-        newHire: 0,
-        delveMode: 0,
-        unlockTravel: 0,
-      }
+      'upgrades.craftingTable': 0,
+      'upgrades.streakRestore': 0,
+      'upgrades.luckTier': 0,
+      'upgrades.distancePrecision': 0,
+      'upgrades.directionArrows': 0,
+      'upgrades.fishingNet': 0,
+      'upgrades.buildHabitat': 0,
+      'upgrades.newHire': 0,
+      'upgrades.delveMode': 0,
+      'upgrades.unlockTravel': 0,
     })
   }
 
@@ -240,11 +300,8 @@ const Caches = ({ }) => {
       return true
     })
     save({
-      inventory: {
-        ...playerData.inventory,
-        openedCaches: dedupedOpened,
-        unopenedCaches: dedupedUnopened,
-      }
+      'inventory.openedCaches': dedupedOpened,
+      'inventory.unopenedCaches': dedupedUnopened,
     })
   }
 
@@ -254,18 +311,12 @@ const Caches = ({ }) => {
     const twoDaysAgoStr = twoDaysAgo.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 
     save({
-      stats: {
-        ...playerData.stats,
-        currentStreak: 5,
-        lastPlayedDate: twoDaysAgoStr,
-        streakBrokeDate: null,
-        previousStreak: null,
-      },
-      upgrades: {
-        ...playerData.upgrades,
-        unlocked: (playerData.upgrades?.unlocked ?? []).filter(f => f !== 'streakRedeemable'),
-        streakRestore: 0,
-      }
+      'stats.currentStreak': 5,
+      'stats.lastPlayedDate': twoDaysAgoStr,
+      'stats.streakBrokeDate': null,
+      'stats.previousStreak': null,
+      'upgrades.unlocked': (playerData.upgrades?.unlocked ?? []).filter(f => f !== 'streakRedeemable'),
+      'upgrades.streakRestore': 0,
     })
 
     setTimeout(() => window.location.reload(), 500)
@@ -277,6 +328,13 @@ const Caches = ({ }) => {
 
   const handleDebugClearToday = () => {
     save({ today: null })
+  }
+
+  const handleDebugAddTornCanvas = () => {
+    const mergedItems = mergeItems(playerData?.inventory?.items ?? [], [
+      { itemId: 'torn_canvas', name: 'Torn Canvas', quantity: 10 },
+    ])
+    save({ 'inventory.items': mergedItems })
   }
 
   return (
@@ -297,6 +355,15 @@ const Caches = ({ }) => {
         )}
         
         <motion.h2 layout="position">Unopened Caches</motion.h2>
+        {(playerData?.travel?.forum?.upgrades?.bulk_cache_open ?? 0) >= 1 &&
+          unopenedCaches.length > 1 && (
+          <button
+            className={`cache-entry-button ${loading || pendingItems.length > 0 ? 'disable-button' : ''}`}
+            onClick={handleOpenAllCaches}
+          >
+            <span>Open All ({unopenedCaches.length} caches)</span>
+          </button>
+        )}
         {unopenedCaches.length === 0 && !activeGrid && (
           <p className="caches-empty">No unopened caches. Play today's caches to earn more!</p>
         )}
@@ -384,6 +451,14 @@ const Caches = ({ }) => {
         )}
       </motion.section>
 
+      {(playerData?.equipment ?? []).length > 0 && (
+        <motion.section layout className="caches-section">
+          <h2>Equipment</h2>
+          <EquipPanel onSlotTap={(slot) => setFilterType(SLOT_TO_FILTER[slot.type] ?? '')} />
+          <EquipmentGrid filterType={filterType} setFilterType={setFilterType} />
+        </motion.section>
+      )}
+
       <motion.section layout className="caches-section">
         <div className="caches-section-header">
           <motion.h2 layout="position">Crafting</motion.h2>
@@ -420,17 +495,23 @@ const Caches = ({ }) => {
       )}
 
 
-      {import.meta.env.DEV && (
+      {(import.meta.env.DEV || import.meta.env.VITE_SHOW_DEBUG === 'true') && (
       <div style={{gap:"px"}}>
         <button onClick={handleDebugAddCache} className="cache-entry-button">
           [DEBUG] Add Unopened Cache
         </button>
-        <button onClick={handleDebugResetUpgrades} className="cache-entry-button">
+        <button onClick={() => handleDebugAddCache(10000)} className="cache-entry-button">
+          [DEBUG] Add Unopened Cache w/ 100x loot
+        </button>
+        <button onClick={handleDebugAddTornCanvas} className="cache-entry-button">
+          [DEBUG] Add 10 Torn Canvas to inventory
+        </button>
+        {/* <button onClick={handleDebugResetUpgrades} className="cache-entry-button">
           [DEBUG] Reset Upgrades
-        </button>
-        <button onClick={handleDebugResetAxolotlCollection} className="cache-entry-button">
+        </button> */}
+        {/* <button onClick={handleDebugResetAxolotlCollection} className="cache-entry-button">
           [DEBUG] Reset Axolotl Collection Timer
-        </button>
+        </button> */}
         {/* <button onClick={handleDebugDeduplicateOpenedCaches} className="cache-entry-button">
           [DEBUG] Clean inv.openedCaches on server side, remove dupes
         </button> */}
@@ -438,14 +519,22 @@ const Caches = ({ }) => {
           [DEBUG] Show UID
         </button>
         <button onClick={handleDebugClearToday} className="cache-entry-button">
-          [DEBUG] Reset Today's Game
+          [DEBUG] Reset Today's Tovle (refresh)
         </button>
-        <button onClick={handleDebugBreakStreak} className="cache-entry-button">
+        {/* <button onClick={handleDebugBreakStreak} className="cache-entry-button">
           [DEBUG] Simulate Broken Streak
-        </button>
+        </button> */}
       </div>
       )}
 
+      {/* <div style={{ display: 'flex', gap: '8px', padding: '16px' }}>
+        <ItemIcon itemKey="Moon's Chime" />
+        <ItemIcon itemKey="Magic Crab" />
+        <ItemIcon itemKey="Crusader's Phalanx" />
+      </div> */}
+
+      
+      
     </div>
   )
 }

@@ -116,14 +116,14 @@
 .axolotl-hunger-track {
   flex: 1;
   height: 8px;
-  background: var(--color-coords-border);
+  background: var(--color-bar-background);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .axolotl-hunger-fill {
   height: 100%;
-  background: var(--color-button);
+  background: var(--color-bar-fill);
   border-radius: 4px;
   transition: width 0.3s ease;
 }
@@ -257,4 +257,133 @@
 .axolotl-collect-confirm:hover:not(:disabled) {
   background: var(--color-button);
   color: var(--color-text-button);
+}
+
+
+
+
+.axolotl-action-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  margin-top: 8px;
+}
+
+.axolotl-action-row .upgrade-button {
+  flex: 1;
+  padding: 8px 14px;
+  font-size: clamp(12px, 3vw, 14px);
+}
+
+.axolotl-feed-group {
+  flex: 1;
+  position: relative;
+  display: flex;
+}
+
+.axolotl-feed-main {
+  flex: 1;
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 600;
+  background: var(--color-button);
+  color: var(--color-text-button);
+  border: none;
+  border-radius: 12px 0 0 12px;
+  border-right: 1px solid color-mix(in srgb, var(--color-button-hover) 10%, transparent);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.axolotl-feed-main:hover:not(:disabled) {
+  background: var(--color-button-hover);
+}
+
+.axolotl-feed-main:disabled {
+  background: var(--color-button-disabled);
+  cursor: default;
+}
+
+.axolotl-feed-chevron {
+  padding: 0 12px;
+  font-size: 11px;
+  line-height: 1;
+  font-family: "Open Runde", system-ui, sans-serif;
+  font-weight: 600;
+  background: var(--color-button);
+  color: var(--color-text-button);
+  border: none;
+  border-radius: 0 12px 12px 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.axolotl-feed-chevron:hover:not(:disabled) {
+  background: var(--color-button-hover);
+}
+
+.axolotl-feed-chevron:disabled {
+  background: var(--color-button-disabled);
+  cursor: default;
+}
+
+.axolotl-feed-main:disabled ~ .axolotl-feed-chevron {
+  background: var(--color-button-disabled);
+}
+
+.axolotl-feed-dropdown {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  background: var(--color-background-coords-display);
+  border: 1px solid var(--color-coords-border);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 100;
+  min-width: 200px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.axolotl-feed-dropdown button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--color-button);
+  color: var(--color-text-button);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  gap: 2px;
+}
+
+.axolotl-feed-dropdown button + button {
+  border-top: 1px solid color-mix(in srgb, var(--color-button-hover) 60%, transparent);
+}
+
+.axolotl-feed-dropdown button:hover:not(:disabled) {
+  background: var(--color-button-hover);
+}
+
+.axolotl-feed-dropdown button:disabled {
+  background: var(--color-button-disabled);
+  cursor: default;
+}
+
+.axolotl-feed-dropdown .share-dropdown-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-button);
+  text-align: left;
+
+}
+
+.axolotl-feed-dropdown .share-dropdown-desc {
+  font-size: 12px;
+  opacity: 0.7;
+  color: var(--color-text-button);
+  text-align: left;
+
 }

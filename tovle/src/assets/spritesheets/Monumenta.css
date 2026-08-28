@@ -1,0 +1,98 @@
+/* scraped from ohthemisery */
+/* thank you bikesuper */
+
+/* tier colors */
+.monumenta-tier-1,
+.monumenta-tier-2,
+.monumenta-tier-3,
+.monumenta-tier-4,
+.monumenta-tier-5 { color: #545454; }
+
+.monumenta-tier-1.monumenta-name,
+.monumenta-tier-2.monumenta-name,
+.monumenta-tier-3.monumenta-name,
+.monumenta-tier-4.monumenta-name { font-weight: normal; }
+
+.monumenta-tier-5.monumenta-name { color: #54fc54; font-weight: normal; }
+.monumenta-uncommon { color: #bebebe; }
+.monumenta-unique { color: #c6a0c6; }
+.monumenta-rare { color: #49c0e2; }
+.monumenta-artifact { color: #ce2d27; }
+.monumenta-epic { color: #b114e0; font-weight: bold; }
+.monumenta-legendary { color: #fcd400; font-weight: bold; }
+
+.monumenta-epic.monumenta-name { text-decoration: underline; }
+.monumenta-legendary.monumenta-name { text-decoration: underline; }
+
+/* stat colors */
+.monumenta-positive-stat { color: #5454fc; }
+.monumenta-positive-defence { color: #32cafc; }
+.monumenta-negative-stat { color: #fc5454; }
+.monumenta-base-stat { color: #00a800; }
+.monumenta-info { color: #aaa; }
+
+.monumenta-name { font-weight: bold; }
+
+/* location colors */
+.monumenta-isles-overworld { color: #31D4D9; }
+.monumenta-celsian-isles { color: rgb(244, 248, 255); }
+.monumenta-isles-delves { color: rgb(255, 237, 184); }
+.monumenta-isles-casino { color: #1772AF; }
+.monumenta-tov { color: #C6A0C6; }
+.monumenta-docks { color: #196281; }
+.monumenta-carnival { color: #CE2D27; }
+.monumenta-delves { color: #B26F27; }
+.monumenta-forum { color: #7E7E00; }
+.monumenta-shifting { color: #7DFCD1; }
+.monumenta-depths { color: #5C2C85; }
+.monumenta-willows { color: #006300; }
+.monumenta-sanctum { color: #51A800; }
+.monumenta-reverie { color: #780E46; }
+.monumenta-verdant { color: #158115; }
+.monumenta-kaul { color: #00A800; }
+.monumenta-rush { color: #C01E55; }
+.monumenta-mist { color: #664B5A; }
+.monumenta-remorse { color: #EBE3D3; }
+.monumenta-ruin { color: #316ca6; }
+.monumenta-patron { color: #80D817; }
+.monumenta-labs { color: #B2AAC1; }
+.monumenta-base { color: #fcf774; }
+.monumenta-quest-reward { color: #c6a0c6; }
+.monumenta-transmogrifier { color: #6e2ca6; }
+.monumenta-sanguine-halls { color: #a90000; }
+.monumenta-arena-of-terth { color: #FCFCA8; }
+.monumenta-gallery-of-fear { color: #38AF4D; }
+.monumenta-royal-armory { color: #C8FCFA; }
+.monumenta-winter-event { color: #ADC0E0; }
+.monumenta-halloween-event { color: #FCA800; }
+.monumenta-seasonal-pass { color: #FCF33B; }
+.monumenta-blitz { color: #D7AB3D; }
+.monumenta-hexfall { color: #b131de; }
+.monumenta-zenith { color: #fca4f4; }
+.monumenta-fishing { color: #acd4d4; }
+
+/*card container*/
+.monumenta-card {
+  font-size: 1em;
+  line-height: 1.3;
+  background: #110110;
+  border: 3px solid #2c0860;
+  box-shadow: 4px 0 0 #110110, -4px 0 0 #110110, 0 4px 0 #110110, 0 -4px 0 #110110;
+  color: #aaa;
+  text-shadow: 1px 1px 0 #2a2a2a;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+}
+
+.monumenta-card-icon {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+}
+
+.monumenta-card-enchants {
+  display: flex;
+  flex-direction: column;
+}

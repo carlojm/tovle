@@ -22,7 +22,10 @@ const Toggle = ({ tabs, activeTab, onChange }) => {
     //grab the active element from the refs array
     const el = tabRefs.current[activeIndex]
     const group = el?.parentElement
-    if (!el || !group) return
+    if (!el || !group) {
+      setIndicatorStyle({ opacity: 0 })
+      return
+    }
 
     //gets the exact pixel pos of each element relative to viewport
     //subtracting groupRect.left from elRect.left gives the button's relative position

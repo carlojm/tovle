@@ -4,7 +4,7 @@
   align-items: center;
   gap: 32px;
   width: min(90vw, 600px);
-  padding: 24px 0;
+  padding: 12px 0;
 }
 
 .caches-section {
@@ -124,12 +124,12 @@
 }
 
 .upgrade-button:hover {
-  transform: translateY(-2px);
+  /* transform: translateY(-2px); */
   background: var(--color-button-hover);
 }
 
 .upgrade-button:active {
-  transform: translateY(4px);
+  /* transform: translateY(4px); */
   background: var(--color-button-hover);
 }
 

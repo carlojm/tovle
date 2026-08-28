@@ -187,7 +187,7 @@ const Crafting = ({hideMaxed = false, flushSave}) => {
     })()
 
     if (windowPassed) {
-      save({ upgrades: { ...upgrades, unlocked: unlocked.filter(f => f !== 'streakRedeemable') } })
+      save({ 'upgrades.unlocked': unlocked.filter(f => f !== 'streakRedeemable') })
       console.log("removing streakrestore, window passed")
     }
   }
@@ -247,23 +247,14 @@ const Crafting = ({hideMaxed = false, flushSave}) => {
       console.log('updatedUnlocked:', updatedUnlocked)
 
       save({
-        stats: {
-          ...playerData.stats,
-          currentStreak: restoredStreak,
-          bestStreak: Math.max(playerData?.stats?.bestStreak ?? 0, restoredStreak),
-          lastPlayedDate: alreadyPlayedToday ? todayStr : streakBrokeDate,
-          previousStreak: null,
-          streakBrokeDate: null,
-        },
-        upgrades: {
-          ...upgrades,
-          unlocked: updatedUnlocked,
-          streakRestore: 1, //mark as used
-        },
-        inventory: {
-          ...playerData.inventory,
-          items: updatedItems,
-        }
+        'stats.currentStreak': restoredStreak,
+        'stats.bestStreak': Math.max(playerData?.stats?.bestStreak ?? 0, restoredStreak),
+        'stats.lastPlayedDate': alreadyPlayedToday ? todayStr : streakBrokeDate,
+        'stats.previousStreak': null,
+        'stats.streakBrokeDate': null,
+        'upgrades.unlocked': updatedUnlocked,
+        'upgrades.streakRestore': 1, //mark as used
+        'inventory.items': updatedItems,
       })
       return
     }
@@ -280,8 +271,8 @@ const Crafting = ({hideMaxed = false, flushSave}) => {
         if (!res.ok) { console.error(data.error); return }
 
         save({
-          upgrades: { ...upgrades, [upgrade.id]: newValue },
-          inventory: { ...playerData.inventory, items: updatedItems },
+          [`upgrades.${upgrade.id}`]: newValue,
+          'inventory.items': updatedItems,
           axolotls: [...(playerData.axolotls ?? []), data.axolotl],
         })
       } catch (err) {
@@ -291,13 +282,8 @@ const Crafting = ({hideMaxed = false, flushSave}) => {
     }
 
     save({
-      upgrades: {
-        ...upgrades, [upgrade.id]: newValue,
-      },
-      inventory: {
-        ...playerData.inventory,
-        items: updatedItems,
-      }
+      [`upgrades.${upgrade.id}`]: newValue,
+      'inventory.items': updatedItems,
     })
   }
 
