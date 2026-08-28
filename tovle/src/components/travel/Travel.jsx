@@ -107,7 +107,10 @@ const Travel = ({onEnterDungeon}) => {
 
   const handleDebugResetTrades = () => {
     save({
-      'travel.towns.alnera.tradeWindow': null
+      'travel.towns.alnera.tradeWindow': null,
+      'travel.towns.frostgate.tradeWindow': null,
+      'travel.towns.mistport.tradeWindow': null,
+      'travel.towns.steelmeld.tradeWindow': null,
     })
   }
 

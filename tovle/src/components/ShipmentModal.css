@@ -13,7 +13,8 @@
 
 .sm-modal {
   width: min(480px, 92vw);
-  max-height: min(600px, 80vh);
+  min-height: min(500px, 60vh);
+  max-height: min(600px, 85vh);
   background: var(--color-background-modal);
   border: 2px solid var(--color-border-modal-visit);
   border-radius: 16px;
@@ -21,6 +22,7 @@
   flex-direction: column;
   overflow: hidden;
 }
+
 
 /* ── Header ──────────────────────────────────────────────────────────────── */
 

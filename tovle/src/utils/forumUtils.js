@@ -31,6 +31,22 @@ export const checkGoal = (goal, playerData) => {
       current = playerData?.stats?.totalShipmentsOpened ?? 0
       break
     }
+    case 'shipment_equipment_collected': {
+      current = playerData?.stats?.totalShipmentEquipmentCollected ?? 0
+      break
+    }
+    case 'items_traded_total': {
+      current = playerData?.stats?.totalItemsTraded ?? 0
+      break
+    }
+    case 'items_received_total': {
+      current = playerData?.stats?.totalItemsReceived ?? 0
+      break
+    }
+    case 'reputation_earned_total': {
+      current = playerData?.stats?.totalReputationEarned ?? 0
+      break
+    }
     case 'axolotl_level_total': {
       const axolotls = playerData?.axolotls ?? []
       current = axolotls.reduce((sum, a) => sum + a.level, 0)
@@ -82,6 +98,10 @@ export const checkGoal = (goal, playerData) => {
     }
     case 'crystals_earned_total': {
       current = playerData?.stats?.totalCrystalsEarned ?? 0
+      break
+    }
+    case 'total_forum_runs': {
+      current = playerData?.stats?.totalForumRuns ?? 0
       break
     }
     default:
