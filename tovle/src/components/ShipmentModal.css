@@ -13,14 +13,13 @@
 
 .sm-modal {
   width: min(480px, 92vw);
-  height: min(600px, 65vh);
+  max-height: min(600px, 80vh);
   background: var(--color-background-modal);
   border: 2px solid var(--color-border-modal-visit);
   border-radius: 16px;
   display: flex;
   flex-direction: column;
-  /* overflow: hidden; */
-  overflow:visible;
+  overflow: hidden;
 }
 
 /* ── Header ──────────────────────────────────────────────────────────────── */
@@ -226,6 +225,7 @@
   flex: 1;
   min-height: 0;
   position: relative;
+  overflow-y: auto;
 }
 
 /* ── Bottom — chest + button, always mounted, never moves ────────────────── */
