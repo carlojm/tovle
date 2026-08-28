@@ -314,8 +314,10 @@ class GameScene extends Phaser.Scene {
       featCrystals += this.activeCrystalGain * roll / 2 //rate limits for balancing
       featShards += this.activeShardGain * roll2 / 8 //ill keep messing with these til it feels right...
     }
-    featCrystals = Math.round(featCrystals * 10) / 10
-    featShards = Math.round(featShards * 10) / 10
+    //gonna multiply these by itemspertap cuz testers asked why they werent
+    //which makes sense
+    featCrystals = (Math.round(featCrystals * 10) / 10) * this.itemsPerTap
+    featShards = (Math.round(featShards * 10) / 10) * this.itemsPerTap
 
     return {
       crystals, featCrystals, shards, featShards,
