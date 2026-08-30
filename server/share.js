@@ -477,5 +477,5 @@ export async function generateShareImage(uid, runData) {
     todayShareDate: dateStr 
   }, { merge: true })
 
-  return { shareId, url: `https://tovle-beta.fly.dev/d/${shareId}` }
+  return { shareId, url: `https://tovle.net/d/${shareId}` }
 }

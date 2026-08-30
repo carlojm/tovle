@@ -143,7 +143,7 @@ const Info = ({onNavigate}) => {
           I made a ko-fi page!
         </p>
         <p>
-          Current planned features: Travel system, Equipment
+          Current planned features: A couple missing NPCs
         </p>
 
         <h1>Info</h1>
