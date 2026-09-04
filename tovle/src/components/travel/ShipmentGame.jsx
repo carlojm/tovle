@@ -359,6 +359,8 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
   })()
 
   const itemAt = (r, c) => state.itemsByCell.find(([k]) => k === keyOf(r, c))?.[1] ?? null
+  //check if anything picked up to prevent submitting an empty board
+  const hasAnyCollectible = state.itemsByCell.some(([cellKey]) => state.placements.has(cellKey))
 
   function BoardItemContent({ item, covered }) {
     if (item.kind === 'filler') {
@@ -486,7 +488,7 @@ export default function ShipmentGame({ equipment, filler, townId, rolledDate, cu
         {autoplaceUnlocked && (
           <button onClick={() => dispatch({ type: 'AUTOPLACE' })}>Auto-place</button>
         )}
-        <button onClick={() => dispatch({ type: 'SUBMIT' })}>Submit</button>
+        <button disabled={!hasAnyCollectible} onClick={() => dispatch({ type: 'SUBMIT' })}> Submit </button>
       </div>
 
       {/* drag ghost — same portal pattern as CombatScreen */}
