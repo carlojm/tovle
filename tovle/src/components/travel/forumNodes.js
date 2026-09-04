@@ -148,7 +148,7 @@ export const FORUM_NODES = [
   {
     id: 'crystal_multiplier_permanent',
     label: 'Global Crystal Gain',
-    description: 'Permanently increase passive crystal gain by 50% per level. Survives prestige.',
+    description: 'Permanently increase passive crystal gain by 50% per level.',
     icon: 'crystal_multiplier_permanent',
     direction: 'N',
     parent: ['luck_multiplier_permanent'],
@@ -164,7 +164,7 @@ export const FORUM_NODES = [
   {
     id: 'luck_multiplier_permanent',
     label: 'Global Luck',
-    description: 'Permanently increase all proc chances (anchor, perfect anchor, crit anchor) by +15% per level.',
+    description: 'Permanently multiply all proc chances (anchor, perfect anchor, crit anchor) by 15% per level.',
     icon: 'luck_multiplier_permanent',
     direction: 'N',
     parent: ['hearts_unlock'],

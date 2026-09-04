@@ -531,10 +531,14 @@ class GameScene extends Phaser.Scene {
 
       const { overlap, newX } = result
       const cutRatio = (this.topBlock.width-overlap) / this.topBlock.width
+      const incomingWidth = this.movingBlock.width
+
+      const isPerfect = cutRatio < this.perfectPlaceThreshold
+      const normalAnchorTriggered = !isPerfect && Math.random() < this.anchorChance
 
       //throw debris
       const cutWidth = this.movingBlock.width - overlap
-      if (cutWidth > 4 && cutRatio > this.perfectPlaceThreshold) { //cant be tiny
+      if (cutWidth > 4 && cutRatio > this.perfectPlaceThreshold && !normalAnchorTriggered) { //cant be tiny, and no debris on an anchor //cant be tiny
         const movingLeft  = this.movingBlock.x - this.movingBlock.width / 2
         const movingRight = this.movingBlock.x + this.movingBlock.width / 2
         const topLeft     = this.topBlock.x - this.topBlock.width / 2
@@ -580,11 +584,11 @@ class GameScene extends Phaser.Scene {
       //use nextWidth to handle changes andhoring make to width
       let nextWidth = this.topBlock.width
 
-      const isPerfect = cutRatio < this.perfectPlaceThreshold
       let anchorTriggered = false
 
       //normal anchor: preserves width, does not grow
-      if (!isPerfect && Math.random() < this.anchorChance) {
+      if (normalAnchorTriggered) {
+        nextWidth = incomingWidth
         anchorTriggered = true
         // this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
         this.featCount++
@@ -593,8 +597,8 @@ class GameScene extends Phaser.Scene {
 
       // perfect anchor: only triggers on a perfect placement, grows
       if (isPerfect && this.perfectAnchorUnlocked && Math.random() < this.perfectAnchorChance + this.anchorChance) {
-        const growAmount = Math.min(50, Math.max(10, this.topBlock.width * this.perfectAnchorGrowthFactor))
-        nextWidth = this.topBlock.width + growAmount
+        const growAmount = Math.min(50, Math.max(10, incomingWidth * this.perfectAnchorGrowthFactor))
+        nextWidth = incomingWidth + growAmount
         anchorTriggered = true
         // this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
         this.featCount++
@@ -603,8 +607,8 @@ class GameScene extends Phaser.Scene {
 
       //crit anchor
       if (isCrit && this.critAnchorUnlocked && Math.random() < this.critAnchorChance + this.anchorChance) {
-        const growAmount = Math.min(50, Math.max(10, this.topBlock.width * this.critAnchorGrowth))
-        nextWidth = this.topBlock.width + growAmount
+        const growAmount = Math.min(50, Math.max(10, incomingWidth * this.critAnchorGrowth))
+        nextWidth = incomingWidth + growAmount
         anchorTriggered = true
         // this.triggerAnchor(this.topBlock, nextWidth, this.topBlock.fillColor)
         this.featCount++
