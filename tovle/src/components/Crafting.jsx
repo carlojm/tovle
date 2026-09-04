@@ -87,7 +87,7 @@ const UPGRADES = [
     description: [
       'None',
       'Build an underwater habitat with all this scrap material.',
-      'WIP',
+      'None',
     ],
     requiresUpgrade: 'craftingTable',
     maxTier: 1,
@@ -108,7 +108,7 @@ const UPGRADES = [
       'None',
       'An axolotl wants to live in your newly crafted habitat. Searches for caches in exchange for fish.',
       'Use some shiny objects to attract another axolotl to your team.',
-      'WIP'
+      'None'
     ],
     maxTier: 2,
     requiresUpgrade: 'buildHabitat', // hidden until this is owned
@@ -143,8 +143,8 @@ const UPGRADES = [
     name: 'Set Sail',
     description: [
       'None',
-      'Build a raft with fabric and wood. Unlocks the travel tab. Not yet implemented.',
-      'WIP',
+      'Build a raft with fabric and wood. Unlocks the travel tab.',
+      'None',
     ],
     maxTier: 1,
     requiresUpgrade: 'newHire', // hidden until this is owned
