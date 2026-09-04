@@ -153,11 +153,11 @@ export const TOWN_UNLOCKS = [
       { type: 'town_level', townId: 'frostgate', target: 3, label: 'Reach Frostgate level 3' },
     ],
     optional: [
-      { type: 'items_traded_total', target: 70, label: 'Trade away 70 items total' },
+      { type: 'items_traded_total', target: 400, label: 'Trade away 400 items total' },
       { type: 'town_level', townId: 'alnera', target: 6, label: 'Reach Alnera level 6' },
       { type: 'shipment_equipment_collected', target: 15, label: 'Find 15 gear pieces in shipments' },
     ],
-    minOptional: 1,
+    minOptional: 2,
   },
   {
     townId: 'steelmeld',
@@ -166,11 +166,10 @@ export const TOWN_UNLOCKS = [
       { type: 'town_level', townId: 'mistport', target: 3, label: 'Reach Mistport level 3' },
     ],
     optional: [
-      { type: 'items_traded_total', target: 200, label: 'Trade away 200 items total' },
+      { type: 'items_traded_total', target: 700, label: 'Trade away 700 items total' },
       { type: 'town_level', townId: 'frostgate', target: 6, label: 'Reach Frostgate level 6' },
       { type: 'shipment_equipment_collected', target: 50, label: 'Find 50 gear pieces in shipments' },
-      { type: 'depthsle_best_rooms', target: 10, label: 'Clear 10 rooms in a single Depthsle run' },
     ],
-    minOptional: 1,
+    minOptional: 2,
   },
 ]
