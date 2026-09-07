@@ -8293,7 +8293,7 @@
     },
     "lore": "Its blast of pellets can shred\nthrough equipment and flesh alike,\nleaving all naught but dust."
   },
-  "Z.A.P.": {
+  "Z.A.P": {
     "location": "Isles Overworld",
     "mmlore": [
       "For when \"no\" just isn't enough."
@@ -9866,7 +9866,7 @@
     },
     "lore": "They show off your... workout."
   },
-  "D.R.E.A.M.": {
+  "D.R.E.A.M": {
     "location": "Celsian Isles",
     "mmlore": [
       "All around the dreamers lie, watching,",
