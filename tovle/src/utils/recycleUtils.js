@@ -17,8 +17,8 @@ const TIER_BASE = {
   'Tier 5':   300,
   'Uncommon': 400,
   'Unique':   500,
-  'Rare':     5000,
-  'Artifact': 20000,
+  'Rare':     2000,
+  'Artifact': 10000,
 }
 
 const getFloatTier = (float) => {
@@ -32,8 +32,10 @@ export const getFloatLabel = (float) => {
 export const calcRecyclePrice = (tier, float) => {
   const base = TIER_BASE[tier] ?? 100
   const ft = getFloatTier(float)
-  const range = ft.high - ft.low
-  const t = range === 0 ? 0 : (float - ft.low) / range
+  const index = FLOAT_TIERS.indexOf(ft)
+  const low = index === 0 ? 0 : FLOAT_TIERS[index - 1].high
+  const range = ft.high - low
+  const t = range === 0 ? 0 : (float - low) / range
   const multiplier = ft.multLow + t * (ft.multHigh - ft.multLow)
   return Math.round(base * multiplier)
 }
