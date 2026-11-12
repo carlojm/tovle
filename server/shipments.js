@@ -3,6 +3,7 @@ import { readFileSync } from 'fs'
 import path from 'path'
 
 import { rollMultiplier } from './trades.js'
+import { roundFloat } from './equipmentCodec.js'
 import { ITEM_WEIGHTS, WANT_ONLY_ITEMS, TRADEABLE_ITEMS } from './data/itemWeights.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -330,7 +331,7 @@ const rollShipment = (reputation, forumTier, townId, existingEquipment, todayStr
       id,
       itemKey: rolled.itemKey,
       tier: rolled.tier,
-      float: Math.random(),         // 0.0 to 1.0, cosmetic for now
+      float: roundFloat(Math.random()), // 0.0 to 1.0, cosmetic for now; rounded to the stored precision
       obtainedDate: todayStr,
       obtainedFrom: townId,
     })

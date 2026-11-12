@@ -25,6 +25,7 @@ import {
 
 import { rollShipmentContents } from './shipments.js'
 import { calcRecyclePrice } from './recycle.js'
+import { encodeEquipment, decodeEquipment } from './equipmentCodec.js'
 
 
 //env
@@ -767,7 +768,7 @@ app.post('/api/collect-shipment', async (req, res) => {
       const forumTier = playerData.travel?.forum?.tier ?? 1
       const reputation = townData.reputation ?? 0
       const townLevel = getTownLevel(reputation)
-      const existingEquipment = playerData.equipment ?? []
+      const existingEquipment = decodeEquipment(playerData.equipment)
 
       const { equipment, filler } = rollShipmentContents(
         reputation, forumTier, townLevel, townId, existingEquipment, todayStr
@@ -846,7 +847,7 @@ app.post('/api/finalize-shipment', async (req, res) => {
       const collectedFillerItems = collectedFillerAll.filter(f => f.itemId !== 'den_pieces')
       const denPiecesGained = collectedDenPiles.reduce((sum, f) => sum + f.quantity, 0)
 
-      const existingEquipment = playerData.equipment ?? []
+      const existingEquipment = decodeEquipment(playerData.equipment)
       const updatedEquipment = [...existingEquipment, ...collectedEquipment]
 
       // price doubles per purchase (100, 200, 400, ...)
@@ -875,7 +876,7 @@ app.post('/api/finalize-shipment', async (req, res) => {
       }
 
       t.update(playerRef, {
-        equipment: updatedEquipment,
+        equipment: encodeEquipment(updatedEquipment),
         'inventory.items': updatedItems,
         'inventory.currencies.denPieces': currentDenPieces + denPiecesGained,
         [`travel.towns.${townId}.lastShipment`]: todayStr,
@@ -929,7 +930,7 @@ app.post('/api/recycle-equipment', async (req, res) => {
       }
 
       const playerData = playerSnap.data()
-      const equipment = playerData.equipment ?? []
+      const equipment = decodeEquipment(playerData.equipment)
 
       const item = equipment.find(e => e.id === itemId)
       if (!item) {
@@ -946,7 +947,7 @@ app.post('/api/recycle-equipment', async (req, res) => {
       const currentDenPieces = playerData.inventory?.currencies?.denPieces ?? 0
 
       t.update(playerRef, {
-        equipment: updatedEquipment,
+        equipment: encodeEquipment(updatedEquipment),
         'inventory.currencies.denPieces': currentDenPieces + payout,
       })
     })
