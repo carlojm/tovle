@@ -227,7 +227,7 @@ const getTownBonus = (reputation) => Math.round(Math.sqrt(reputation))
 // returns a loot multiplier from >= 1.0 based on hemisphere bonuses
 // a cache can be in up to two hemispheres (a quadrant)
 const getHemisphereMultiplier = (tov, playerData) => {
-  if (!tov?.x || !tov?.z) return 1.0
+  if (typeof tov?.x !== 'number' || typeof tov?.z !== 'number') return 1.0
 
   const MAP_MID_X = -680
   const MAP_MID_Z = 623
